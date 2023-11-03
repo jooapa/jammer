@@ -3,25 +3,31 @@ using System.Threading;
 using NAudio.Wave;
 using NAudio.Vorbis;
 using NVorbis;
+using NAudio.Utils;
 class Program
 {
+    static Double volume = 0.5f;
+    static bool running = false;
+    static WaveOutEvent outputDevice = new WaveOutEvent();
+    static string audioFilePath = "";
+    static bool isLoop = false;
     static void Main(string[] args)
     {
         if (args.Length != 1)
         {
-            Console.WriteLine("Usage: Program.exe <path_to_audio_file>");
+            Console.WriteLine("Usage: jammer <path_to_audio_file>");
             return;
         }
 
-        string audioFilePath = args[0];
+        audioFilePath = args[0];
 
         try
         {
-            // Determine the audio format based on the file extension, and then play it.
             string extension = System.IO.Path.GetExtension(audioFilePath).ToLower();
 
             switch (extension)
             {
+
                 case ".wav":
                     PlayWav(audioFilePath);
                     break;
@@ -53,8 +59,14 @@ class Program
             outputDevice.Init(reader);
             outputDevice.Play();
 
-            // Block the main thread until audio playback is complete
+            // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
+            outputDevice.Volume = 0.5f;
+            running = true;
+
+            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            thread.Start();
+
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
         }
@@ -68,12 +80,19 @@ class Program
             outputDevice.Init(reader);
             outputDevice.Play();
 
-            // Block the main thread until audio playback is complete
+            // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
+            outputDevice.Volume = 0.5f;
+            running = true;
+
+            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            thread.Start();
+
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
         }
     }
+
     static void PlayOgg(string audioFilePath)
     {
         using (var reader = new NAudio.Vorbis.VorbisWaveReader(audioFilePath))
@@ -85,30 +104,15 @@ class Program
             // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
             outputDevice.Volume = 0.5f;
-            bool running = true;
-            Console.WriteLine("Press 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.");
-            while (running)
-            {
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(intercept: true).Key;
-                    switch (key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            outputDevice.Volume = Math.Min(outputDevice.Volume + 0.1f, 1.0f);
-                            Console.WriteLine("Volume: " + outputDevice.Volume);
-                            break;
-                        case ConsoleKey.DownArrow:
-                            outputDevice.Volume = Math.Max(outputDevice.Volume - 0.1f, 0.0f);
-                            Console.WriteLine("Volume: " + outputDevice.Volume);
-                            break;
-                        case ConsoleKey.Q:
-                            running = false;
-                            break;
-                    }
-                }
-                Thread.Sleep(10);
-            }
+            running = true;
+
+            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            thread.Start();
+
+            ManualResetEvent manualEvent = new ManualResetEvent(false);
+            manualEvent.WaitOne();
+
+
         }
     }
 
@@ -120,23 +124,96 @@ class Program
             outputDevice.Init(reader);
             outputDevice.Play();
 
-            // Block the main thread until audio playback is complete
+            // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
+            outputDevice.Volume = 0.5f;
+            running = true;
+
+            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            thread.Start();
+
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
         }
     }
 
-    static Double GetVolume(byte[] buffer)
+    static void controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
     {
-        int count = buffer.Length / 2;
-        int format = 1;
-        Double sum = 0;
-        for (int i = 0; i < count; i++)
+        WaveStream audioStream = (WaveStream)reader;
+        long newPosition;
+        Console.WriteLine("Press 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.");
+        Console.WriteLine("looping: " + isLoop);
+        while (running)
         {
-            Int16 sample = BitConverter.ToInt16(buffer, i * 2);
-            sum += (sample / 32768.0) * (sample / 32768.0);
+            if (audioStream.Position >= audioStream.Length)
+            {
+                if (isLoop)
+                {
+                    audioStream.Position = 0;
+                }
+                else
+                {
+                    Console.WriteLine("Song ended.");
+                }
+            }
+            if (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(intercept: true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow:
+                        outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+
+                        // song stops when goes over the end, so restart it
+                        if (outputDevice.PlaybackState == PlaybackState.Stopped)
+                        {
+                            outputDevice.Init(audioStream);
+                            outputDevice.Play();
+                        }
+                        if (newPosition < 0)
+                        {
+                            newPosition = 0; // Go back to the beginning if newPosition is negative
+                        }
+
+                        audioStream.Position = newPosition;
+                        break;
+                    case ConsoleKey.RightArrow:
+                        newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+
+                        if (newPosition > audioStream.Length)
+                        {
+                            newPosition = audioStream.Length; // Go back to the beginning if newPosition is negative
+                        }
+
+                        audioStream.Position = newPosition;
+                        break;
+                    case ConsoleKey.Spacebar:
+                        if (outputDevice.PlaybackState == PlaybackState.Playing)
+                        {
+                            outputDevice.Pause();
+                        }
+                        else
+                        {
+                            outputDevice.Play();
+                        }
+                        break;
+                    case ConsoleKey.Q:
+                        running = false;
+                        break;
+                    case ConsoleKey.L:
+                        isLoop = !isLoop;
+                        Console.WriteLine("looping: " + isLoop);
+                        break;
+                }
+            }
+            Thread.Sleep(10); // don't hog the CPU
         }
-        return Math.Sqrt(sum / count);
-    }   
+    }
 }
+    
