@@ -171,7 +171,11 @@ class Program
             if (outputDevice.PlaybackState == PlaybackState.Stopped)
             {
                 outputDevice.Init(audioStream);
-                outputDevice.Play();
+                // if not in the end
+                if (audioStream.Position < audioStream.Length)
+                {
+                    outputDevice.Play();
+                }
             }
             if (Console.KeyAvailable)
             {
@@ -211,7 +215,7 @@ class Program
 
                         if (newPosition > audioStream.Length)
                         {
-                            newPosition = audioStream.Length; // Go back to the beginning if newPosition is negative
+                            newPosition = audioStream.Length;
                             outputDevice.Stop();
                         }
 
