@@ -6,11 +6,14 @@ using NVorbis;
 using NAudio.Utils;
 class Program
 {
-    static Double volume = 0.5f;
+    static Double volume = 0.1f;
     static bool running = false;
     static WaveOutEvent outputDevice = new WaveOutEvent();
     static string audioFilePath = "";
     static bool isLoop = false;
+    static Double currentPositionInSeconds = 0.0f;
+    static Double positionInSeconds = 0.0f;
+
     static void Main(string[] args)
     {
         if (args.Length != 1)
@@ -64,7 +67,7 @@ class Program
             outputDevice.Volume = 0.5f;
             running = true;
 
-            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
             thread.Start();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -85,7 +88,7 @@ class Program
             outputDevice.Volume = 0.5f;
             running = true;
 
-            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
             thread.Start();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -106,7 +109,7 @@ class Program
             outputDevice.Volume = 0.5f;
             running = true;
 
-            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
             thread.Start();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -129,7 +132,7 @@ class Program
             outputDevice.Volume = 0.5f;
             running = true;
 
-            Thread thread = new Thread(() => controls(volume, running, outputDevice, reader));
+            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
             thread.Start();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -137,14 +140,20 @@ class Program
         }
     }
 
-    static void controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
+    static void Controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
     {
         WaveStream audioStream = (WaveStream)reader;
         long newPosition;
-        Console.WriteLine("Press 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.");
-        Console.WriteLine("looping: " + isLoop);
+        bool isPlaying = true;
+        bool isMuted = false;
+        float oldVolume = 0.0f;
+
         while (running)
         {
+            currentPositionInSeconds = (double)audioStream.Position / audioStream.WaveFormat.AverageBytesPerSecond;
+            positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
+            Console.Clear();
+            Console.WriteLine(UI(isPlaying, outputDevice.Volume, isMuted));
             if (audioStream.Position >= audioStream.Length)
             {
                 if (isLoop)
@@ -155,6 +164,11 @@ class Program
                 {
                     Console.WriteLine("Song ended.");
                 }
+            }
+            if (outputDevice.PlaybackState == PlaybackState.Stopped)
+            {
+                outputDevice.Init(audioStream);
+                outputDevice.Play();
             }
             if (Console.KeyAvailable)
             {
@@ -170,12 +184,6 @@ class Program
                     case ConsoleKey.LeftArrow:
                         newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
 
-                        // song stops when goes over the end, so restart it
-                        if (outputDevice.PlaybackState == PlaybackState.Stopped)
-                        {
-                            outputDevice.Init(audioStream);
-                            outputDevice.Play();
-                        }
                         if (newPosition < 0)
                         {
                             newPosition = 0; // Go back to the beginning if newPosition is negative
@@ -189,6 +197,7 @@ class Program
                         if (newPosition > audioStream.Length)
                         {
                             newPosition = audioStream.Length; // Go back to the beginning if newPosition is negative
+                            outputDevice.Stop();
                         }
 
                         audioStream.Position = newPosition;
@@ -197,10 +206,12 @@ class Program
                         if (outputDevice.PlaybackState == PlaybackState.Playing)
                         {
                             outputDevice.Pause();
+                            isPlaying = false;
                         }
                         else
                         {
                             outputDevice.Play();
+                            isPlaying = true;
                         }
                         break;
                     case ConsoleKey.Q:
@@ -210,10 +221,57 @@ class Program
                         isLoop = !isLoop;
                         Console.WriteLine("looping: " + isLoop);
                         break;
+                    case ConsoleKey.M:
+                        if (isMuted)
+                        {
+                            outputDevice.Volume = oldVolume;
+                            isMuted = false;
+                        }
+                        else
+                        {
+                            oldVolume = outputDevice.Volume;
+                            outputDevice.Volume = 0.0f;
+                            isMuted = true;
+                        }
+                        break;
                 }
             }
-            Thread.Sleep(10); // don't hog the CPU
+            Thread.Sleep(5); // don't hog the CPU
         }
+    }
+
+    static string UI(bool isPlaying, double volume, bool isMuted)
+    {
+        string loopText;
+        string isPlayingText;
+        string ismuteText;
+
+        if (isLoop) {
+            loopText = "looping: true";
+        } else {
+            loopText = "looping: false";
+        }
+
+        if (isPlaying) {
+            isPlayingText = "Playing";
+        } else {
+            isPlayingText = "Stopped";
+        }
+
+        if (isMuted) {
+            ismuteText = "Muted";
+        } else {
+            ismuteText = "";
+        }
+
+
+        return (Math.Round(currentPositionInSeconds * 100) / 100) + " : "+ (Math.Round(positionInSeconds * 100) / 100) +
+        "\nPress 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.\n" +
+        loopText + "\n" + 
+        isPlayingText + "\n" +
+        "Volume: " + Math.Round(volume * 100) + "%" + "\n" +
+        ismuteText;
+
     }
 }
     
