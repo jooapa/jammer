@@ -154,8 +154,8 @@ class Program
         {
             currentPositionInSeconds = (double)audioStream.Position / audioStream.WaveFormat.AverageBytesPerSecond;
             positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
-            Console.Clear();
-            Console.WriteLine(UI(isPlaying, outputDevice.Volume, isMuted));
+
+
             if (audioStream.Position >= audioStream.Length)
             {
                 if (isLoop)
@@ -164,10 +164,10 @@ class Program
                 }
                 else
                 {
-                    Console.WriteLine("Song ended.");
                     outputDevice.Dispose();
                 }
             }
+
             if (outputDevice.PlaybackState == PlaybackState.Stopped)
             {
                 outputDevice.Init(audioStream);
@@ -177,6 +177,13 @@ class Program
                     outputDevice.Play();
                 }
             }
+
+            if (outputDevice.PlaybackState == PlaybackState.Playing || outputDevice.PlaybackState != PlaybackState.Paused || outputDevice.PlaybackState == PlaybackState.Stopped)
+            {
+                Console.Clear();
+                Console.WriteLine(UI(isPlaying, outputDevice, isMuted));
+            }
+
             if (Console.KeyAvailable)
             {
                 var key = Console.ReadKey(intercept: true).Key;
@@ -239,7 +246,6 @@ class Program
                         break;
                     case ConsoleKey.L:
                         isLoop = !isLoop;
-                        Console.WriteLine("looping: " + isLoop);
                         break;
                     case ConsoleKey.M:
                         if (isMuted)
@@ -255,12 +261,14 @@ class Program
                         }
                         break;
                 }
+                Console.Clear();
+                Console.WriteLine(UI(isPlaying, outputDevice, isMuted));
             }
             Thread.Sleep(5); // don't hog the CPU
         }
     }
 
-    static string UI(bool isPlaying, double volume, bool isMuted)
+    static string UI(bool isPlaying, WaveOutEvent outputDevice, bool isMuted)
     {
         string loopText;
         string isPlayingText;
@@ -301,7 +309,7 @@ class Program
         "Press 'Left Arrow' to rewind 5 seconds, 'Right Arrow' to fast forward 5 seconds.\n" +
         loopText + "\n" + 
         isPlayingText + "\n" +
-        "Volume: " + Math.Round(volume * 100) + "%" + "\n" +
+        "Volume: " + Math.Round(outputDevice.Volume * 100) + "%" + "\n" +
         ismuteText;
 
     }
