@@ -4,6 +4,8 @@ using NAudio.Wave;
 using NAudio.Vorbis;
 using NVorbis;
 using NAudio.Utils;
+using System.Runtime.InteropServices;
+
 class Program
 {
     static Double volume = 0.1f;
@@ -163,6 +165,7 @@ class Program
                 else
                 {
                     Console.WriteLine("Song ended.");
+                    outputDevice.Dispose();
                 }
             }
             if (outputDevice.PlaybackState == PlaybackState.Stopped)
@@ -227,7 +230,8 @@ class Program
                         }
                         break;
                     case ConsoleKey.Q:
-                        running = false;
+                        Console.Clear();
+                        Environment.Exit(0);
                         break;
                     case ConsoleKey.L:
                         isLoop = !isLoop;
@@ -276,9 +280,21 @@ class Program
             ismuteText = "";
         }
 
+        // currentPositionInSeconds
+        int cupMinutes = (int)(currentPositionInSeconds / 60);
+        int cupSeconds = (int)(currentPositionInSeconds % 60);
 
-        return (Math.Round(currentPositionInSeconds * 100) / 100) + " : "+ (Math.Round(positionInSeconds * 100) / 100) +
+        // positionInSeconds
+        int pMinutes = (int)(positionInSeconds / 60);
+        int pSeconds = (int)(positionInSeconds % 60);
+
+        string currentPositionInSecondsText = $"{cupMinutes}:{cupSeconds:D2}";
+        string positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
+
+
+        return "Current Position: " + currentPositionInSecondsText + " / " + positionInSecondsText + " minutes\n" +
         "\nPress 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.\n" +
+        "Press 'Left Arrow' to rewind 5 seconds, 'Right Arrow' to fast forward 5 seconds.\n" +
         loopText + "\n" + 
         isPlayingText + "\n" +
         "Volume: " + Math.Round(volume * 100) + "%" + "\n" +
