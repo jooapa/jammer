@@ -176,10 +176,22 @@ class Program
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
-                        outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
+                        if (isMuted) {
+                            isMuted = false;
+                            outputDevice.Volume = oldVolume;
+                        }
+                        else {
+                            outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
+                        }
                         break;
                     case ConsoleKey.DownArrow:
-                        outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
+                        if (isMuted) {
+                            isMuted = false;
+                            outputDevice.Volume = oldVolume;
+                        }
+                        else {
+                            outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
+                        }
                         break;
                     case ConsoleKey.LeftArrow:
                         newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
