@@ -1,10 +1,11 @@
-﻿using System.Threading;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using NAudio.Vorbis;
 using NVorbis;
 using NAudio.Utils;
 using System.Runtime.InteropServices;
 using jammer;
+using System.ComponentModel.DataAnnotations;
+
 class Program
 {
     static float volume = 0.1f;
@@ -12,9 +13,8 @@ class Program
     static WaveOutEvent outputDevice = new WaveOutEvent();
     static string audioFilePath = "";
     static public bool isLoop = false;
-    static public Double currentPositionInSeconds = 0.0f;
-    static Double positionInSeconds = 0.0f;
-    // positionInSeconds
+    static public double currentPositionInSeconds = 0.0;
+    static double positionInSeconds = 0.0;
     static int pMinutes = 0;
     static int pSeconds = 0;
     static public string positionInSecondsText = "";
@@ -23,23 +23,9 @@ class Program
     static public bool isMuted = false;
     static float oldVolume = 0.0f;
 
-
-    enum musicState
-    {
-        Stopped,
-        Playing,
-        Paused
-    }
-
     static void Main(string[] args)
     {
-        if (args.Length != 1)
-        {
-            Console.WriteLine("Usage: jammer <path_to_audio_file>");
-            return;
-        }
-
-        audioFilePath = args[0];
+        audioFilePath = "C:\\Users\\user\\Documents\\GitHub\\signal-jammer\\npc_music\\easy_mode.ogg";
 
         try
         {
@@ -47,7 +33,6 @@ class Program
 
             switch (extension)
             {
-
                 case ".wav":
                     playFile.PlayWav(audioFilePath, volume, running);
                     break;
@@ -71,10 +56,10 @@ class Program
         }
     }
 
-    static public void Controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
+    static public void Controls(Double volume, bool running, WaveOutEvent outputDevice, object reader)
     {
         WaveStream audioStream = (WaveStream)reader;
-        positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
+        positionInSeconds = (double)audioStream.TotalTime.TotalSeconds;
         pMinutes = (int)(positionInSeconds / 60);
         pSeconds = (int)(positionInSeconds % 60);
         positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
@@ -83,8 +68,10 @@ class Program
         {
             while (running)
             {
-                currentPositionInSeconds = (double)audioStream.Position / audioStream.WaveFormat.AverageBytesPerSecond;
-                positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
+                Console.Clear();
+                Console.WriteLine(UI.Ui(outputDevice));
+                currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
+                positionInSeconds = audioStream.TotalTime.TotalSeconds;
 
                 if (audioStream.Position >= audioStream.Length) // if at the end of the audio file
                 {
@@ -94,39 +81,38 @@ class Program
                     }
                     else
                     {
-                        outputDevice.Stop();
-                        isPlaying = false;
+                        SetState(outputDevice, "stopped", audioStream);
                     }
                 }
 
-                if (outputDevice.PlaybackState == PlaybackState.Stopped)
+                if (outputDevice.PlaybackState == PlaybackState.Stopped && isPlaying)
                 {
                     outputDevice.Init(audioStream);
                     // if not in the end
                     if (audioStream.Position < audioStream.Length)
                     {
-                        outputDevice.Play();
+                        SetState(outputDevice, "playing", audioStream);
                     }
                 }
 
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
-                    HandleUserInput(key, audioStream, outputDevice, newPosition);
+                    Console.WriteLine("Key pressed: " + key);
+
+                    HandleUserInput(key, audioStream, outputDevice);
                 }
 
-                Console.Clear();
-                Console.WriteLine(UI.Ui(outputDevice));
-                Thread.Sleep(100); // don't hog the CPU
+                Thread.Sleep(1); // don't hog the CPU
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("ERORROROOR: " + ex);
+            Console.WriteLine("Error: " + ex);
         }
     }
 
-    static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice, long newPosition)
+    static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice)
     {
         switch (key)
         {
@@ -160,6 +146,19 @@ class Program
                     newPosition = 0; // Go back to the beginning if newPosition is negative
                 }
 
+                if (audioStream.Position < audioStream.Length || outputDevice.PlaybackState == PlaybackState.Stopped)
+                {
+                    try {
+                        if (outputDevice.PlaybackState != PlaybackState.Playing)
+                        {
+                            outputDevice.Init(audioStream);
+                        }
+                    } catch (Exception ex) {
+                        Console.WriteLine("Error: " + ex);
+                    }
+                    SetState(outputDevice, "playing", audioStream);
+                }
+
                 audioStream.Position = newPosition;
                 break;
             case ConsoleKey.RightArrow:
@@ -168,7 +167,14 @@ class Program
                 if (newPosition > audioStream.Length)
                 {
                     newPosition = audioStream.Length;
-                    outputDevice.Stop();
+                    if (isLoop)
+                    {
+                        audioStream.Position = 0;
+                    }
+                    else
+                    {
+                        SetState(outputDevice, "stopped", audioStream);
+                    }
                 }
 
                 audioStream.Position = newPosition;
@@ -176,7 +182,7 @@ class Program
             case ConsoleKey.Spacebar:
                 if (outputDevice.PlaybackState == PlaybackState.Playing)
                 {
-                    outputDevice.Pause();
+                    SetState(outputDevice, "paused", audioStream);
                 }
                 else
                 {
@@ -184,7 +190,7 @@ class Program
                     {
                         audioStream.Position = 0;
                     }
-                    outputDevice.Play();
+                    SetState(outputDevice, "playing", audioStream);
                 }
                 break;
             case ConsoleKey.Q:
@@ -207,6 +213,30 @@ class Program
                     outputDevice.Volume = 0.0f;
                 }
                 break;
+        }
+    }
+
+    static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream)
+    {
+        if (state == "playing")
+        {
+            // if not initialized
+            if (outputDevice.PlaybackState == PlaybackState.Stopped)
+            {
+                outputDevice.Init(audioStream);
+            }
+            outputDevice.Play();
+            isPlaying = true;
+        }
+        else if (state == "paused")
+        {
+            outputDevice.Pause();
+            isPlaying = false;
+        }
+        else if (state == "stopped")
+        {
+            outputDevice.Stop();
+            isPlaying = false;
         }
     }
 }
