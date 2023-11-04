@@ -1,20 +1,34 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using NAudio.Wave;
 using NAudio.Vorbis;
 using NVorbis;
 using NAudio.Utils;
 using System.Runtime.InteropServices;
-
 class Program
 {
-    static Double volume = 0.1f;
+    static float volume = 0.1f;
     static bool running = false;
     static WaveOutEvent outputDevice = new WaveOutEvent();
     static string audioFilePath = "";
     static bool isLoop = false;
     static Double currentPositionInSeconds = 0.0f;
     static Double positionInSeconds = 0.0f;
+    // positionInSeconds
+    static int pMinutes = 0;
+    static int pSeconds = 0;
+    static string positionInSecondsText = "";
+    static long newPosition;
+    static bool isPlaying = false;
+    static bool isMuted = false;
+    static float oldVolume = 0.0f;
+
+
+    enum musicState
+    {
+        Stopped,
+        Playing,
+        Paused
+    }
 
     static void Main(string[] args)
     {
@@ -66,7 +80,7 @@ class Program
 
             // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = 0.5f;
+            outputDevice.Volume = volume;
             running = true;
 
             Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
@@ -87,7 +101,7 @@ class Program
 
             // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = 0.5f;
+            outputDevice.Volume = volume;
             running = true;
 
             Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
@@ -100,24 +114,31 @@ class Program
 
     static void PlayOgg(string audioFilePath)
     {
-        using (var reader = new NAudio.Vorbis.VorbisWaveReader(audioFilePath))
-        using (var outputDevice = new WaveOutEvent())
+        try
         {
-            outputDevice.Init(reader);
-            outputDevice.Play();
+            using (var reader = new NAudio.Vorbis.VorbisWaveReader(audioFilePath))
+            using (var outputDevice = new WaveOutEvent())
+            {
+                outputDevice.Init(reader);
+                outputDevice.Play();
 
-            // Handle key events for volume adjustment
-            outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = 0.5f;
-            running = true;
+                // Handle key events for volume adjustment
+                outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
+                outputDevice.Volume = volume;
+                running = true;
 
-            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
-            thread.Start();
+                Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
+                thread.Start();
 
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
+                ManualResetEvent manualEvent = new ManualResetEvent(false);
+                manualEvent.WaitOne();
 
 
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
         }
     }
 
@@ -131,7 +152,7 @@ class Program
 
             // Handle key events for volume adjustment
             outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = 0.5f;
+            outputDevice.Volume = volume;
             running = true;
 
             Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
@@ -145,173 +166,162 @@ class Program
     static void Controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
     {
         WaveStream audioStream = (WaveStream)reader;
-        long newPosition;
-        bool isPlaying = true;
-        bool isMuted = false;
-        float oldVolume = 0.0f;
+        positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
+        pMinutes = (int)(positionInSeconds / 60);
+        pSeconds = (int)(positionInSeconds % 60);
+        positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
 
-        while (running)
+        try
         {
-            currentPositionInSeconds = (double)audioStream.Position / audioStream.WaveFormat.AverageBytesPerSecond;
-            positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
-
-
-            if (audioStream.Position >= audioStream.Length)
+            while (running)
             {
-                if (isLoop)
-                {
-                    audioStream.Position = 0;
-                }
-                else
-                {
-                    outputDevice.Dispose();
-                }
-            }
+                currentPositionInSeconds = (double)audioStream.Position / audioStream.WaveFormat.AverageBytesPerSecond;
+                positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
 
-            if (outputDevice.PlaybackState == PlaybackState.Stopped)
-            {
-                outputDevice.Init(audioStream);
-                // if not in the end
-                if (audioStream.Position < audioStream.Length)
+                if (audioStream.Position >= audioStream.Length) // if at the end of the audio file
                 {
-                    outputDevice.Play();
+                    if (isLoop)
+                    {
+                        audioStream.Position = 0;
+                    }
+                    else
+                    {
+                        outputDevice.Stop();
+                        isPlaying = false;
+                    }
                 }
-            }
 
-            if (outputDevice.PlaybackState == PlaybackState.Playing || outputDevice.PlaybackState != PlaybackState.Paused || outputDevice.PlaybackState == PlaybackState.Stopped)
-            {
+                if (outputDevice.PlaybackState == PlaybackState.Stopped)
+                {
+                    outputDevice.Init(audioStream);
+                    // if not in the end
+                    if (audioStream.Position < audioStream.Length)
+                    {
+                        outputDevice.Play();
+                    }
+                }
+
+                if (Console.KeyAvailable)
+                {
+                    var key = Console.ReadKey(true).Key;
+                    HandleUserInput(key, audioStream, outputDevice, newPosition);
+                }
+
                 Console.Clear();
-                Console.WriteLine(UI(isPlaying, outputDevice, isMuted));
+                Console.WriteLine(UI(outputDevice));
+                Thread.Sleep(100); // don't hog the CPU
             }
-
-            if (Console.KeyAvailable)
-            {
-                var key = Console.ReadKey(intercept: true).Key;
-                switch (key)
-                {
-                    case ConsoleKey.UpArrow:
-                        if (isMuted) {
-                            isMuted = false;
-                            outputDevice.Volume = oldVolume;
-                        }
-                        else {
-                            outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
-                        }
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (isMuted) {
-                            isMuted = false;
-                            outputDevice.Volume = oldVolume;
-                        }
-                        else {
-                            outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
-                        }
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
-
-                        if (newPosition < 0)
-                        {
-                            newPosition = 0; // Go back to the beginning if newPosition is negative
-                        }
-
-                        audioStream.Position = newPosition;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * 5);
-
-                        if (newPosition > audioStream.Length)
-                        {
-                            newPosition = audioStream.Length;
-                            outputDevice.Stop();
-                        }
-
-                        audioStream.Position = newPosition;
-                        break;
-                    case ConsoleKey.Spacebar:
-                        if (outputDevice.PlaybackState == PlaybackState.Playing)
-                        {
-                            outputDevice.Pause();
-                            isPlaying = false;
-                        }
-                        else
-                        {
-                            outputDevice.Play();
-                            isPlaying = true;
-                        }
-                        break;
-                    case ConsoleKey.Q:
-                        Console.Clear();
-                        Environment.Exit(0);
-                        break;
-                    case ConsoleKey.L:
-                        isLoop = !isLoop;
-                        break;
-                    case ConsoleKey.M:
-                        if (isMuted)
-                        {
-                            outputDevice.Volume = oldVolume;
-                            isMuted = false;
-                        }
-                        else
-                        {
-                            oldVolume = outputDevice.Volume;
-                            outputDevice.Volume = 0.0f;
-                            isMuted = true;
-                        }
-                        break;
-                }
-                Console.Clear();
-                Console.WriteLine(UI(isPlaying, outputDevice, isMuted));
-            }
-            Thread.Sleep(5); // don't hog the CPU
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERORROROOR: " + ex);
         }
     }
 
-    static string UI(bool isPlaying, WaveOutEvent outputDevice, bool isMuted)
+    static string UI(WaveOutEvent outputDevice)
     {
-        string loopText;
-        string isPlayingText;
-        string ismuteText;
-
-        if (isLoop) {
-            loopText = "looping: true";
-        } else {
-            loopText = "looping: false";
-        }
-
-        if (isPlaying) {
-            isPlayingText = "Playing";
-        } else {
-            isPlayingText = "Stopped";
-        }
-
-        if (isMuted) {
-            ismuteText = "Muted";
-        } else {
-            ismuteText = "";
-        }
+        var loopText = isLoop ? "looping: true" : "looping: false";
+        var isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
+        var ismuteText = isMuted ? "Muted" : "";
 
         // currentPositionInSeconds
         int cupMinutes = (int)(currentPositionInSeconds / 60);
         int cupSeconds = (int)(currentPositionInSeconds % 60);
 
-        // positionInSeconds
-        int pMinutes = (int)(positionInSeconds / 60);
-        int pSeconds = (int)(positionInSeconds % 60);
-
         string currentPositionInSecondsText = $"{cupMinutes}:{cupSeconds:D2}";
-        string positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
 
 
         return "Current Position: " + currentPositionInSecondsText + " / " + positionInSecondsText + " minutes\n" +
         "\nPress 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.\n" +
         "Press 'Left Arrow' to rewind 5 seconds, 'Right Arrow' to fast forward 5 seconds.\n" +
-        loopText + "\n" + 
+        loopText + "\n" +
         isPlayingText + "\n" +
         "Volume: " + Math.Round(outputDevice.Volume * 100) + "%" + "\n" +
         ismuteText;
 
     }
+
+    static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice, long newPosition)
+    {
+        switch (key)
+        {
+            case ConsoleKey.UpArrow:
+                if (isMuted)
+                {
+                    isMuted = false;
+                    outputDevice.Volume = oldVolume;
+                }
+                else
+                {
+                    outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
+                }
+                break;
+            case ConsoleKey.DownArrow:
+                if (isMuted)
+                {
+                    isMuted = false;
+                    outputDevice.Volume = oldVolume;
+                }
+                else
+                {
+                    outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
+                }
+                break;
+            case ConsoleKey.LeftArrow:
+                newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+
+                if (newPosition < 0)
+                {
+                    newPosition = 0; // Go back to the beginning if newPosition is negative
+                }
+
+                audioStream.Position = newPosition;
+                break;
+            case ConsoleKey.RightArrow:
+                newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+
+                if (newPosition > audioStream.Length)
+                {
+                    newPosition = audioStream.Length;
+                    outputDevice.Stop();
+                }
+
+                audioStream.Position = newPosition;
+                break;
+            case ConsoleKey.Spacebar:
+                if (outputDevice.PlaybackState == PlaybackState.Playing)
+                {
+                    outputDevice.Pause();
+                }
+                else
+                {
+                    if (outputDevice.PlaybackState == PlaybackState.Stopped)
+                    {
+                        audioStream.Position = 0;
+                    }
+                    outputDevice.Play();
+                }
+                break;
+            case ConsoleKey.Q:
+                Console.Clear();
+                Environment.Exit(0);
+                break;
+            case ConsoleKey.L:
+                isLoop = !isLoop;
+                break;
+            case ConsoleKey.M:
+                if (isMuted)
+                {
+                    isMuted = false;
+                    outputDevice.Volume = oldVolume;
+                }
+                else
+                {
+                    isMuted = true;
+                    oldVolume = outputDevice.Volume;
+                    outputDevice.Volume = 0.0f;
+                }
+                break;
+        }
+    }
 }
-    
