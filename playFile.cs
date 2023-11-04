@@ -22,7 +22,7 @@ namespace jammer
                 outputDevice.Volume = volume;
                 running = true;
 
-                Thread thread = new Thread(() => Program.Controls(volume, running, outputDevice, reader));
+                Thread thread = new Thread(() => Program.Controls(running, outputDevice, reader));
                 thread.Start();
 
                 ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -43,7 +43,7 @@ namespace jammer
                 outputDevice.Volume = volume;
                 running = true;
 
-                Thread thread = new Thread(() => Program.Controls(volume, running, outputDevice, reader));
+                Thread thread = new Thread(() => Program.Controls(running, outputDevice, reader));
                 thread.Start();
 
                 ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -66,7 +66,7 @@ namespace jammer
                     outputDevice.Volume = volume;
                     running = true;
 
-                    Thread thread = new Thread(() => Program.Controls(volume, running, outputDevice, reader));
+                    Thread thread = new Thread(() => Program.Controls(running, outputDevice, reader));
                     thread.Start();
 
                     ManualResetEvent manualEvent = new ManualResetEvent(false);
@@ -94,7 +94,7 @@ namespace jammer
                 outputDevice.Volume = volume;
                 running = true;
 
-                Thread thread = new Thread(() => Program.Controls(volume, running, outputDevice, reader));
+                Thread thread = new Thread(() => Program.Controls(running, outputDevice, reader));
                 thread.Start();
 
                 ManualResetEvent manualEvent = new ManualResetEvent(false);

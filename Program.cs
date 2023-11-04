@@ -25,7 +25,13 @@ class Program
 
     static void Main(string[] args)
     {
-        audioFilePath = "C:\\Users\\user\\Documents\\GitHub\\signal-jammer\\npc_music\\easy_mode.ogg";
+        if (args.Length == 0)
+        {
+            Console.WriteLine("Usage: jammer <audio file>");
+            Environment.Exit(0);
+        }
+
+        audioFilePath = args[0];
 
         try
         {
@@ -56,10 +62,10 @@ class Program
         }
     }
 
-    static public void Controls(Double volume, bool running, WaveOutEvent outputDevice, object reader)
+    static public void Controls(bool running, WaveOutEvent outputDevice, object reader)
     {
         WaveStream audioStream = (WaveStream)reader;
-        positionInSeconds = (double)audioStream.TotalTime.TotalSeconds;
+        positionInSeconds = audioStream.TotalTime.TotalSeconds;
         pMinutes = (int)(positionInSeconds / 60);
         pSeconds = (int)(positionInSeconds % 60);
         positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
@@ -68,8 +74,16 @@ class Program
         {
             while (running)
             {
-                Console.Clear();
-                Console.WriteLine(UI.Ui(outputDevice));
+                try {
+                    // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
+                    if ( outputDevice != null) {
+                        Console.Clear();
+                        Console.WriteLine(UI.Ui(outputDevice));
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("Error: " + ex);
+                }
                 currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
                 positionInSeconds = audioStream.TotalTime.TotalSeconds;
 
