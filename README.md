@@ -6,16 +6,36 @@
 jammer [song]
 ```
 
+### encoding
+jammer can play
+- mp3
+- wav
+- ogg
+- flac
+
 ### controls
 
-_________________________
-| key     | action      |
-| `space` | play/pause  |
-| `q`     | quit        |
-| `→`     | forward 5s  |
-| `←`     | backward 5s |
-| `↑`     | volume up   |
-| `↓`     | volume down |
-| `m`     | mute/unmute |
-| `L`     | toggle loop |
-‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+| key | action |
+|  --------  |  -------  |
+| `space` | play/pause |
+| `q` | quit |
+| `→` | forward 5s |
+| `←` | backward 5s |
+| `↑` | volume up |
+| `↓` | volume down |
+| `m` | mute/unmute |
+| `L` | toggle loop |
+
+### install
+```
+Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
+```
+
+### build
+```
+dotnet build --configuration Release
+```
+### run
+```
+dotnet run -- "path/to/song.mp3"
+```
