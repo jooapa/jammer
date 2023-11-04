@@ -95,11 +95,14 @@ class Program
                     }
                     else
                     {
-                        SetState(outputDevice, "stopped", audioStream);
+                        if (outputDevice != null)
+                        {
+                            SetState(outputDevice, "stopped", audioStream);
+                        }
                     }
                 }
 
-                if (outputDevice.PlaybackState == PlaybackState.Stopped && isPlaying)
+                if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying)
                 {
                     outputDevice.Init(audioStream);
                     // if not in the end
@@ -114,7 +117,10 @@ class Program
                     var key = Console.ReadKey(true).Key;
                     Console.WriteLine("Key pressed: " + key);
 
-                    HandleUserInput(key, audioStream, outputDevice);
+                    if (outputDevice != null)
+                    {
+                        HandleUserInput(key, audioStream, outputDevice);
+                    }
                 }
 
                 Thread.Sleep(1); // don't hog the CPU
