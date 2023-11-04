@@ -4,22 +4,23 @@ using NAudio.Vorbis;
 using NVorbis;
 using NAudio.Utils;
 using System.Runtime.InteropServices;
+using jammer;
 class Program
 {
     static float volume = 0.1f;
     static bool running = false;
     static WaveOutEvent outputDevice = new WaveOutEvent();
     static string audioFilePath = "";
-    static bool isLoop = false;
-    static Double currentPositionInSeconds = 0.0f;
+    static public bool isLoop = false;
+    static public Double currentPositionInSeconds = 0.0f;
     static Double positionInSeconds = 0.0f;
     // positionInSeconds
     static int pMinutes = 0;
     static int pSeconds = 0;
-    static string positionInSecondsText = "";
+    static public string positionInSecondsText = "";
     static long newPosition;
     static bool isPlaying = false;
-    static bool isMuted = false;
+    static public bool isMuted = false;
     static float oldVolume = 0.0f;
 
 
@@ -48,16 +49,16 @@ class Program
             {
 
                 case ".wav":
-                    PlayWav(audioFilePath);
+                    playFile.PlayWav(audioFilePath, volume, running);
                     break;
                 case ".mp3":
-                    PlayMp3(audioFilePath);
+                    playFile.PlayMp3(audioFilePath, volume, running);
                     break;
                 case ".ogg":
-                    PlayOgg(audioFilePath);
+                    playFile.PlayOgg(audioFilePath, volume, running);
                     break;
                 case ".flac":
-                    PlayFlac(audioFilePath);
+                    playFile.PlayFlac(audioFilePath, volume, running);
                     break;
                 default:
                     Console.WriteLine("Unknown file extension: " + extension);
@@ -70,100 +71,7 @@ class Program
         }
     }
 
-    static void PlayWav(string audioFilePath)
-    {
-        using (var reader = new WaveFileReader(audioFilePath))
-        using (var outputDevice = new WaveOutEvent())
-        {
-            outputDevice.Init(reader);
-            outputDevice.Play();
-
-            // Handle key events for volume adjustment
-            outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = volume;
-            running = true;
-
-            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
-            thread.Start();
-
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
-        }
-    }
-
-    static void PlayMp3(string audioFilePath)
-    {
-        using (var reader = new Mp3FileReader(audioFilePath))
-        using (var outputDevice = new WaveOutEvent())
-        {
-            outputDevice.Init(reader);
-            outputDevice.Play();
-
-            // Handle key events for volume adjustment
-            outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = volume;
-            running = true;
-
-            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
-            thread.Start();
-
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
-        }
-    }
-
-    static void PlayOgg(string audioFilePath)
-    {
-        try
-        {
-            using (var reader = new NAudio.Vorbis.VorbisWaveReader(audioFilePath))
-            using (var outputDevice = new WaveOutEvent())
-            {
-                outputDevice.Init(reader);
-                outputDevice.Play();
-
-                // Handle key events for volume adjustment
-                outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-                outputDevice.Volume = volume;
-                running = true;
-
-                Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
-                thread.Start();
-
-                ManualResetEvent manualEvent = new ManualResetEvent(false);
-                manualEvent.WaitOne();
-
-
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-        }
-    }
-
-    static void PlayFlac(string audioFilePath)
-    {
-        using (var reader = new AudioFileReader(audioFilePath))
-        using (var outputDevice = new WaveOutEvent())
-        {
-            outputDevice.Init(reader);
-            outputDevice.Play();
-
-            // Handle key events for volume adjustment
-            outputDevice.PlaybackStopped += (sender, e) => { outputDevice.Dispose(); };
-            outputDevice.Volume = volume;
-            running = true;
-
-            Thread thread = new Thread(() => Controls(volume, running, outputDevice, reader));
-            thread.Start();
-
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
-        }
-    }
-
-    static void Controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
+    static public void Controls(Double volume, bool running, WaveOutEvent outputDevice, Object reader)
     {
         WaveStream audioStream = (WaveStream)reader;
         positionInSeconds = (double)audioStream.Length / audioStream.WaveFormat.AverageBytesPerSecond;
@@ -208,7 +116,7 @@ class Program
                 }
 
                 Console.Clear();
-                Console.WriteLine(UI(outputDevice));
+                Console.WriteLine(UI.Ui(outputDevice));
                 Thread.Sleep(100); // don't hog the CPU
             }
         }
@@ -216,29 +124,6 @@ class Program
         {
             Console.WriteLine("ERORROROOR: " + ex);
         }
-    }
-
-    static string UI(WaveOutEvent outputDevice)
-    {
-        var loopText = isLoop ? "looping: true" : "looping: false";
-        var isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
-        var ismuteText = isMuted ? "Muted" : "";
-
-        // currentPositionInSeconds
-        int cupMinutes = (int)(currentPositionInSeconds / 60);
-        int cupSeconds = (int)(currentPositionInSeconds % 60);
-
-        string currentPositionInSecondsText = $"{cupMinutes}:{cupSeconds:D2}";
-
-
-        return "Current Position: " + currentPositionInSecondsText + " / " + positionInSecondsText + " minutes\n" +
-        "\nPress 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.\n" +
-        "Press 'Left Arrow' to rewind 5 seconds, 'Right Arrow' to fast forward 5 seconds.\n" +
-        loopText + "\n" +
-        isPlayingText + "\n" +
-        "Volume: " + Math.Round(outputDevice.Volume * 100) + "%" + "\n" +
-        ismuteText;
-
     }
 
     static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice, long newPosition)
