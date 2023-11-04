@@ -27,9 +27,7 @@ jammer can play
 | `L` | toggle loop |
 
 ### install
-```
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
-```
 
 ### build
 ```
