@@ -3,8 +3,9 @@
 
 ### usage
 ```
-jammer [song]
-jammer soundcloud.com/username/track-name
+jammer [song] 
+jammer soundcloud.com/username/track-name 
+jammer start 
 ```
 
 ### encoding

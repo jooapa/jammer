@@ -1,9 +1,9 @@
 
 using System;
-using System.IO;
-using System.Text.RegularExpressions;
-using SoundCloudExplode;
 using jammer;
+using System.IO;
+using SoundCloudExplode;
+using System.Text.RegularExpressions;
 
 namespace jammer {
     internal class URL {
@@ -17,11 +17,10 @@ namespace jammer {
 
             if (IsSoundCloudUrlValid()) {
                 Console.WriteLine("Valid SoundCloud URL");
-                CheckJammerFolder.CheckJammerFolderExists();
 
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else {
-                Console.WriteLine("Invalid SoundCloud URL");
+                return url2;
             }   
             
             return jammerPath;
@@ -57,7 +56,6 @@ namespace jammer {
 
         static bool IsSoundCloudUrlValid()
         {
-            // Use a regular expression pattern to validate SoundCloud URLs www.soundcloud.com/username/track-name
             string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
 
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
@@ -69,7 +67,6 @@ namespace jammer {
             else
             {
                 url = "https://" + url;
-                Console.WriteLine("new URL: " + url);
                 return regex.IsMatch(url);
             }
         }

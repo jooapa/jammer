@@ -1,18 +1,28 @@
-﻿using NAudio.Wave;
-using NAudio.Vorbis;
+﻿using jammer;
 using NVorbis;
+using NAudio.Wave;
 using NAudio.Utils;
+using NAudio.Vorbis;
+using System.Windows;
+using Spectre.Console;
+using NAudio.CoreAudioApi;
 using System.Runtime.InteropServices;
-using jammer;
 using System.ComponentModel.DataAnnotations;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Management;
+
 
 class Program
 {
-    static float volume = 0.1f;
-    static bool running = false;
     static WaveOutEvent outputDevice = new WaveOutEvent();
-    static string audioFilePath = "";
-    static public bool isLoop = false;
+    static float volume = JammerFolder.GetVolume();
+    static public bool isLoop = JammerFolder.GetIsLoop();
+    static public bool isMuted = JammerFolder.GetIsMuted();
+    static float oldVolume = JammerFolder.GetOldVolume();
+    static bool running = false;
+    static public string audioFilePath = "";
     static public double currentPositionInSeconds = 0.0;
     static double positionInSeconds = 0.0;
     static int pMinutes = 0;
@@ -20,19 +30,27 @@ class Program
     static public string positionInSecondsText = "";
     static long newPosition;
     static bool isPlaying = false;
-    static public bool isMuted = false;
-    static float oldVolume = 0.0f;
 
     static void Main(string[] args)
     {
         if (args.Length == 0)
         {
-            Console.WriteLine("Usage: jammer <audio file>");
-            Console.WriteLine("Usage: jammer soundcloud.com/username/track-name");
+            AnsiConsole.Write("Example: jammer npc_music/Unity.wav");
+            AnsiConsole.Write("Example: jammer soundcloud.com/username/track");
             Environment.Exit(0);
         }
 
+        JammerFolder.CheckJammerFolderExists();
+
         audioFilePath = args[0];
+
+        if (audioFilePath == "start")
+        {
+            AnsiConsole.WriteLine("Starting Jammer folder...");
+            JammerFolder.OpenJammerFolder();
+            return;
+        }
+        // audioFilePath = "npc_music/Unity.wav";
         audioFilePath = URL.CheckIfURL(audioFilePath);
 
         try
@@ -60,7 +78,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error: " + ex.Message);
+            AnsiConsole.WriteException(ex);
         }
     }
 
@@ -71,7 +89,8 @@ class Program
         pMinutes = (int)(positionInSeconds / 60);
         pSeconds = (int)(positionInSeconds % 60);
         positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
-
+        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
+        
         try
         {
             while (running)
@@ -79,12 +98,12 @@ class Program
                 try {
                     // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                     if ( outputDevice != null) {
-                        Console.Clear();
-                        Console.WriteLine(UI.Ui(outputDevice));
+                        AnsiConsole.Clear();
+                        UI.Ui(outputDevice);
                     }
                 }
                 catch (Exception ex) {
-                    Console.WriteLine("Error: " + ex);
+                    AnsiConsole.WriteException(ex);
                 }
                 currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
                 positionInSeconds = audioStream.TotalTime.TotalSeconds;
@@ -117,7 +136,7 @@ class Program
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
-                    Console.WriteLine("Key pressed: " + key);
+                    
 
                     if (outputDevice != null)
                     {
@@ -130,7 +149,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error: " + ex);
+            AnsiConsole.WriteException(ex);
         }
     }
 
@@ -176,7 +195,7 @@ class Program
                             outputDevice.Init(audioStream);
                         }
                     } catch (Exception ex) {
-                        Console.WriteLine("Error: " + ex);
+                        AnsiConsole.WriteException(ex);
                     }
                     SetState(outputDevice, "playing", audioStream);
                 }
@@ -236,6 +255,7 @@ class Program
                 }
                 break;
         }
+        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
     }
 
     static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream)

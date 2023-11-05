@@ -1,16 +1,12 @@
-﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using NAudio.Wave;
+using Spectre.Console;
 
 namespace jammer
 {
     internal class UI
     {
-        static public string Ui(WaveOutEvent outputDevice)
+        static public void Ui(WaveOutEvent outputDevice)
         {
             var loopText = Program.isLoop ? "looping: true" : "looping: false";
             var isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
@@ -22,14 +18,27 @@ namespace jammer
 
             string currentPositionInSecondsText = $"{cupMinutes}:{cupSeconds:D2}";
 
+            // render table
+            var tableJam = new Table();
+            var table = new Table();
 
-            return "Current Position: " + currentPositionInSecondsText + " / " + Program.positionInSecondsText + " minutes\n" +
-            "\nPress 'Up Arrow' to increase volume, 'Down Arrow' to decrease volume, and 'Q' to quit.\n" +
-            "Press 'Left Arrow' to rewind 5 seconds, 'Right Arrow' to fast forward 5 seconds.\n" +
-            loopText + "\n" +
-            isPlayingText + "\n" +
-            "Volume: " + Math.Round(outputDevice.Volume * 100) + "%" + "\n" +
-            ismuteText;
+            tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
+
+            table.AddColumn("State");
+
+            table.AddColumn("Current Position");
+
+            table.AddColumn("Looping");
+
+            table.AddColumn("Volume");
+
+            table.AddColumn("Muted");
+
+            table.AddRow(isPlayingText, currentPositionInSecondsText + " / " + Program.positionInSecondsText, loopText, Math.Round(outputDevice.Volume * 100) + " % " , ismuteText);
+
+
+            AnsiConsole.Write(tableJam);
+            AnsiConsole.Write(table);
         }
     }
 }
