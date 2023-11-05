@@ -28,10 +28,12 @@ class Program
         if (args.Length == 0)
         {
             Console.WriteLine("Usage: jammer <audio file>");
+            Console.WriteLine("Usage: jammer soundcloud.com/username/track-name");
             Environment.Exit(0);
         }
 
         audioFilePath = args[0];
+        audioFilePath = URL.CheckIfURL(audioFilePath);
 
         try
         {
