@@ -10,7 +10,11 @@ namespace jammer
             for (int i = 0; i < args.Length; i++)
             {
                 string item = args[i];
-                if (IsRelativePath(item))
+                if (IsUrl(item))
+                {
+                    // Do nothing with URLs
+                }
+                else if (IsRelativePath(item))
                 {
                     args[i] = ConvertToAbsolutePath(item);
                 }
@@ -32,6 +36,11 @@ namespace jammer
         {
             string currentDirectory = Directory.GetCurrentDirectory();
             return Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
+        }
+
+        static bool IsUrl(string input)
+        {
+            return Uri.IsWellFormedUriString(input, UriKind.Absolute);
         }
     }
 }

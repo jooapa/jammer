@@ -44,15 +44,10 @@ class Program
         }
 
         JammerFolder.CheckJammerFolderExists();
-        
+
         // absoulutify arg if its a relative path
         args = AbsolutefyPath.Absolutefy(args);
-
-        foreach (string arg in args)
-        {
-            Console.WriteLine(arg);
-        }
-
+    
         songs = args;
         audioFilePath = args[currentSongArgs];
 
@@ -253,7 +248,7 @@ class Program
         }
         switch (key)
         {
-            case ConsoleKey.UpArrow:
+            case ConsoleKey.UpArrow: // volume up
                 if (isMuted)
                 {
                     isMuted = false;
@@ -264,7 +259,7 @@ class Program
                     outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
                 }
                 break;
-            case ConsoleKey.DownArrow:
+            case ConsoleKey.DownArrow: // volume down
                 if (isMuted)
                 {
                     isMuted = false;
@@ -275,7 +270,7 @@ class Program
                     outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
                 }
                 break;
-            case ConsoleKey.LeftArrow:
+            case ConsoleKey.LeftArrow: // rewind
                 newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
 
                 if (newPosition < 0)
@@ -298,7 +293,7 @@ class Program
 
                 audioStream.Position = newPosition;
                 break;
-            case ConsoleKey.RightArrow:
+            case ConsoleKey.RightArrow: // fast forward
                 newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * 5);
 
                 if (newPosition > audioStream.Length)
@@ -316,7 +311,7 @@ class Program
 
                 audioStream.Position = newPosition;
                 break;
-            case ConsoleKey.Spacebar:
+            case ConsoleKey.Spacebar: // toggle play/pause
                 if (outputDevice.PlaybackState == PlaybackState.Playing)
                 {
                     SetState(outputDevice, "paused", audioStream);
@@ -330,14 +325,14 @@ class Program
                     SetState(outputDevice, "playing", audioStream);
                 }
                 break;
-            case ConsoleKey.Q:
+            case ConsoleKey.Q: // quit
                 Console.Clear();
                 Environment.Exit(0);
                 break;
-            case ConsoleKey.L:
+            case ConsoleKey.L: // loop
                 isLoop = !isLoop;
                 break;
-            case ConsoleKey.M:
+            case ConsoleKey.M: // mute
                 if (isMuted)
                 {
                     isMuted = false;
@@ -350,21 +345,26 @@ class Program
                     outputDevice.Volume = 0.0f;
                 }
                 break;
-            case ConsoleKey.N:
-                if (songs.Length == 1)
-                {
-                    break;
-                }
+            case ConsoleKey.N: // next song
+                if (songs.Length == 1) { break; }
                 wantPreviousSong = false;
                 running = false;
                 break;
-            case ConsoleKey.P:
-                if (songs.Length == 1)
-                {
-                   break;
-                }
-
+            case ConsoleKey.P: // previous song
+                if (songs.Length == 1) { break;}
                 wantPreviousSong = true;
+                running = false;
+                break;
+            case ConsoleKey.S: // shuffle
+                if (songs.Length == 1) { break; }
+                Random rnd = new Random();
+                int randomSong = rnd.Next(0, songs.Length);
+                while (currentSongArgs == randomSong)
+                {
+                    randomSong = rnd.Next(0, songs.Length);
+                }
+                currentSongArgs = randomSong - 1;
+                audioFilePath = songs[currentSongArgs];
                 running = false;
                 break;
         }
