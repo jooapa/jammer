@@ -38,6 +38,7 @@ namespace jammer
             // render table
             var tableJam = new Table();
             var table = new Table();
+            var help = new Table();
 
             tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
             if (Program.songs.Length != 1) {
@@ -56,9 +57,31 @@ namespace jammer
 
             table.AddRow(isPlayingText, currentPositionInSecondsText + " / " + Program.positionInSecondsText, loopText, Math.Round(outputDevice.Volume * 100) + " % " , ismuteText);
 
+            if (!Program.helpText)
+            {
+                AnsiConsole.Write(tableJam);
+                AnsiConsole.Write(table);
+                AnsiConsole.Markup("Press [red]h[/] for help");
+            }
+            else
+            {
+                help.AddColumns("Controls", "Description");
+                help.AddRow("Space", "Play/Pause");
+                help.AddRow("Q", "Quit"); 
+                help.AddRow("Left", "Rewind 5 seconds");
+                help.AddRow("Right", "Forward 5 seconds");
+                help.AddRow("Up", "Volume up");
+                help.AddRow("Down", "Volume down");
+                help.AddRow("L", "Toggle looping");
+                help.AddRow("M", "Toggle mute");
+                help.AddRow("Playlist", "");
+                help.AddRow("P", "Previous song");
+                help.AddRow("N", "Next song");
+                help.AddRow("R", "Play random song");
 
-            AnsiConsole.Write(tableJam);
-            AnsiConsole.Write(table);
+                AnsiConsole.Write(help);
+                AnsiConsole.Markup("Press [red]h[/] to hide help");
+            }
         }
     }
 }

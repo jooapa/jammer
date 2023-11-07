@@ -34,6 +34,7 @@ class Program
     static public int currentSongArgs = 0;
     static public bool wantPreviousSong = false;
     static bool cantDo = true; // used that you cant spam Controls() with multiple threads 
+    static public bool helpText = false;
     static void Main(string[] args)
     {
         if (args.Length == 0)
@@ -114,8 +115,8 @@ class Program
 
             while (running)
             {
-                AnsiConsole.WriteLine("audioStream: " + audioStream);
-                AnsiConsole.WriteLine("outputdevice : " + outputDevice);
+                // AnsiConsole.WriteLine("audioStream: " + audioStream);
+                // AnsiConsole.WriteLine("outputdevice : " + outputDevice);
 
                 if (outputDevice != null && audioStream != null)
                 {
@@ -170,7 +171,7 @@ class Program
                         }
                     }
 
-                    // Thread.Sleep(1); // Don't hog the CPU
+                    Thread.Sleep(1); // Don't hog the CPU
                 }
             }
             AnsiConsole.Clear();
@@ -185,10 +186,7 @@ class Program
         cantDo = true; // used that you cant spam Controls() with multiple threads
         try
         {
-            if (outputDevice != null)
-            {
-                outputDevice.Stop();
-            }
+            outputDevice?.Stop();
         }
         catch (Exception ex)
         {
@@ -355,7 +353,7 @@ class Program
                 wantPreviousSong = true;
                 running = false;
                 break;
-            case ConsoleKey.S: // shuffle
+            case ConsoleKey.R: // shuffle
                 if (songs.Length == 1) { break; }
                 Random rnd = new Random();
                 int randomSong = rnd.Next(0, songs.Length);
@@ -366,6 +364,9 @@ class Program
                 currentSongArgs = randomSong - 1;
                 audioFilePath = songs[currentSongArgs];
                 running = false;
+                break;
+            case ConsoleKey.H: // help
+                helpText = !helpText;
                 break;
         }
         JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
