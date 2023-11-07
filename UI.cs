@@ -16,8 +16,18 @@ namespace jammer
             for (int i = 0; i < Program.songs.Length; i++)
             {
                 string? item = Program.songs[i];
-                songList += item + "\n";
+                if (i == Program.currentSongArgs)
+                {
+                    songList += "[green]";
+                }
+                songList += item;
+                if (i == Program.currentSongArgs)
+                {
+                    songList += "[/]";
+                }
+                songList += "\n";
             }
+            songList = "Playlist:\n" + songList;
 
             // currentPositionInSeconds
             int cupMinutes = (int)(Program.currentPositionInSeconds / 60);
@@ -30,8 +40,9 @@ namespace jammer
             var table = new Table();
 
             tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
-            tableJam.AddRow("Playlist");
-            tableJam.AddRow(songList);
+            if (Program.songs.Length != 1) {
+                tableJam.AddRow(songList);
+            }
 
             table.AddColumn("State");
 

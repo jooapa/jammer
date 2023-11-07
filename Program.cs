@@ -32,7 +32,8 @@ class Program
     static bool isPlaying = false;
     static public string[] songs = {""};
     static public int currentSongArgs = 0;
-
+    static public bool wantPreviousSong = false;
+    static bool cantDo = true; // used that you cant spam Controls() with multiple threads 
     static void Main(string[] args)
     {
         if (args.Length == 0)
@@ -43,12 +44,19 @@ class Program
         }
 
         JammerFolder.CheckJammerFolderExists();
+        
+        // absoulutify arg if its a relative path
+        args = AbsolutefyPath.Absolutefy(args);
+
+        foreach (string arg in args)
+        {
+            Console.WriteLine(arg);
+        }
+
         songs = args;
         audioFilePath = args[currentSongArgs];
 
         AnsiConsole.WriteLine("args.Length: " + args.Length);
-        // // pause 
-        // Console.ReadKey(true);
 
         if (audioFilePath == "start")
         {
@@ -56,7 +64,7 @@ class Program
             JammerFolder.OpenJammerFolder();
             return;
         }
-        // audioFilePath = "npc_music/Unity.wav";
+
         audioFilePath = URL.CheckIfURL(audioFilePath);
 
         try
@@ -88,10 +96,11 @@ class Program
         }
     }
 
-    static public void Controls(bool running, WaveOutEvent outputDevice, object reader)
+    static public void Controls(WaveOutEvent outputDevice, object reader)
     {
         try
         {
+            running = true;
             WaveStream audioStream = reader as WaveStream;
 
             if (audioStream == null)
@@ -105,6 +114,8 @@ class Program
             pSeconds = (int)(positionInSeconds % 60);
             positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
             JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
+
+            cantDo = false;
 
             while (running)
             {
@@ -175,12 +186,13 @@ class Program
             AnsiConsole.WriteException(ex);
         }
 
+        // --------- NEXT SONG ---------
+        cantDo = true; // used that you cant spam Controls() with multiple threads
         try
         {
             if (outputDevice != null)
             {
                 outputDevice.Stop();
-                outputDevice.Dispose();
             }
         }
         catch (Exception ex)
@@ -189,6 +201,29 @@ class Program
         }
 
         if (outputDevice != null) {
+
+            if (wantPreviousSong)
+            {
+                wantPreviousSong = false;
+                if (songs != null && songs.Length > 1)
+                {
+                    currentSongArgs--;
+                    if (currentSongArgs < 0)
+                    {
+                        currentSongArgs = songs.Length - 1;
+                    }
+                    audioFilePath = songs[currentSongArgs];
+                    wantPreviousSong = false;
+                    Main(songs);
+                }
+                else
+                {
+                    currentSongArgs = 0;
+                    audioFilePath = songs[currentSongArgs];
+                    wantPreviousSong = false;
+                    Main(songs);
+                }
+            }
             // start next song
             if (songs != null && songs.Length > 1)
             {
@@ -206,11 +241,16 @@ class Program
                 }
             }
         }
+        cantDo = false;
     }
 
 
     static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice)
     {
+        if (cantDo)
+        {
+            return;
+        }
         switch (key)
         {
             case ConsoleKey.UpArrow:
@@ -309,6 +349,23 @@ class Program
                     oldVolume = outputDevice.Volume;
                     outputDevice.Volume = 0.0f;
                 }
+                break;
+            case ConsoleKey.N:
+                if (songs.Length == 1)
+                {
+                    break;
+                }
+                wantPreviousSong = false;
+                running = false;
+                break;
+            case ConsoleKey.P:
+                if (songs.Length == 1)
+                {
+                   break;
+                }
+
+                wantPreviousSong = true;
+                running = false;
                 break;
         }
         JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
