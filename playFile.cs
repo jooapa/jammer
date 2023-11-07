@@ -4,11 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace jammer
 {
     internal class playFile
     {
+    static public Thread thread;
+
+        static public void StopThread()
+        {
+            Process.GetCurrentProcess().Kill();
+        }
         static public void PlayWav(string audioFilePath, float volume, bool running)
         {
             using (var reader = new WaveFileReader(audioFilePath))

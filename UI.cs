@@ -8,9 +8,16 @@ namespace jammer
     {
         static public void Ui(WaveOutEvent outputDevice)
         {
-            var loopText = Program.isLoop ? "looping: true" : "looping: false";
-            var isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
-            var ismuteText = Program.isMuted ? "Muted" : "";
+            string loopText = Program.isLoop ? "looping: true" : "looping: false";
+            string isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
+            string ismuteText = Program.isMuted ? "Muted" : "";
+
+            string songList = "";
+            for (int i = 0; i < Program.songs.Length; i++)
+            {
+                string? item = Program.songs[i];
+                songList += item + "\n";
+            }
 
             // currentPositionInSeconds
             int cupMinutes = (int)(Program.currentPositionInSeconds / 60);
@@ -23,6 +30,8 @@ namespace jammer
             var table = new Table();
 
             tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
+            tableJam.AddRow("Playlist");
+            tableJam.AddRow(songList);
 
             table.AddColumn("State");
 

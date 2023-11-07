@@ -1,17 +1,17 @@
 ﻿using jammer;
+using System;
 using NVorbis;
 using NAudio.Wave;
 using NAudio.Utils;
 using NAudio.Vorbis;
 using System.Windows;
 using Spectre.Console;
+using System.Threading;
+using System.Management;
+using System.Diagnostics;
 using NAudio.CoreAudioApi;
 using System.Runtime.InteropServices;
 using System.ComponentModel.DataAnnotations;
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Management;
 
 
 class Program
@@ -30,6 +30,8 @@ class Program
     static public string positionInSecondsText = "";
     static long newPosition;
     static bool isPlaying = false;
+    static public string[] songs = {""};
+    static public int currentSongArgs = 0;
 
     static void Main(string[] args)
     {
@@ -41,8 +43,12 @@ class Program
         }
 
         JammerFolder.CheckJammerFolderExists();
+        songs = args;
+        audioFilePath = args[currentSongArgs];
 
-        audioFilePath = args[0];
+        AnsiConsole.WriteLine("args.Length: " + args.Length);
+        // // pause 
+        // Console.ReadKey(true);
 
         if (audioFilePath == "start")
         {
@@ -84,74 +90,124 @@ class Program
 
     static public void Controls(bool running, WaveOutEvent outputDevice, object reader)
     {
-        WaveStream audioStream = (WaveStream)reader;
-        positionInSeconds = audioStream.TotalTime.TotalSeconds;
-        pMinutes = (int)(positionInSeconds / 60);
-        pSeconds = (int)(positionInSeconds % 60);
-        positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
-        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
-        
         try
         {
+            WaveStream audioStream = reader as WaveStream;
+
+            if (audioStream == null)
+            {
+                // Handle the case where the reader is not a WaveStream.
+                return;
+            }
+
+            positionInSeconds = audioStream.TotalTime.TotalSeconds;
+            pMinutes = (int)(positionInSeconds / 60);
+            pSeconds = (int)(positionInSeconds % 60);
+            positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
+            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
+
             while (running)
             {
-                try {
-                    // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
-                    if ( outputDevice != null) {
+                AnsiConsole.WriteLine("audioStream: " + audioStream);
+                AnsiConsole.WriteLine("outputdevice : " + outputDevice);
+
+                if (outputDevice != null && audioStream != null)
+                {
+                    try
+                    {
+                        // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                         AnsiConsole.Clear();
                         UI.Ui(outputDevice);
                     }
-                }
-                catch (Exception ex) {
-                    AnsiConsole.WriteException(ex);
-                }
-                currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
-                positionInSeconds = audioStream.TotalTime.TotalSeconds;
-
-                if (audioStream.Position >= audioStream.Length) // if at the end of the audio file
-                {
-                    if (isLoop)
+                    catch (Exception ex)
                     {
-                        audioStream.Position = 0;
+                        AnsiConsole.WriteException(ex);
                     }
-                    else
+
+                    currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
+                    positionInSeconds = audioStream.TotalTime.TotalSeconds;
+
+                    if (audioStream.Position >= audioStream.Length)
                     {
-                        if (outputDevice != null)
+                        if (isLoop)
                         {
+                            audioStream.Position = 0;
+                        }
+                        else
+                        {
+                            if (songs != null && songs.Length > 1)
+                            {
+                                running = false;
+                            }
+
                             SetState(outputDevice, "stopped", audioStream);
                         }
                     }
-                }
 
-                if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying)
-                {
-                    outputDevice.Init(audioStream);
-                    // if not in the end
-                    if (audioStream.Position < audioStream.Length)
+                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying)
                     {
-                        SetState(outputDevice, "playing", audioStream);
+                        outputDevice.Init(audioStream);
+
+                        if (audioStream.Position < audioStream.Length)
+                        {
+                            SetState(outputDevice, "playing", audioStream);
+                        }
                     }
-                }
 
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(true).Key;
-                    
-
-                    if (outputDevice != null)
+                    if (Console.KeyAvailable)
                     {
-                        HandleUserInput(key, audioStream, outputDevice);
-                    }
-                }
+                        var key = Console.ReadKey(true).Key;
 
-                Thread.Sleep(1); // don't hog the CPU
+                        if (outputDevice != null)
+                        {
+                            HandleUserInput(key, audioStream, outputDevice);
+                        }
+                    }
+
+                    // Thread.Sleep(1); // Don't hog the CPU
+                }
+            }
+            AnsiConsole.Clear();
+            AnsiConsole.WriteLine("Stopped");
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.WriteException(ex);
+        }
+
+        try
+        {
+            if (outputDevice != null)
+            {
+                outputDevice.Stop();
+                outputDevice.Dispose();
             }
         }
         catch (Exception ex)
         {
             AnsiConsole.WriteException(ex);
         }
+
+        if (outputDevice != null) {
+            // start next song
+            if (songs != null && songs.Length > 1)
+            {
+                currentSongArgs++;
+                if (currentSongArgs < songs.Length)
+                {
+                    audioFilePath = songs[currentSongArgs];
+                    Main(songs);
+                }
+                else
+                {
+                    currentSongArgs = 0;
+                    audioFilePath = songs[currentSongArgs];
+                    Main(songs);
+                }
+            }
+        }
     }
+
 
     static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice)
     {
