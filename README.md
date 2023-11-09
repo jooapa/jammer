@@ -1,41 +1,44 @@
 # signal jammer 
-## play songs from cli
 
-### usage
+## Play songs from cli
+
+### Usage
 ```
-jammer [song] 
+jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
-jammer start 
+jammer start // opens jammer folder
 ```
 
-### encoding
-jammer can play
+### Supported formats
 - mp3
 - wav
 - ogg
 - flac
 
-### controls
+### Controls
 
 | key | action |
 |  --------  |  -------  |
 | `space` | play/pause |
 | `q` | quit |
-| `→` | forward 5s |
-| `←` | backward 5s |
+| `→` | forward |
+| `←` | backward |
 | `↑` | volume up |
 | `↓` | volume down |
 | `m` | mute/unmute |
 | `L` | toggle loop |
+| `s` | shuffle |
+| `h` | show/hide help |
+| `c` | show/hide settings |
 
-### install
+
+### Install
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
 
-### build
+### Build/Run yourself
 ```
 dotnet build --configuration Release
 ```
-### run
 ```
 dotnet run -- "path/to/song.mp3"
 ```
