@@ -20,7 +20,7 @@ namespace jammer
             }
         }
 
-        static public void SaveSettings(bool isLoop, float volume, bool isMuted, float oldVolume)
+        static public void SaveSettings(bool isLoop, float volume, bool isMuted, float oldVolume, int refreshTimes, int forwardSeconds, int rewindSeconds)
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
             // wirte hello world to a file
@@ -29,6 +29,9 @@ namespace jammer
             settings.Volume = volume;
             settings.isMuted = isMuted;
             settings.OldVolume = oldVolume;
+            settings.refreshTimes = refreshTimes;
+            settings.forwardSeconds = forwardSeconds;
+            settings.rewindSeconds = rewindSeconds;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (System.IO.File.Exists(jammerPath))
@@ -98,6 +101,51 @@ namespace jammer
             }
         }
 
+        static public int GetRefreshTimes()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (System.IO.File.Exists(jammerPath))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings.refreshTimes;
+            }
+            else
+            {
+                return 10;
+            }
+        }
+
+        static public int GetForwardSeconds()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (System.IO.File.Exists(jammerPath))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings.forwardSeconds;
+            }
+            else
+            {
+                return 10;
+            }
+        }
+
+        static public int GetRewindSeconds()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (System.IO.File.Exists(jammerPath))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings.rewindSeconds;
+            }
+            else
+            {
+                return 10;
+            }
+        }
+
         static public void OpenJammerFolder()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer";
@@ -122,6 +170,9 @@ namespace jammer
             public float Volume { get; set; }
             public float OldVolume { get; set; }
             public bool isMuted { get; set; }
+            public int refreshTimes { get; set; }
+            public int forwardSeconds { get; set; }
+            public int rewindSeconds { get; set; }
         }
     }
 }

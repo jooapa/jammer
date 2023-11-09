@@ -34,7 +34,9 @@ class Program
     static public int currentSongArgs = 0;
     static public bool wantPreviousSong = false;
     static bool cantDo = true; // used that you cant spam Controls() with multiple threads 
-    static public bool helpText = false;
+    static public string textRenderedType = "normal";
+    static public int forwardSeconds = JammerFolder.GetForwardSeconds();
+    static public int rewindSeconds = JammerFolder.GetRewindSeconds();
     static void Main(string[] args)
     {
         if (args.Length == 0)
@@ -109,21 +111,18 @@ class Program
             pMinutes = (int)(positionInSeconds / 60);
             pSeconds = (int)(positionInSeconds % 60);
             positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
-            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
+            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds);
 
             cantDo = false;
 
             while (running)
             {
-                // AnsiConsole.WriteLine("audioStream: " + audioStream);
-                // AnsiConsole.WriteLine("outputdevice : " + outputDevice);
-
                 if (outputDevice != null && audioStream != null)
                 {
                     try
                     {
                         // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
-                        AnsiConsole.Clear();
+                        UI.Update();
                         UI.Ui(outputDevice);
                     }
                     catch (Exception ex)
@@ -170,11 +169,11 @@ class Program
                             HandleUserInput(key, audioStream, outputDevice);
                         }
                     }
-
+                    UI.UpdateSongList();
                     Thread.Sleep(1); // Don't hog the CPU
                 }
             }
-            AnsiConsole.Clear();
+            // AnsiConsole.Clear();
             AnsiConsole.WriteLine("Stopped");
         }
         catch (Exception ex)
@@ -195,10 +194,10 @@ class Program
 
         if (outputDevice != null) {
 
-            if (wantPreviousSong)
+            if (wantPreviousSong) // if previous song
             {
                 wantPreviousSong = false;
-                if (songs != null && songs.Length > 1)
+                if (songs.Length > 1) // if more than one song
                 {
                     currentSongArgs--;
                     if (currentSongArgs < 0)
@@ -209,7 +208,7 @@ class Program
                     wantPreviousSong = false;
                     Main(songs);
                 }
-                else
+                else // if only one song
                 {
                     currentSongArgs = 0;
                     audioFilePath = songs[currentSongArgs];
@@ -218,7 +217,7 @@ class Program
                 }
             }
             // start next song
-            if (songs != null && songs.Length > 1)
+            if (songs.Length > 1) // if more than one song
             {
                 currentSongArgs++;
                 if (currentSongArgs < songs.Length)
@@ -226,7 +225,7 @@ class Program
                     audioFilePath = songs[currentSongArgs];
                     Main(songs);
                 }
-                else
+                else // if last song
                 {
                     currentSongArgs = 0;
                     audioFilePath = songs[currentSongArgs];
@@ -269,7 +268,7 @@ class Program
                 }
                 break;
             case ConsoleKey.LeftArrow: // rewind
-                newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+                newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * rewindSeconds);
 
                 if (newPosition < 0)
                 {
@@ -292,7 +291,7 @@ class Program
                 audioStream.Position = newPosition;
                 break;
             case ConsoleKey.RightArrow: // fast forward
-                newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * 5);
+                newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * forwardSeconds);
 
                 if (newPosition > audioStream.Length)
                 {
@@ -366,10 +365,78 @@ class Program
                 running = false;
                 break;
             case ConsoleKey.H: // help
-                helpText = !helpText;
+                switch (textRenderedType)
+                {
+                    case "settings":
+                        textRenderedType = "help";
+                        break;
+                    case "help":
+                        textRenderedType = "normal";
+                        break;
+                    case "normal":
+                        textRenderedType = "help";
+                        break;
+                }
                 break;
+            case ConsoleKey.C: //settings
+                switch (textRenderedType)
+                {
+                    case "settings":
+                        textRenderedType = "normal";
+                        break;
+                    case "help":
+                        textRenderedType = "settings";
+                        break;
+                    case "normal":
+                        textRenderedType = "settings";
+                        break;
+                }
+                break;
+            case ConsoleKey.D1: // set refresh rate
+                AnsiConsole.Markup("\nEnter refresh rate [grey](50 is about 1 sec)[/]: ");
+                string refreshRate = Console.ReadLine();
+                try
+                {
+                    int refreshRateInt = int.Parse(refreshRate);
+                    UI.refreshTimes = refreshRateInt;
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                break;
+            case ConsoleKey.D2: // set forward seconds
+                AnsiConsole.Markup("\nEnter forward seconds: ");
+                string forwardSecondsString = Console.ReadLine();
+                try
+                {
+                    int forwardSecondsInt = int.Parse(forwardSecondsString);
+                    forwardSeconds = forwardSecondsInt;
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                break;
+            case ConsoleKey.D3: // set rewind seconds
+                AnsiConsole.Markup("\nEnter rewind seconds: ");
+                string rewindSecondsString = Console.ReadLine();
+                try
+                {
+                    int rewindSecondsInt = int.Parse(rewindSecondsString);
+                    rewindSeconds = rewindSecondsInt;
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                break;
+
         }
-        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume);
+        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds);
+
+        UI.ForceUpdate();
+        UI.Ui(outputDevice);
     }
 
     static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream)
