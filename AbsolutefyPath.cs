@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using Spectre.Console;
+using System.Text.RegularExpressions;
 
 namespace jammer
 {
@@ -12,7 +14,12 @@ namespace jammer
                 string item = args[i];
                 if (IsUrl(item))
                 {
-                    // Do nothing with URLs
+                    // if url doesnt have http:// or https://
+                    if (!item.Contains("http://") && !item.Contains("https://"))
+                    {
+                        item = "https://" + item;
+                    }
+                    args[i] = item;
                 }
                 else if (IsRelativePath(item))
                 {
@@ -40,7 +47,10 @@ namespace jammer
 
         static bool IsUrl(string input)
         {
-            return Uri.IsWellFormedUriString(input, UriKind.Absolute);
+            // detect if input is url using regex
+            string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(input);
         }
     }
 }
