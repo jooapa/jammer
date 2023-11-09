@@ -20,7 +20,7 @@ namespace jammer
             }
         }
 
-        static public void SaveSettings(bool isLoop, float volume, bool isMuted, float oldVolume, int refreshTimes, int forwardSeconds, int rewindSeconds)
+        static public void SaveSettings(bool isLoop, float volume, bool isMuted, float oldVolume, int refreshTimes, int forwardSeconds, int rewindSeconds, float changeVolumeBy)
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
             // wirte hello world to a file
@@ -32,6 +32,7 @@ namespace jammer
             settings.refreshTimes = refreshTimes;
             settings.forwardSeconds = forwardSeconds;
             settings.rewindSeconds = rewindSeconds;
+            settings.changeVolumeBy = changeVolumeBy;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (System.IO.File.Exists(jammerPath))
@@ -40,7 +41,7 @@ namespace jammer
             }
             System.IO.File.WriteAllText(jammerPath, jsonString);
         }
-
+        
         static public bool GetIsLoop()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
@@ -112,7 +113,7 @@ namespace jammer
             }
             else
             {
-                return 10;
+                return 50;
             }
         }
 
@@ -127,7 +128,7 @@ namespace jammer
             }
             else
             {
-                return 10;
+                return 5;
             }
         }
 
@@ -142,7 +143,22 @@ namespace jammer
             }
             else
             {
-                return 10;
+                return 5;
+            }
+        }
+
+        static public float GetChangeVolumeBy()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (System.IO.File.Exists(jammerPath))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings.changeVolumeBy;
+            }
+            else
+            {
+                return 0.05f;
             }
         }
 
@@ -173,6 +189,7 @@ namespace jammer
             public int refreshTimes { get; set; }
             public int forwardSeconds { get; set; }
             public int rewindSeconds { get; set; }
+            public float changeVolumeBy { get; set; }
         }
     }
 }

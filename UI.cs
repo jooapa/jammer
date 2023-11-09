@@ -9,13 +9,15 @@ namespace jammer
         static public bool updated = false;
         static string songList = "";
         static bool updatedSongList = false;
+        static bool updatedSettings = false;
+        static bool updatedHelp = false;
         static int songListTimes = 0;
         static int times = 0;
         static public int refreshTimes = JammerFolder.GetRefreshTimes();
         static public void Ui(WaveOutEvent outputDevice)
         {
             var help = new Table();
-            if (!updated || !updatedSongList) {
+            if (!updated || !updatedSongList || updatedSettings || updatedHelp) {
                 if (Program.textRenderedType == "normal")
                 {
                     string loopText = Program.isLoop ? "looping: true" : "looping: false";
@@ -26,14 +28,32 @@ namespace jammer
                     for (int i = 0; i < Program.songs.Length; i++)
                     {
                         string? item = Program.songs[i];
+                        
+                        // if soundcloud url
+                        if (URL.IsSoundCloudUrlValid(item))
+                        {
+                            songList += "[link]";
+                        }
+
                         if (i == Program.currentSongArgs)
                         {
-                            songList += "[green]";
+                            if (outputDevice.PlaybackState == PlaybackState.Playing)
+                            {
+                                songList += "[green]";
+                            }
+                            else
+                            {
+                                songList += "[yellow]";
+                            }
                         }
                         songList += item;
                         if (i == Program.currentSongArgs)
                         {
-                            songList += "[/]";
+                            songList += "[/]"; // close color tag
+                        }
+                        if (URL.IsSoundCloudUrlValid(item))
+                        {
+                            songList += "[/]"; // close link tag
                         }
                         songList += "\n";
                     }
@@ -70,7 +90,7 @@ namespace jammer
                     updated = true;
                     updatedSongList = true;
                 }
-                else if (Program.textRenderedType == "help")
+                else if (Program.textRenderedType == "help" && updatedHelp)
                 {
                     // render help
                     help.AddColumns("Controls", "Description");
@@ -91,19 +111,22 @@ namespace jammer
                     AnsiConsole.Write(help);
                     AnsiConsole.Markup("Press [red]h[/] to hide help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                    updatedHelp = false;
                 }
-                else if (Program.textRenderedType == "settings") {
+                else if (Program.textRenderedType == "settings" && updatedSettings) {
                     var settings = new Table();
 
-                    settings.AddColumns("Settings", "value", "Change Value");
+                    settings.AddColumns("Settings", "Value", "Change Value");
 
-                    settings.AddRow("refresh UI every", refreshTimes + "", "[green]1[/] to change");
+                    settings.AddRow("refresh UI ", refreshTimes + "", "[green]1[/] to change");
                     settings.AddRow("Forward seconds", Program.forwardSeconds + " sec", "[green]2[/] to change");
                     settings.AddRow("Rewind seconds", Program.rewindSeconds + " sec", "[green]3[/] to change");
+                    settings.AddRow("Change Volume by", Program.changeVolumeBy * 100 + " %", "[green]4[/] to change");
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(settings);
                     AnsiConsole.Markup("Press [yellow]c[/] to hide settings");
+                    updatedSettings = false;
                 }
             }
         }
@@ -135,6 +158,16 @@ namespace jammer
 
         static public void ForceUpdate()
         {
+            if (Program.textRenderedType == "settings") {
+                updatedSettings = true;
+                return;
+            }
+            else if (Program.textRenderedType == "help")
+            {
+                updatedHelp = true;
+                return;
+            }
+
             updated = false;
             updatedSongList = false;
         }

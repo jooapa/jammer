@@ -37,6 +37,7 @@ class Program
     static public string textRenderedType = "normal";
     static public int forwardSeconds = JammerFolder.GetForwardSeconds();
     static public int rewindSeconds = JammerFolder.GetRewindSeconds();
+    static public float changeVolumeBy = JammerFolder.GetChangeVolumeBy();
     static void Main(string[] args)
     {
         if (args.Length == 0)
@@ -47,7 +48,12 @@ class Program
         }
 
         JammerFolder.CheckJammerFolderExists();
-
+        if (args[0] == "start")
+        {
+            AnsiConsole.WriteLine("Starting Jammer folder...");
+            JammerFolder.OpenJammerFolder();
+            return;
+        }
         // absoulutify arg if its a relative path
         args = AbsolutefyPath.Absolutefy(args);
     
@@ -56,12 +62,6 @@ class Program
 
         AnsiConsole.WriteLine("args.Length: " + args.Length);
 
-        if (audioFilePath == "start")
-        {
-            AnsiConsole.WriteLine("Starting Jammer folder...");
-            JammerFolder.OpenJammerFolder();
-            return;
-        }
 
         audioFilePath = URL.CheckIfURL(audioFilePath);
 
@@ -96,6 +96,7 @@ class Program
 
     static public void Controls(WaveOutEvent outputDevice, object reader)
     {
+        UI.ForceUpdate();
         try
         {
             running = true;
@@ -111,19 +112,22 @@ class Program
             pMinutes = (int)(positionInSeconds / 60);
             pSeconds = (int)(positionInSeconds % 60);
             positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
-            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds);
+            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds, changeVolumeBy);
 
             cantDo = false;
 
             while (running)
             {
+                // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                 if (outputDevice != null && audioStream != null)
                 {
                     try
                     {
-                        // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
-                        UI.Update();
-                        UI.Ui(outputDevice);
+                        // settings and help screen lags
+                        if (textRenderedType != "settings") {
+                            UI.Update();
+                            UI.Ui(outputDevice);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -169,7 +173,7 @@ class Program
                             HandleUserInput(key, audioStream, outputDevice);
                         }
                     }
-                    UI.UpdateSongList();
+                    // UI.UpdateSongList();
                     Thread.Sleep(1); // Don't hog the CPU
                 }
             }
@@ -253,7 +257,7 @@ class Program
                 }
                 else
                 {
-                    outputDevice.Volume = Math.Min(outputDevice.Volume + 0.05f, 1.0f);
+                    outputDevice.Volume = Math.Min(outputDevice.Volume + changeVolumeBy, 1.0f);
                 }
                 break;
             case ConsoleKey.DownArrow: // volume down
@@ -264,7 +268,7 @@ class Program
                 }
                 else
                 {
-                    outputDevice.Volume = Math.Max(outputDevice.Volume - 0.05f, 0.0f);
+                    outputDevice.Volume = Math.Max(outputDevice.Volume - changeVolumeBy, 0.0f);
                 }
                 break;
             case ConsoleKey.LeftArrow: // rewind
@@ -431,9 +435,22 @@ class Program
                     AnsiConsole.WriteException(ex);
                 }
                 break;
+            case ConsoleKey.D4: // set change volume by
+                AnsiConsole.Markup("\nEnter change volume by: ");
+                string changeVolumeByString = Console.ReadLine();
+                try
+                {
+                    float changeVolumeByFloat = float.Parse(changeVolumeByString) / 100;
+                    changeVolumeBy = changeVolumeByFloat;
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                break;
 
         }
-        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds);
+        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds, changeVolumeBy);
 
         UI.ForceUpdate();
         UI.Ui(outputDevice);

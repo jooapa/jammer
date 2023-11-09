@@ -15,8 +15,7 @@ namespace jammer {
 
             url = url2;
 
-            if (IsSoundCloudUrlValid()) {
-                Console.WriteLine("Valid SoundCloud URL");
+            if (IsSoundCloudUrlValid(url)) {
 
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else {
@@ -54,21 +53,13 @@ namespace jammer {
             await soundcloud.DownloadAsync(track, jammerPath);
         }
 
-        static bool IsSoundCloudUrlValid()
+        static public bool IsSoundCloudUrlValid(string uri)
         {
             string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
 
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-            
-            if (regex.IsMatch(url))
-            {
-                return true;
-            }
-            else
-            {
-                url = "https://" + url;
-                return regex.IsMatch(url);
-            }
+
+            return regex.IsMatch(uri);
         }
     }
 }
