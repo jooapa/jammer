@@ -1,6 +1,6 @@
 # signal jammer 
 
-![banner](https://raw.githubusercontent.com/jooapa/signal-jammer/main/images/banner.png)
+![banner](https://raw.githubusercontent.com/jooapa/signal-jammer/644dfc35cd28b7e8b366c0193f7c45544b0e4289/images/banner.png)
 ## Play songs from cli
 
 ### Usage
