@@ -17,10 +17,10 @@ using System.ComponentModel.DataAnnotations;
 class Program
 {
     static WaveOutEvent outputDevice = new WaveOutEvent();
-    static float volume = JammerFolder.GetVolume();
+    static public float volume = JammerFolder.GetVolume();
     static public bool isLoop = JammerFolder.GetIsLoop();
     static public bool isMuted = JammerFolder.GetIsMuted();
-    static float oldVolume = JammerFolder.GetOldVolume();
+    static public float oldVolume = JammerFolder.GetOldVolume();
     static bool running = false;
     static public string audioFilePath = "";
     static public double currentPositionInSeconds = 0.0;
@@ -112,7 +112,7 @@ class Program
             pMinutes = (int)(positionInSeconds / 60);
             pSeconds = (int)(positionInSeconds % 60);
             positionInSecondsText = $"{pMinutes}:{pSeconds:D2}";
-            JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds, changeVolumeBy);
+            JammerFolder.SaveSettings();
 
             cantDo = false;
 
@@ -450,7 +450,7 @@ class Program
                 break;
 
         }
-        JammerFolder.SaveSettings(isLoop, outputDevice.Volume, isMuted, oldVolume, UI.refreshTimes, forwardSeconds, rewindSeconds, changeVolumeBy);
+        JammerFolder.SaveSettings();
 
         UI.ForceUpdate();
         UI.Ui(outputDevice);

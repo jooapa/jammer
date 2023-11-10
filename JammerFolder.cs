@@ -20,19 +20,19 @@ namespace jammer
             }
         }
 
-        static public void SaveSettings(bool isLoop, float volume, bool isMuted, float oldVolume, int refreshTimes, int forwardSeconds, int rewindSeconds, float changeVolumeBy)
+        static public void SaveSettings()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
             // wirte hello world to a file
             Settings settings = new Settings();
-            settings.IsLoop = isLoop;
-            settings.Volume = volume;
-            settings.isMuted = isMuted;
-            settings.OldVolume = oldVolume;
-            settings.refreshTimes = refreshTimes;
-            settings.forwardSeconds = forwardSeconds;
-            settings.rewindSeconds = rewindSeconds;
-            settings.changeVolumeBy = changeVolumeBy;
+            settings.IsLoop = Program.isLoop;
+            settings.Volume = Program.volume;
+            settings.isMuted = Program.isMuted;
+            settings.OldVolume = Program.oldVolume;
+            settings.refreshTimes = UI.refreshTimes;
+            settings.forwardSeconds = Program.forwardSeconds;
+            settings.rewindSeconds = Program.rewindSeconds;
+            settings.changeVolumeBy = Program.changeVolumeBy;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (System.IO.File.Exists(jammerPath))
