@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageIcon>jammer.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,14 @@
     <PackageReference Include="NVorbis" Version="0.10.4" />
     <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <None Update="jammer.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
