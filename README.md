@@ -1,4 +1,4 @@
-# signal jammer 
+# jammer 
 
 ![banner](https://raw.githubusercontent.com/jooapa/signal-jammer/412b81208a1b783fd0034d5a23b43a223c80e51b/images/banner.png)
 ## Play songs from cli
@@ -31,6 +31,8 @@ jammer start // opens jammer folder
 | `s` | shuffle |
 | `h` | show/hide help |
 | `c` | show/hide settings |
+| `n` | next song in playlist |
+| `p` | previous song in playlist |
 
 
 ### Install
