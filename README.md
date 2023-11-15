@@ -28,7 +28,8 @@ jammer start // opens jammer folder
 | `↓` | volume down |
 | `m` | mute/unmute |
 | `L` | toggle loop |
-| `s` | shuffle |
+| `s` | toggle shuffle |
+| `r` | play in random song |
 | `h` | show/hide help |
 | `c` | show/hide settings |
 | `n` | next song in playlist |
