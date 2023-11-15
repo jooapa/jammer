@@ -131,6 +131,33 @@ namespace jammer
                     AnsiConsole.Markup("Press [yellow]c[/] to hide settings");
                     updatedSettings = false;
                 }
+                else if (Program.textRenderedType == "fakePlayer") {
+                    var tableJam = new Table();
+                    var table = new Table();
+
+                    tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
+                    if (Program.songs.Length != 1)
+                    {
+                        tableJam.AddRow(songList);
+                    }
+
+                    string loopText = Program.isLoop ? "looping: true" : "looping: false";
+                    string ismuteText = Program.isMuted ? "Muted" : "";
+
+                    table.AddColumn("State");
+                    table.AddColumn("Current Position");
+                    table.AddColumn("Looping");
+                    table.AddColumn("Volume");
+                    table.AddColumn("Suffle");
+                    table.AddColumn("Muted");
+                    table.AddRow("Paused", "0:00" + " / " + "0:00", loopText, Math.Round(Program.volume * 100) + " % ", Program.isShuffle + "", ismuteText);
+
+                    AnsiConsole.Clear();
+                    AnsiConsole.Write(tableJam);
+                    AnsiConsole.Write(table);
+                    AnsiConsole.Markup("Press [red]h[/] for help");
+                    AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                }
             }
         }
 
@@ -168,6 +195,10 @@ namespace jammer
             else if (Program.textRenderedType == "help")
             {
                 updatedHelp = true;
+                return;
+            }
+            if (Program.textRenderedType == "FakePlayer")
+            {
                 return;
             }
 

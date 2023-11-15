@@ -39,7 +39,7 @@ namespace jammer
             return !IsAbsolutePath(path);
         }
 
-        static string ConvertToAbsolutePath(string relativePath)
+        static public string ConvertToAbsolutePath(string relativePath)
         {
             string currentDirectory = Directory.GetCurrentDirectory();
             return Path.GetFullPath(Path.Combine(currentDirectory, relativePath));

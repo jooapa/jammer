@@ -43,9 +43,9 @@ class Program
     {
         if (args.Length == 0)
         {
-            AnsiConsole.Write("Example: jammer npc_music/Unity.wav");
-            AnsiConsole.Write("Example: jammer soundcloud.com/username/track");
-            Environment.Exit(0);
+            AnsiConsole.WriteLine("No songs given");
+            ConstrolsWithoutSongs();
+            return;
         }
 
         JammerFolder.CheckJammerFolderExists();
@@ -85,7 +85,7 @@ class Program
                     playFile.PlayFlac(audioFilePath, volume, running);
                     break;
                 default:
-                    Console.WriteLine("Unknown file extension: " + extension);
+                    ConstrolsWithoutSongs();
                     break;
             }
         }
@@ -95,13 +95,39 @@ class Program
         }
     }
 
+    static public void ConstrolsWithoutSongs() {
+        running = true;
+        textRenderedType = "fakePlayer";            
+        UI.Ui(null);
+        cantDo = false;
+        while (running) {
+            if (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(true).Key;
+                HandleUserInput(key, null, null);
+            }
+        }
+        AnsiConsole.Clear();
+        AnsiConsole.WriteLine("Stopped");
+
+
+    }
+
     static public void Controls(WaveOutEvent outputDevice, object reader)
     {
         UI.ForceUpdate();
         try
         {
+            WaveStream audioStream;
             running = true;
-            WaveStream audioStream = reader as WaveStream;
+            if (reader is WaveStream)
+            {
+                audioStream = (WaveStream)reader;
+            }
+            else
+            {
+                audioStream = null;
+            }
 
             if (audioStream == null)
             {
@@ -256,6 +282,7 @@ class Program
 
     static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice)
     {
+        // AnsiConsole.WriteLine("key pressed");
         if (cantDo)
         {
             return;
@@ -263,6 +290,7 @@ class Program
         switch (key)
         {
             case ConsoleKey.UpArrow: // volume up
+                if (outputDevice == null || audioStream == null) { break; }
                 if (isMuted)
                 {
                     isMuted = false;
@@ -275,6 +303,7 @@ class Program
                 }
                 break;
             case ConsoleKey.DownArrow: // volume down
+                if (outputDevice == null || audioStream == null) { break; }
                 if (isMuted)
                 {
                     isMuted = false;
@@ -287,6 +316,7 @@ class Program
                 }
                 break;
             case ConsoleKey.LeftArrow: // rewind
+                if (outputDevice == null || audioStream == null) { break; }
                 newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * rewindSeconds);
 
                 if (newPosition < 0)
@@ -310,6 +340,7 @@ class Program
                 audioStream.Position = newPosition;
                 break;
             case ConsoleKey.RightArrow: // fast forward
+                if (outputDevice == null || audioStream == null) { break; }
                 newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * forwardSeconds);
 
                 if (newPosition > audioStream.Length)
@@ -328,6 +359,7 @@ class Program
                 audioStream.Position = newPosition;
                 break;
             case ConsoleKey.Spacebar: // toggle play/pause
+                if (outputDevice == null || audioStream == null) { break; }
                 if (outputDevice.PlaybackState == PlaybackState.Playing)
                 {
                     SetState(outputDevice, "paused", audioStream);
@@ -349,6 +381,7 @@ class Program
                 isLoop = !isLoop;
                 break;
             case ConsoleKey.M: // mute
+                if (outputDevice == null || audioStream == null) { break; }
                 if (isMuted)
                 {
                     isMuted = false;
@@ -362,16 +395,19 @@ class Program
                 }
                 break;
             case ConsoleKey.N: // next song
+                if (outputDevice == null || audioStream == null) { break; }
                 if (songs.Length == 1) { break; }
                 wantPreviousSong = false;
                 running = false;
                 break;
             case ConsoleKey.P: // previous song
+                if (outputDevice == null || audioStream == null) { break; }
                 if (songs.Length == 1) { break;}
                 wantPreviousSong = true;
                 running = false;
                 break;
             case ConsoleKey.R: // shuffle
+                if (outputDevice == null || audioStream == null) { break; }
                 if (songs.Length == 1) { break; }
                 Random rnd = new Random();
                 int randomSong = rnd.Next(0, songs.Length);
@@ -390,9 +426,16 @@ class Program
                         textRenderedType = "help";
                         break;
                     case "help":
+                        if (songs.Length == 1) {
+                            textRenderedType = "fakePlayer";
+                            break;
+                        }
                         textRenderedType = "normal";
                         break;
                     case "normal":
+                        textRenderedType = "help";
+                        break;
+                    case "fakePlayer":
                         textRenderedType = "help";
                         break;
                 }
@@ -401,6 +444,13 @@ class Program
                 switch (textRenderedType)
                 {
                     case "settings":
+                        if (songs.Length == 1) {
+                            textRenderedType = "fakePlayer";
+                            break;
+                        }
+                        AnsiConsole.Clear();
+                        AnsiConsole.WriteLine(songs.Length);
+                        Console.ReadKey();
                         textRenderedType = "normal";
                         break;
                     case "help":
@@ -409,25 +459,35 @@ class Program
                     case "normal":
                         textRenderedType = "settings";
                         break;
+                    case "fakePlayer":
+                        textRenderedType = "settings";
+                        break;
                 }
                 break;
             case ConsoleKey.O: // add song to playlist
                 AnsiConsole.Markup("\nEnter song to add to playlist: ");
                 string songToAdd = Console.ReadLine();
                 if (songToAdd == "" || songToAdd == null) { break; }
-                try
+                songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
+                // break if file doesnt exist or its not a valid soundcloud url
+                if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }
+                // add song to playlist
+                string[] newSongs = new string[songs.Length + 1];
+                for (int i = 0; i < songs.Length; i++)
                 {
-                    string[] newSongs = new string[songs.Length + 1];
-                    for (int i = 0; i < songs.Length; i++)
-                    {
-                        newSongs[i] = songs[i];
-                    }
-                    newSongs[songs.Length] = songToAdd;
-                    songs = newSongs;
+                    newSongs[i] = songs[i];
                 }
-                catch (Exception ex)
-                {
-                    AnsiConsole.WriteException(ex);
+                newSongs[songs.Length] = songToAdd;
+                songs = newSongs;
+
+                // delete duplicates
+                songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
+                songs = new HashSet<string>(songs).ToArray();
+
+                if (textRenderedType == "fakePlayer") {
+                    running = false;
+                    textRenderedType = "normal";
+                    Main(songs);
                 }
                 break;
             case ConsoleKey.S: // shuffle
