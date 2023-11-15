@@ -142,7 +142,11 @@ class Program
             JammerFolder.SaveSettings();
 
             cantDo = false;
-
+            if (isMuted) {
+                outputDevice.Volume = 0.0f;
+            } else {
+                outputDevice.Volume = volume;
+            }
             while (running)
             {
                 // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
@@ -226,53 +230,65 @@ class Program
         if (outputDevice != null) {
             if (isShuffle) // if shuffle
             {
-                Random rnd = new Random();
-                int randomSong = rnd.Next(0, songs.Length);
-                while (currentSongArgs == randomSong)
+                if (songs.Length > 1)
                 {
-                    randomSong = rnd.Next(0, songs.Length);
-                }
-                currentSongArgs = randomSong - 1;
-                audioFilePath = songs[currentSongArgs];
-                running = false;
-            }
+                    // get random song that isn't the current song
+                    Random rnd = new Random();
+                    int randomNum = rnd.Next(0, 100);
+                    int randomSong = randomNum % songs.Length;
 
-            if (wantPreviousSong) // if previous song
-            {
-                wantPreviousSong = false;
+                    while (randomSong == currentSongArgs)
+                    {
+                        randomNum = rnd.Next(0, 100);
+                        randomSong = randomNum % songs.Length;
+                    }
+                    currentSongArgs = randomSong;
+                    audioFilePath = songs[currentSongArgs];
+                    Main(songs);
+                } else { // if only one song
+                    currentSongArgs = 0;
+                    audioFilePath = songs[currentSongArgs];
+                    Main(songs);
+                }
+            }
+            else {
+                if (wantPreviousSong) // if previous song
+                {
+                    wantPreviousSong = false;
+                    if (songs.Length > 1) // if more than one song
+                    {
+                        currentSongArgs--;
+                        if (currentSongArgs < 0)
+                        {
+                            currentSongArgs = songs.Length - 1;
+                        }
+                        audioFilePath = songs[currentSongArgs];
+                        wantPreviousSong = false;
+                        Main(songs);
+                    }
+                    else // if only one song
+                    {
+                        currentSongArgs = 0;
+                        audioFilePath = songs[currentSongArgs];
+                        wantPreviousSong = false;
+                        Main(songs);
+                    }
+                }
+                // start next song
                 if (songs.Length > 1) // if more than one song
                 {
-                    currentSongArgs--;
-                    if (currentSongArgs < 0)
+                    currentSongArgs++;
+                    if (currentSongArgs < songs.Length)
                     {
-                        currentSongArgs = songs.Length - 1;
+                        audioFilePath = songs[currentSongArgs];
+                        Main(songs);
                     }
-                    audioFilePath = songs[currentSongArgs];
-                    wantPreviousSong = false;
-                    Main(songs);
-                }
-                else // if only one song
-                {
-                    currentSongArgs = 0;
-                    audioFilePath = songs[currentSongArgs];
-                    wantPreviousSong = false;
-                    Main(songs);
-                }
-            }
-            // start next song
-            if (songs.Length > 1) // if more than one song
-            {
-                currentSongArgs++;
-                if (currentSongArgs < songs.Length)
-                {
-                    audioFilePath = songs[currentSongArgs];
-                    Main(songs);
-                }
-                else // if last song
-                {
-                    currentSongArgs = 0;
-                    audioFilePath = songs[currentSongArgs];
-                    Main(songs);
+                    else // if last song
+                    {
+                        currentSongArgs = 0;
+                        audioFilePath = songs[currentSongArgs];
+                        Main(songs);
+                    }
                 }
             }
         }
