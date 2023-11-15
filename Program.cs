@@ -1,18 +1,6 @@
 ﻿using jammer;
-using System;
-using NVorbis;
 using NAudio.Wave;
-using NAudio.Utils;
-using NAudio.Vorbis;
-using System.Windows;
 using Spectre.Console;
-using System.Threading;
-using System.Management;
-using System.Diagnostics;
-using NAudio.CoreAudioApi;
-using System.Runtime.InteropServices;
-using System.ComponentModel.DataAnnotations;
-
 
 class Program
 {

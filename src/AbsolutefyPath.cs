@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using Spectre.Console;
 using System.Text.RegularExpressions;
 
 namespace jammer

@@ -1,11 +1,5 @@
-﻿using System;
-using NAudio.Wave;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using NAudio.Wave;
 using System.Diagnostics;
-using System.Threading;
 
 namespace jammer
 {

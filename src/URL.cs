@@ -1,7 +1,4 @@
 
-using System;
-using jammer;
-using System.IO;
 using SoundCloudExplode;
 using System.Text.RegularExpressions;
 
