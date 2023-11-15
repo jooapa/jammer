@@ -426,7 +426,8 @@ class Program
                         textRenderedType = "help";
                         break;
                     case "help":
-                        if (songs.Length == 1) {
+                        if (outputDevice == null)
+                        {
                             textRenderedType = "fakePlayer";
                             break;
                         }
@@ -444,13 +445,11 @@ class Program
                 switch (textRenderedType)
                 {
                     case "settings":
-                        if (songs.Length == 1) {
+                        if (outputDevice == null) 
+                        {
                             textRenderedType = "fakePlayer";
                             break;
                         }
-                        AnsiConsole.Clear();
-                        AnsiConsole.WriteLine(songs.Length);
-                        Console.ReadKey();
                         textRenderedType = "normal";
                         break;
                     case "help":
