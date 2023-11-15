@@ -33,6 +33,7 @@ namespace jammer
             settings.forwardSeconds = Program.forwardSeconds;
             settings.rewindSeconds = Program.rewindSeconds;
             settings.changeVolumeBy = Program.changeVolumeBy;
+            settings.isShuffle = Program.isShuffle;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (System.IO.File.Exists(jammerPath))
@@ -162,6 +163,21 @@ namespace jammer
             }
         }
 
+        static public bool GetIsShuffle()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (System.IO.File.Exists(jammerPath))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings.isShuffle;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         static public void OpenJammerFolder()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer";
@@ -190,6 +206,7 @@ namespace jammer
             public int forwardSeconds { get; set; }
             public int rewindSeconds { get; set; }
             public float changeVolumeBy { get; set; }
+            public bool isShuffle { get; set; }
         }
     }
 }

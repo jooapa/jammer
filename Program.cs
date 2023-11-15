@@ -38,6 +38,7 @@ class Program
     static public int forwardSeconds = JammerFolder.GetForwardSeconds();
     static public int rewindSeconds = JammerFolder.GetRewindSeconds();
     static public float changeVolumeBy = JammerFolder.GetChangeVolumeBy();
+    static public bool isShuffle = JammerFolder.GetIsShuffle();
     static void Main(string[] args)
     {
         if (args.Length == 0)
@@ -197,6 +198,18 @@ class Program
         }
 
         if (outputDevice != null) {
+            if (isShuffle) // if shuffle
+            {
+                Random rnd = new Random();
+                int randomSong = rnd.Next(0, songs.Length);
+                while (currentSongArgs == randomSong)
+                {
+                    randomSong = rnd.Next(0, songs.Length);
+                }
+                currentSongArgs = randomSong - 1;
+                audioFilePath = songs[currentSongArgs];
+                running = false;
+            }
 
             if (wantPreviousSong) // if previous song
             {
@@ -258,6 +271,7 @@ class Program
                 else
                 {
                     outputDevice.Volume = Math.Min(outputDevice.Volume + changeVolumeBy, 1.0f);
+                    volume = outputDevice.Volume;
                 }
                 break;
             case ConsoleKey.DownArrow: // volume down
@@ -269,6 +283,7 @@ class Program
                 else
                 {
                     outputDevice.Volume = Math.Max(outputDevice.Volume - changeVolumeBy, 0.0f);
+                    volume = outputDevice.Volume;
                 }
                 break;
             case ConsoleKey.LeftArrow: // rewind
@@ -395,6 +410,28 @@ class Program
                         textRenderedType = "settings";
                         break;
                 }
+                break;
+            case ConsoleKey.O: // add song to playlist
+                AnsiConsole.Markup("\nEnter song to add to playlist: ");
+                string songToAdd = Console.ReadLine();
+                if (songToAdd == "" || songToAdd == null) { break; }
+                try
+                {
+                    string[] newSongs = new string[songs.Length + 1];
+                    for (int i = 0; i < songs.Length; i++)
+                    {
+                        newSongs[i] = songs[i];
+                    }
+                    newSongs[songs.Length] = songToAdd;
+                    songs = newSongs;
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.WriteException(ex);
+                }
+                break;
+            case ConsoleKey.S: // shuffle
+                isShuffle = !isShuffle;
                 break;
             case ConsoleKey.D1: // set refresh rate
                 AnsiConsole.Markup("\nEnter refresh rate [grey](50 is about 1 sec)[/]: ");

@@ -78,8 +78,9 @@ namespace jammer
                     table.AddColumn("Current Position");
                     table.AddColumn("Looping");
                     table.AddColumn("Volume");
+                    table.AddColumn("Suffle");
                     table.AddColumn("Muted");
-                    table.AddRow(isPlayingText, currentPositionInSecondsText + " / " + Program.positionInSecondsText, loopText, Math.Round(outputDevice.Volume * 100) + " % " , ismuteText);
+                    table.AddRow(isPlayingText, currentPositionInSecondsText + " / " + Program.positionInSecondsText, loopText, Math.Round(outputDevice.Volume * 100) + " % ", Program.isShuffle + "", ismuteText);
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(tableJam);
@@ -102,10 +103,12 @@ namespace jammer
                     help.AddRow("Down", "Volume down");
                     help.AddRow("L", "Toggle looping");
                     help.AddRow("M", "Toggle mute");
+                    help.AddRow("S", "Toggle shuffle");
                     help.AddRow("Playlist", "");
                     help.AddRow("P", "Previous song");
                     help.AddRow("N", "Next song");
                     help.AddRow("R", "Play random song");
+                    help.AddRow("O", "add song to playlist");
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(help);
