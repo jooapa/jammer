@@ -483,7 +483,7 @@ class Program
                 songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
                 songs = new HashSet<string>(songs).ToArray();
 
-                if (textRenderedType == "fakePlayer") {
+                if (outputDevice == null) {
                     running = false;
                     textRenderedType = "normal";
                     Main(songs);
