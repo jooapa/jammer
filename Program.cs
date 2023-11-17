@@ -65,7 +65,7 @@ class Program
             {
                 AnsiConsole.WriteLine(song);
             }
-            Console.ReadKey();
+            // Console.ReadKey();
             // add URL.songs to songs array keep the songs content
             string[] newSongs = new string[songs.Length + URL.songs.Length];
             for (int i = 0; i < songs.Length; i++)
