@@ -222,12 +222,12 @@ class Program
                 {
                     // get random song that isn't the current song
                     Random rnd = new Random();
-                    int randomNum = rnd.Next(0, 100);
+                    int randomNum = rnd.Next(0, 100 * songs.Length);
                     int randomSong = randomNum % songs.Length;
 
                     while (randomSong == currentSongArgs)
                     {
-                        randomNum = rnd.Next(0, 100);
+                        randomNum = rnd.Next(0, 100 * songs.Length);
                         randomSong = randomNum % songs.Length;
                     }
                     currentSongArgs = randomSong;
@@ -474,6 +474,14 @@ class Program
                 songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
                 // break if file doesnt exist or its not a valid soundcloud url
                 if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }
+                if (URL.IsSoundCloudUrlValid(songToAdd)) {
+                    // splice ? and everything after it
+                    int index = songToAdd.IndexOf("?");
+                    if (index > 0)
+                    {
+                        songToAdd = songToAdd.Substring(0, index);
+                    }
+                }
                 // add song to playlist
                 string[] newSongs = new string[songs.Length + 1];
                 for (int i = 0; i < songs.Length; i++)
@@ -487,7 +495,7 @@ class Program
                 songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
                 songs = new HashSet<string>(songs).ToArray();
 
-                if (outputDevice == null) {
+                if (outputDevice == null) { // if no song is playing
                     running = false;
                     textRenderedType = "normal";
                     Main(songs);

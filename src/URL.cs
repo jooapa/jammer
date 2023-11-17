@@ -14,6 +14,12 @@ namespace jammer {
 
             if (IsSoundCloudUrlValid(url)) {
 
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else {
                 return url2;
