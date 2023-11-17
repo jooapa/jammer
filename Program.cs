@@ -43,16 +43,43 @@ class Program
             JammerFolder.OpenJammerFolder();
             return;
         }
-        // absoulutify arg if its a relative path
+        // absoulutify arg if its a relative path and add https:// if url
         args = AbsolutefyPath.Absolutefy(args);
     
         songs = args;
-        audioFilePath = args[currentSongArgs];
-
-        AnsiConsole.WriteLine("args.Length: " + args.Length);
-
+        audioFilePath = songs[currentSongArgs];
 
         audioFilePath = URL.CheckIfURL(audioFilePath);
+        if (audioFilePath == "Soundcloud Playlist") {
+            // remove current song from songs array
+            string[] currentSong = new string[songs.Length - 1];
+            for (int i = 0; i < songs.Length - 1; i++) {
+                currentSong[i] = songs[i + 1];
+            }
+            songs = currentSong;
+            AnsiConsole.WriteLine("Soundcloud Playlist");
+            foreach (var song in songs) {
+                AnsiConsole.WriteLine(song);
+            }
+            foreach (var song in URL.songs)
+            {
+                AnsiConsole.WriteLine(song);
+            }
+            Console.ReadKey();
+            // add URL.songs to songs array keep the songs content
+            string[] newSongs = new string[songs.Length + URL.songs.Length];
+            for (int i = 0; i < songs.Length; i++)
+            {
+                newSongs[i] = songs[i];
+            }
+            for (int i = 0; i < URL.songs.Length; i++)
+            {
+                newSongs[i + songs.Length] = URL.songs[i];
+            }
+            songs = newSongs;
+            URL.jammerPath = "";
+            Main(songs);
+        }
 
         try
         {
@@ -471,6 +498,11 @@ class Program
                 AnsiConsole.Markup("\nEnter song to add to playlist: ");
                 string songToAdd = Console.ReadLine();
                 if (songToAdd == "" || songToAdd == null) { break; }
+                // remove "" from start and end
+                if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\""))
+                {
+                    songToAdd = songToAdd.Substring(1, songToAdd.Length - 2);
+                }
                 songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
                 // break if file doesnt exist or its not a valid soundcloud url
                 if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }

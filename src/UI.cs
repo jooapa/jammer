@@ -19,7 +19,7 @@ namespace jammer
             if (!updated || !updatedSongList || updatedSettings || updatedHelp) {
                 if (Program.textRenderedType == "normal")
                 {
-                    string loopText = Program.isLoop ? "looping: true" : "looping: false";
+                    string loopText = Program.isLoop ? "True" : "False";
                     string isPlayingText = outputDevice.PlaybackState == PlaybackState.Playing ? "Playing" : "Paused";
                     string ismuteText = Program.isMuted ? "Muted" : "";
 
@@ -140,7 +140,7 @@ namespace jammer
                         tableJam.AddRow(songList);
                     }
 
-                    string loopText = Program.isLoop ? "looping: true" : "looping: false";
+                    string loopText = Program.isLoop ? "True" : "False";
                     string ismuteText = Program.isMuted ? "Muted" : "";
 
                     table.AddColumn("State");

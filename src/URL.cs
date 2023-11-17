@@ -1,19 +1,27 @@
 
 using SoundCloudExplode;
+using Spectre.Console;
 using System.Text.RegularExpressions;
 
 namespace jammer {
     internal class URL {
 
-        static string jammerPath = "";
+        static public string jammerPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
+        static public string[] songs = { "" };
         static public string CheckIfURL(string url2) {
 
             url = url2;
 
             if (IsSoundCloudUrlValid(url)) {
-
+                
+                string playlistPattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
+                Regex playlistRegex = new Regex(playlistPattern, RegexOptions.IgnoreCase);
+                if (playlistRegex.IsMatch(url)) {
+                    GetPlaylist(url).Wait();
+                    return jammerPath;
+                }
                 int index = url.IndexOf("?");
                 if (index > 0)
                 {
@@ -55,6 +63,33 @@ namespace jammer {
 
             await soundcloud.DownloadAsync(track, jammerPath);
         }
+
+        static public async Task GetPlaylist(string url) {
+
+            var soundcloud = new SoundCloudClient();
+            
+            // Get all playlist tracks
+            var playlist = await soundcloud.Playlists.GetAsync(url, true);
+
+            if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
+                Console.WriteLine("No tracks in playlist");
+                Console.ReadLine();
+                return;
+            }
+
+            // add all tracks permalinkUrl to songs array
+            songs = new string[playlist.Tracks.Count()];
+            int i = 0;
+            foreach (var track in playlist.Tracks) {
+                songs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
+                i++;
+            }
+
+            // Console.WriteLine(string.Join(Environment.NewLine, songs));
+            // Console.ReadLine();
+            jammerPath = "Soundcloud Playlist";
+        }
+
 
         static public bool IsSoundCloudUrlValid(string uri)
         {
