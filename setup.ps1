@@ -21,5 +21,5 @@ if (Test-Path $jammerFolderPath -PathType Container) {
 
     Write-Host "Jammer folder added to the system PATH."
 } else {
-    Write-Host "Error: Jammer folder not found at '$jammerFolderPath'. Please make sure the folder exists."
+    Write-Host "Jammer folder not found."
 }
