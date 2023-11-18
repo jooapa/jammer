@@ -9,6 +9,11 @@ Outfile "jammer-Setup.exe"
 
 ; Default section
 Section
+
+; Remove existing "jammer" folder if it exists
+RMDir /r "$PROGRAMFILES\${APP_NAME}"
+
+; Set output path to install "jammer" folder
 SetOutPath "$PROGRAMFILES\${APP_NAME}"
 
 ; Create "jammer" folder
@@ -22,7 +27,6 @@ File "jammer.ico"
 
 ; Create shortcut to sendto folder in AppData\Roaming\Microsoft\Windows\SendTo
 CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer.ico" 0
-
 
 SectionEnd
 
