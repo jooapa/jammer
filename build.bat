@@ -7,12 +7,6 @@ set "targetFolder=nsis-folder"
 rem Copy jammer.exe
 copy /y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
 
-rem Copy jammer_1024px.ico
-copy /y "%sourceFolder%\jammer_1024px.ico" "%targetFolder%\jammer_1024px.ico"
-
-rem Copy jammer.ico (assuming you also have jammer.ico)
-copy /y "%sourceFolder%\jammer.ico" "%targetFolder%\jammer.ico"
-
 echo Files copied successfully.
 
 makensis setup.nsi

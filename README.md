@@ -7,8 +7,9 @@
 ```
 jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
-jammer soundcloud.com/username/playlist-name
+jammer soundcloud.com/username/sets/playlist-name
 jammer start // opens jammer folder
+jammer selfdestruct // deletes jammer
 ```
 
 ### Supported formats
