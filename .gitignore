@@ -133,3 +133,6 @@ $RECYCLE.BIN/
 _NCrunch*
 
 jammer-Setup.exe
+nsis-folder/jammer_1024px.ico
+nsis-folder/jammer.ico
+nsis-folder/jammer.exe

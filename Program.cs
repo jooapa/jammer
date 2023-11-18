@@ -31,6 +31,7 @@ class Program
     static void Main(string[] args)
     {
 
+        JammerFolder.CheckJammerFolderExists();
         if (args.Length == 0)
         {
             AnsiConsole.WriteLine("No songs given");
@@ -38,11 +39,21 @@ class Program
             return;
         }
 
-        JammerFolder.CheckJammerFolderExists();
         if (args[0] == "start")
         {
             AnsiConsole.WriteLine("Starting Jammer folder...");
             JammerFolder.OpenJammerFolder();
+            return;
+        }
+        if (args[0] == "selfdestruct")
+        {
+            AnsiConsole.WriteLine("Self destructing Jammer :(");
+            // if on windows run C:\Program Files (x86)\jammer\Uninstall.exe
+            if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
+            {
+                System.Diagnostics.Process.Start("C:\\Program Files (x86)\\jammer\\selfdestruct.bat");
+                Environment.Exit(0);
+            }
             return;
         }
         // absoulutify arg if its a relative path and add https:// if url

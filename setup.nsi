@@ -10,9 +10,6 @@ Outfile "jammer-Setup.exe"
 ; Default section
 Section
 
-; Remove existing "jammer" folder if it exists
-RMDir /r "$PROGRAMFILES\${APP_NAME}"
-
 ; Set output path to install "jammer" folder
 SetOutPath "$PROGRAMFILES\${APP_NAME}"
 
@@ -20,10 +17,13 @@ SetOutPath "$PROGRAMFILES\${APP_NAME}"
 CreateDirectory "$PROGRAMFILES\${APP_NAME}"
 
 ; Copy files to the installation directory
-File /r "bin\Release\net6.0\win10-x64\publish\*.*"
+File /r "nsis-folder\*.*"
 
 ; Copy the icon file to the installation directory
 File "jammer_1024px.ico"
+
+; Write uninstaller
+WriteUninstaller "$PROGRAMFILES\${APP_NAME}\Uninstall.exe"
 
 ; Create shortcut to sendto folder in AppData\Roaming\Microsoft\Windows\SendTo
 CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico" 0
@@ -38,11 +38,15 @@ Section "Uninstall"
     ; Remove files
     Delete "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}"
     Delete "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico"
-
-    ; Remove directory
-    RMDir "$PROGRAMFILES\${APP_NAME}"
+    Delete "$PROGRAMFILES\${APP_NAME}\jammer.ico"
+    Delete "$PROGRAMFILES\${APP_NAME}\Uninstall.exe"
+    Delete "$PROGRAMFILES\${APP_NAME}\selfdestruct.bat"
 
     ; Remove shortcut
     Delete "$SENDTO\${APP_NAME}.lnk"
+    Delete "$DESKTOP\${APP_NAME}.lnk"
+
+    ; Remove directories
+    RMDir "$PROGRAMFILES\${APP_NAME}"
 
 SectionEnd
