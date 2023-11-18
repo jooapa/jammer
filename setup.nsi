@@ -23,10 +23,13 @@ CreateDirectory "$PROGRAMFILES\${APP_NAME}"
 File /r "bin\Release\net6.0\win10-x64\publish\*.*"
 
 ; Copy the icon file to the installation directory
-File "jammer.ico"
+File "jammer_1024px.ico"
 
 ; Create shortcut to sendto folder in AppData\Roaming\Microsoft\Windows\SendTo
-CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer.ico" 0
+CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico" 0
+
+; CREATE SHORTCUT TO DESKTOP
+CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico" 0
 
 SectionEnd
 
@@ -34,7 +37,7 @@ Section "Uninstall"
 
     ; Remove files
     Delete "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}"
-    Delete "$PROGRAMFILES\${APP_NAME}\jammer.ico"
+    Delete "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico"
 
     ; Remove directory
     RMDir "$PROGRAMFILES\${APP_NAME}"

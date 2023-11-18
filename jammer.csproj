@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PackageIcon>jammer.png</PackageIcon>
+    <PackageIcon>jammer.ico</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Fody" Version="6.8.0" >
+    <PackageReference Include="Fody" Version="6.8.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -26,8 +26,9 @@
 
   <ItemGroup>
 
-    <None Update="jammer.png">
+    <None Update="jammer.ico">
       <Pack>True</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>

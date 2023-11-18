@@ -27,8 +27,10 @@ class Program
     static public int rewindSeconds = JammerFolder.GetRewindSeconds();
     static public float changeVolumeBy = JammerFolder.GetChangeVolumeBy();
     static public bool isShuffle = JammerFolder.GetIsShuffle();
+
     static void Main(string[] args)
     {
+
         if (args.Length == 0)
         {
             AnsiConsole.WriteLine("No songs given");
