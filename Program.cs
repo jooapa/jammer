@@ -51,11 +51,12 @@ class Program
 
         audioFilePath = URL.CheckIfURL(audioFilePath);
         if (audioFilePath == "Soundcloud Playlist") {
-            // remove current song from songs array
+            // remove currentsongargs +1 from songs
             string[] currentSong = new string[songs.Length - 1];
-            for (int i = 0; i < songs.Length - 1; i++) {
-                currentSong[i] = songs[i + 1];
+            for (int i = 0; i < currentSongArgs; i++) {
+                currentSong[i] = songs[i];
             }
+
             songs = currentSong;
             AnsiConsole.WriteLine("Soundcloud Playlist");
             foreach (var song in songs) {
