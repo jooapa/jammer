@@ -13,6 +13,16 @@ namespace jammer
             {
                 System.IO.Directory.CreateDirectory(jammerPath);
             }
+
+            // check if settings.json exists but the file is empty, if so, delete it
+            if (System.IO.File.Exists(jammerPath + "/settings.json"))
+            {
+                string jsonString = System.IO.File.ReadAllText(jammerPath + "/settings.json");
+                if (jsonString == "")
+                {
+                    System.IO.File.Delete(jammerPath + "/settings.json");
+                }
+            }
         }
 
         static public void SaveSettings()
