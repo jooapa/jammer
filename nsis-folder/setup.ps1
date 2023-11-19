@@ -10,7 +10,7 @@ if (-not $isAdmin) {
 }
 
 # Define the path to the Jammer folder
-$jammerFolderPath = "C:\Program Files (x86)\jammer"
+$jammerFolderPath = "$PSScriptRoot"
 
 # Add the Jammer folder to the system's PATH environment variable
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)

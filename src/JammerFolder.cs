@@ -12,6 +12,7 @@ namespace jammer
             if (!System.IO.Directory.Exists(jammerPath))
             {
                 System.IO.Directory.CreateDirectory(jammerPath);
+                System.IO.Directory.CreateDirectory(jammerPath + "/playlists");
             }
 
             // check if settings.json exists but the file is empty, if so, delete it

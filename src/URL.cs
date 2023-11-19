@@ -99,5 +99,11 @@ namespace jammer {
 
             return regex.IsMatch(uri);
         }
+
+        static public bool isValidSoundCloudPLaylist(string uri) {
+            string pattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(uri);
+        }
     }
 }

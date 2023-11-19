@@ -16,6 +16,17 @@ namespace jammer
                     {
                         item = "https://" + item;
                     }
+                    
+                    if (URL.IsSoundCloudUrlValid(item))
+                    {
+                        // splice ? and everything after it
+                        int index = item.IndexOf("?");
+                        if (index > 0)
+                        {
+                            item = item.Substring(0, index);
+                        }
+                    }
+
                     args[i] = item;
                 }
                 else if (IsRelativePath(item))
@@ -44,6 +55,10 @@ namespace jammer
 
         static bool IsUrl(string input)
         {
+            if (input == null)
+            {
+                return false;
+            }
             // detect if input is url using regex
             string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
