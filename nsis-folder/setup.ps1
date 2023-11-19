@@ -12,14 +12,9 @@ if (-not $isAdmin) {
 # Define the path to the Jammer folder
 $jammerFolderPath = "C:\Program Files (x86)\jammer"
 
-# Check if the folder exists
-if (Test-Path $jammerFolderPath -PathType Container) {
-    # Add the Jammer folder to the system's PATH environment variable
-    $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
-    $newPath = $currentPath + ";" + $jammerFolderPath
-    [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
+# Add the Jammer folder to the system's PATH environment variable
+$currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
+$newPath = $currentPath + ";" + $jammerFolderPath
+[System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
 
-    Write-Host "Jammer folder added to the system PATH."
-} else {
-    Write-Host "Jammer folder not found."
-}
+Write-Host "Jammer folder added to the system PATH."

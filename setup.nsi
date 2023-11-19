@@ -19,9 +19,6 @@ CreateDirectory "$PROGRAMFILES\${APP_NAME}"
 ; Copy files to the installation directory
 File /r "nsis-folder\*.*"
 
-; Copy the icon file to the installation directory
-File "jammer_1024px.ico"
-
 ; Write uninstaller
 WriteUninstaller "$PROGRAMFILES\${APP_NAME}\Uninstall.exe"
 
@@ -31,9 +28,15 @@ CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}"
 ; CREATE SHORTCUT TO DESKTOP
 CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}" "" "$PROGRAMFILES\${APP_NAME}\jammer_1024px.ico" 0
 
+; run setup.ps1 
+ExecWait '"powershell.exe" -ExecutionPolicy Bypass -File "$PROGRAMFILES\${APP_NAME}\setup.ps1"'
+
 SectionEnd
 
 Section "Uninstall"
+
+    ; run Uninstall.ps1
+    ExecWait '"powershell.exe" -ExecutionPolicy Bypass -File "$PROGRAMFILES\${APP_NAME}\uninstall.ps1"'
 
     ; Remove files
     Delete "$PROGRAMFILES\${APP_NAME}\${EXE_NAME}"
@@ -41,6 +44,8 @@ Section "Uninstall"
     Delete "$PROGRAMFILES\${APP_NAME}\jammer.ico"
     Delete "$PROGRAMFILES\${APP_NAME}\Uninstall.exe"
     Delete "$PROGRAMFILES\${APP_NAME}\selfdestruct.bat"
+    Delete "$PROGRAMFILES\${APP_NAME}\setup.ps1"
+    Delete "$PROGRAMFILES\${APP_NAME}\uninstall.ps1"
 
     ; Remove shortcut
     Delete "$SENDTO\${APP_NAME}.lnk"

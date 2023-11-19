@@ -47,7 +47,8 @@ dotnet build --configuration Release
 ```
 ```
 dotnet run -- "path/to/song.mp3"
-
+```
+```
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```
 
