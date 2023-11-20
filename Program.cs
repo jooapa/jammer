@@ -288,6 +288,7 @@ class Program
                     {
                         // settings and help screen lags
                         if (textRenderedType != "settings") {
+                            // Render the UI
                             UI.Update();
                             UI.Ui(outputDevice);
                         }
@@ -838,8 +839,9 @@ class Program
                     string playlistNameToPlay = Console.ReadLine();
                     if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
                     // play other playlist
-                    SetState(outputDevice, "stopped", null);
+                    // SetState(outputDevice, "stopped", null);
                     Playlists.Play(playlistNameToPlay);
+                    running = false;
                     break;
                 case "6":
                     AnsiConsole.Markup("\nEnter playlist name: ");

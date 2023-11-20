@@ -86,7 +86,6 @@ namespace jammer
                     AnsiConsole.Write(table);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-
                     updated = true;
                     updatedSongList = true;
                 }

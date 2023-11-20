@@ -39,6 +39,8 @@ namespace jammer
                     // remove all \n from song
                     string songPath = song.Replace("\n", "");
                 }
+                Program.textRenderedType = "normal";
+                UI.Update();
                 Program.Main(songs);
             }
             else
