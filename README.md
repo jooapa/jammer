@@ -36,6 +36,7 @@ jammer selfdestruct // deletes jammer
 | `c` | show/hide settings |
 | `n` | next song in playlist |
 | `p` | previous song in playlist |
+| `F2` | show playlist options |
 
 
 ### Install

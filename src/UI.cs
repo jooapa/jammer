@@ -106,7 +106,8 @@ namespace jammer
                     help.AddRow("P", "Previous song");
                     help.AddRow("N", "Next song");
                     help.AddRow("R", "Play random song");
-                    help.AddRow("O", "add song to playlist");
+                    help.AddRow("O", "Add song to playlist");
+                    help.AddRow("F2", "Show playlist options");
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(help);

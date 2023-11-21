@@ -190,6 +190,7 @@ namespace jammer
                     System.IO.File.Create(playlistPath);
                 }
             }
+            System.IO.File.Delete(playlistPath);
             System.IO.File.WriteAllLines(playlistPath, songs);
         }
 

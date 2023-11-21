@@ -32,77 +32,65 @@ class Program
     static public string deleteSong = "";
     static int gotoSong = -100;
 
-    static public void Main(string[] args)
-    {
+    static public void Main(string[] args){
 
         JammerFolder.CheckJammerFolderExists();
-        if (args.Length == 0)
-        {
+        if (args.Length == 0){
             AnsiConsole.WriteLine("No songs given");
             ConstrolsWithoutSongs();
             return;
         }
 
-        if (args[0] == "start")
-        {
+        if (args[0] == "start"){
             AnsiConsole.WriteLine("Starting Jammer folder...");
             JammerFolder.OpenJammerFolder();
             return;
         }
 
-        if (args[0] == "playlist")
-        {
-            if (args.Length < 2)
-            {
+        if (args[0] == "playlist"){
+            if (args.Length < 2){
                 AnsiConsole.WriteLine("No playlist command given");
             }
             else
             {
-                switch (args[1])
-                {
+                switch (args[1]){
                     case "play":
-                        if (args.Length < 3)
-                        {
+                        if (args.Length < 3){
                             AnsiConsole.WriteLine("No playlist name given");
                             return;
                         }
                         Playlists.Play(args[2]);
                         return;
                     case "create":
-                        if (args.Length < 3)
-                        {
+                        if (args.Length < 3){
                             AnsiConsole.WriteLine("No playlist name given");
                             return;
                         }
                         Playlists.Create(args[2]);
                         return;
                     case "delete":
-                        if (args.Length < 3)
-                        {
+                        if (args.Length < 3){
                             AnsiConsole.WriteLine("No playlist name given");
                             return;
                         }
                         Playlists.Delete(args[2]);
                         return;
                     case "add":
-                        if (args.Length < 4)
-                        {
+                        if (args.Length < 4){
                             AnsiConsole.WriteLine("No playlist name or song given");
                             return;
                         }
                         Playlists.Add(args);
                         return;
                     case "remove":
-                        if (args.Length < 4)
-                        {
+                        if (args.Length < 4){
                             AnsiConsole.WriteLine("No playlist name or song given");
                             return;
                         }
                         Playlists.Remove(args);
                         return;
                     case "show":
-                        if (args.Length < 3)
-                        {
+                        if (args.Length < 3){
                             AnsiConsole.WriteLine("No playlist name given");
                             return;
                         }
@@ -130,12 +118,10 @@ class Program
             return;
         }
         
-        if (args[0] == "selfdestruct")
-        {
+        if (args[0] == "selfdestruct"){
             AnsiConsole.WriteLine("Self destructing Jammer :(");
             // if on windows run Uninstall.exe on the current directory whwre jammer.exe is
-            if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
-            {
+            if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT){
                 System.Diagnostics.Process.Start("Uninstall.exe");
                 Environment.Exit(0);
             }
@@ -176,12 +162,10 @@ class Program
             songs = currentSong;
             // add URL.songs to songs array keep the songs content
             string[] newSongs = new string[songs.Length + URL.songs.Length];
-            for (int i = 0; i < songs.Length; i++)
-            {
+            for (int i = 0; i < songs.Length; i++){
                 newSongs[i] = songs[i];
             }
-            for (int i = 0; i < URL.songs.Length; i++)
-            {
+            for (int i = 0; i < URL.songs.Length; i++){
                 newSongs[i + songs.Length] = URL.songs[i];
             }
             songs = newSongs;
@@ -189,12 +173,10 @@ class Program
             Main(songs);
         }
 
-        try
-        {
+        try{
             string extension = System.IO.Path.GetExtension(audioFilePath).ToLower();
 
-            switch (extension)
-            {
+            switch (extension){
                 case ".wav":
                     playFile.PlayWav(audioFilePath, volume, running);
                     break;
@@ -212,8 +194,7 @@ class Program
                     break;
             }
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex){
             AnsiConsole.WriteException(ex);
         }
     }
@@ -224,8 +205,7 @@ class Program
         UI.Ui(null);
         cantDo = false;
         while (running) {
-            if (Console.KeyAvailable)
-            {
+            if (Console.KeyAvailable){
                 var key = Console.ReadKey(true).Key;
                 HandleUserInput(key, null, null);
             }
@@ -236,24 +216,19 @@ class Program
 
     }
 
-    static public void Controls(WaveOutEvent outputDevice, object reader)
-    {
+    static public void Controls(WaveOutEvent outputDevice, object reader){
         UI.ForceUpdate();
-        try
-        {
+        try{
             WaveStream audioStream;
             running = true;
-            if (reader is WaveStream)
-            {
+            if (reader is WaveStream){
                 audioStream = (WaveStream)reader;
             }
-            else
-            {
+            else{
                 audioStream = null;
             }
 
-            if (audioStream == null)
-            {
+            if (audioStream == null){
                 // Handle the case where the reader is not a WaveStream.
                 return;
             }
@@ -279,13 +254,11 @@ class Program
             //     songs = songList.ToArray();
             //     deleteSong = "";
             // }
-            while (running)
-            {
+            while (running){
                 // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                 if (outputDevice != null && audioStream != null)
                 {
-                    try
-                    {
+                    try{
                         // settings and help screen lags
                         if (textRenderedType != "settings") {
                             // Render the UI
@@ -293,24 +266,20 @@ class Program
                             UI.Ui(outputDevice);
                         }
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex){
                         AnsiConsole.WriteException(ex);
                     }
 
                     currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
                     positionInSeconds = audioStream.TotalTime.TotalSeconds;
 
-                    if (audioStream.Position >= audioStream.Length)
-                    {
-                        if (isLoop)
-                        {
+                    if (audioStream.Position >= audioStream.Length){
+                        if (isLoop){
                             audioStream.Position = 0;
                         }
                         else
                         {
-                            if (songs != null && songs.Length > 1)
-                            {
+                            if (songs != null && songs.Length > 1){
                                 running = false;
                             }
 
@@ -318,22 +287,18 @@ class Program
                         }
                     }
 
-                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying)
-                    {
+                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying){
                         outputDevice.Init(audioStream);
 
-                        if (audioStream.Position < audioStream.Length)
-                        {
+                        if (audioStream.Position < audioStream.Length){
                             SetState(outputDevice, "playing", audioStream);
                         }
                     }
 
-                    if (Console.KeyAvailable)
-                    {
+                    if (Console.KeyAvailable){
                         var key = Console.ReadKey(true).Key;
 
-                        if (outputDevice != null)
-                        {
+                        if (outputDevice != null){
                             HandleUserInput(key, audioStream, outputDevice);
                         }
                     }
@@ -344,8 +309,7 @@ class Program
             // AnsiConsole.Clear();
             AnsiConsole.WriteLine("Stopped");
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex){
             AnsiConsole.WriteException(ex);
         }
 
@@ -358,34 +322,28 @@ class Program
             }
             gotoSong = -100;
         }
-        try
-        {
+        try{
             outputDevice?.Stop();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex){
             AnsiConsole.WriteException(ex);
         }
 
         if (outputDevice != null) {
-            if (deleteSong != "")
-            {
+            if (deleteSong != ""){
                 List<string> songList = songs.ToList();
                 songList.Remove(deleteSong);
                 songs = songList.ToArray();
                 deleteSong = "";
             }
-            if (isShuffle) // if shuffle
-            {
-                if (songs.Length > 1)
-                {
+            if (isShuffle) { // if shuffle
+                if (songs.Length > 1){
                     // get random song that isn't the current song
                     Random rnd = new Random();
                     int randomNum = rnd.Next(0, 100 * songs.Length);
                     int randomSong = randomNum % songs.Length;
 
-                    while (randomSong == currentSongArgs)
-                    {
+                    while (randomSong == currentSongArgs){
                         randomNum = rnd.Next(0, 100 * songs.Length);
                         randomSong = randomNum % songs.Length;
                     }
@@ -399,22 +357,18 @@ class Program
                 }
             }
             else {
-                if (wantPreviousSong) // if previous song
-                {
+                if (wantPreviousSong) { // if previous song
                     wantPreviousSong = false;
-                    if (songs.Length > 1) // if more than one song
-                    {
+                    if (songs.Length > 1) { // if more than one song
                         currentSongArgs--;
-                        if (currentSongArgs < 0)
-                        {
+                        if (currentSongArgs < 0){
                             currentSongArgs = songs.Length - 1;
                         }
                         audioFilePath = songs[currentSongArgs];
                         wantPreviousSong = false;
                         Main(songs);
                     }
-                    else // if only one song
-                    {
+                    else { // if only one song
                         currentSongArgs = 0;
                         audioFilePath = songs[currentSongArgs];
                         wantPreviousSong = false;
@@ -422,16 +376,13 @@ class Program
                     }
                 }
                 // start next song
-                if (songs.Length > 1) // if more than one song
-                {
+                if (songs.Length > 1) { // if more than one song
                     currentSongArgs++;
-                    if (currentSongArgs < songs.Length)
-                    {
+                    if (currentSongArgs < songs.Length){
                         audioFilePath = songs[currentSongArgs];
                         Main(songs);
                     }
-                    else // if last song
-                    {
+                    else { // if last song
                         currentSongArgs = 0;
                         audioFilePath = songs[currentSongArgs];
                         Main(songs);
@@ -443,32 +394,23 @@ class Program
     }
 
 
-    static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice)
-    {
+    static void HandleUserInput(ConsoleKey key, WaveStream audioStream, WaveOutEvent outputDevice) {
         // AnsiConsole.WriteLine("key pressed");
-        if (cantDo)
-        {
-            return;
-        }
-        switch (key)
-        {
+        if (cantDo) { return; }
+        switch (key) {
             case ConsoleKey.UpArrow: // volume up
                 if (outputDevice == null || audioStream == null) { break; }
-                if (isMuted)
-                {
+                if (isMuted) {
                     isMuted = false;
                     outputDevice.Volume = oldVolume;
-                }
-                else
-                {
+                } else {
                     outputDevice.Volume = Math.Min(outputDevice.Volume + changeVolumeBy, 1.0f);
                     volume = outputDevice.Volume;
                 }
                 break;
             case ConsoleKey.DownArrow: // volume down
                 if (outputDevice == null || audioStream == null) { break; }
-                if (isMuted)
-                {
+                if (isMuted) {
                     isMuted = false;
                     outputDevice.Volume = oldVolume;
                 }
@@ -482,13 +424,11 @@ class Program
                 if (outputDevice == null || audioStream == null) { break; }
                 newPosition = audioStream.Position - (audioStream.WaveFormat.AverageBytesPerSecond * rewindSeconds);
 
-                if (newPosition < 0)
-                {
+                if (newPosition < 0) {
                     newPosition = 0; // Go back to the beginning if newPosition is negative
                 }
 
-                if (audioStream.Position < audioStream.Length || outputDevice.PlaybackState == PlaybackState.Stopped)
-                {
+                if (audioStream.Position < audioStream.Length || outputDevice.PlaybackState == PlaybackState.Stopped) {
                     try {
                         if (outputDevice.PlaybackState != PlaybackState.Playing)
                         {
@@ -506,8 +446,7 @@ class Program
                 if (outputDevice == null || audioStream == null) { break; }
                 newPosition = audioStream.Position + (audioStream.WaveFormat.AverageBytesPerSecond * forwardSeconds);
 
-                if (newPosition > audioStream.Length)
-                {
+                if (newPosition > audioStream.Length) {
                     newPosition = audioStream.Length;
                     if (isLoop)
                     {
@@ -523,12 +462,10 @@ class Program
                 break;
             case ConsoleKey.Spacebar: // toggle play/pause
                 if (outputDevice == null || audioStream == null) { break; }
-                if (outputDevice.PlaybackState == PlaybackState.Playing)
-                {
+                if (outputDevice.PlaybackState == PlaybackState.Playing) {
                     SetState(outputDevice, "paused", audioStream);
                 }
-                else
-                {
+                else {
                     if (outputDevice.PlaybackState == PlaybackState.Stopped)
                     {
                         audioStream.Position = 0;
@@ -545,13 +482,11 @@ class Program
                 break;
             case ConsoleKey.M: // mute
                 if (outputDevice == null || audioStream == null) { break; }
-                if (isMuted)
-                {
+                if (isMuted) {
                     isMuted = false;
                     outputDevice.Volume = oldVolume;
                 }
-                else
-                {
+                else {
                     isMuted = true;
                     oldVolume = outputDevice.Volume;
                     outputDevice.Volume = 0.0f;
@@ -574,8 +509,7 @@ class Program
                 if (songs.Length == 1) { break; }
                 Random rnd = new Random();
                 int randomSong = rnd.Next(0, songs.Length);
-                while (currentSongArgs == randomSong)
-                {
+                while (currentSongArgs == randomSong) {
                     randomSong = rnd.Next(0, songs.Length);
                 }
                 currentSongArgs = randomSong - 1;
@@ -583,14 +517,12 @@ class Program
                 running = false;
                 break;
             case ConsoleKey.H: // help
-                switch (textRenderedType)
-                {
+                switch (textRenderedType) {
                     case "settings":
                         textRenderedType = "help";
                         break;
                     case "help":
-                        if (outputDevice == null)
-                        {
+                        if (outputDevice == null) {
                             textRenderedType = "fakePlayer";
                             break;
                         }
@@ -605,11 +537,9 @@ class Program
                 }
                 break;
             case ConsoleKey.C: //settings
-                switch (textRenderedType)
-                {
+                switch (textRenderedType) {
                     case "settings":
-                        if (outputDevice == null) 
-                        {
+                        if (outputDevice == null)  {
                             textRenderedType = "fakePlayer";
                             break;
                         }
@@ -638,8 +568,7 @@ class Program
                 string songToAdd = Console.ReadLine();
                 if (songToAdd == "" || songToAdd == null) { break; }
                 // remove "" from start and end
-                if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\""))
-                {
+                if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\"")) {
                     songToAdd = songToAdd.Substring(1, songToAdd.Length - 2);
                 }
                 songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
@@ -648,15 +577,13 @@ class Program
                 if (URL.IsSoundCloudUrlValid(songToAdd)) {
                     // splice ? and everything after it
                     int index = songToAdd.IndexOf("?");
-                    if (index > 0)
-                    {
+                    if (index > 0) {
                         songToAdd = songToAdd.Substring(0, index);
                     }
                 }
                 // add song to playlist
                 string[] newSongs = new string[songs.Length + 1];
-                for (int i = 0; i < songs.Length; i++)
-                {
+                for (int i = 0; i < songs.Length; i++) {
                     newSongs[i] = songs[i];
                 }
                 newSongs[songs.Length] = songToAdd;
@@ -678,52 +605,44 @@ class Program
             case ConsoleKey.D1: // set refresh rate
                 AnsiConsole.Markup("\nEnter refresh rate [grey](50 is about 1 sec)[/]: ");
                 string refreshRate = Console.ReadLine();
-                try
-                {
+                try {
                     int refreshRateInt = int.Parse(refreshRate);
                     UI.refreshTimes = refreshRateInt;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     AnsiConsole.WriteException(ex);
                 }
                 break;
             case ConsoleKey.D2: // set forward seconds
                 AnsiConsole.Markup("\nEnter forward seconds: ");
                 string forwardSecondsString = Console.ReadLine();
-                try
-                {
+                try {
                     int forwardSecondsInt = int.Parse(forwardSecondsString);
                     forwardSeconds = forwardSecondsInt;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     AnsiConsole.WriteException(ex);
                 }
                 break;
             case ConsoleKey.D3: // set rewind seconds
                 AnsiConsole.Markup("\nEnter rewind seconds: ");
                 string rewindSecondsString = Console.ReadLine();
-                try
-                {
+                try {
                     int rewindSecondsInt = int.Parse(rewindSecondsString);
                     rewindSeconds = rewindSecondsInt;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     AnsiConsole.WriteException(ex);
                 }
                 break;
             case ConsoleKey.D4: // set change volume by
                 AnsiConsole.Markup("\nEnter change volume by: ");
                 string changeVolumeByString = Console.ReadLine();
-                try
-                {
+                try {
                     float changeVolumeByFloat = float.Parse(changeVolumeByString) / 100;
                     changeVolumeBy = changeVolumeByFloat;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     AnsiConsole.WriteException(ex);
                 }
                 break;
@@ -733,23 +652,7 @@ class Program
         UI.ForceUpdate();
         UI.Ui(outputDevice);
 
-        static void PlaylistInput(WaveOutEvent outputDevice)
-        {
-            // 1. add song to playlist
-                // 1. song from url or file
-
-            // 2. delete song from playlist
-                // 1. current song
-                // 2. song from url or file
-
-            // 3. show songs in playlist
-
-            // 4. list all playlists
-
-            // 5. play other playlist
-
-            // 6. save/replace playlist
-
+        static void PlaylistInput(WaveOutEvent outputDevice) {
             AnsiConsole.Markup("\nEnter playlist command: \n");
             AnsiConsole.MarkupLine("[grey]1. add song to playlist[/]");
             AnsiConsole.MarkupLine("[grey]2. delete song current song from playlist[/]");
@@ -762,33 +665,28 @@ class Program
             string playlistInput = "";
             playlistInput = Console.ReadLine();
             if (playlistInput == "" || playlistInput == null) { return; }
-            switch (playlistInput)
-            {
+            switch (playlistInput) {
                 case "1": // add song to playlist
                     AnsiConsole.Markup("\nEnter song to add to playlist: ");
                     string songToAdd = Console.ReadLine();
                     if (songToAdd == "" || songToAdd == null) { break; }
                     // remove "" from start and end
-                    if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\""))
-                    {
+                    if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\"")) {
                         songToAdd = songToAdd.Substring(1, songToAdd.Length - 2);
                     }
                     songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
                     // break if file doesnt exist or its not a valid soundcloud url
                     if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }
-                    if (URL.IsSoundCloudUrlValid(songToAdd))
-                    {
+                    if (URL.IsSoundCloudUrlValid(songToAdd)) {
                         // splice ? and everything after it
                         int index = songToAdd.IndexOf("?");
-                        if (index > 0)
-                        {
+                        if (index > 0) {
                             songToAdd = songToAdd.Substring(0, index);
                         }
                     }
                     // add song to playlist
                     string[] newSongs = new string[songs.Length + 1];
-                    for (int i = 0; i < songs.Length; i++)
-                    {
+                    for (int i = 0; i < songs.Length; i++) {
                         newSongs[i] = songs[i];
                     }
                     newSongs[songs.Length] = songToAdd;
@@ -798,30 +696,25 @@ class Program
                     songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
                     songs = new HashSet<string>(songs).ToArray();
 
-                    if (outputDevice == null)
-                    { // if no song is playing
+                    if (outputDevice == null) { // if no song is playing
                         running = false;
                         textRenderedType = "normal";
                         Main(songs);
                     }
                     break;
-                case "2":
-                    // delete current song from playlist
+                case "2": // delete current song from playlist
                     deleteSong = "";
-                    if (currentSongArgs < songs.Length)
-                    {
+                    if (currentSongArgs < songs.Length) {
                         deleteSong = songs[currentSongArgs];
-                        AnsiConsole.MarkupLine(deleteSong);
-                    }
-                    else
-                    {
+                        AnsiConsole.MarkupLine(deleteSong); 
+                    } else {
                         deleteSong = songs[0];
                     }
 
                     running = false;
                     // delete song will happen in Controls()
                     break;
-                case "3":
+                case "3": // show songs in playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
                     string playlistNameToShow = Console.ReadLine();
                     if (playlistNameToShow == "" || playlistNameToShow == null) { break; }
@@ -830,11 +723,10 @@ class Program
                     AnsiConsole.Markup("\nPress any key to continue");
                     Console.ReadLine();
                     break;
-                case "4":
-                    // list all playlists
+                case "4": // list all playlists
                     Playlists.List();
                     break;
-                case "5":
+                case "5": // play other playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
                     string playlistNameToPlay = Console.ReadLine();
                     if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
@@ -843,25 +735,22 @@ class Program
                     Playlists.Play(playlistNameToPlay);
                     running = false;
                     break;
-                case "6":
+                case "6": // save/replace playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
                     string playlistNameToSave = Console.ReadLine();
                     if (playlistNameToSave == "" || playlistNameToSave == null) { break; }
                     // save playlist
                     Playlists.Save(playlistNameToSave, songs);
                     break;
-                case "7":
+                case "7": // goto song in playlist
                     AnsiConsole.Markup("\nEnter song to goto: ");
                     string songToGoto = Console.ReadLine();
                     if (songToGoto == "" || songToGoto == null) { break; }
                     // goto song in playlist
-                    if (songs.Contains(songToGoto))
-                    {
+                    if (songs.Contains(songToGoto)) {
                         running = false;
                         gotoSong = Array.IndexOf(songs, songToGoto);
-                    }
-                    else
-                    {
+                    } else {
                         AnsiConsole.WriteLine("Song not in playlist");
                     }
                     break;
@@ -869,8 +758,7 @@ class Program
         }
     }
 
-    static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream)
-    {
+    static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream) {
         if (state == "playing")
         {
             // if not initialized
