@@ -30,6 +30,7 @@ class Program
     static public bool isShuffle = JammerFolder.GetIsShuffle();
     static public string[] oldArgs = {""};
     static public string deleteSong = "";
+    static bool nextOrPrevSong = false;
     static int gotoSong = -100;
 
     static public void Main(string[] args){
@@ -246,14 +247,6 @@ class Program
                 outputDevice.Volume = volume;
             }
 
-            // // delete song from playlist
-            // if (deleteSong != "")
-            // {
-            //     List<string> songList = songs.ToList();
-            //     songList.Remove(deleteSong);
-            //     songs = songList.ToArray();
-            //     deleteSong = "";
-            // }
             while (running){
                 // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                 if (outputDevice != null && audioStream != null)
@@ -277,8 +270,7 @@ class Program
                         if (isLoop){
                             audioStream.Position = 0;
                         }
-                        else
-                        {
+                        else {
                             if (songs != null && songs.Length > 1){
                                 running = false;
                             }
@@ -336,7 +328,7 @@ class Program
                 songs = songList.ToArray();
                 deleteSong = "";
             }
-            if (isShuffle) { // if shuffle
+            if (isShuffle && !nextOrPrevSong) { // if shuffle
                 if (songs.Length > 1){
                     // get random song that isn't the current song
                     Random rnd = new Random();
@@ -349,10 +341,12 @@ class Program
                     }
                     currentSongArgs = randomSong;
                     audioFilePath = songs[currentSongArgs];
+                    nextOrPrevSong = false;
                     Main(songs);
                 } else { // if only one song
                     currentSongArgs = 0;
                     audioFilePath = songs[currentSongArgs];
+                    nextOrPrevSong = false;
                     Main(songs);
                 }
             }
@@ -496,12 +490,14 @@ class Program
                 if (outputDevice == null || audioStream == null) { break; }
                 if (songs.Length == 1) { break; }
                 wantPreviousSong = false;
+                nextOrPrevSong = true;
                 running = false;
                 break;
             case ConsoleKey.P: // previous song
                 if (outputDevice == null || audioStream == null) { break; }
                 if (songs.Length == 1) { break;}
                 wantPreviousSong = true;
+                nextOrPrevSong = true;
                 running = false;
                 break;
             case ConsoleKey.R: // shuffle
