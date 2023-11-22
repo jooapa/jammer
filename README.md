@@ -34,6 +34,7 @@ jammer selfdestruct // deletes jammer
 | `r` | play in random song |
 | `h` | show/hide help |
 | `c` | show/hide settings |
+| `f` | show/hide playlist view |
 | `n` | next song in playlist |
 | `p` | previous song in playlist |
 | `F2` | show playlist options |

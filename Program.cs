@@ -534,6 +534,9 @@ class Program
                     case "fakePlayer":
                         textRenderedType = "help";
                         break;
+                    case "playlist":
+                        textRenderedType = "help";
+                        break;
                 }
                 break;
             case ConsoleKey.C: //settings
@@ -553,6 +556,26 @@ class Program
                         break;
                     case "fakePlayer":
                         textRenderedType = "settings";
+                        break;
+                    case "playlist":
+                        textRenderedType = "settings";
+                        break;
+                }
+                break;
+            case ConsoleKey.F: // show playlist textRenderedType = "playlist";
+                if (outputDevice == null) { textRenderedType = "fakePlayer"; break;}
+                switch (textRenderedType) {
+                    case "playlist":
+                        textRenderedType = "normal";
+                        break;
+                    case "help":
+                        textRenderedType = "playlist";
+                        break;
+                    case "normal":
+                        textRenderedType = "playlist";
+                        break;
+                    case "fakePlayer":
+                        textRenderedType = "playlist";
                         break;
                 }
                 break;
@@ -656,7 +679,7 @@ class Program
             AnsiConsole.Markup("\nEnter playlist command: \n");
             AnsiConsole.MarkupLine("[grey]1. add song to playlist[/]");
             AnsiConsole.MarkupLine("[grey]2. delete song current song from playlist[/]");
-            AnsiConsole.MarkupLine("[grey]3. show songs in playlist[/]");
+            AnsiConsole.MarkupLine("[grey]3. show songs in other playlist[/]");
             AnsiConsole.MarkupLine("[grey]4. list all playlists[/]");
             AnsiConsole.MarkupLine("[grey]5. play other playlist[/]");
             AnsiConsole.MarkupLine("[grey]6. save/replace playlist[/]");
@@ -725,6 +748,8 @@ class Program
                     break;
                 case "4": // list all playlists
                     Playlists.List();
+                    AnsiConsole.Markup("\nPress any key to continue");
+                    Console.ReadLine();
                     break;
                 case "5": // play other playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");

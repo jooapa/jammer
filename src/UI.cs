@@ -10,13 +10,14 @@ namespace jammer
         static bool updatedSongList = false;
         static bool updatedSettings = false;
         static bool updatedHelp = false;
+        static bool updatedPlaylist = false;
         static int songListTimes = 0;
         static int times = 0;
         static public int refreshTimes = JammerFolder.GetRefreshTimes();
         static public void Ui(WaveOutEvent outputDevice)
         {
             var help = new Table();
-            if (!updated || !updatedSongList || updatedSettings || updatedHelp) {
+            if (!updated || !updatedSongList || updatedSettings || updatedHelp || updatedPlaylist) {
                 if (Program.textRenderedType == "normal")
                 {
                     string loopText = Program.isLoop ? "True" : "False";
@@ -28,36 +29,58 @@ namespace jammer
                     {
                         string? item = Program.songs[i];
                         
-                        // if soundcloud url
-                        if (URL.IsSoundCloudUrlValid(item))
+                        // show current previous, current and next song
+                        if (i == Program.currentSongArgs - 1 || i == Program.currentSongArgs || i == Program.currentSongArgs + 1)
                         {
-                            songList += "[link]";
-                        }
+                            // if soundcloud url
+                            if (URL.IsSoundCloudUrlValid(item))
+                            {
+                                songList += "[link]";
+                            }
 
-                        if (i == Program.currentSongArgs)
-                        {
-                            if (outputDevice.PlaybackState == PlaybackState.Playing)
+                            if (i == Program.currentSongArgs)
                             {
-                                songList += "[green]";
+                                if (outputDevice.PlaybackState == PlaybackState.Playing)
+                                {
+                                    songList += "[green]";
+                                }
+                                else
+                                {
+                                    songList += "[yellow]";
+                                }
                             }
-                            else
+                            if (i == Program.currentSongArgs - 1)
                             {
-                                songList += "[yellow]";
+                                songList += "[grey]previous:[/] "; // add previous text
                             }
+                            if (i == Program.currentSongArgs)
+                            {
+                                songList += "[grey]current: [/] "; // add current text
+                            }
+                            if (i == Program.currentSongArgs + 1)
+                            {
+                                songList += "[grey]next:    [/] "; // add next text
+                            }
+
+                            songList += item;
+                            if (i == Program.currentSongArgs - 1) {
+                            }
+                            if (i == Program.currentSongArgs)
+                            {
+                                songList += "[/]"; // close color tag
+                            }
+                            if (URL.IsSoundCloudUrlValid(item))
+                            {
+                                songList += "[/]"; // close link tag
+                            }
+                            songList += "\n";
                         }
-                        songList += item;
-                        if (i == Program.currentSongArgs)
+                        // remove one \n last
+                        if (i == Program.songs.Length - 1)
                         {
-                            songList += "[/]"; // close color tag
+                            songList = songList.Remove(songList.Length - 1);
                         }
-                        if (URL.IsSoundCloudUrlValid(item))
-                        {
-                            songList += "[/]"; // close link tag
-                        }
-                        songList += "\n";
                     }
-                    songList = "Playlist:\n" + songList;
-
                     // currentPositionInSeconds
                     int cupMinutes = (int)(Program.currentPositionInSeconds / 60);
                     int cupSeconds = (int)(Program.currentPositionInSeconds % 60);
@@ -69,7 +92,7 @@ namespace jammer
                     var table = new Table();
 
                     tableJam.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
-                    if (Program.songs.Length != 1) {
+                    if (Program.songs.Length != 1) { // if more than one song
                         tableJam.AddRow(songList);
                     }
 
@@ -86,6 +109,7 @@ namespace jammer
                     AnsiConsole.Write(table);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
                     updated = true;
                     updatedSongList = true;
                 }
@@ -127,7 +151,9 @@ namespace jammer
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(settings);
-                    AnsiConsole.Markup("Press [yellow]c[/] to hide settings");
+                    AnsiConsole.Markup("Press [red]h[/] for help");
+                    AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
+                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
                     updatedSettings = false;
                 }
                 else if (Program.textRenderedType == "fakePlayer") {
@@ -156,6 +182,55 @@ namespace jammer
                     AnsiConsole.Write(table);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
+                }
+                else if (Program.textRenderedType == "playlist" && updatedPlaylist)
+                {
+                    songList = "";
+                    for (int i = 0; i < Program.songs.Length; i++)
+                    {
+                        string? item = Program.songs[i];
+
+                        // if soundcloud url
+                        if (URL.IsSoundCloudUrlValid(item))
+                        {
+                            songList += "[link]";
+                        }
+
+                        if (i == Program.currentSongArgs)
+                        {
+                            if (outputDevice.PlaybackState == PlaybackState.Playing)
+                            {
+                                songList += "[green]";
+                            }
+                            else
+                            {
+                                songList += "[yellow]";
+                            }
+                        }
+                        songList += item;
+                        if (i == Program.currentSongArgs)
+                        {
+                            songList += "[/]"; // close color tag
+                        }
+                        if (URL.IsSoundCloudUrlValid(item))
+                        {
+                            songList += "[/]"; // close link tag
+                        }
+                        songList += "\n";
+                    }
+
+                    AnsiConsole.Clear();
+
+                    var playlist = new Table();
+                    playlist.AddColumn("♫ Jamming to: " + Program.audioFilePath + " ♫");
+                    playlist.AddRow(songList);
+
+                    AnsiConsole.Write(playlist);
+                    AnsiConsole.Markup("Press [red]h[/] for help");
+                    AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                    AnsiConsole.Markup("\nPress [green]F[/] to hide playlist");
+                    updatedPlaylist = false;
                 }
             }
         }
@@ -196,6 +271,12 @@ namespace jammer
                 updatedHelp = true;
                 return;
             }
+            else if (Program.textRenderedType == "playlist")
+            {
+                updatedPlaylist = true;
+                return;
+            }
+            else
             if (Program.textRenderedType == "FakePlayer")
             {
                 return;

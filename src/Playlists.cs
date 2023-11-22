@@ -187,16 +187,15 @@ namespace jammer
                 // y/n prompt
                 if (Console.ReadLine() == "y")
                 {
-                    System.IO.File.Create(playlistPath);
+                    System.IO.File.Delete(playlistPath);
+                    System.IO.File.WriteAllLines(playlistPath, songs);
                 }
             }
-            System.IO.File.Delete(playlistPath);
-            System.IO.File.WriteAllLines(playlistPath, songs);
         }
 
         static public void List()
         {
-            Console.WriteLine("Listing playlists");
+            Console.WriteLine("Listing playlists: ");
             string[] playlists = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/");
             foreach (string playlist in playlists)
             {
