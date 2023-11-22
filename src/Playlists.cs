@@ -191,6 +191,10 @@ namespace jammer
                     System.IO.File.WriteAllLines(playlistPath, songs);
                 }
             }
+            else
+            {
+                System.IO.File.WriteAllLines(playlistPath, songs);
+            }
         }
 
         static public void List()

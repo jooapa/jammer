@@ -1,6 +1,7 @@
 # jammer 
 
-![banner](https://raw.githubusercontent.com/jooapa/signal-jammer/412b81208a1b783fd0034d5a23b43a223c80e51b/images/banner.png)
+![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/banner.gif)
+
 ## Play songs from cli
 
 ### Usage
@@ -9,6 +10,7 @@ jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
 jammer soundcloud.com/username/sets/playlist-name
 jammer start // opens jammer folder
+jammer playlist // playlist controls
 jammer selfdestruct // deletes jammer
 ```
 
