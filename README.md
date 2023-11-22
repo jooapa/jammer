@@ -1,6 +1,6 @@
 # jammer 
 
-![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/banner.gif)
+![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/jammer.gif)
 
 ## Play songs from cli
 
