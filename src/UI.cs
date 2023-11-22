@@ -32,6 +32,19 @@ namespace jammer
                         // show current previous, current and next song
                         if (i == Program.currentSongArgs - 1 || i == Program.currentSongArgs || i == Program.currentSongArgs + 1)
                         {
+                            if (i == Program.currentSongArgs - 1)
+                            {
+                                songList += "[grey]previous:[/] "; // add previous text
+                            }
+                            if (i == Program.currentSongArgs)
+                            {
+                                songList += "[grey]current: [/] "; // add current text
+                            }
+                            if (i == Program.currentSongArgs + 1)
+                            {
+                                songList += "[grey]next:    [/] "; // add next text
+                            }
+                            
                             // if soundcloud url
                             if (URL.IsSoundCloudUrlValid(item))
                             {
@@ -48,18 +61,6 @@ namespace jammer
                                 {
                                     songList += "[yellow]";
                                 }
-                            }
-                            if (i == Program.currentSongArgs - 1)
-                            {
-                                songList += "[grey]previous:[/] "; // add previous text
-                            }
-                            if (i == Program.currentSongArgs)
-                            {
-                                songList += "[grey]current: [/] "; // add current text
-                            }
-                            if (i == Program.currentSongArgs + 1)
-                            {
-                                songList += "[grey]next:    [/] "; // add next text
                             }
 
                             songList += item;
