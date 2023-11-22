@@ -53,7 +53,7 @@ namespace jammer
             return Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
         }
 
-        static bool IsUrl(string input)
+        static public bool IsUrl(string input)
         {
             if (input == null)
             {

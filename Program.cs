@@ -10,7 +10,7 @@ class Program
     static public bool isLoop = JammerFolder.GetIsLoop();
     static public bool isMuted = JammerFolder.GetIsMuted();
     static public float oldVolume = JammerFolder.GetOldVolume();
-    static bool running = false;
+    static public bool running = false;
     static public string audioFilePath = "";
     static public double currentPositionInSeconds = 0.0;
     static double positionInSeconds = 0.0;
@@ -28,106 +28,128 @@ class Program
     static public int rewindSeconds = JammerFolder.GetRewindSeconds();
     static public float changeVolumeBy = JammerFolder.GetChangeVolumeBy();
     static public bool isShuffle = JammerFolder.GetIsShuffle();
-    static public string[] oldArgs = {""};
-    static public string deleteSong = "";
-    static bool nextOrPrevSong = false;
-    static int gotoSong = -100;
+    static public string[] oldArgs = {""}; // used to store old args, used in the soundcloud playlist check
+    static public string deleteSong = ""; // used to delete song from playlist
+    static bool nextOrPrevSong = false; // used to skip shuffle check, so can press N and P to go to next and previous song without suffling
+    static bool randomNextSong = false; // used in pressing R to randomize next song
+    static bool nextSong = false; // used to check if next song is called from Controls() or Main()
+    static int gotoSong = -100; // used to goto song in playlist
 
     static public void Main(string[] args){
-
+        Console.WriteLine("Jammer v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+        Console.WriteLine(args.Length);
         JammerFolder.CheckJammerFolderExists();
+        if (args.Length > 0) {
+            if (args[0] == "start") {
+                AnsiConsole.WriteLine("Starting Jammer folder...");
+                JammerFolder.OpenJammerFolder();
+                return;
+            }
+
+            if (args[0] == "playlist") {
+                if (args.Length < 2){
+                    AnsiConsole.WriteLine("No playlist command given");
+                }
+                else
+                {
+                    switch (args[1]){
+                        case "play":
+                            if (args.Length < 3){
+                                AnsiConsole.WriteLine("No playlist name given");
+                                return;
+                            }
+                            Playlists.Play(args[2]);
+                            return;
+                        case "create":
+                            if (args.Length < 3){
+                                AnsiConsole.WriteLine("No playlist name given");
+                                return;
+                            }
+                            Playlists.Create(args[2]);
+                            return;
+                        case "delete":
+                            if (args.Length < 3){
+                                AnsiConsole.WriteLine("No playlist name given");
+                                return;
+                            }
+                            Playlists.Delete(args[2]);
+                            return;
+                        case "add":
+                            if (args.Length < 4){
+                                AnsiConsole.WriteLine("No playlist name or song given");
+                                return;
+                            }
+                            Playlists.Add(args);
+                            return;
+                        case "remove":
+                            if (args.Length < 4){
+                                AnsiConsole.WriteLine("No playlist name or song given");
+                                return;
+                            }
+                            Playlists.Remove(args);
+                            return;
+                        case "show":
+                            if (args.Length < 3){
+                                AnsiConsole.WriteLine("No playlist name given");
+                                return;
+                            }
+                            Playlists.Show(args[2]);
+                            return;
+                        case "list":
+                            Playlists.List();
+                            return;
+                    }
+                }
+
+                var table = new Table();
+                table.AddColumn("Commands");
+                table.AddColumn("Description");
+
+                table.AddRow("jammer playlist play <name>", "Play playlist");
+                table.AddRow("jammer playlist create <name>", "Create playlist");
+                table.AddRow("jammer playlist delete <name>", "Delete playlist");
+                table.AddRow("jammer playlist add <name> <song> ...", "Add songs to playlist");
+                table.AddRow("jammer playlist remove <name> <song> ...", "Remove songs from playlist");
+                table.AddRow("jammer playlist show <name>", "Show songs in playlist");
+                table.AddRow("jammer playlist list", "List all playlists");
+
+                AnsiConsole.Write(table);
+                return;
+            }
+            
+            if (args[0] == "selfdestruct") {
+                AnsiConsole.WriteLine("Self destructing Jammer :(");
+                // if on windows run Uninstall.exe on the current directory whwre jammer.exe is
+                if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT){
+                    System.Diagnostics.Process.Start("Uninstall.exe");
+                    Environment.Exit(0);
+                }
+                return;
+            }
+
+            // for loop to check if args in args exists, if not remove it
+            for (int i = 0; i < args.Length; i++) {
+                string item = args[i];
+                if (!File.Exists(item) && !AbsolutefyPath.IsUrl(item)) {
+                    // remove item from args
+                    string[] newArgs = new string[args.Length - 1];
+                    int index = 0;
+                    for (int j = 0; j < args.Length; j++) {
+                        if (j != i) {
+                            newArgs[index] = args[j];
+                            index++;
+                        }
+                    }
+                    args = newArgs;
+                }
+            }
+        }
         if (args.Length == 0){
-            AnsiConsole.WriteLine("No songs given");
+            AnsiConsole.WriteLine("No songs");
             ConstrolsWithoutSongs();
             return;
         }
 
-        if (args[0] == "start"){
-            AnsiConsole.WriteLine("Starting Jammer folder...");
-            JammerFolder.OpenJammerFolder();
-            return;
-        }
-
-        if (args[0] == "playlist"){
-            if (args.Length < 2){
-                AnsiConsole.WriteLine("No playlist command given");
-            }
-            else
-            {
-                switch (args[1]){
-                    case "play":
-                        if (args.Length < 3){
-                            AnsiConsole.WriteLine("No playlist name given");
-                            return;
-                        }
-                        Playlists.Play(args[2]);
-                        return;
-                    case "create":
-                        if (args.Length < 3){
-                            AnsiConsole.WriteLine("No playlist name given");
-                            return;
-                        }
-                        Playlists.Create(args[2]);
-                        return;
-                    case "delete":
-                        if (args.Length < 3){
-                            AnsiConsole.WriteLine("No playlist name given");
-                            return;
-                        }
-                        Playlists.Delete(args[2]);
-                        return;
-                    case "add":
-                        if (args.Length < 4){
-                            AnsiConsole.WriteLine("No playlist name or song given");
-                            return;
-                        }
-                        Playlists.Add(args);
-                        return;
-                    case "remove":
-                        if (args.Length < 4){
-                            AnsiConsole.WriteLine("No playlist name or song given");
-                            return;
-                        }
-                        Playlists.Remove(args);
-                        return;
-                    case "show":
-                        if (args.Length < 3){
-                            AnsiConsole.WriteLine("No playlist name given");
-                            return;
-                        }
-                        Playlists.Show(args[2]);
-                        return;
-                    case "list":
-                        Playlists.List();
-                        return;
-                }
-            }
-
-            var table = new Table();
-            table.AddColumn("Commands");
-            table.AddColumn("Description");
-
-            table.AddRow("jammer playlist play <name>", "Play playlist");
-            table.AddRow("jammer playlist create <name>", "Create playlist");
-            table.AddRow("jammer playlist delete <name>", "Delete playlist");
-            table.AddRow("jammer playlist add <name> <song> ...", "Add songs to playlist");
-            table.AddRow("jammer playlist remove <name> <song> ...", "Remove songs from playlist");
-            table.AddRow("jammer playlist show <name>", "Show songs in playlist");
-            table.AddRow("jammer playlist list", "List all playlists");
-
-            AnsiConsole.Write(table);
-            return;
-        }
-        
-        if (args[0] == "selfdestruct"){
-            AnsiConsole.WriteLine("Self destructing Jammer :(");
-            // if on windows run Uninstall.exe on the current directory whwre jammer.exe is
-            if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT){
-                System.Diagnostics.Process.Start("Uninstall.exe");
-                Environment.Exit(0);
-            }
-            return;
-        }
         
         if (args.Length > 1) {
             // if old args is not empty, add them to args
@@ -299,13 +321,13 @@ class Program
                 }
             }
             // AnsiConsole.Clear();
-            AnsiConsole.WriteLine("Stopped");
+            AnsiConsole.WriteLine("\nStopped");
         }
         catch (Exception ex){
             AnsiConsole.WriteException(ex);
         }
 
-        // --------- NEXT SONG ---------
+        // --------- NEXT SONG --------------------------------------------------------------------------
         cantDo = true; // used that you cant spam Controls() with multiple threads
         if (gotoSong != -100) { // if goto song, used in playlist
             currentSongArgs = gotoSong - 1;
@@ -321,14 +343,32 @@ class Program
             AnsiConsole.WriteException(ex);
         }
 
-        if (outputDevice != null) {
+        if (outputDevice != null && !nextSong) {
             if (deleteSong != ""){
+                // if there is only one song left
+                if (songs.Length == 1){
+                    songs = new string[]{""};
+                    deleteSong = "";
+                    currentSongArgs = 0;
+                    audioFilePath = "";
+                    Main(songs);
+                    cantDo = false;
+                    return;
+                }
                 List<string> songList = songs.ToList();
                 songList.Remove(deleteSong);
                 songs = songList.ToArray();
+                currentSongArgs--;
+                if (currentSongArgs < 0){
+                    currentSongArgs++;
+                }
                 deleteSong = "";
+                Main(songs);
+                cantDo = false;
+                return;
             }
-            if (isShuffle && !nextOrPrevSong) { // if shuffle
+            
+            if (isShuffle && !nextOrPrevSong || randomNextSong) { // if shuffle
                 if (songs.Length > 1){
                     // get random song that isn't the current song
                     Random rnd = new Random();
@@ -341,16 +381,17 @@ class Program
                     }
                     currentSongArgs = randomSong;
                     audioFilePath = songs[currentSongArgs];
-                    nextOrPrevSong = false;
+                    randomNextSong = false;
                     Main(songs);
                 } else { // if only one song
                     currentSongArgs = 0;
                     audioFilePath = songs[currentSongArgs];
-                    nextOrPrevSong = false;
+                    randomNextSong = false;
                     Main(songs);
                 }
             }
             else {
+                nextOrPrevSong = false;
                 if (wantPreviousSong) { // if previous song
                     wantPreviousSong = false;
                     if (songs.Length > 1) { // if more than one song
@@ -384,6 +425,7 @@ class Program
                 }
             }
         }
+        nextSong = true;
         cantDo = false;
     }
 
@@ -502,14 +544,7 @@ class Program
                 break;
             case ConsoleKey.R: // shuffle
                 if (outputDevice == null || audioStream == null) { break; }
-                if (songs.Length == 1) { break; }
-                Random rnd = new Random();
-                int randomSong = rnd.Next(0, songs.Length);
-                while (currentSongArgs == randomSong) {
-                    randomSong = rnd.Next(0, songs.Length);
-                }
-                currentSongArgs = randomSong - 1;
-                audioFilePath = songs[currentSongArgs];
+                randomNextSong = true; // this skips the shuffle check so it doesnt randomize two times
                 running = false;
                 break;
             case ConsoleKey.H: // help
@@ -565,6 +600,9 @@ class Program
                         textRenderedType = "normal";
                         break;
                     case "help":
+                        textRenderedType = "playlist";
+                        break;
+                    case "settings":
                         textRenderedType = "playlist";
                         break;
                     case "normal":
@@ -623,7 +661,8 @@ class Program
                 break;
             case ConsoleKey.D1: // set refresh rate
                 AnsiConsole.Markup("\nEnter refresh rate [grey](50 is about 1 sec)[/]: ");
-                string refreshRate = Console.ReadLine();
+                string? refreshRate = Console.ReadLine();
+                if (refreshRate == "" || refreshRate == null) { break; }
                 try {
                     int refreshRateInt = int.Parse(refreshRate);
                     UI.refreshTimes = refreshRateInt;
@@ -634,7 +673,8 @@ class Program
                 break;
             case ConsoleKey.D2: // set forward seconds
                 AnsiConsole.Markup("\nEnter forward seconds: ");
-                string forwardSecondsString = Console.ReadLine();
+                string? forwardSecondsString = Console.ReadLine();
+                if (forwardSecondsString == "" || forwardSecondsString == null) { break; }
                 try {
                     int forwardSecondsInt = int.Parse(forwardSecondsString);
                     forwardSeconds = forwardSecondsInt;
@@ -645,7 +685,8 @@ class Program
                 break;
             case ConsoleKey.D3: // set rewind seconds
                 AnsiConsole.Markup("\nEnter rewind seconds: ");
-                string rewindSecondsString = Console.ReadLine();
+                string? rewindSecondsString = Console.ReadLine();
+                if (rewindSecondsString == "" || rewindSecondsString == null) { break; }
                 try {
                     int rewindSecondsInt = int.Parse(rewindSecondsString);
                     rewindSeconds = rewindSecondsInt;
@@ -656,7 +697,8 @@ class Program
                 break;
             case ConsoleKey.D4: // set change volume by
                 AnsiConsole.Markup("\nEnter change volume by: ");
-                string changeVolumeByString = Console.ReadLine();
+                string? changeVolumeByString = Console.ReadLine();
+                if (changeVolumeByString == "" || changeVolumeByString == null) { break; }
                 try {
                     float changeVolumeByFloat = float.Parse(changeVolumeByString) / 100;
                     changeVolumeBy = changeVolumeByFloat;
@@ -680,14 +722,14 @@ class Program
             AnsiConsole.MarkupLine("[grey]5. play other playlist[/]");
             AnsiConsole.MarkupLine("[grey]6. save/replace playlist[/]");
             AnsiConsole.MarkupLine("[grey]7. goto song in playlist[/]");
+            AnsiConsole.MarkupLine("[grey]8. suffle playlist[/]");
 
-            string playlistInput = "";
-            playlistInput = Console.ReadLine();
+            string? playlistInput = Console.ReadLine();
             if (playlistInput == "" || playlistInput == null) { return; }
             switch (playlistInput) {
                 case "1": // add song to playlist
                     AnsiConsole.Markup("\nEnter song to add to playlist: ");
-                    string songToAdd = Console.ReadLine();
+                    string? songToAdd = Console.ReadLine();
                     if (songToAdd == "" || songToAdd == null) { break; }
                     // remove "" from start and end
                     if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\"")) {
@@ -722,6 +764,7 @@ class Program
                     }
                     break;
                 case "2": // delete current song from playlist
+                    if (outputDevice == null) { break; }
                     deleteSong = "";
                     if (currentSongArgs < songs.Length) {
                         deleteSong = songs[currentSongArgs];
@@ -735,7 +778,7 @@ class Program
                     break;
                 case "3": // show songs in playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
-                    string playlistNameToShow = Console.ReadLine();
+                    string? playlistNameToShow = Console.ReadLine();
                     if (playlistNameToShow == "" || playlistNameToShow == null) { break; }
                     // show songs in playlist
                     Playlists.Show(playlistNameToShow);
@@ -749,24 +792,43 @@ class Program
                     break;
                 case "5": // play other playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
-                    string playlistNameToPlay = Console.ReadLine();
+                    string? playlistNameToPlay = Console.ReadLine();
                     if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
                     // play other playlist
-                    // SetState(outputDevice, "stopped", null);
-                    Playlists.Play(playlistNameToPlay);
+                    if (outputDevice != null) {
+                        SetState(outputDevice, "stopped", null);
+                    }
+                    else {
+                        isPlaying = false;
+                        textRenderedType = "normal";
+                    }
+                    nextSong = false;
                     running = false;
+                    Playlists.Play(playlistNameToPlay);
                     break;
                 case "6": // save/replace playlist
                     AnsiConsole.Markup("\nEnter playlist name: ");
-                    string playlistNameToSave = Console.ReadLine();
+                    string? playlistNameToSave = Console.ReadLine();
                     if (playlistNameToSave == "" || playlistNameToSave == null) { break; }
                     // save playlist
                     Playlists.Save(playlistNameToSave, songs);
                     break;
                 case "7": // goto song in playlist
                     AnsiConsole.Markup("\nEnter song to goto: ");
-                    string songToGoto = Console.ReadLine();
+                    string? songToGoto = Console.ReadLine();
                     if (songToGoto == "" || songToGoto == null) { break; }
+                    if (AbsolutefyPath.IsUrl(songToGoto)) {
+                        // replave " "
+                        songToGoto = songToGoto.Replace(" ", "");
+                    }
+                    // if gotoSong starts with space, remove it
+                    if (songToGoto.StartsWith(" ")) {
+                        songToGoto = songToGoto.Substring(1, songToGoto.Length - 1);
+                    }
+                    if (songToGoto.EndsWith(" "))
+                    {
+                        songToGoto = songToGoto.Substring(0, songToGoto.Length - 1);
+                    }
                     // goto song in playlist
                     if (songs.Contains(songToGoto)) {
                         running = false;
@@ -775,6 +837,20 @@ class Program
                         AnsiConsole.WriteLine("Song not in playlist");
                     }
                     break;
+                case "8": // suffle playlist ( randomize )
+                    // get the name of the current song
+                    string currentSong = songs[currentSongArgs];
+                    // suffle playlist
+                    songs = songs.OrderBy(x => Guid.NewGuid()).ToArray();
+                    // set currentsongargs to the current song
+                    // delete duplicates
+                    songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
+                    songs = new HashSet<string>(songs).ToArray();
+
+                    currentSongArgs = Array.IndexOf(songs, currentSong);
+                    // set audioFilePath to the current song
+                    audioFilePath = songs[currentSongArgs];
+                    break;  
             }
         }
     }

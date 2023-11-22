@@ -24,6 +24,10 @@ namespace jammer
                     System.IO.File.Create(playlistPath);
                 }
             }
+            else
+            {
+                System.IO.File.Create(playlistPath);
+            }
         }
 
         static public void Play(string playlist)
@@ -38,9 +42,14 @@ namespace jammer
                 {
                     // remove all \n from song
                     string songPath = song.Replace("\n", "");
+                    Console.WriteLine("Playing " + song);
                 }
-                Program.textRenderedType = "normal";
+                // Console.ReadLine();
+                if (Program.textRenderedType == "fakePlayer") {
+                    Program.textRenderedType = "player";
+                }
                 UI.Update();
+                Program.currentSongArgs = 0;
                 Program.Main(songs);
             }
             else
@@ -167,6 +176,10 @@ namespace jammer
             if (System.IO.File.Exists(playlistPath))
             {
                 string[] songs = System.IO.File.ReadAllLines(playlistPath);
+                if (songs.Length == 0)
+                {
+                    AnsiConsole.MarkupLine("[red]Playlist is empty[/]");
+                }
                 foreach (string song in songs)
                 {
                     AnsiConsole.MarkupLine("[green]" + song + "[/]");

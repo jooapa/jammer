@@ -38,11 +38,11 @@ namespace jammer
                             }
                             if (i == Program.currentSongArgs)
                             {
-                                songList += "[grey]current: [/] "; // add current text
+                                songList += "[grey]current :[/] "; // add current text
                             }
                             if (i == Program.currentSongArgs + 1)
                             {
-                                songList += "[grey]next:    [/] "; // add next text
+                                songList += "[grey]next    :[/] "; // add next text
                             }
                             
                             // if soundcloud url
@@ -110,7 +110,7 @@ namespace jammer
                     AnsiConsole.Write(table);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
+                    AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
                     updated = true;
                     updatedSongList = true;
                 }
@@ -154,7 +154,7 @@ namespace jammer
                     AnsiConsole.Write(settings);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
-                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
+                    AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
                     updatedSettings = false;
                 }
                 else if (Program.textRenderedType == "fakePlayer") {
@@ -183,7 +183,7 @@ namespace jammer
                     AnsiConsole.Write(table);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-                    AnsiConsole.Markup("\nPress [green]F[/] to show playlist");
+                    AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
                 }
                 else if (Program.textRenderedType == "playlist" && updatedPlaylist)
                 {
@@ -230,7 +230,7 @@ namespace jammer
                     AnsiConsole.Write(playlist);
                     AnsiConsole.Markup("Press [red]h[/] for help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-                    AnsiConsole.Markup("\nPress [green]F[/] to hide playlist");
+                    AnsiConsole.Markup("\nPress [green]f[/] to hide playlist");
                     updatedPlaylist = false;
                 }
             }
