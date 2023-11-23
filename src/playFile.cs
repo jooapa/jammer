@@ -1,11 +1,13 @@
 ﻿using NAudio.Wave;
 using System.Diagnostics;
+using NAudio.Wave.SampleProviders;
+
 
 namespace jammer
 {
     internal class playFile
     {
-    static public Thread thread;
+    static public Thread? thread;
 
         static public void StopThread()
         {
@@ -13,10 +15,12 @@ namespace jammer
         }
         static public void PlayWav(string audioFilePath, float volume, bool running)
         {
-            using (var reader = new WaveFileReader(audioFilePath))
+            using (var inputstream = new FileStream(audioFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var reader = new WaveFileReader(inputstream))
+            using (var waveChannel = new WaveChannel32(reader))
             using (var outputDevice = new WaveOutEvent())
             {
-                outputDevice.Init(reader);
+                outputDevice.Init(waveChannel);
                 outputDevice.Play();
 
                 // Handle key events for volume adjustment
@@ -34,7 +38,7 @@ namespace jammer
 
         static public void PlayMp3(string audioFilePath, float volume, bool running)
         {
-            using (var reader = new Mp3FileReader(audioFilePath))
+            using (var reader = new MediaFoundationReader(audioFilePath))
             using (var outputDevice = new WaveOutEvent())
             {
                 outputDevice.Init(reader);
@@ -101,6 +105,16 @@ namespace jammer
 
                 ManualResetEvent manualEvent = new ManualResetEvent(false);
                 manualEvent.WaitOne();
+            }
+        }
+
+        static public void ConvertAudio(string inputFilePath, string outputFilePath, int targetSampleRate)
+        {
+            // remove sample rate changes from .mp3 file
+            using (var reader = new MediaFoundationReader(inputFilePath))
+            {
+                var resampler = new MediaFoundationResampler(reader, new WaveFormat(targetSampleRate, reader.WaveFormat.Channels));
+                WaveFileWriter.CreateWaveFile(outputFilePath, resampler);
             }
         }
     }

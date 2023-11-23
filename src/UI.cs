@@ -46,7 +46,7 @@ namespace jammer
                             }
                             
                             // if soundcloud url
-                            if (URL.IsSoundCloudUrlValid(item))
+                            if (URL.IsUrl(item))
                             {
                                 songList += "[link]";
                             }
@@ -70,7 +70,7 @@ namespace jammer
                             {
                                 songList += "[/]"; // close color tag
                             }
-                            if (URL.IsSoundCloudUrlValid(item))
+                            if (URL.IsUrl(item))
                             {
                                 songList += "[/]"; // close link tag
                             }
@@ -131,13 +131,13 @@ namespace jammer
                     help.AddRow("P", "Previous song");
                     help.AddRow("N", "Next song");
                     help.AddRow("R", "Play random song");
-                    help.AddRow("O", "Add song to playlist");
                     help.AddRow("F2", "Show playlist options");
 
                     AnsiConsole.Clear();
                     AnsiConsole.Write(help);
                     AnsiConsole.Markup("Press [red]h[/] to hide help");
                     AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+                    AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
                     updatedHelp = false;
                 }
                 else if (Program.textRenderedType == "settings" && updatedSettings) {
@@ -193,7 +193,7 @@ namespace jammer
                         string? item = Program.songs[i];
 
                         // if soundcloud url
-                        if (URL.IsSoundCloudUrlValid(item))
+                        if (URL.IsUrl(item))
                         {
                             songList += "[link]";
                         }
@@ -214,7 +214,7 @@ namespace jammer
                         {
                             songList += "[/]"; // close color tag
                         }
-                        if (URL.IsSoundCloudUrlValid(item))
+                        if (URL.IsUrl(item))
                         {
                             songList += "[/]"; // close link tag
                         }

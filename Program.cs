@@ -127,10 +127,10 @@ class Program
                 return;
             }
 
-            // for loop to check if args in args exists, if not remove it
+            // for loop to check if args in args exists, if not remove it, used to remove songs that doesnt exist
             for (int i = 0; i < args.Length; i++) {
                 string item = args[i];
-                if (!File.Exists(item) && !AbsolutefyPath.IsUrl(item)) {
+                if (!File.Exists(item) && !URL.IsUrl(item)) {
                     // remove item from args
                     string[] newArgs = new string[args.Length - 1];
                     int index = 0;
@@ -148,9 +148,7 @@ class Program
             AnsiConsole.WriteLine("No songs");
             ConstrolsWithoutSongs();
             return;
-        }
-
-        
+        }   
         if (args.Length > 1) {
             // if old args is not empty, add them to args
             if (oldArgs[0] != "") {
@@ -244,14 +242,14 @@ class Program
         try{
             WaveStream audioStream;
             running = true;
-            if (reader is WaveStream){
+            if (reader is WaveStream) {
                 audioStream = (WaveStream)reader;
             }
-            else{
+            else {
                 audioStream = null;
             }
 
-            if (audioStream == null){
+            if (audioStream == null) {
                 // Handle the case where the reader is not a WaveStream.
                 return;
             }
@@ -284,7 +282,7 @@ class Program
                     catch (Exception ex){
                         AnsiConsole.WriteException(ex);
                     }
-
+                    
                     currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
                     positionInSeconds = audioStream.TotalTime.TotalSeconds;
 
@@ -620,42 +618,6 @@ class Program
                 if (outputDevice == null) { textRenderedType = "fakePlayer"; break;}
                 textRenderedType = "normal";
                 break;
-            case ConsoleKey.O: // add song to playlist
-                AnsiConsole.Markup("\nEnter song to add to playlist: ");
-                string songToAdd = Console.ReadLine();
-                if (songToAdd == "" || songToAdd == null) { break; }
-                // remove "" from start and end
-                if (songToAdd.StartsWith("\"") && songToAdd.EndsWith("\"")) {
-                    songToAdd = songToAdd.Substring(1, songToAdd.Length - 2);
-                }
-                songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
-                // break if file doesnt exist or its not a valid soundcloud url
-                if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }
-                if (URL.IsSoundCloudUrlValid(songToAdd)) {
-                    // splice ? and everything after it
-                    int index = songToAdd.IndexOf("?");
-                    if (index > 0) {
-                        songToAdd = songToAdd.Substring(0, index);
-                    }
-                }
-                // add song to playlist
-                string[] newSongs = new string[songs.Length + 1];
-                for (int i = 0; i < songs.Length; i++) {
-                    newSongs[i] = songs[i];
-                }
-                newSongs[songs.Length] = songToAdd;
-                songs = newSongs;
-
-                // delete duplicates
-                songs = Array.FindAll(songs, s => !string.IsNullOrEmpty(s));
-                songs = new HashSet<string>(songs).ToArray();
-
-                if (outputDevice == null) { // if no song is playing
-                    running = false;
-                    textRenderedType = "normal";
-                    Main(songs);
-                }
-                break;
             case ConsoleKey.S: // shuffle
                 isShuffle = !isShuffle;
                 break;
@@ -737,10 +699,17 @@ class Program
                     }
                     songToAdd = AbsolutefyPath.Absolutefy(new string[] { songToAdd })[0];
                     // break if file doesnt exist or its not a valid soundcloud url
-                    if (!File.Exists(songToAdd) && !URL.IsSoundCloudUrlValid(songToAdd)) { break; }
+                    if (!File.Exists(songToAdd) && !URL.IsUrl(songToAdd) ) { break; }
                     if (URL.IsSoundCloudUrlValid(songToAdd)) {
                         // splice ? and everything after it
                         int index = songToAdd.IndexOf("?");
+                        if (index > 0) {
+                            songToAdd = songToAdd.Substring(0, index);
+                        }
+                    }
+                    if (URL.IsYoutubeUrlValid(songToAdd)) {
+                        // splice & and everything after it
+                        int index = songToAdd.IndexOf("&");
                         if (index > 0) {
                             songToAdd = songToAdd.Substring(0, index);
                         }
@@ -817,7 +786,7 @@ class Program
                     AnsiConsole.Markup("\nEnter song to goto: ");
                     string? songToGoto = Console.ReadLine();
                     if (songToGoto == "" || songToGoto == null) { break; }
-                    if (AbsolutefyPath.IsUrl(songToGoto)) {
+                    if (URL.IsUrl(songToGoto)) {
                         // replave " "
                         songToGoto = songToGoto.Replace(" ", "");
                     }

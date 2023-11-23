@@ -2,6 +2,8 @@
 using SoundCloudExplode;
 using Spectre.Console;
 using System.Text.RegularExpressions;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace jammer {
     internal class URL {
@@ -29,11 +31,50 @@ namespace jammer {
                 }
 
                 DownloadSoundCloudTrackAsync(url).Wait();
+            } else if (IsYoutubeUrlValid(url)) {
+                DownloadYoutubeTrackAsync(url).Wait();
             } else {
                 return url2;
-            }   
-            
+            }
             return jammerPath;
+        }
+
+        private static async Task DownloadYoutubeTrackAsync(string url)
+        {
+            string formattedUrl = FormatUrlForFilename(url);
+
+            jammerPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "jammer", 
+                formattedUrl
+            );
+
+            if (File.Exists(jammerPath))
+            {
+                Console.WriteLine("Youtube file already exists");
+                return;
+            }
+            try
+            {
+                var youtube = new YoutubeClient();
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
+                var streamInfo = streamManifest.GetAudioStreams().GetWithHighestBitrate();
+                if (streamInfo != null)
+                {
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, jammerPath);
+                }
+                else
+                {
+                    Console.WriteLine("This video has no audio streams");
+                }
+
+                jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
+                Console.WriteLine("Downloaded: " + formattedUrl + " to " + jammerPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
 
         static public async Task DownloadSoundCloudTrackAsync(string url) {
@@ -104,6 +145,53 @@ namespace jammer {
             string pattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
+        }
+
+        static public bool IsYoutubeUrlValid(string uri)
+        {
+            string pattern = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
+
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+            return regex.IsMatch(uri);
+        }
+
+        private static string FormatUrlForFilename(string url)
+        {
+            string formattedUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("-", " ")
+                                     .Replace("?", " ");
+            return formattedUrl + ".mp3";
+        }
+
+        static public bool IsUrl(string input)
+        {
+            if (input == null)
+            {
+                return false;
+            }
+            // detect if input is url using regex
+            string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            if (regex.IsMatch(input))
+            {
+                return true;
+            }
+            else
+            {
+                // detect youtbe url
+                string pattern2 = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
+                Regex regex2 = new Regex(pattern2, RegexOptions.IgnoreCase);
+                if (regex2.IsMatch(input))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }

@@ -22,6 +22,7 @@
     <PackageReference Include="NVorbis" Version="0.10.4" />
     <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
     <PackageReference Include="Spectre.Console" Version="0.47.0" />
+    <PackageReference Include="YoutubeExplode" Version="6.3.8" />
   </ItemGroup>
 
   <ItemGroup>

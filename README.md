@@ -2,13 +2,14 @@
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/jammer_banner.gif)
 
-## Play songs from cli
+## Play songs from cli with youtube and soundcloud support
 
 ### Usage
 ```
 jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
 jammer soundcloud.com/username/sets/playlist-name
+jammer youtube.com/watch?v=video-id
 jammer start // opens jammer folder
 jammer playlist // playlist controls
 jammer selfdestruct // deletes jammer
