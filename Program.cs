@@ -3,6 +3,8 @@ using NAudio.Wave;
 using SoundCloudExplode.Playlists;
 using Spectre.Console;
 
+// This is a test
+
 class Program
 {
     static WaveOutEvent outputDevice = new WaveOutEvent();
