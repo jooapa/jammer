@@ -7,8 +7,9 @@ namespace jammer
         static public void Run(string[] args)
         {
             TUI.InitScreen();
-            TUI.AskForUrl();
+            //TUI.AskForUrl();
             //AnsiConsole.Write(new FigletText("jammer"));
+                TUI.Draw();
         }
     }
 }

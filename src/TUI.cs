@@ -14,8 +14,8 @@ static class TUI
 
                 while(!ctx.IsFinished) 
                 {
-                    task1.Increment(1.5);
-                    Thread.Sleep(5);
+                    task1.Increment(5.5);
+                    Thread.Sleep(1);
                 }
             });
     }
@@ -23,5 +23,26 @@ static class TUI
     static public void AskForUrl() {
         var name = AnsiConsole.Ask<string>("Enter URL?");
         Download.DownloadSoundCloudTrackAsync(name).Wait();
+    }
+
+    static public async Task Draw() {
+        var table = new Table();
+
+        table.AddColumn("Foo");
+        await AnsiConsole.Live(table)
+            .StartAsync(async ctx => 
+            {
+                AnsiConsole.Clear();
+                ctx.Refresh();
+                await Task.Delay(1000);
+
+        
+
+            });
+
+        // tableJam.AddColumn("♫ Jamming to: Kukkaruukku ♫");
+            // tableJam.AddRow("haloo");
+        
+        // AnsiConsole.Write(tableJam);
     }
 }
