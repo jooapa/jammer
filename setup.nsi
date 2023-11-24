@@ -1,6 +1,7 @@
 !define APP_NAME "jammer"
 !define EXE_NAME "jammer.exe"
 
+
 ; Request administrative privileges
 RequestExecutionLevel admin
 
