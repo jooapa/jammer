@@ -238,6 +238,9 @@ class Program
     }
 
     static public void Controls(WaveOutEvent outputDevice, object reader){
+        //debug pause bug
+        long old_audioStreamPos = 0;
+
         UI.ForceUpdate();
         try{
             WaveStream audioStream;
@@ -266,7 +269,7 @@ class Program
             } else {
                 outputDevice.Volume = volume;
             }
-
+            isPlaying = true;
             while (running){
                 // if outputDevice is Error: NAudio.MmException: BadDeviceId calling waveOutGetVolume
                 if (outputDevice != null && audioStream != null)
@@ -274,9 +277,11 @@ class Program
                     try{
                         // settings and help screen lags
                         if (textRenderedType != "settings") {
-                            // Render the UI
-                            UI.Update();
-                            UI.Ui(outputDevice);
+                            if (outputDevice != null && audioStream != null) {
+                                // Render the UI
+                                UI.Update();
+                                UI.Ui(outputDevice);
+                            }
                         }
                     }
                     catch (Exception ex){
@@ -285,25 +290,44 @@ class Program
                     
                     currentPositionInSeconds = audioStream.CurrentTime.TotalSeconds;
                     positionInSeconds = audioStream.TotalTime.TotalSeconds;
-
-                    if (audioStream.Position >= audioStream.Length){
+                    
+                    // Console.WriteLine("Paused with: " + audioStream.Position + " / " + audioStream.Length + " with state: " + outputDevice.PlaybackState);
+                    // random bug where audioStream.Position stays the same never reaches audioStream.Length
+                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && old_audioStreamPos == 0) { // if song is finished
+                        old_audioStreamPos = audioStream.Position;
+                    }
+                    else if (outputDevice?.PlaybackState == PlaybackState.Stopped && old_audioStreamPos == audioStream.Position) { // if song is finished
                         if (isLoop){
                             audioStream.Position = 0;
                         }
                         else {
-                            if (songs != null && songs.Length > 1){
-                                running = false;
-                            }
+                            // next song
+                            SetState(outputDevice, "stopped", audioStream).Wait();
+                            running = false;
+                            Console.WriteLine("Song finished, next song");
+                        }
+                    }
+                    else if (outputDevice?.PlaybackState == PlaybackState.Playing && old_audioStreamPos != 0) { // if song is finished
+                        old_audioStreamPos = 0;
+                    }
 
-                            SetState(outputDevice, "stopped", audioStream);
+                    if (audioStream.Position >= audioStream.Length) { // if song is finished
+                        if (isLoop){
+                            audioStream.Position = 0;
+                        }
+                        else {
+                            // next song
+                            SetState(outputDevice, "stopped", audioStream).Wait();
+                            running = false;
+                            Console.WriteLine("Song finished, next song");
                         }
                     }
 
-                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying){
+                    if (outputDevice?.PlaybackState == PlaybackState.Stopped && isPlaying) { // if song is finished
                         outputDevice.Init(audioStream);
 
                         if (audioStream.Position < audioStream.Length){
-                            SetState(outputDevice, "playing", audioStream);
+                            SetState(outputDevice, "playing", audioStream).Wait();
                         }
                     }
 
@@ -471,7 +495,7 @@ class Program
                     } catch (Exception ex) {
                         AnsiConsole.WriteException(ex);
                     }
-                    SetState(outputDevice, "playing", audioStream);
+                    SetState(outputDevice, "playing", audioStream).Wait();
                 }
 
                 audioStream.Position = newPosition;
@@ -488,7 +512,7 @@ class Program
                     }
                     else
                     {
-                        SetState(outputDevice, "stopped", audioStream);
+                        SetState(outputDevice, "stopped", audioStream).Wait();
                     }
                 }
 
@@ -497,14 +521,14 @@ class Program
             case ConsoleKey.Spacebar: // toggle play/pause
                 if (outputDevice == null || audioStream == null) { break; }
                 if (outputDevice.PlaybackState == PlaybackState.Playing) {
-                    SetState(outputDevice, "paused", audioStream);
+                    SetState(outputDevice, "paused", audioStream).Wait();
                 }
                 else {
                     if (outputDevice.PlaybackState == PlaybackState.Stopped)
                     {
                         audioStream.Position = 0;
                     }
-                    SetState(outputDevice, "playing", audioStream);
+                    SetState(outputDevice, "playing", audioStream).Wait();
                 }
                 break;
             case ConsoleKey.Q: // quit
@@ -765,7 +789,7 @@ class Program
                     if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
                     // play other playlist
                     if (outputDevice != null) {
-                        SetState(outputDevice, "stopped", null);
+                        SetState(outputDevice, "stopped", null).Wait();
                     }
                     else {
                         isPlaying = false;
@@ -824,7 +848,7 @@ class Program
         }
     }
 
-    static public void SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream) {
+    static public async Task SetState(WaveOutEvent outputDevice, string state, WaveStream audioStream) {
         if (state == "playing")
         {
             // if not initialized
@@ -843,7 +867,6 @@ class Program
         else if (state == "stopped")
         {
             outputDevice.Stop();
-            isPlaying = false;
         }
     }
 }
