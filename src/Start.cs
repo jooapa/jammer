@@ -6,7 +6,10 @@ namespace jammer
     {
         static public void Run(string[] args)
         {
-            AnsiConsole.Write(new FigletText("jammer"));
+            TUI.InitScreen();
+            //TUI.AskForUrl();
+            //AnsiConsole.Write(new FigletText("jammer"));
+                TUI.Draw();
         }
     }
 }

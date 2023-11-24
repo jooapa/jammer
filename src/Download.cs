@@ -11,6 +11,9 @@ namespace jammer {
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
         static public string[] songs = { "" };
+
+
+
         static public string CheckIfURL(string url2) {
 
             url = url2;
@@ -38,7 +41,7 @@ namespace jammer {
             return jammerPath;
         }
 
-        private static async Task DownloadYoutubeTrackAsync(string url)
+        private static async Task DownloadYoutubeTrackAsync(string urlGetDownloadUrlAsync)
         {
             string formattedUrl = FormatUrlForFilename(url);
 
@@ -77,31 +80,38 @@ namespace jammer {
         }
 
         static public async Task DownloadSoundCloudTrackAsync(string url) {
-
             // if already downloaded, don't download again
             string oldUrl = url;
             url = url.Replace("https://", "");
             url = url.Replace("/", " ");
             url = url.Replace("-", " ");
             url = url + ".mp3";
+            Console.WriteLine("url: " + url);
             jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + url;
+            Console.WriteLine("jammerPath: " + jammerPath);
+
             if (File.Exists(jammerPath)) {
                 Console.WriteLine("File already exists");
                 return;
+            } else {
+                Console.WriteLine("File doesn't exist");
             }
             url = oldUrl;
-
             var track = await soundcloud.Tracks.GetAsync(url);
-
-            // track name split / by spaces'
+            if (track != null) {
+                // track name split / by spaces'
             
-            var trackName = "soundcloud.com " + url.Split('/')[3] + " " + url.Split('/')[4];
-            trackName = trackName.Replace("-", " ");
-            trackName = trackName.Replace("/", " ");
-            trackName.Replace("https://", "");
-            jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName.ToLower() + ".mp3";
+                var trackName = "soundcloud.com " + url.Split('/')[3] + " " + url.Split('/')[4];
+                trackName = trackName.Replace("-", " ");
+                trackName = trackName.Replace("/", " ");
+                trackName = trackName.Replace("https://", "");
+                //jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName.ToLower() + ".mp3";
+                jammerPath = "./downloads/" + trackName.ToLower() + ".mp3";
 
-            await soundcloud.DownloadAsync(track, jammerPath);
+                await soundcloud.DownloadAsync(track, jammerPath);
+            } else {
+                Console.WriteLine("NULL");
+            }
         }
 
         static public async Task GetPlaylist(string url) {
@@ -164,7 +174,7 @@ namespace jammer {
             return formattedUrl + ".mp3";
         }
 
-        static public bool IsUrl(string input)
+        static public bool GetDownloadUrlAsyncIsUrl(string input)
         {
             if (input == null)
             {
