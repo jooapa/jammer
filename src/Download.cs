@@ -6,8 +6,7 @@ using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
 namespace jammer {
-    internal class URL {
-
+    internal class Download {
         static public string jammerPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";

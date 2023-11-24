@@ -1,10 +1,9 @@
 using System.Text.Json;
 using System.Runtime.InteropServices;
 
-
 namespace jammer
 {
-    public class JammerFolder
+    public class Preferences
     {
         static public void CheckJammerFolderExists()
         {
@@ -28,27 +27,27 @@ namespace jammer
 
         static public void SaveSettings()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            // wirte hello world to a file
-            Settings settings = new Settings();
-            settings.IsLoop = Program.isLoop;
-            settings.Volume = Program.volume;
-            settings.isMuted = Program.isMuted;
-            settings.OldVolume = Program.oldVolume;
-            settings.refreshTimes = UI.refreshTimes;
-            settings.forwardSeconds = Program.forwardSeconds;
-            settings.rewindSeconds = Program.rewindSeconds;
-            settings.changeVolumeBy = Program.changeVolumeBy;
-            settings.isShuffle = Program.isShuffle;
-            string jsonString = JsonSerializer.Serialize(settings);
-            // delete file if exists
-            if (System.IO.File.Exists(jammerPath))
-            {
-                System.IO.File.Delete(jammerPath);
-            }
-            System.IO.File.WriteAllText(jammerPath, jsonString);
+            // string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            // // wirte hello world to a file
+            // Settings settings = new Settings();
+            // settings.IsLoop = Program.isLoop;
+            // settings.Volume = Program.volume;
+            // settings.isMuted = Program.isMuted;
+            // settings.OldVolume = Program.oldVolume;
+            // settings.refreshTimes = UI.refreshTimes;
+            // settings.forwardSeconds = Program.forwardSeconds;
+            // settings.rewindSeconds = Program.rewindSeconds;
+            // settings.changeVolumeBy = Program.changeVolumeBy;
+            // settings.isShuffle = Program.isShuffle;
+            // string jsonString = JsonSerializer.Serialize(settings);
+            // // delete file if exists
+            // if (System.IO.File.Exists(jammerPath))
+            // {
+            //     System.IO.File.Delete(jammerPath);
+            // }
+            // System.IO.File.WriteAllText(jammerPath, jsonString);
         }
-        
+
         static public bool GetIsLoop()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
