@@ -277,8 +277,7 @@ namespace jammer
                 updatedPlaylist = true;
                 return;
             }
-            else
-            if (Program.textRenderedType == "FakePlayer")
+            else if (Program.textRenderedType == "FakePlayer")
             {
                 return;
             }
