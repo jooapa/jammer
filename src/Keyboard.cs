@@ -46,11 +46,23 @@ namespace jammer
                         Console.WriteLine("Quit");
                         Environment.Exit(0);
                         break;
-                    case ConsoleKey.RightArrow:
-                        state = MainStates.next;
+                    case ConsoleKey.N:
+                        state = MainStates.next; // next song
                         break;
-                    case ConsoleKey.LeftArrow:
-                        Play.PrevSong();
+                    case ConsoleKey.P:
+                        state = MainStates.previous; // previous song
+                        break;
+                    case ConsoleKey.RightArrow: // move forward 5 seconds
+                        Play.SeekSong(5);
+                        break;
+                    case ConsoleKey.LeftArrow: // move backward 5 seconds
+                        Play.SeekSong(-5);
+                        break;
+                    case ConsoleKey.UpArrow: // volume up
+                        Play.SetVolume(5);
+                        break;
+                    case ConsoleKey.DownArrow: // volume down
+                        Play.SetVolume(-5);
                         break;
                 }
             }

@@ -34,8 +34,6 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         private static int consoleWidth = Console.WindowWidth;
         private static int consoleHeight = Console.WindowHeight;
-
-
         public static void Run(string[] args)
         {
             var w = Console.WindowWidth;
