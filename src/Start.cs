@@ -6,16 +6,27 @@ using System.Collections;
 using System.ComponentModel.Design;
 namespace jammer
 {
+    //NOTES(ra) A way to fix the drawonce - prevState
+
+    // idle - the program wait for user input. Song is not played
+    // play - Start playing - Play.PlaySong
+    // playing - The music is playing. Update screen once a second or if a
+    // button is pressed
+    // pause - Pause song, returns to idle state
+
     public enum MainStates
     {
+        idle,
+        play,
         playing,
-        paused,
-        idle
+        pause,
     }
 
     public class Start
     {
-        public static MainStates state = MainStates.idle;
+        //NOTE(ra) Starting state to playing. 
+        // public static MainStates state = MainStates.idle;
+        public static MainStates state = MainStates.play;
         private static bool drawOnce = false;
 
         public static void Run(string[] args)
@@ -58,13 +69,24 @@ namespace jammer
                 {
                     case MainStates.idle:
                         CheckKeyboard();
-                        // Draw player once
+                        //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
                         break;
+                    case MainStates.play:
+                        Play.PlaySong();
+                        TUI.DrawPlayer();
+                        drawOnce = true;
+                        state = MainStates.playing;
+                        break;
                     case MainStates.playing:
+                        //FIXME(ra) This is a workaround for screen to update once when entering the state.
+                        if (drawOnce) {
+                            TUI.DrawPlayer();
+                            drawOnce = false;
+                        }
                         if (Raylib.IsMusicReady(Utils.currentMusic))
                         {
                             Raylib.UpdateMusicStream(Utils.currentMusic);
@@ -79,7 +101,7 @@ namespace jammer
                         }
                         CheckKeyboard();
                         break;
-                    case MainStates.paused:
+                    case MainStates.pause:
                         Play.PauseSong();
                         state = MainStates.idle;
                         break;
@@ -99,11 +121,12 @@ namespace jammer
                         {
                             Play.PlaySong();
                             state = MainStates.playing;
+                            drawOnce = true;
                         }
                         else if (Raylib.IsMusicStreamPlaying(Utils.currentMusic))
                         {
                             Console.WriteLine("Paused");
-                            state = MainStates.paused;
+                            state = MainStates.pause;
                             drawOnce = true;
                         }
                         else
