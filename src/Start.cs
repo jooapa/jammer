@@ -16,6 +16,7 @@ namespace jammer
     public class Start
     {
         public static MainStates state = MainStates.idle;
+        private static bool drawOnce = false;
 
         public static void Run(string[] args)
         {
@@ -57,17 +58,23 @@ namespace jammer
                 {
                     case MainStates.idle:
                         CheckKeyboard();
+                        // Draw player once
+                        if (drawOnce) {
+                            TUI.DrawPlayer();
+                            drawOnce = false;
+                        }
                         break;
                     case MainStates.playing:
                         if (Raylib.IsMusicReady(Utils.currentMusic))
                         {
                             Raylib.UpdateMusicStream(Utils.currentMusic);
                         }
-                        // Get current music position
-                        // TODO(ra) Move this somwhere. TUI-draw?
+
+                        // Draw once a second
+                        // TODO(ra) Move this somwhere. TUI-draw, where?
                         if (Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)) != Utils.prevMusicTimePlayed)
                         {
-                            Console.WriteLine(Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)));
+                            TUI.DrawPlayer();
                             Utils.prevMusicTimePlayed = Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic));
                         }
                         CheckKeyboard();
@@ -97,6 +104,7 @@ namespace jammer
                         {
                             Console.WriteLine("Paused");
                             state = MainStates.paused;
+                            drawOnce = true;
                         }
                         else
                         //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.

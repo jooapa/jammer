@@ -40,6 +40,7 @@ namespace jammer
 
         static void LoadMusic(string path) {
             Utils.currentMusic = Raylib.LoadMusicStream(path);
+            Utils.currentSongLength = Math.Floor((Raylib.GetMusicTimeLength(Utils.currentMusic)));
         }
 
         public static void PauseSong()
@@ -53,7 +54,7 @@ namespace jammer
         }
 
         public static void PlaySong() {
-            Console.WriteLine("Playing music: " + Utils.currentSong);
+            // Console.WriteLine("Playing music: " + Utils.currentSong);
             Raylib.PlayMusicStream(Utils.currentMusic);
         }
     }

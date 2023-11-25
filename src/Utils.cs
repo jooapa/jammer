@@ -10,6 +10,7 @@ namespace jammer
     {
         public static string[] songs = { "" };
         public static string currentSong = "";
+        public static double currentSongLength = 0;
         public static Music currentMusic;
         public static int currentSongIndex = 0;
         public static string scSongPattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
