@@ -27,7 +27,7 @@ static class TUI
         
         table.AddColumn("Jamming to: " + Utils.currentSong);
         table.AddColumn("DEBUG ");
-        table.AddRow("Playlist:\n" + GetAllSongs(), "state: " + Start.state + "\n" + Math.Round(Utils.preciseTime, 2) +"||"+ Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic), 2));
+        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong(), "state: " + Start.state + "\n" + Math.Round(Utils.preciseTime, 2) +"||"+ Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic), 2));
 
         debugTable.AddColumn("State");
         debugTable.AddColumn("Current Position");
@@ -54,11 +54,41 @@ static class TUI
     static public string GetAllSongs() {
         string allSongs = "";
         foreach (string song in Utils.songs) {
+            // add green color to current song, based on the index
+            if (Utils.songs[Utils.currentSongIndex] == song) {
+                allSongs += "[green]" + song + "[/]\n";
+                continue;
+            }
             allSongs += song + "\n";
         }
         // remove last newline
         allSongs = allSongs.Substring(0, allSongs.Length - 1);
         return allSongs;
+    }
+
+    public static string GetPrevCurrentNextSong() {
+        // return previous, current and next song in playlist
+        string prevSong = "";
+        string currentSong = "";
+        string nextSong = "";
+
+        if (Utils.currentSongIndex > 0) {
+            prevSong = "[grey]previous : " + Utils.songs[Utils.currentSongIndex - 1] + "[/]";
+        }
+        else {
+            prevSong = "[grey]previous : -[/]";
+        }
+
+        currentSong =  "[grey]current  : [/]" + Utils.songs[Utils.currentSongIndex];
+
+        if (Utils.currentSongIndex < Utils.songs.Length - 1) {
+            nextSong = "[grey]next     : " + Utils.songs[Utils.currentSongIndex + 1] + "[/]";
+        }
+        else {
+            nextSong = "[grey]next     : -[/]";
+        }
+
+        return prevSong + "\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
     static public string CalculateTime(double time) {

@@ -40,7 +40,7 @@ namespace jammer
             Raylib.SetTraceLogLevel(TraceLogLevel.LOG_WARNING);
             Utils.songs = args;
             // Turns relative paths into absolute paths, and adds https:// to urls
-            Absolute.Correctify(Utils.songs);
+            Utils.songs = Absolute.Correctify(Utils.songs);
             // if no args, ask for input
             if (Utils.songs.Length == 0) {
                 AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path[/]");

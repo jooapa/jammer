@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace jammer
 {
@@ -38,12 +35,28 @@ namespace jammer
                             item = item.Substring(0, index);
                         }
                     }
+                    else {
+                        AnsiConsole.MarkupLine($"[red]URL {item} is not valid[/]");
+                        // delete item from args
+                        args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                        i--;
+                    }
 
                     args[i] = item;
                 }
-                else if (IsRelativePath(item))
+                // if exits, convert to absolute path
+                else if (File.Exists(item))
                 {
-                    args[i] = ConvertToAbsolutePath(item);
+                    if (IsRelativePath(item)) {
+                        args[i] = ConvertToAbsolutePath(item);
+                    }
+                }
+                else if (!File.Exists(item))
+                {
+                    AnsiConsole.MarkupLine($"[red]File {item} does not exist[/]");
+                    // delete item from args
+                    args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                    i--;
                 }
             }
             return args;
