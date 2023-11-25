@@ -25,24 +25,27 @@ static class TUI
         Download.DownloadSoundCloudTrackAsync(name).Wait();
     }
 
-    static public async Task Draw() {
-        var table = new Table();
+    static public void Draw() {
+        while (true) {
+            var table = new Table();
+            table.AddColumn("♫ Jamming to: " + Utils.currentSong);
+            table.AddRow("Playlist: " + GetAllSongs());
 
-        table.AddColumn("Foo");
-        await AnsiConsole.Live(table)
-            .StartAsync(async ctx => 
-            {
-                AnsiConsole.Clear();
-                ctx.Refresh();
-                await Task.Delay(1000);
+            
+            // move cursor to top left
+            // AnsiConsole.Cursor.SetPosition(0, 0);
+            AnsiConsole.Clear();
+            AnsiConsole.Write(table);             
+        }
+    }
 
-        
-
-            });
-
-        // tableJam.AddColumn("♫ Jamming to: Kukkaruukku ♫");
-            // tableJam.AddRow("haloo");
-        
-        // AnsiConsole.Write(tableJam);
+    static public string GetAllSongs() {
+        string allSongs = "";
+        foreach (string song in Utils.songs) {
+            allSongs += song + "\n";
+        }
+        // remove last newline
+        allSongs = allSongs.Substring(0, allSongs.Length - 1);
+        return allSongs;
     }
 }

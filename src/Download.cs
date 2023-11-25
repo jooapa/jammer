@@ -7,51 +7,34 @@ using YoutubeExplode.Videos.Streams;
 
 namespace jammer {
     internal class Download {
-        static public string jammerPath = "";
+        public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
-        static public string[] songs = { "" };
+        static string[] songs = { "" };
 
-
-
-        static public string CheckIfURL(string url2) {
-
+        public static string DownloadSong(string url2) {
             url = url2;
-
-            if (IsSoundCloudUrlValid(url)) {
-                
-                string playlistPattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
-                Regex playlistRegex = new Regex(playlistPattern, RegexOptions.IgnoreCase);
-                if (playlistRegex.IsMatch(url)) {
-                    GetPlaylist(url).Wait();
-                    return jammerPath;
-                }
-                int index = url.IndexOf("?");
-                if (index > 0)
-                {
-                    url = url.Substring(0, index);
-                }
-
+            if (URL.IsValidSoundcloudSong(url)) {
                 DownloadSoundCloudTrackAsync(url).Wait();
-            } else if (IsYoutubeUrlValid(url)) {
+            } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
             } else {
-                return url2;
+                Console.WriteLine("Invalid url");
             }
-            return jammerPath;
+            return songPath;
         }
 
         private static async Task DownloadYoutubeTrackAsync(string urlGetDownloadUrlAsync)
         {
             string formattedUrl = FormatUrlForFilename(url);
 
-            jammerPath = Path.Combine(
+            songPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "jammer", 
                 formattedUrl
             );
 
-            if (File.Exists(jammerPath))
+            if (File.Exists(songPath))
             {
                 Console.WriteLine("Youtube file already exists");
                 return;
@@ -63,15 +46,15 @@ namespace jammer {
                 var streamInfo = streamManifest.GetAudioStreams().GetWithHighestBitrate();
                 if (streamInfo != null)
                 {
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, jammerPath);
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
                 }
                 else
                 {
                     Console.WriteLine("This video has no audio streams");
                 }
 
-                jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
-                Console.WriteLine("Downloaded: " + formattedUrl + " to " + jammerPath);
+                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
+                Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
             }
             catch (Exception ex)
             {
@@ -79,42 +62,35 @@ namespace jammer {
             }
         }
 
-        static public async Task DownloadSoundCloudTrackAsync(string url) {
+        public static async Task DownloadSoundCloudTrackAsync(string url) {
             // if already downloaded, don't download again
+            string formattedUrl = FormatUrlForFilename(url);
             string oldUrl = url;
-            url = url.Replace("https://", "");
-            url = url.Replace("/", " ");
-            url = url.Replace("-", " ");
-            url = url + ".mp3";
-            Console.WriteLine("url: " + url);
-            jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + url;
-            Console.WriteLine("jammerPath: " + jammerPath);
+            songPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "jammer",
+                formattedUrl
+            );
 
-            if (File.Exists(jammerPath)) {
-                Console.WriteLine("File already exists");
+            if (File.Exists(songPath))
+            {
+                Console.WriteLine("Youtube file already exists");
                 return;
-            } else {
-                Console.WriteLine("File doesn't exist");
             }
             url = oldUrl;
             var track = await soundcloud.Tracks.GetAsync(url);
             if (track != null) {
-                // track name split / by spaces'
-            
-                var trackName = "soundcloud.com " + url.Split('/')[3] + " " + url.Split('/')[4];
-                trackName = trackName.Replace("-", " ");
-                trackName = trackName.Replace("/", " ");
-                trackName = trackName.Replace("https://", "");
-                //jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName.ToLower() + ".mp3";
-                jammerPath = "./downloads/" + trackName.ToLower() + ".mp3";
+                var trackName = formattedUrl;
+                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName;
 
-                await soundcloud.DownloadAsync(track, jammerPath);
+                await soundcloud.DownloadAsync(track, songPath);
             } else {
+
                 Console.WriteLine("NULL");
             }
         }
 
-        static public async Task GetPlaylist(string url) {
+        public static async Task GetPlaylist(string url) {
 
             var soundcloud = new SoundCloudClient();
             
@@ -134,43 +110,40 @@ namespace jammer {
                 songs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
                 i++;
             }
-
-            // Console.WriteLine(string.Join(Environment.NewLine, songs));
-            // Console.ReadLine();
-            jammerPath = "Soundcloud Playlist";
+            songPath = "Soundcloud Playlist";
         }
 
-
-        static public bool IsSoundCloudUrlValid(string uri)
+        public static string FormatUrlForFilename(string url)
         {
-            string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
-
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-
-            return regex.IsMatch(uri);
-        }
-
-        static public bool isValidSoundCloudPLaylist(string uri) {
-            string pattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-            return regex.IsMatch(uri);
-        }
-
-        static public bool IsYoutubeUrlValid(string uri)
-        {
-            string pattern = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
-
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-
-            return regex.IsMatch(uri);
-        }
-
-        private static string FormatUrlForFilename(string url)
-        {
+            Console.WriteLine("Formatting url for filename: " + url);
+            if (URL.isValidSoundCloudPlaylist(url)) {
+                Console.WriteLine("Soundcloud playlist");
+                return "Soundcloud Playlist";
+            }
+            else if (URL.IsValidSoundcloudSong(url))
+            {
+                Console.WriteLine("Soundcloud song");
+                // remove ? and everything after
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+            }
+            else if (URL.IsValidYoutubeSong(url))
+            {
+                Console.WriteLine("Youtube song");
+                int index = url.IndexOf("&");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+                url.Replace("?", " ");
+            }
             string formattedUrl = url.Replace("https://", "")
                                      .Replace("/", " ")
-                                     .Replace("-", " ")
-                                     .Replace("?", " ");
+                                     .Replace("-", " ");
+
             return formattedUrl + ".mp3";
         }
 
