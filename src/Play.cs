@@ -4,9 +4,9 @@ namespace jammer
 {
     public class Play
     {
-        static string path = "";
         public static void PlaySong(string[] songs, int Currentindex)
         {
+            var path = "";
             // check if file is a local
             if (File.Exists(songs[Currentindex]))
             {
@@ -30,15 +30,16 @@ namespace jammer
             }
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
-            PlayPath();
-        }
 
-        static void PlayPath() {
-            // play song
+            // Init audio
             Raylib.InitAudioDevice();
             Raylib.SetMasterVolume(0.5f);
+
+            LoadMusic(Utils.currentSong);
+        }
+
+        static void LoadMusic(string path) {
             Utils.currentMusic = Raylib.LoadMusicStream(path);
-            // PlaySong();
         }
 
         public static void PauseSong()
@@ -52,7 +53,7 @@ namespace jammer
         }
 
         public static void PlaySong() {
-            Console.WriteLine("Playing music: " + path);
+            Console.WriteLine("Playing music: " + Utils.currentSong);
             Raylib.PlayMusicStream(Utils.currentMusic);
         }
     }

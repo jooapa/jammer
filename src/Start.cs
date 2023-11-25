@@ -44,7 +44,10 @@ namespace jammer
         {
             while (true)
             {
-                Raylib.UpdateMusicStream(Utils.currentMusic);
+
+                if (Raylib.IsMusicReady(Utils.currentMusic)) {
+                    Raylib.UpdateMusicStream(Utils.currentMusic);
+                }
 
                 // Get current music position
                 if (Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)) != Utils.prevMusicTimePlayed)  {
@@ -79,7 +82,6 @@ namespace jammer
                             Console.WriteLine("Quit");
                             Environment.Exit(0);
                             break;
-
                     }
                 }
             }
