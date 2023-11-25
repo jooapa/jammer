@@ -40,9 +40,9 @@ namespace jammer
             // Init audio
             if ( !Raylib.IsAudioDeviceReady()) {
                 Raylib.InitAudioDevice();
-                Raylib.SetMasterVolume(Preferences.volume);
             }
 
+            Raylib.SetMasterVolume(Preferences.volume);
             LoadMusic(Utils.currentSong);
         }
 
