@@ -42,8 +42,11 @@ namespace jammer
                 Raylib.InitAudioDevice();
             }
 
-            if (Preferences.volume == 0) {
+            if (Preferences.isMuted) {
                 Raylib.SetMasterVolume(Preferences.oldVolume);
+            }
+            else {
+                Raylib.SetMasterVolume(Preferences.volume);
             }
             LoadMusic(Utils.currentSong);
         }
@@ -52,6 +55,7 @@ namespace jammer
         {
             Utils.currentMusic = Raylib.LoadMusicStream(path);
             Utils.currentMusicLength = Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic));
+            Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
         }
 
         public static void PauseSong()
