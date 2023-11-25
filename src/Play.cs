@@ -38,54 +38,51 @@ namespace jammer
             Utils.currentSongIndex = Currentindex;
 
             // Init audio
-            Raylib.InitAudioDevice();
-            Raylib.SetMasterVolume(0.5f);
+            if ( !Raylib.IsAudioDeviceReady()) {
+                Raylib.InitAudioDevice();
+                Raylib.SetMasterVolume(0.5f);
+            }
 
-            LoadMusic(Utils.currentSong).Wait();
-        }
-        public static async Task LoadMusic(string path)
-        {
-            await Task.Run(() =>
-            {
-                Utils.currentMusic = Raylib.LoadMusicStream(path);
-                Utils.currentMusicLength = Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic));
-            });
+            LoadMusic(Utils.currentSong);
         }
 
-        public static async Task PauseSong()
+        public static void LoadMusic(string path)
         {
-            await Task.Run(() => Raylib.PauseMusicStream(Utils.currentMusic));
+            Utils.currentMusic = Raylib.LoadMusicStream(path);
+            Utils.currentMusicLength = Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic));
         }
 
-        public static async Task ResumeSong()
+        public static void PauseSong()
         {
-            await Task.Run(() => Raylib.ResumeMusicStream(Utils.currentMusic));
+            Raylib.PauseMusicStream(Utils.currentMusic);
         }
 
-        public static async Task PlaySong()
+        public static void ResumeSong()
         {
-            await Task.Run(() => Raylib.PlayMusicStream(Utils.currentMusic));
+            Raylib.ResumeMusicStream(Utils.currentMusic);
         }
 
-        public static async Task StopSong()
+        public static void PlaySong()
         {
-            await Task.Run(() =>
-            {
-                Raylib.StopMusicStream(Utils.currentMusic);
-            });
+            Raylib.PlayMusicStream(Utils.currentMusic);
+        }
+
+        public static void StopSong()
+        {
+            Raylib.StopMusicStream(Utils.currentMusic);
         }
 
         public static void ResetMusic() {
             Raylib.StopMusicStream(Utils.currentMusic);
             Raylib.UnloadMusicStream(Utils.currentMusic);
-            Raylib.CloseAudioDevice();
+            // Raylib.CloseAudioDevice();
         }
         public static void NextSong()
         {
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-            Utils.mainLoop = false;
-            Start.state = MainStates.play;
-            Start.drawOnce = true;
+            // Utils.mainLoop = false;
+            // Start.state = MainStates.play;
+            // Start.drawOnce = true;
         }
 
         public static void PrevSong()
