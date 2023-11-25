@@ -37,18 +37,21 @@ namespace jammer
             // play song
             Raylib.InitAudioDevice();
             Raylib.SetMasterVolume(0.5f);
-            Utils.currentSound = Raylib.LoadSound(path);
-            Raylib.PlaySound(Utils.currentSound);
+            // Utils.currentMusic = Raylib.LoadSound(path);
+            // Raylib.PlaySound(Utils.currentMusic);
+            Utils.currentMusic = Raylib.LoadMusicStream(path);
+            Console.WriteLine("Playing music: " + path);
+            Raylib.PlayMusicStream(Utils.currentMusic);
         }
 
         public static void PauseSong()
         {
-            Raylib.PauseSound(Utils.currentSound);
+            Raylib.PauseMusicStream(Utils.currentMusic);
         }
 
         public static void ResumeSong()
         {
-            Raylib.ResumeSound(Utils.currentSound);
+            Raylib.ResumeMusicStream(Utils.currentMusic);
         }
     }
 }
