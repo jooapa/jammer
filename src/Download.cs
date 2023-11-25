@@ -36,7 +36,7 @@ namespace jammer {
 
             if (File.Exists(songPath))
             {
-                Console.WriteLine("Youtube file already exists");
+                // Console.WriteLine("Youtube file already exists");
                 return;
             }
             try
@@ -50,11 +50,11 @@ namespace jammer {
                 }
                 else
                 {
-                    Console.WriteLine("This video has no audio streams");
+                    // Console.WriteLine("This video has no audio streams");
                 }
 
                 songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
-                Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
+                // Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace jammer {
 
             if (File.Exists(songPath))
             {
-                Console.WriteLine("Youtube file already exists");
+                // Console.WriteLine("Youtube file already exists");
                 return;
             }
             url = oldUrl;
@@ -115,14 +115,14 @@ namespace jammer {
 
         public static string FormatUrlForFilename(string url)
         {
-            Console.WriteLine("Formatting url for filename: " + url);
+            // Console.WriteLine("Formatting url for filename: " + url);
             if (URL.isValidSoundCloudPlaylist(url)) {
                 Console.WriteLine("Soundcloud playlist");
                 return "Soundcloud Playlist";
             }
             else if (URL.IsValidSoundcloudSong(url))
             {
-                Console.WriteLine("Soundcloud song");
+                // Console.WriteLine("Soundcloud song");
                 // remove ? and everything after
                 int index = url.IndexOf("?");
                 if (index > 0)

@@ -7,7 +7,7 @@ namespace jammer
     {
         public static void PlaySong(string[] songs, int Currentindex)
         {
-            Console.WriteLine("Play song");
+            // Console.WriteLine("Play song");
 
             var path = "";
             // check if file is a local
@@ -32,7 +32,7 @@ namespace jammer
                 return;
             }
 
-            Console.WriteLine("Path: " + path);
+            // Console.WriteLine("Path: " + path);
 
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;

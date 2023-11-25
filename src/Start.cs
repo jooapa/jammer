@@ -31,9 +31,15 @@ namespace jammer
         public static MainStates state = MainStates.play;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
+        private static int consoleWidth = Console.WindowWidth;
+        private static int consoleHeight = Console.WindowHeight;
+
 
         public static void Run(string[] args)
         {
+            var w = Console.WindowWidth;
+            var h = Console.WindowHeight;
+            Raylib.SetTraceLogLevel(TraceLogLevel.LOG_WARNING);
             Utils.songs = args;
             // Turns relative paths into absolute paths, and adds https:// to urls
             Absolute.Correctify(Utils.songs);
@@ -49,7 +55,7 @@ namespace jammer
 
         public static void StartPlaying()
         {
-            Console.WriteLine("Start playing");
+            // Console.WriteLine("Start playing");
             Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             // new thread for playing music
             loopThread = new Thread(() => {
@@ -63,8 +69,15 @@ namespace jammer
         //
         static void Loop()
         {
+            TUI.ClearScreen();
             while (true)
             {
+                            if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
+                                consoleHeight = Console.WindowHeight;
+                                consoleWidth = Console.WindowWidth;
+                                TUI.ClearScreen();        
+                                TUI.DrawPlayer();
+                            }
                 switch (state)
                 {
                     case MainStates.idle:
@@ -99,7 +112,11 @@ namespace jammer
                         if (Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)) != Utils.MusicTimePlayed)
                         {
                             Utils.MusicTimePlayed = Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic));
-                            // Utils.temp =Raylib.GetMusicTimePlayed(Utils.currentMusic);
+                            // if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
+                            //     consoleHeight = Console.WindowHeight;
+                            //     consoleWidth = Console.WindowWidth;
+                            //     TUI.ClearScreen();        
+                            // }
                             TUI.DrawPlayer();
                         }
                         CheckKeyboard();
@@ -113,8 +130,6 @@ namespace jammer
                         state = MainStates.idle;
                         break;
                     case MainStates.next:
-                        // Play.StopSong();
-                        // Play.ResetMusic();
                         Raylib.StopMusicStream(Utils.currentMusic);
                         Raylib.UnloadMusicStream(Utils.currentMusic);
                         Play.NextSong();
@@ -124,17 +139,7 @@ namespace jammer
 
 
                 }
-                // if music at the end of the song, play next song
-                // if (state == MainStates.playing && Raylib.GetMusicTimePlayed(Utils.currentMusic) >= Utils.currentMusicLength)
-                // {
-                //     Play.NextSong();
-                // }
             }
-
-            // // Clean up
-            // Play.ResetMusic();
-            // Utils.mainLoop = true;
-            // Run(Utils.songs);
         }
 
         public static void CheckKeyboard()
@@ -169,10 +174,12 @@ namespace jammer
                         break;
                     case ConsoleKey.Q:
                         Console.WriteLine("Quit");
+                        AnsiConsole.Clear();
                         Environment.Exit(0);
                         break;
 
                     case ConsoleKey.Escape:
+                        AnsiConsole.Clear();
                         Console.WriteLine("Quit");
                         Environment.Exit(0);
                         break;
