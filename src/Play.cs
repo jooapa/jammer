@@ -78,11 +78,19 @@ namespace jammer
         }
         public static void NextSong()
         {
-            Raylib.StopMusicStream(Utils.currentMusic);
-            Raylib.UnloadMusicStream(Utils.currentMusic);
-            Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-            PlaySong(Utils.songs, Utils.currentSongIndex);
-            Start.state = MainStates.play;
+            if (Preferences.isLoop)
+            {
+                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+            }
+            else
+            {
+                Raylib.StopMusicStream(Utils.currentMusic);
+                Raylib.UnloadMusicStream(Utils.currentMusic);
+                Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+                PlaySong(Utils.songs, Utils.currentSongIndex);
+                Start.state = MainStates.play;
+            }
+            
         }
 
         public static void PrevSong()
@@ -107,7 +115,7 @@ namespace jammer
             }
             else if (Utils.preciseTime + seconds >= Utils.currentMusicLength)
             {
-                MaybeNextSong();
+                NextSong();
             }
             else {
                 Raylib.SeekMusicStream(Utils.currentMusic, (float)(Utils.MusicTimePlayed + seconds));
@@ -143,17 +151,6 @@ namespace jammer
                 Preferences.oldVolume = Preferences.volume;
                 Preferences.volume = 0;
                 Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
-            }
-        }
-
-        public static void MaybeNextSong()
-        {
-            if (Preferences.isLoop)
-            {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
-            }
-            else {
-                NextSong();
             }
         }
     }
