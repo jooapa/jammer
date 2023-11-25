@@ -110,7 +110,26 @@ namespace jammer {
                 songs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
                 i++;
             }
-            songPath = "Soundcloud Playlist";
+        }
+
+        public static string GetSongsFromPlaylist(string url) {
+            // save oldArgs that has all the songs except the playlist
+            string[] oldArgs = Utils.songs;
+            oldArgs = oldArgs.Skip(1).ToArray();
+            // remove all from args except the first one
+            Utils.songs = Utils.songs.Take(1).ToArray();
+
+            GetPlaylist(url).Wait();
+
+            // remove all songs
+            Utils.songs = Utils.songs.Take(0).ToArray();
+            // add all songs from playlist to args
+            Utils.songs = Utils.songs.Concat(songs).ToArray();
+            // add all songs from oldArgs to args
+            Utils.songs = Utils.songs.Concat(oldArgs).ToArray();
+            
+            // download songs[0] and return path
+            return DownloadSong(Utils.songs[0]);
         }
 
         public static string FormatUrlForFilename(string url)

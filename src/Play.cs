@@ -16,6 +16,11 @@ namespace jammer
                 // id related to local file path, convert to absolute path
                 path = Path.GetFullPath(songs[Currentindex]);
             }
+            else if (URL.isValidSoundCloudPlaylist(songs[Currentindex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(songs[Currentindex]);
+            }
             else if (URL.IsValidSoundcloudSong(songs[Currentindex]))
             {
                 // id related to url, download and convert to absolute path
@@ -84,8 +89,7 @@ namespace jammer
         }
         public static void NextSong()
         {
-            Raylib.StopMusicStream(Utils.currentMusic);
-            Raylib.UnloadMusicStream(Utils.currentMusic);
+            ResetMusic();
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
             PlaySong(Utils.songs, Utils.currentSongIndex);
             Start.state = MainStates.play;
@@ -93,8 +97,7 @@ namespace jammer
 
         public static void RandomSong()
         {
-            Raylib.StopMusicStream(Utils.currentMusic);
-            Raylib.UnloadMusicStream(Utils.currentMusic);
+            ResetMusic();
             int lastSongIndex = Utils.currentSongIndex;
             Random rnd = new Random();
             Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
@@ -108,8 +111,7 @@ namespace jammer
         }
         public static void PrevSong()
         {
-            Raylib.StopMusicStream(Utils.currentMusic);
-            Raylib.UnloadMusicStream(Utils.currentMusic);
+            ResetMusic();
             Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
             if (Utils.currentSongIndex < 0)
             {

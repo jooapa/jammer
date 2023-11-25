@@ -89,6 +89,7 @@ namespace jammer
                         break;
                     case MainStates.play:
                         Play.PlaySong();
+                        TUI.ClearScreen();
                         TUI.DrawPlayer();
                         drawOnce = true;
                         Utils.MusicTimePlayed = 0;
