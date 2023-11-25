@@ -1,12 +1,15 @@
 using Raylib_cs;
+using System.Threading;
 
 namespace jammer
 {
     public class Play
     {
-        static string path = "";
         public static void PlaySong(string[] songs, int Currentindex)
         {
+            Console.WriteLine("Play song");
+
+            var path = "";
             // check if file is a local
             if (File.Exists(songs[Currentindex]))
             {
@@ -28,27 +31,74 @@ namespace jammer
                 Console.WriteLine("Invalid url");
                 return;
             }
+
+            Console.WriteLine("Path: " + path);
+
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
-            PlayPath();
-        }
 
-        static void PlayPath() {
-            // play song
+            // Init audio
             Raylib.InitAudioDevice();
             Raylib.SetMasterVolume(0.5f);
-            Utils.currentSound = Raylib.LoadSound(path);
-            Raylib.PlaySound(Utils.currentSound);
+
+            LoadMusic(Utils.currentSong).Wait();
+        }
+        public static async Task LoadMusic(string path)
+        {
+            await Task.Run(() =>
+            {
+                Utils.currentMusic = Raylib.LoadMusicStream(path);
+                Utils.currentMusicLength = Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic));
+            });
         }
 
-        public static void PauseSong()
+        public static async Task PauseSong()
         {
-            Raylib.PauseSound(Utils.currentSound);
+            await Task.Run(() => Raylib.PauseMusicStream(Utils.currentMusic));
         }
 
-        public static void ResumeSong()
+        public static async Task ResumeSong()
         {
-            Raylib.ResumeSound(Utils.currentSound);
+            await Task.Run(() => Raylib.ResumeMusicStream(Utils.currentMusic));
         }
+
+        public static async Task PlaySong()
+        {
+            await Task.Run(() => Raylib.PlayMusicStream(Utils.currentMusic));
+        }
+
+        public static async Task StopSong()
+        {
+            await Task.Run(() =>
+            {
+                Raylib.StopMusicStream(Utils.currentMusic);
+            });
+        }
+
+        public static void ResetMusic() {
+            Raylib.StopMusicStream(Utils.currentMusic);
+            Raylib.UnloadMusicStream(Utils.currentMusic);
+            Raylib.CloseAudioDevice();
+        }
+        public static void NextSong()
+        {
+            Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+            Utils.mainLoop = false;
+            Start.state = MainStates.play;
+            Start.drawOnce = true;
+        }
+
+        public static void PrevSong()
+        {
+            Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
+            if (Utils.currentSongIndex < 0)
+            {
+                Utils.currentSongIndex = Utils.songs.Length - 1;
+            }
+            Utils.mainLoop = false;
+            Start.state = MainStates.play;
+            Start.drawOnce = true;
+        }  
+
     }
 }
