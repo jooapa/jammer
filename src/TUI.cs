@@ -1,7 +1,6 @@
 using Spectre.Console;
-using System.Threading;
 using jammer;
-
+using Raylib_cs;
 static class TUI
 {
 
@@ -24,12 +23,19 @@ static class TUI
 
     static public void DrawPlayer() {
         var table = new Table();
+        var debugTable = new Table();
+        
         table.AddColumn("Jamming to: " + Utils.currentSong);
         table.AddColumn("DEBUG ");
-        table.AddRow("Playlist:\n" + GetAllSongs(), "state: " + Start.state);
-        // table.AddRow(Play.GetTimeFormat());
-        table.AddRow("Time: " + CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength));
+        table.AddRow("Playlist:\n" + GetAllSongs(), "state: " + Start.state + "\n" + Math.Round(Utils.preciseTime, 2) +"||"+ Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic), 2));
 
+        debugTable.AddColumn("State");
+        debugTable.AddColumn("Current Position");
+        debugTable.AddColumn("Looping");
+        debugTable.AddColumn("Suffle");
+        debugTable.AddColumn("Volume");
+        debugTable.AddColumn("Muted");
+        debugTable.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) / 100 + "",  Preferences.isMuted + "");
 
         if (cls) {
             AnsiConsole.Clear();
@@ -37,7 +43,8 @@ static class TUI
         }
         // move cursor to top left
         AnsiConsole.Cursor.SetPosition(0, 0);
-        AnsiConsole.Write(table);             
+        AnsiConsole.Write(table);
+        AnsiConsole.Write(debugTable);
     }
 
     static public void ClearScreen() {

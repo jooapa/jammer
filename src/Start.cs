@@ -36,8 +36,7 @@ namespace jammer
         private static int consoleHeight = Console.WindowHeight;
         public static void Run(string[] args)
         {
-            var w = Console.WindowWidth;
-            var h = Console.WindowHeight;
+            Preferences.CheckJammerFolderExists();
             Raylib.SetTraceLogLevel(TraceLogLevel.LOG_WARNING);
             Utils.songs = args;
             // Turns relative paths into absolute paths, and adds https:// to urls
@@ -80,6 +79,7 @@ namespace jammer
                 switch (state)
                 {
                     case MainStates.idle:
+                        TUI.ClearScreen();
                         CheckKeyboard();
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
@@ -95,10 +95,17 @@ namespace jammer
                         state = MainStates.playing;
                         break;
                     case MainStates.playing:
+                        Utils.preciseTime = Raylib.GetMusicTimePlayed(Utils.currentMusic);
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
                             TUI.DrawPlayer();
                             drawOnce = false;
+                        }
+
+                        // if song is finished, play next song
+                        if (Utils.preciseTime >= Raylib.GetMusicTimeLength(Utils.currentMusic) - 0.01)
+                        {
+                            Play.MaybeNextSong();
                         }
                         
                         if (Raylib.IsMusicReady(Utils.currentMusic))

@@ -40,7 +40,7 @@ namespace jammer
             // Init audio
             if ( !Raylib.IsAudioDeviceReady()) {
                 Raylib.InitAudioDevice();
-                Raylib.SetMasterVolume(0.5f);
+                Raylib.SetMasterVolume(Preferences.volume);
             }
 
             LoadMusic(Utils.currentSong);
@@ -75,7 +75,6 @@ namespace jammer
         public static void ResetMusic() {
             Raylib.StopMusicStream(Utils.currentMusic);
             Raylib.UnloadMusicStream(Utils.currentMusic);
-            // Raylib.CloseAudioDevice();
         }
         public static void NextSong()
         {
@@ -102,18 +101,60 @@ namespace jammer
         public static void SeekSong(float seconds)
         {
             // if musictimeplayed under 0 
-            if (Utils.MusicTimePlayed + seconds < 0)
+            if (Utils.preciseTime + seconds <= 0)
             {
                 Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+            }
+            else if (Utils.preciseTime + seconds >= Utils.currentMusicLength)
+            {
+                MaybeNextSong();
             }
             else {
                 Raylib.SeekMusicStream(Utils.currentMusic, (float)(Utils.MusicTimePlayed + seconds));
             }
         }
 
-        public static void SetVolume(float volume)
+        public static void ModifyVolume(float volume)
         {
-            Raylib.SetMusicVolume(Utils.currentMusic, volume);
+            Preferences.volume += volume;
+            if (Preferences.volume > 5)
+            {
+                Preferences.volume = 5;
+            }
+            else if (Preferences.volume < 0)
+            {
+                Preferences.volume = 0;
+            }
+
+            Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+        }
+
+        public static void MuteSong()
+        {
+            if (Preferences.isMuted)
+            {
+                Preferences.isMuted = false;
+                Preferences.volume = Preferences.oldVolume;
+                Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            }
+            else
+            {
+                Preferences.isMuted = true;
+                Preferences.oldVolume = Preferences.volume;
+                Preferences.volume = 0;
+                Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            }
+        }
+
+        public static void MaybeNextSong()
+        {
+            if (Preferences.isLoop)
+            {
+                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+            }
+            else {
+                NextSong();
+            }
         }
     }
 }

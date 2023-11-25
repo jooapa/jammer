@@ -6,14 +6,14 @@ namespace jammer
     public class Preferences
     {
 
-        public static int rewindSeconds = 5;
-        public static int forwardSeconds = 5;
-        public static float volume = 0.5f;
-        public static float changeVolumeBy = 0.05f;
-        public static float oldVolume = 0.5f;
-        public static bool isLoop = false;
-        public static bool isMuted = false;
-        public static bool isShuffle = false;
+        public static int rewindSeconds = GetRewindSeconds();
+        public static int forwardSeconds = GetForwardSeconds();
+        public static float volume = GetVolume();
+        public static float changeVolumeBy = GetChangeVolumeBy();
+        public static float oldVolume = GetOldVolume();
+        public static bool isLoop = GetIsLoop();
+        public static bool isMuted = GetIsMuted();
+        public static bool isShuffle = GetIsShuffle();
 
         static public void CheckJammerFolderExists()
         {
@@ -50,11 +50,11 @@ namespace jammer
             settings.isShuffle = isShuffle;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                System.IO.File.Delete(jammerPath);
+                File.Delete(jammerPath);
             }
-            System.IO.File.WriteAllText(jammerPath, jsonString);
+            File.WriteAllText(jammerPath, jsonString);
         }
 
         static public bool GetIsLoop()
@@ -64,7 +64,6 @@ namespace jammer
             {
                 string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.IsLoop ?? false;
                 return settings?.IsLoop ?? false;
             }
             else
@@ -95,7 +94,6 @@ namespace jammer
             {
                 string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.isMuted ?? false;
                 return settings?.isMuted ?? false;
             }
             else

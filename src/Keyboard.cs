@@ -59,12 +59,23 @@ namespace jammer
                         Play.SeekSong(-5);
                         break;
                     case ConsoleKey.UpArrow: // volume up
-                        Play.SetVolume(5);
+                        Play.ModifyVolume(Preferences.GetChangeVolumeBy());
                         break;
                     case ConsoleKey.DownArrow: // volume down
-                        Play.SetVolume(-5);
+                        Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
+                        break;
+                    case ConsoleKey.S: // suffle
+                        Preferences.isShuffle = !Preferences.isShuffle;
+                        break;
+                    case ConsoleKey.L: // loop
+                        Preferences.isLoop = !Preferences.isLoop;
+                        break;
+                    case ConsoleKey.M: // mute
+                        Play.MuteSong();
                         break;
                 }
+                TUI.DrawPlayer();
+                Preferences.SaveSettings();
             }
         }
     }
