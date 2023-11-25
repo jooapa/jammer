@@ -17,9 +17,10 @@ namespace jammer
             {
                 AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path[/]");
             }
-
             StartPlaying();
 
+            // NOTE(ra): This is temporary
+            Console.WriteLine("\n\nSpace to start playing the music");
         }
 
         public static void StartPlaying()
@@ -36,6 +37,9 @@ namespace jammer
             }).Start();
         }
 
+        //
+        // Main loop
+        //
         static void Loop()
         {
             while (true)
@@ -48,23 +52,34 @@ namespace jammer
                     Utils.prevMusicTimePlayed = Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic));
                 }             
                 
+                // TODO(ra): Move keyhandling somewhere away from the main loop
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     switch (key)
                     {
                         case ConsoleKey.Spacebar:
-                            if (Raylib.IsMusicStreamPlaying(Utils.currentMusic))
+                            if (Raylib.IsMusicReady(Utils.currentMusic) && !Raylib.IsMusicStreamPlaying(Utils.currentMusic)) {
+                                Play.PlaySong();
+                            }
+                            else if (Raylib.IsMusicStreamPlaying(Utils.currentMusic))
                             {
                                 Console.WriteLine("Paused");
                                 Play.PauseSong();
                             }
                             else
+                            //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.
                             {
                                 Console.WriteLine("Resumed");
                                 Play.ResumeSong();
                             }
                             break;
+
+                        case ConsoleKey.Q:
+                            Console.WriteLine("Quit");
+                            Environment.Exit(0);
+                            break;
+
                     }
                 }
             }
