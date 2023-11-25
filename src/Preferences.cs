@@ -55,7 +55,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.IsLoop;
+                return settings?.IsLoop ?? 0;
             }
             else
             {
@@ -70,7 +70,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.Volume;
+                return settings?.Volume ?? 0;
             }
             else
             {
@@ -85,7 +85,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.isMuted;
+                return settings?.isMuted ?? 0;
             }
             else
             {
@@ -100,7 +100,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.OldVolume;
+                return settings?.OldVolume ?? 0;
             }
             else
             {
@@ -115,7 +115,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.refreshTimes;
+                return settings?.refreshTimes ?? 0;
             }
             else
             {
@@ -130,7 +130,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.forwardSeconds;
+                return settings?.forwardSeconds ?? 0;
             }
             else
             {
@@ -145,7 +145,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.rewindSeconds;
+                return settings?.rewindSeconds ?? 0;
             }
             else
             {
@@ -160,7 +160,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.changeVolumeBy;
+                return settings?.changeVolumeBy ?? 0;
             }
             else
             {
@@ -175,7 +175,7 @@ namespace jammer
             {
                 string jsonString = System.IO.File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.isShuffle;
+                return settings?.isShuffle ?? 0;
             }
             else
             {
