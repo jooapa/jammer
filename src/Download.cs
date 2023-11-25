@@ -10,7 +10,7 @@ namespace jammer {
         public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
-        static string[] songs = { "" };
+        static string[] playlistSongs = { "" };
 
         public static string DownloadSong(string url2) {
             url = url2;
@@ -104,32 +104,25 @@ namespace jammer {
             }
 
             // add all tracks permalinkUrl to songs array
-            songs = new string[playlist.Tracks.Count()];
+            playlistSongs = new string[playlist.Tracks.Count()];
             int i = 0;
             foreach (var track in playlist.Tracks) {
-                songs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
+                playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
                 i++;
             }
         }
 
         public static string GetSongsFromPlaylist(string url) {
-            // save oldArgs that has all the songs except the playlist
-            string[] oldArgs = Utils.songs;
-            oldArgs = oldArgs.Skip(1).ToArray();
-            // remove all from args except the first one
-            Utils.songs = Utils.songs.Take(1).ToArray();
-
             GetPlaylist(url).Wait();
 
-            // remove all songs
-            Utils.songs = Utils.songs.Take(0).ToArray();
-            // add all songs from playlist to args
-            Utils.songs = Utils.songs.Concat(songs).ToArray();
-            // add all songs from oldArgs to args
-            Utils.songs = Utils.songs.Concat(oldArgs).ToArray();
+            // remove the CurrentSong from Utils.songs
+            Utils.songs = Utils.songs.Where(val => val != Utils.songs[Utils.currentSongIndex]).ToArray();
+            // add all songs from playlist to Utils.songs but start adding at the currentSongIndex
+            Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
+            // delete duplicate songs
+            Utils.songs = Utils.songs.Distinct().ToArray();
             
-            // download songs[0] and return path
-            return DownloadSong(Utils.songs[0]);
+            return DownloadSong(Utils.songs[Utils.currentSongIndex]);
         }
 
         public static string FormatUrlForFilename(string url)
