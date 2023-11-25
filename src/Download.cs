@@ -26,11 +26,10 @@ namespace jammer {
 
         private static async Task DownloadYoutubeTrackAsync(string urlGetDownloadUrlAsync)
         {
-            string formattedUrl = FormatUrlForFilename(url);
+            string formattedUrl = FormatUrlForFilename(urlGetDownloadUrlAsync);
 
             songPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "jammer", 
+                Utils.jammerPath,
                 formattedUrl
             );
 
@@ -41,25 +40,26 @@ namespace jammer {
             }
             try
             {
+                Console.WriteLine("Downloading: " + urlGetDownloadUrlAsync);
                 var youtube = new YoutubeClient();
-                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(urlGetDownloadUrlAsync);
                 var streamInfo = streamManifest.GetAudioStreams().GetWithHighestBitrate();
-                if (streamInfo != null)
+                if (streamInfo == null)
                 {
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
+                    Console.WriteLine("No audio streams available");
+                    return;
                 }
-                else
-                {
-                    // Console.WriteLine("This video has no audio streams");
-                }
+                // download song
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
 
-                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
+                songPath = Utils.jammerPath + formattedUrl;
                 // Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine("Youtube Error: " + ex.Message);
             }
+            Console.ReadLine();
         }
 
         public static async Task DownloadSoundCloudTrackAsync(string url) {
@@ -121,7 +121,7 @@ namespace jammer {
             Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
             // delete duplicate songs
             Utils.songs = Utils.songs.Distinct().ToArray();
-            
+
             return DownloadSong(Utils.songs[Utils.currentSongIndex]);
         }
 

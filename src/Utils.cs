@@ -15,6 +15,6 @@ namespace jammer
         public static string scPlaylistPattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
         public static string ytSongPattern = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
         public static bool mainLoop = true;
-        public static string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/";
+        public static string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\";
     }
 }
