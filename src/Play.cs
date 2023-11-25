@@ -84,21 +84,28 @@ namespace jammer
         }
         public static void NextSong()
         {
-            if (Preferences.isLoop)
-            {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
-            }
-            else
-            {
-                Raylib.StopMusicStream(Utils.currentMusic);
-                Raylib.UnloadMusicStream(Utils.currentMusic);
-                Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-                PlaySong(Utils.songs, Utils.currentSongIndex);
-                Start.state = MainStates.play;
-            }
-            
+            Raylib.StopMusicStream(Utils.currentMusic);
+            Raylib.UnloadMusicStream(Utils.currentMusic);
+            Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            Start.state = MainStates.play;
         }
 
+        public static void RandomSong()
+        {
+            Raylib.StopMusicStream(Utils.currentMusic);
+            Raylib.UnloadMusicStream(Utils.currentMusic);
+            int lastSongIndex = Utils.currentSongIndex;
+            Random rnd = new Random();
+            Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
+            // make sure we dont play the same song twice in a row
+            while (Utils.currentSongIndex == lastSongIndex)
+            {
+                Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
+            }
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            Start.state = MainStates.play;
+        }
         public static void PrevSong()
         {
             Raylib.StopMusicStream(Utils.currentMusic);
@@ -117,11 +124,11 @@ namespace jammer
             // if musictimeplayed under 0 
             if (Utils.preciseTime + seconds <= 0)
             {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+                Raylib.SeekMusicStream(Utils.currentMusic, 0.1f); // goto to start if under 0
             }
-            else if (Utils.preciseTime + seconds >= Utils.currentMusicLength)
+            else if (Utils.preciseTime + seconds >= Utils.currentMusicLength) // if musictimeplayed over song length
             {
-                NextSong();
+                MaybeNextSong();
             }
             else {
                 Raylib.SeekMusicStream(Utils.currentMusic, (float)(Utils.MusicTimePlayed + seconds));
@@ -159,5 +166,21 @@ namespace jammer
                 Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
             }
         }
+
+        public static void MaybeNextSong()
+        {
+            if (Preferences.isLoop)
+            {
+                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+            }
+            else if (Preferences.isShuffle)
+            {
+                RandomSong();
+            }
+            else
+            {
+                NextSong();
+            }
+        }
     }
-}
+} 

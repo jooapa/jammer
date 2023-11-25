@@ -103,9 +103,11 @@ namespace jammer
                         }
 
                         // if song is finished, play next song
-                        if (Utils.preciseTime >= Raylib.GetMusicTimeLength(Utils.currentMusic) - 0.01)
+                        if (Utils.preciseTime >= Raylib.GetMusicTimeLength(Utils.currentMusic) - 0.1f)
                         {
-                            Play.NextSong();
+                            Play.StopSong();
+                            Play.MaybeNextSong();
+                            Play.PlaySong();
                         }
                         
                         if (Raylib.IsMusicReady(Utils.currentMusic))
