@@ -79,23 +79,41 @@ namespace jammer
         }
         public static void NextSong()
         {
+            Raylib.StopMusicStream(Utils.currentMusic);
+            Raylib.UnloadMusicStream(Utils.currentMusic);
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-            // Utils.mainLoop = false;
-            // Start.state = MainStates.play;
-            // Start.drawOnce = true;
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            Start.state = MainStates.play;
         }
 
         public static void PrevSong()
         {
+            Raylib.StopMusicStream(Utils.currentMusic);
+            Raylib.UnloadMusicStream(Utils.currentMusic);
             Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
             if (Utils.currentSongIndex < 0)
             {
                 Utils.currentSongIndex = Utils.songs.Length - 1;
             }
-            Utils.mainLoop = false;
+            PlaySong(Utils.songs, Utils.currentSongIndex);
             Start.state = MainStates.play;
-            Start.drawOnce = true;
-        }  
+        } 
 
+        public static void SeekSong(float seconds)
+        {
+            // if musictimeplayed under 0 
+            if (Utils.MusicTimePlayed + seconds < 0)
+            {
+                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+            }
+            else {
+                Raylib.SeekMusicStream(Utils.currentMusic, (float)(Utils.MusicTimePlayed + seconds));
+            }
+        }
+
+        public static void SetVolume(float volume)
+        {
+            Raylib.SetMusicVolume(Utils.currentMusic, volume);
+        }
     }
 }

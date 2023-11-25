@@ -21,7 +21,8 @@ namespace jammer
         playing,
         pause,
         stop,
-        next
+        next,
+        previous
     }
 
     public class Start
@@ -72,12 +73,12 @@ namespace jammer
             TUI.ClearScreen();
             while (true)
             {
-                            if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
-                                consoleHeight = Console.WindowHeight;
-                                consoleWidth = Console.WindowWidth;
-                                TUI.ClearScreen();        
-                                TUI.DrawPlayer();
-                            }
+                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
+                    consoleHeight = Console.WindowHeight;
+                    consoleWidth = Console.WindowWidth;
+                    TUI.ClearScreen();        
+                    TUI.DrawPlayer();
+                }
                 switch (state)
                 {
                     case MainStates.idle:
@@ -112,11 +113,6 @@ namespace jammer
                         if (Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)) != Utils.MusicTimePlayed)
                         {
                             Utils.MusicTimePlayed = Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic));
-                            // if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
-                            //     consoleHeight = Console.WindowHeight;
-                            //     consoleWidth = Console.WindowWidth;
-                            //     TUI.ClearScreen();        
-                            // }
                             TUI.DrawPlayer();
                         }
                         CheckKeyboard();
@@ -130,14 +126,13 @@ namespace jammer
                         state = MainStates.idle;
                         break;
                     case MainStates.next:
-                        Raylib.StopMusicStream(Utils.currentMusic);
-                        Raylib.UnloadMusicStream(Utils.currentMusic);
                         Play.NextSong();
-                        Play.PlaySong(Utils.songs, Utils.currentSongIndex);
-                        state = MainStates.play;
+                        TUI.ClearScreen();
                         break;
-
-
+                    case MainStates.previous:
+                        Play.PrevSong();
+                        TUI.ClearScreen();
+                        break;
                 }
             }
         }
@@ -183,11 +178,23 @@ namespace jammer
                         Console.WriteLine("Quit");
                         Environment.Exit(0);
                         break;
-                    case ConsoleKey.RightArrow:
+                    case ConsoleKey.N:
                         state = MainStates.next;
                         break;
-                    case ConsoleKey.LeftArrow:
-                        Play.PrevSong();
+                    case ConsoleKey.P:
+                        state = MainStates.previous;
+                        break;
+                    case ConsoleKey.RightArrow: // move forward 5 seconds
+                        Play.SeekSong(5);
+                        break;
+                    case ConsoleKey.LeftArrow: // move backward 5 seconds
+                        Play.SeekSong(-5);
+                        break;
+                    case ConsoleKey.UpArrow: // volume up
+                        Play.SetVolume(5);
+                        break;
+                    case ConsoleKey.DownArrow: // volume down
+                        Play.SetVolume(-5);
                         break;
                 }
             }
