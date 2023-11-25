@@ -4,6 +4,8 @@ using jammer;
 
 static class TUI
 {
+
+    static bool cls = false;
     static public void InitScreen()
     {
         // Loading statusbar just for kicks
@@ -29,11 +31,19 @@ static class TUI
         table.AddRow("Time: " + CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength));
 
 
+        if (cls) {
+            AnsiConsole.Clear();
+            cls = false;
+        }
         // move cursor to top left
-        // AnsiConsole.Cursor.SetPosition(0, 0);
-        AnsiConsole.Clear();
+        AnsiConsole.Cursor.SetPosition(0, 0);
         AnsiConsole.Write(table);             
     }
+
+    static public void ClearScreen() {
+        cls = true;
+    }
+
     static public string GetAllSongs() {
         string allSongs = "";
         foreach (string song in Utils.songs) {
