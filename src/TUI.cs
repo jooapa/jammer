@@ -20,19 +20,15 @@ static class TUI
             });
     }
 
-    // static public void AskForUrl() {
-    //     var name = AnsiConsole.Ask<string>("Enter URL?");
-    //     Download.DownloadSoundCloudTrackAsync(name).Wait();
-    // }
-
     static public void DrawPlayer() {
         var table = new Table();
-        //NOTE(ra) Removed ♫. Messed up output
         table.AddColumn("Jamming to: " + Utils.currentSong);
         table.AddColumn("DEBUG ");
-        table.AddRow("Playlist: " + GetAllSongs(), "state: " + Start.state);
-        table.AddRow("Time: " + Utils.prevMusicTimePlayed + "/" + Utils.currentSongLength);
-        
+        table.AddRow("Playlist:\n" + GetAllSongs(), "state: " + Start.state);
+        // table.AddRow(Play.GetTimeFormat());
+        table.AddRow("Time: " + CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength));
+
+
         // move cursor to top left
         // AnsiConsole.Cursor.SetPosition(0, 0);
         AnsiConsole.Clear();
@@ -46,5 +42,12 @@ static class TUI
         // remove last newline
         allSongs = allSongs.Substring(0, allSongs.Length - 1);
         return allSongs;
+    }
+
+    static public string CalculateTime(double time) {
+        int minutes = (int)time / 60;
+        int seconds = (int)time % 60;
+        string timeString = $"{minutes}:{seconds:D2}";
+        return timeString;
     }
 }
