@@ -7,7 +7,7 @@ namespace jammer
     {
         public static void PlaySong(string[] songs, int Currentindex)
         {
-            // Console.WriteLine("Play song");
+            Debug.dprint("Play song");
 
             var path = "";
             // check if file is a local
@@ -16,9 +16,9 @@ namespace jammer
                 // id related to local file path, convert to absolute path
                 path = Path.GetFullPath(songs[Currentindex]);
             }
-            else if (URL.isValidSoundCloudPlaylist(songs[Currentindex]))
-            {
+            else if (URL.isValidSoundCloudPlaylist(songs[Currentindex])) {
                 // id related to url, download and convert to absolute path
+                Debug.dprint("Soundcloud playlist.");
                 path = Download.GetSongsFromPlaylist(songs[Currentindex]);
             }
             else if (URL.IsValidSoundcloudSong(songs[Currentindex]))
@@ -34,6 +34,7 @@ namespace jammer
             else
             {
                 Console.WriteLine("Invalid url");
+                Debug.dprint("Invalid url");
                 return;
             }
 
@@ -119,11 +120,11 @@ namespace jammer
             }
             PlaySong(Utils.songs, Utils.currentSongIndex);
             Start.state = MainStates.play;
-        } 
+        }
 
         public static void SeekSong(float seconds)
         {
-            // if musictimeplayed under 0 
+            // if musictimeplayed under 0
             if (Utils.preciseTime + seconds <= 0)
             {
                 Raylib.SeekMusicStream(Utils.currentMusic, 0.1f); // goto to start if under 0
@@ -185,4 +186,4 @@ namespace jammer
             }
         }
     }
-} 
+}

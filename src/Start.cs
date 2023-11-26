@@ -4,6 +4,7 @@ using Raylib_cs;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.ComponentModel.Design;
+using System.Reflection;
 namespace jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState
@@ -34,8 +35,6 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         private static int consoleWidth = Console.WindowWidth;
         private static int consoleHeight = Console.WindowHeight;
-        private static bool isDebug = false;
-
 
         //
         // Run
@@ -44,8 +43,8 @@ namespace jammer
         {
             for (int i=0; i < args.Length; i++) {
                 if (args[i] == "-d") {
-                    isDebug = true;
-                    dprint("--- Started ---");
+                    Utils.isDebug = true;
+                    Debug.dprint("--- Started ---");
                 }
             }
 
@@ -151,7 +150,7 @@ namespace jammer
                         state = MainStates.idle;
                         break;
                     case MainStates.next:
-                        dprint("next");
+                        Debug.dprint("next");
                         Play.NextSong();
                         TUI.ClearScreen();
                         break;
@@ -159,15 +158,6 @@ namespace jammer
                         Play.PrevSong();
                         TUI.ClearScreen();
                         break;
-                }
-            }
-        }
-        static void dprint(string txt) {
-            if (isDebug) {
-                using (StreamWriter writer = new StreamWriter("debug.log", true))
-                {
-                    var tmp = DateTime.Now.ToString("yyyy/MM/dd-HH:mm:ss"); // case sensitive
-                    writer.WriteLine(tmp + ": " + txt.ToString());
                 }
             }
         }

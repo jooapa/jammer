@@ -9,11 +9,11 @@ static class TUI
     {
         // Loading statusbar just for kicks
         AnsiConsole.Progress()
-            .Start(ctx => 
+            .Start(ctx =>
             {
                 var task1 = ctx.AddTask("[green]Loading[/]");
 
-                while(!ctx.IsFinished) 
+                while(!ctx.IsFinished)
                 {
                     task1.Increment(5.5);
                     Thread.Sleep(1);
@@ -24,7 +24,7 @@ static class TUI
     static public void DrawPlayer() {
         var table = new Table();
         var debugTable = new Table();
-        
+
         table.AddColumn("Jamming to: " + Utils.currentSong);
         table.AddColumn("DEBUG ");
         table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong(), "state: " + Start.state + "\n" + Math.Round(Utils.preciseTime, 2) +"||"+ Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic), 2));
