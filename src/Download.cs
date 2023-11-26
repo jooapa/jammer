@@ -1,4 +1,3 @@
-
 using SoundCloudExplode;
 using Spectre.Console;
 using System.Text.RegularExpressions;
@@ -14,12 +13,14 @@ namespace jammer {
 
         public static string DownloadSong(string url2) {
             url = url2;
+            Debug.dprint("Downloading: " + url2.ToString());
             if (URL.IsValidSoundcloudSong(url)) {
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
             } else {
                 Console.WriteLine("Invalid url");
+                Debug.dprint("Invalid url");
             }
             return songPath;
         }
@@ -74,7 +75,7 @@ namespace jammer {
 
             if (File.Exists(songPath))
             {
-                // Console.WriteLine("Youtube file already exists");
+                Debug.dprint("Youtube file already exists");
                 return;
             }
             url = oldUrl;
@@ -85,15 +86,14 @@ namespace jammer {
 
                 await soundcloud.DownloadAsync(track, songPath);
             } else {
-
-                Console.WriteLine("NULL");
+                Debug.dprint("track returns null");
             }
         }
 
         public static async Task GetPlaylist(string url) {
 
             var soundcloud = new SoundCloudClient();
-            
+
             // Get all playlist tracks
             var playlist = await soundcloud.Playlists.GetAsync(url, true);
 
