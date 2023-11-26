@@ -40,12 +40,6 @@ namespace jammer
                         AnsiConsole.Clear();
                         Environment.Exit(0);
                         break;
-
-                    case ConsoleKey.Escape:
-                        AnsiConsole.Clear();
-                        Console.WriteLine("Quit");
-                        Environment.Exit(0);
-                        break;
                     case ConsoleKey.N:
                         state = MainStates.next; // next song
                         break;
@@ -72,6 +66,9 @@ namespace jammer
                         break;
                     case ConsoleKey.M: // mute
                         Play.MuteSong();
+                        break;
+                    case ConsoleKey.D0: // goto song start
+                        Raylib.SeekMusicStream(Utils.currentMusic, 0.1f);
                         break;
                 }
                 TUI.DrawPlayer();

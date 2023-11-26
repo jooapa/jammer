@@ -47,12 +47,7 @@ namespace jammer
                 Raylib.InitAudioDevice();
             }
 
-            if (Preferences.isMuted) {
-                Raylib.SetMasterVolume(Preferences.oldVolume);
-            }
-            else {
-                Raylib.SetMasterVolume(Preferences.volume);
-            }
+            Raylib.SetMasterVolume(0.5f); // set how loud the music is
             LoadMusic(Utils.currentSong);
         }
 
