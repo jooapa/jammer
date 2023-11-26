@@ -4,6 +4,7 @@ using Raylib_cs;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.ComponentModel.Design;
+using System.Reflection;
 namespace jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState
@@ -27,15 +28,26 @@ namespace jammer
 
     public partial class Start
     {
-        //NOTE(ra) Starting state to playing. 
+        //NOTE(ra) Starting state to playing.
         // public static MainStates state = MainStates.idle;
         public static MainStates state = MainStates.play;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
         private static int consoleWidth = Console.WindowWidth;
         private static int consoleHeight = Console.WindowHeight;
+
+        //
+        // Run
+        //
         public static void Run(string[] args)
         {
+            for (int i=0; i < args.Length; i++) {
+                if (args[i] == "-d") {
+                    Utils.isDebug = true;
+                    Debug.dprint("--- Started ---");
+                }
+            }
+
             Preferences.CheckJammerFolderExists();
             Raylib.SetTraceLogLevel(TraceLogLevel.LOG_WARNING);
             Utils.songs = args;
@@ -51,6 +63,10 @@ namespace jammer
             Console.WriteLine("\n\nSpace to start playing the music");
         }
 
+
+        //
+        // StartPlaying
+        //
         public static void StartPlaying()
         {
             // Console.WriteLine("Start playing");
@@ -73,7 +89,7 @@ namespace jammer
                 if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
-                    TUI.ClearScreen();        
+                    TUI.ClearScreen();
                     TUI.DrawPlayer();
                 }
                 switch (state)
@@ -110,7 +126,7 @@ namespace jammer
                             Play.MaybeNextSong();
                             Play.PlaySong();
                         }
-                        
+
                         if (Raylib.IsMusicReady(Utils.currentMusic))
                         {
                             Raylib.UpdateMusicStream(Utils.currentMusic);
@@ -134,6 +150,7 @@ namespace jammer
                         state = MainStates.idle;
                         break;
                     case MainStates.next:
+                        Debug.dprint("next");
                         Play.NextSong();
                         TUI.ClearScreen();
                         break;
