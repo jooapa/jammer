@@ -1,5 +1,4 @@
 using Raylib_cs;
-using System.Threading;
 
 namespace jammer
 {

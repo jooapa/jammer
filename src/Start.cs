@@ -1,10 +1,6 @@
 using Spectre.Console;
-using System.Threading;
 using Raylib_cs;
-using System.Text.RegularExpressions;
-using System.Collections;
-using System.ComponentModel.Design;
-using System.Reflection;
+
 namespace jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState

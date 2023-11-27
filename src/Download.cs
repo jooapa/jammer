@@ -1,5 +1,4 @@
 using SoundCloudExplode;
-using Spectre.Console;
 using System.Text.RegularExpressions;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
