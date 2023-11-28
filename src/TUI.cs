@@ -35,7 +35,7 @@ static class TUI
         Comp_Controls(controlsTable);
 
         if (cls) {
-            if (Start.playerView == "default") {
+            if (Start.playerView == "all") {
                 cls = false;
                 return;
             }
