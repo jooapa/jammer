@@ -52,11 +52,13 @@ namespace jammer
             // if no args, ask for input
             if (Utils.songs.Length == 0) {
                 AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path[/]");
+                Utils.songs = new string[1];
+                Utils.songs[0] = AnsiConsole.Ask<string>("Enter URL or file path");
             }
             // Play.InitAudio();
             StartPlaying();
             // NOTE(ra): This is for testing purposes.
-            Console.WriteLine("\n\nSpace to start playing the music");
+            TUI.ClearScreen();
         }
 
 

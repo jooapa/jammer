@@ -42,13 +42,11 @@ namespace jammer
                 return;
             }
 
-            // Console.WriteLine("Path: " + path);
-
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
 
             // Init audio
-            if ( !Raylib.IsAudioDeviceReady()) {
+            if (!Raylib.IsAudioDeviceReady()) {
                 Raylib.InitAudioDevice();
             }
 
@@ -171,6 +169,11 @@ namespace jammer
 
         public static void MaybeNextSong()
         {
+            if (Utils.songs.Length == 1)
+            {
+                Raylib.SeekMusicStream(Utils.currentMusic, 0);
+                return;
+            }
             if (Preferences.isLoop)
             {
                 Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
