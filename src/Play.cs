@@ -6,6 +6,11 @@ namespace jammer
     {
         public static void PlaySong(string[] songs, int Currentindex)
         {
+            if (Currentindex < 0 || Currentindex >= songs.Length)
+            {
+                Console.WriteLine("Index out of range");
+                return;
+            }
             Debug.dprint("Play song");
 
             var path = "";
@@ -178,6 +183,43 @@ namespace jammer
             {
                 NextSong();
             }
+        }
+
+        public static void AddSong(string song)
+        {
+            // check if song is already in playlist
+            foreach (string s in Utils.songs)
+            {
+                if (s == song)
+                {
+                    Console.WriteLine("Song already in playlist");
+                    return;
+                }
+            }
+            // add song to current Utils.songs
+            Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
+            Utils.songs[Utils.songs.Length - 1] = song;
+        }
+        public static void DeleteSong(int index)
+        {
+            // check if index is in range
+            if (index < 0 || index >= Utils.songs.Length)
+            {
+                Console.WriteLine("Index out of range");
+                return;
+            }
+            // remove song from current Utils.songs
+            Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
+            ResetMusic();
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            Start.state = MainStates.play;
+        }
+
+        public static void Suffle()
+        {
+            // suffle songs
+            Random rnd = new Random();
+            Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
         }
     }
 }

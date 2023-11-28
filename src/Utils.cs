@@ -17,5 +17,6 @@ namespace jammer
         public static bool mainLoop = true;
         public static string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\";
         public static bool isDebug = false;
+        public static string currentPlaylist = "";
     }
 }

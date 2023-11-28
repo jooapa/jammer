@@ -5,6 +5,7 @@ namespace jammer
 {
     public partial class Start
     {
+        public static string playerView = "default"; // default, all
         public static void CheckKeyboard()
         {
             if (Console.KeyAvailable)
@@ -67,8 +68,22 @@ namespace jammer
                     case ConsoleKey.M: // mute
                         Play.MuteSong();
                         break;
+                    case ConsoleKey.F: // show all view
+                        AnsiConsole.Clear();
+                        if (playerView == "default")
+                        {
+                            playerView = "all";
+                        }
+                        else
+                        {
+                            playerView = "default";
+                        }
+                        break;
                     case ConsoleKey.D0: // goto song start
                         Raylib.SeekMusicStream(Utils.currentMusic, 0.1f);
+                        break;
+                    case ConsoleKey.F2: // playlist options
+                        TUI.PlaylistInput();
                         break;
                 }
                 TUI.DrawPlayer();
