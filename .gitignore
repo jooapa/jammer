@@ -134,3 +134,6 @@ _NCrunch*
 
 jammer-Setup.exe
 nsis-folder/jammer.exe
+nsis-folder/raylib.dll
+.vscode/launch.json
+.vscode/tasks.json

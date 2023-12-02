@@ -1,10 +1,10 @@
-using System.Text.RegularExpressions;
+using Spectre.Console;
 
 namespace jammer
 {
-    public class AbsolutefyPath
+    public class Absolute
     {
-        public static string[] Absolutefy(string[] args)
+        public static string[] Correctify(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
             {
@@ -16,15 +16,18 @@ namespace jammer
                     {
                         item = "https://" + item;
                     }
-                    
-                    if (URL.IsSoundCloudUrlValid(item)) {
+
+                    if (URL.IsValidSoundcloudSong(item))
+                    {
                         // splice ? and everything after it
                         int index = item.IndexOf("?");
                         if (index > 0)
                         {
                             item = item.Substring(0, index);
                         }
-                    } else if (URL.IsYoutubeUrlValid(item)) {
+                    }
+                    else if (URL.IsValidYoutubeSong(item))
+                    {
                         // splice & and everything after it
                         int index = item.IndexOf("&");
                         if (index > 0)
@@ -32,12 +35,28 @@ namespace jammer
                             item = item.Substring(0, index);
                         }
                     }
+                    else {
+                        AnsiConsole.MarkupLine($"[red]URL {item} is not valid[/]");
+                        // delete item from args
+                        args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                        i--;
+                    }
 
                     args[i] = item;
                 }
-                else if (IsRelativePath(item))
+                // if exits, convert to absolute path
+                else if (File.Exists(item))
                 {
-                    args[i] = ConvertToAbsolutePath(item);
+                    if (IsRelativePath(item)) {
+                        args[i] = ConvertToAbsolutePath(item);
+                    }
+                }
+                else if (!File.Exists(item))
+                {
+                    AnsiConsole.MarkupLine($"[red]File {item} does not exist[/]");
+                    // delete item from args
+                    args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                    i--;
                 }
             }
             return args;

@@ -1,27 +1,36 @@
 using System.Text.Json;
 using System.Runtime.InteropServices;
 
-
 namespace jammer
 {
-    public class JammerFolder
+    public class Preferences
     {
+
+        public static int rewindSeconds = GetRewindSeconds();
+        public static int forwardSeconds = GetForwardSeconds();
+        public static float volume = GetVolume();
+        public static float changeVolumeBy = GetChangeVolumeBy();
+        public static float oldVolume = GetOldVolume();
+        public static bool isLoop = GetIsLoop();
+        public static bool isMuted = GetIsMuted();
+        public static bool isShuffle = GetIsShuffle();
+
         static public void CheckJammerFolderExists()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer";
-            if (!System.IO.Directory.Exists(jammerPath))
+            if (!Directory.Exists(jammerPath))
             {
-                System.IO.Directory.CreateDirectory(jammerPath);
-                System.IO.Directory.CreateDirectory(jammerPath + "/playlists");
+                Directory.CreateDirectory(jammerPath);
+                Directory.CreateDirectory(jammerPath + "/playlists");
             }
 
             // check if settings.json exists but the file is empty, if so, delete it
-            if (System.IO.File.Exists(jammerPath + "/settings.json"))
+            if (File.Exists(jammerPath + "/settings.json"))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath + "/settings.json");
+                string jsonString = File.ReadAllText(jammerPath + "/settings.json");
                 if (jsonString == "")
                 {
-                    System.IO.File.Delete(jammerPath + "/settings.json");
+                    File.Delete(jammerPath + "/settings.json");
                 }
             }
         }
@@ -31,32 +40,31 @@ namespace jammer
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
             // wirte hello world to a file
             Settings settings = new Settings();
-            settings.IsLoop = Program.isLoop;
-            settings.Volume = Program.volume;
-            settings.isMuted = Program.isMuted;
-            settings.OldVolume = Program.oldVolume;
-            settings.refreshTimes = UI.refreshTimes;
-            settings.forwardSeconds = Program.forwardSeconds;
-            settings.rewindSeconds = Program.rewindSeconds;
-            settings.changeVolumeBy = Program.changeVolumeBy;
-            settings.isShuffle = Program.isShuffle;
+            settings.IsLoop = isLoop;
+            settings.Volume = volume;
+            settings.isMuted = isMuted;
+            settings.OldVolume = oldVolume;
+            settings.forwardSeconds = forwardSeconds;
+            settings.rewindSeconds = rewindSeconds;
+            settings.changeVolumeBy = changeVolumeBy;
+            settings.isShuffle = isShuffle;
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                System.IO.File.Delete(jammerPath);
+                File.Delete(jammerPath);
             }
-            System.IO.File.WriteAllText(jammerPath, jsonString);
+            File.WriteAllText(jammerPath, jsonString);
         }
-        
+
         static public bool GetIsLoop()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.IsLoop;
+                return settings?.IsLoop ?? false;
             }
             else
             {
@@ -67,11 +75,11 @@ namespace jammer
         static public float GetVolume()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.Volume;
+                return settings?.Volume ?? 0.5f;
             }
             else
             {
@@ -82,11 +90,11 @@ namespace jammer
         static public bool GetIsMuted()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.isMuted;
+                return settings?.isMuted ?? false;
             }
             else
             {
@@ -97,11 +105,11 @@ namespace jammer
         static public float GetOldVolume()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.OldVolume;
+                return settings?.OldVolume ?? 0.5f;
             }
             else
             {
@@ -109,29 +117,14 @@ namespace jammer
             }
         }
 
-        static public int GetRefreshTimes()
-        {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
-            {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
-                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.refreshTimes;
-            }
-            else
-            {
-                return 40;
-            }
-        }
-
         static public int GetForwardSeconds()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.forwardSeconds;
+                return settings?.forwardSeconds ?? 5;
             }
             else
             {
@@ -142,11 +135,11 @@ namespace jammer
         static public int GetRewindSeconds()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.rewindSeconds;
+                return settings?.rewindSeconds ?? 5;
             }
             else
             {
@@ -157,11 +150,11 @@ namespace jammer
         static public float GetChangeVolumeBy()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.changeVolumeBy;
+                return settings?.changeVolumeBy ?? 0.05f;
             }
             else
             {
@@ -172,11 +165,11 @@ namespace jammer
         static public bool GetIsShuffle()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
-            if (System.IO.File.Exists(jammerPath))
+            if (File.Exists(jammerPath))
             {
-                string jsonString = System.IO.File.ReadAllText(jammerPath);
+                string jsonString = File.ReadAllText(jammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings.isShuffle;
+                return settings?.isShuffle ?? false;
             }
             else
             {
@@ -208,7 +201,6 @@ namespace jammer
             public float Volume { get; set; }
             public float OldVolume { get; set; }
             public bool isMuted { get; set; }
-            public int refreshTimes { get; set; }
             public int forwardSeconds { get; set; }
             public int rewindSeconds { get; set; }
             public float changeVolumeBy { get; set; }
