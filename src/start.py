@@ -1,33 +1,43 @@
-import utils, play, preferences, url, keyboard
+import utils
+import play
+import preferences
+import url
+import key
 import threading
 import pygame
 import time
+from pynput import keyboard
 
 class MainStates():
-            idle = "idle"
-            play = "play"
-            playing = "playing"
-            pause = "pause"
-            stop = "stop"
-            next = "next"
-            previous = "previous"
+    idle = "idle"
+    play = "play"
+    playing = "playing"
+    pause = "pause"
+    stop = "stop"
+    next = "next"
+    previous = "previous"
+
 
 state = MainStates.play
 
+
 def run(songs):
+    pygame.init()
     utils.songs = songs
     start_playing()
-         
+
+
 def start_playing():
     global state
-    state = MainStates.play
-    audio_thread.start()
+    state = MainStates.playing
     play.play_song()
+    loop()
+
 
 def loop():
+    key.start_key_listener()
     global state
     while True:
-        if state == MainStates.idle:
-            keyboard.check_keyboard()
-            
-audio_thread = threading.Thread(target=loop)
+        # check if space is pressed
+        print(state)
+        time.sleep(0.1)
