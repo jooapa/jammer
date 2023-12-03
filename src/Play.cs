@@ -1,9 +1,14 @@
-using Raylib_cs;
+using NAudio.Wave;
+using NAudio.Vorbis;
+using System.Diagnostics;
+using NAudio.Wave.SampleProviders;
+using Spectre.Console;
 
 namespace jammer
 {
     public class Play
     {
+        private static Thread loopThread = new Thread(() => { });
         public static void PlaySong(string[] songs, int Currentindex)
         {
             if (Currentindex < 0 || Currentindex >= songs.Length)
@@ -46,51 +51,72 @@ namespace jammer
             Utils.currentSongIndex = Currentindex;
 
             // Init audio
-            if (!Raylib.IsAudioDeviceReady()) {
-                Raylib.InitAudioDevice();
+            try
+            {
+                string extension = Path.GetExtension(path);
+
+                if (extension == ".mp3" || extension == ".wav" || extension == ".flac")
+                {
+                    PlayMediaFoundation();
+                }
+                else if (extension == ".ogg")
+                {
+                    PlayOgg();
+                }
+                else
+                {
+                    Console.WriteLine("Unsupported file format");
+                    Debug.dprint("Unsupported file format");
+                    return;
+                }
             }
-
-            Raylib.SetMasterVolume(0.5f); // set how loud the music is
-            LoadMusic(Utils.currentSong);
-        }
-
-        public static void LoadMusic(string path)
-        {
-            Utils.currentMusic = Raylib.LoadMusicStream(path);
-            Utils.currentMusicLength = Math.Round(Raylib.GetMusicTimeLength(Utils.currentMusic));
-            Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e);
+                Debug.dprint("Error: " + e);
+                return;
+            }
+            // LoadMusic(Utils.currentSong);
         }
 
         public static void PauseSong()
         {
-            Raylib.PauseMusicStream(Utils.currentMusic);
+            Utils.currentMusic.Pause();
         }
 
         public static void ResumeSong()
         {
-            Raylib.ResumeMusicStream(Utils.currentMusic);
+            Utils.currentMusic.Play();
         }
 
         public static void PlaySong()
         {
-            Raylib.PlayMusicStream(Utils.currentMusic);
+            // Utils.currentMusic.Stop();
+            Utils.currentMusic.Play();
         }
 
         public static void StopSong()
         {
-            Raylib.StopMusicStream(Utils.currentMusic);
+            Utils.currentMusic.Stop();
         }
 
         public static void ResetMusic() {
-            Raylib.StopMusicStream(Utils.currentMusic);
-            Raylib.UnloadMusicStream(Utils.currentMusic);
+            Utils.currentMusic.Stop();
+            Utils.currentMusic.Dispose();
         }
         public static void NextSong()
         {
             ResetMusic();
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+            playDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
-            Start.state = MainStates.play;
+        }
+
+        private static void playDrawReset() // play, draw, reset lastSeconds
+        {
+            Start.state = MainStates.playing;
+            Start.drawOnce = true;
+            Start.lastSeconds = 0;
         }
 
         public static void RandomSong()
@@ -104,8 +130,8 @@ namespace jammer
             {
                 Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
             }
+            playDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
-            Start.state = MainStates.play;
         }
         public static void PrevSong()
         {
@@ -115,68 +141,89 @@ namespace jammer
             {
                 Utils.currentSongIndex = Utils.songs.Length - 1;
             }
+            playDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
-            Start.state = MainStates.play;
         }
 
-        public static void SeekSong(float seconds)
+        public static void SeekSong(float seconds, bool relative)
         {
-            // if musictimeplayed under 0
-            if (Utils.preciseTime + seconds <= 0)
+            if (Utils.audioStream == null)
             {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0.1f); // goto to start if under 0
+                return;
             }
-            else if (Utils.preciseTime + seconds >= Utils.currentMusicLength) // if musictimeplayed over song length
+
+            // Calculate the seek position based on the requested seconds
+            long seekPosition = (long)(Utils.audioStream.WaveFormat.AverageBytesPerSecond * Math.Abs(seconds));
+
+            // If seeking relative to the current position, adjust the seek position
+            if (relative)
             {
-                MaybeNextSong();
+                // if negative, move backwards
+                if (seconds < 0)
+                {
+                    seekPosition = Utils.audioStream.Position - seekPosition;
+                }
+                else
+                {
+                    seekPosition = Utils.audioStream.Position + seekPosition;
+                }
+                // Clamp again to ensure it's within the valid range
+                seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
+                Start.lastSeconds = 0;
+                Start.drawOnce = true;
             }
-            else {
-                Raylib.SeekMusicStream(Utils.currentMusic, (float)(Utils.MusicTimePlayed + seconds));
+            else
+            {
+                // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
+                seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
             }
+
+            // Update the audio stream's position
+            Utils.audioStream.Position = seekPosition;
         }
 
         public static void ModifyVolume(float volume)
         {
-            Preferences.volume += volume;
-            if (Preferences.volume > 5)
-            {
-                Preferences.volume = 5;
-            }
-            else if (Preferences.volume < 0)
-            {
-                Preferences.volume = 0;
-            }
+            // Preferences.volume += volume;
+            // if (Preferences.volume > 5)
+            // {
+            //     Preferences.volume = 5;
+            // }
+            // else if (Preferences.volume < 0)
+            // {
+            //     Preferences.volume = 0;
+            // }
 
-            Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            // Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
         }
 
         public static void MuteSong()
         {
-            if (Preferences.isMuted)
-            {
-                Preferences.isMuted = false;
-                Preferences.volume = Preferences.oldVolume;
-                Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
-            }
-            else
-            {
-                Preferences.isMuted = true;
-                Preferences.oldVolume = Preferences.volume;
-                Preferences.volume = 0;
-                Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
-            }
+            // if (Preferences.isMuted)
+            // {
+            //     Preferences.isMuted = false;
+            //     Preferences.volume = Preferences.oldVolume;
+            //     Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            // }
+            // else
+            // {
+            //     Preferences.isMuted = true;
+            //     Preferences.oldVolume = Preferences.volume;
+            //     Preferences.volume = 0;
+            //     Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            // }
         }
 
         public static void MaybeNextSong()
         {
             if (Utils.songs.Length == 1)
             {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0);
+                SeekSong(0, false);
                 return;
             }
             if (Preferences.isLoop)
             {
-                Raylib.SeekMusicStream(Utils.currentMusic, 0); // goto to start if under 0
+                SeekSong(0, false);
             }
             else if (Preferences.isShuffle)
             {
@@ -215,7 +262,7 @@ namespace jammer
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
             ResetMusic();
             PlaySong(Utils.songs, Utils.currentSongIndex);
-            Start.state = MainStates.play;
+            Start.state = MainStates.playing;
         }
 
         public static void Suffle()
@@ -223,6 +270,40 @@ namespace jammer
             // suffle songs
             Random rnd = new Random();
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
+        }
+
+        static public void PlayMediaFoundation()
+        {
+            using var reader = new MediaFoundationReader(Utils.currentSong);
+            using var outputDevice = new WaveOutEvent();
+            outputDevice.Init(reader);
+            Utils.currentMusic = outputDevice;
+            Utils.audioStream = reader;
+            Utils.currentMusic.Play();
+
+            // start loop thread
+            loopThread = new Thread(Start.Loop);
+            loopThread.Start();
+
+            ManualResetEvent manualEvent = new ManualResetEvent(false);
+            manualEvent.WaitOne();
+        }
+
+        static public void PlayOgg()
+        {
+            using var reader = new VorbisWaveReader(Utils.currentSong);
+            using var outputDevice = new WaveOutEvent();
+            outputDevice.Init(reader);
+            Utils.currentMusic = outputDevice;
+            Utils.audioStream = reader;
+            Utils.currentMusic.Play();
+
+            // start loop thread
+            loopThread = new Thread(Start.Loop);
+            loopThread.Start();
+
+            ManualResetEvent manualEvent = new ManualResetEvent(false);
+            manualEvent.WaitOne();
         }
     }
 }

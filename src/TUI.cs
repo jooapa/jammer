@@ -1,6 +1,5 @@
 using Spectre.Console;
 using jammer;
-using Raylib_cs;
 static class TUI
 {
 
@@ -188,7 +187,7 @@ static class TUI
     }
 
     static public void Comp_Normal(Table table) {
-        table.AddColumn("Jamming to: " + Utils.currentSong);
-        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong());
+        table.AddColumns("Jamming to: " + Utils.currentSong, "DEBUG");
+        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong(), Utils.preciseTime + " / " + Utils.audioStream?.Length + "\n" + Utils.MusicTimePlayed + " / " + Utils.currentMusicLength);
     }
 }

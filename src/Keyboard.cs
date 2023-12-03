@@ -1,4 +1,4 @@
-using Raylib_cs;
+using NAudio.Wave;
 using Spectre.Console;
 
 namespace jammer
@@ -14,16 +14,21 @@ namespace jammer
                 switch (key)
                 {
                     case ConsoleKey.Spacebar:
-                        if (Raylib.IsMusicReady(Utils.currentMusic) && !Raylib.IsMusicStreamPlaying(Utils.currentMusic))
+                        if (Utils.currentMusic.PlaybackState == PlaybackState.Playing)
+                        {
+                            Play.PauseSong();
+                            state = MainStates.pause;
+                            drawOnce = true;
+                        }
+                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused)
                         {
                             Play.PlaySong();
                             state = MainStates.playing;
                             drawOnce = true;
                         }
-                        else if (Raylib.IsMusicStreamPlaying(Utils.currentMusic))
+                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped)
                         {
-                            Console.WriteLine("Paused");
-                            state = MainStates.pause;
+                            state = MainStates.play;
                             drawOnce = true;
                         }
                         else
@@ -48,10 +53,10 @@ namespace jammer
                         state = MainStates.previous; // previous song
                         break;
                     case ConsoleKey.RightArrow: // move forward 5 seconds
-                        Play.SeekSong(5);
+                        Play.SeekSong(5, true);
                         break;
                     case ConsoleKey.LeftArrow: // move backward 5 seconds
-                        Play.SeekSong(-5);
+                        Play.SeekSong(-5, true);
                         break;
                     case ConsoleKey.UpArrow: // volume up
                         Play.ModifyVolume(Preferences.GetChangeVolumeBy());
@@ -80,7 +85,7 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.D0: // goto song start
-                        Raylib.SeekMusicStream(Utils.currentMusic, 0.1f);
+                        Play.SeekSong(0, false);
                         break;
                     case ConsoleKey.F2: // playlist options
                         TUI.PlaylistInput();

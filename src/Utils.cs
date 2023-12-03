@@ -1,15 +1,16 @@
-using Raylib_cs;
+using NAudio.Wave;
 
 namespace jammer
 {
     public struct Utils
     {
+        public static WaveOutEvent currentMusic = new WaveOutEvent();
+        public static WaveStream? audioStream = null;
         public static string[] songs = { "" };
         public static string currentSong = "";
-        public static double currentMusicLength = 0; // current song length in seconds
-        public static double MusicTimePlayed = 0;  // current song time played so far
+        public static long currentMusicLength = 0; // length in seconds
+        public static double MusicTimePlayed = 0; // time played in seconds
         public static double preciseTime = 0;
-        public static Music currentMusic;
         public static int currentSongIndex = 0;
         public static string scSongPattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
         public static string scPlaylistPattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";

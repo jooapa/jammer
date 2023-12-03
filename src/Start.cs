@@ -1,5 +1,7 @@
 using Spectre.Console;
-using Raylib_cs;
+using NAudio.Wave;
+using AngleSharp.Common;
+using System.Runtime.InteropServices;
 
 namespace jammer
 {
@@ -26,13 +28,13 @@ namespace jammer
     {
         //NOTE(ra) Starting state to playing.
         // public static MainStates state = MainStates.idle;
-        public static MainStates state = MainStates.play;
+        public static MainStates state = MainStates.playing;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
         private static int consoleWidth = Console.WindowWidth;
         private static int consoleHeight = Console.WindowHeight;
-
-        //
+        public static double lastSeconds = 0;
+        //  
         // Run
         //
         public static void Run(string[] args)
@@ -45,7 +47,6 @@ namespace jammer
             }
 
             Preferences.CheckJammerFolderExists();
-            Raylib.SetTraceLogLevel(TraceLogLevel.LOG_WARNING);
             Utils.songs = args;
             // Turns relative paths into absolute paths, and adds https:// to urls
             Utils.songs = Absolute.Correctify(Utils.songs);
@@ -67,20 +68,23 @@ namespace jammer
         //
         public static void StartPlaying()
         {
-            // Console.WriteLine("Start playing");
-            Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             // new thread for playing music
-            loopThread = new Thread(() => {
-                Loop();
-            });
-            loopThread.Start();
+            // loopThread = new Thread(() => {
+            //     Loop();
+            // });
+            // loopThread.Start();
+            Play.PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
         //
         // Main loop
         //
-        static void Loop()
+        public static void Loop()
         {
+            if (Utils.audioStream == null || Utils.currentMusic == null) {
+                return;
+            }
+
             TUI.ClearScreen();
             while (true)
             {
@@ -110,7 +114,13 @@ namespace jammer
                         state = MainStates.playing;
                         break;
                     case MainStates.playing:
-                        Utils.preciseTime = Raylib.GetMusicTimePlayed(Utils.currentMusic);
+                        // get current time 
+                        Utils.preciseTime = Utils.audioStream.Position;
+                        // get current time in seconds
+                        Utils.MusicTimePlayed = Utils.audioStream.Position / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                        // get whole song length in seconds
+                        Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
                             TUI.DrawPlayer();
@@ -118,23 +128,16 @@ namespace jammer
                         }
 
                         // if song is finished, play next song
-                        if (Utils.preciseTime >= Raylib.GetMusicTimeLength(Utils.currentMusic) - 0.1f)
+                        if (Utils.MusicTimePlayed >= Utils.currentMusicLength)
                         {
                             Play.StopSong();
                             Play.MaybeNextSong();
-                            Play.PlaySong();
                         }
 
-                        if (Raylib.IsMusicReady(Utils.currentMusic))
+                        // every second, update screen
+                        if (Utils.MusicTimePlayed >= lastSeconds + 1)
                         {
-                            Raylib.UpdateMusicStream(Utils.currentMusic);
-                        }
-
-                        // Draw once a second
-                        // TODO(ra) Move this somwhere. TUI-draw, where?
-                        if (Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic)) != Utils.MusicTimePlayed)
-                        {
-                            Utils.MusicTimePlayed = Math.Floor(Raylib.GetMusicTimePlayed(Utils.currentMusic));
+                            lastSeconds = Utils.MusicTimePlayed;
                             TUI.DrawPlayer();
                         }
                         CheckKeyboard();

@@ -17,7 +17,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Raylib-cs" Version="5.0.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
     <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.8" />
