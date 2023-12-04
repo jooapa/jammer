@@ -24,42 +24,43 @@ namespace jammer {
             return songPath;
         }
 
-        private static async Task DownloadYoutubeTrackAsync(string urlGetDownloadUrlAsync)
+        private static async Task DownloadYoutubeTrackAsync(string url)
         {
-            string formattedUrl = FormatUrlForFilename(urlGetDownloadUrlAsync);
+            string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
-                Utils.jammerPath,
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "jammer",
                 formattedUrl
             );
 
             if (File.Exists(songPath))
             {
-                // Console.WriteLine("Youtube file already exists");
+                Console.WriteLine("Youtube file already exists");
                 return;
             }
             try
             {
-                Console.WriteLine("Downloading: " + urlGetDownloadUrlAsync);
                 var youtube = new YoutubeClient();
-                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(urlGetDownloadUrlAsync);
-                var streamInfo = streamManifest.GetAudioStreams().GetWithHighestBitrate();
-                if (streamInfo == null)
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
+                var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+                if (streamInfo != null)
                 {
-                    Console.WriteLine("No audio streams available");
-                    return;
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
                 }
-                // download song
-                await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
+                else
+                {
+                    Console.WriteLine("This video has no audio streams");
+                }
 
-                songPath = Utils.jammerPath + formattedUrl;
-                // Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
+                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
+                Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Youtube Error: " + ex.Message);
+                Console.WriteLine("Error: " + ex.Message);
+                Console.ReadLine();
             }
-            Console.ReadLine();
         }
 
         public static async Task DownloadSoundCloudTrackAsync(string url) {
@@ -74,7 +75,6 @@ namespace jammer {
 
             if (File.Exists(songPath))
             {
-                Debug.dprint("Youtube file already exists");
                 return;
             }
             url = oldUrl;
@@ -128,7 +128,6 @@ namespace jammer {
         {
             // Console.WriteLine("Formatting url for filename: " + url);
             if (URL.isValidSoundCloudPlaylist(url)) {
-                Console.WriteLine("Soundcloud playlist");
                 return "Soundcloud Playlist";
             }
             else if (URL.IsValidSoundcloudSong(url))
@@ -143,17 +142,16 @@ namespace jammer {
             }
             else if (URL.IsValidYoutubeSong(url))
             {
-                Console.WriteLine("Youtube song");
                 int index = url.IndexOf("&");
                 if (index > 0)
                 {
                     url = url.Substring(0, index);
                 }
-                url.Replace("?", " ");
             }
             string formattedUrl = url.Replace("https://", "")
                                      .Replace("/", " ")
-                                     .Replace("-", " ");
+                                     .Replace("-", " ")
+                                     .Replace("?", " ");
 
             return formattedUrl + ".mp3";
         }
