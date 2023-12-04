@@ -177,41 +177,52 @@ namespace jammer
                 // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
                 seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
             }
-
+            
             // Update the audio stream's position
-            Utils.audioStream.Position = seekPosition;
+            if (Utils.audioStream.Length == seekPosition)
+            {
+                MaybeNextSong();
+                return;
+            }
+            try {
+                Utils.audioStream.Position = seekPosition;
+            }
+            catch (Exception e) {
+                AnsiConsole.WriteException(e);
+            }
         }
 
         public static void ModifyVolume(float volume)
         {
-            // Preferences.volume += volume;
-            // if (Preferences.volume > 5)
-            // {
-            //     Preferences.volume = 5;
-            // }
-            // else if (Preferences.volume < 0)
-            // {
-            //     Preferences.volume = 0;
-            // }
+            Preferences.volume += volume;
+            if (Preferences.volume > 1)
+            {
+                Preferences.volume = 1;
+            }
+            else if (Preferences.volume < 0)
+            {
+                Preferences.volume = 0;
+            }
 
-            // Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
+            Utils.currentMusic.Volume = Preferences.volume;
+
         }
 
         public static void MuteSong()
         {
-            // if (Preferences.isMuted)
-            // {
-            //     Preferences.isMuted = false;
-            //     Preferences.volume = Preferences.oldVolume;
-            //     Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
-            // }
-            // else
-            // {
-            //     Preferences.isMuted = true;
-            //     Preferences.oldVolume = Preferences.volume;
-            //     Preferences.volume = 0;
-            //     Raylib.SetMusicVolume(Utils.currentMusic, Preferences.volume);
-            // }
+            if (Preferences.isMuted)
+            {
+                Preferences.isMuted = false;
+                Utils.currentMusic.Volume = Preferences.oldVolume;
+                Preferences.volume = Preferences.oldVolume;
+            }
+            else
+            {
+                Preferences.isMuted = true;
+                Preferences.oldVolume = Preferences.volume;
+                Utils.currentMusic.Volume = 0;
+                Preferences.volume = 0;
+            }
         }
 
         public static void MaybeNextSong()
@@ -253,16 +264,20 @@ namespace jammer
         public static void DeleteSong(int index)
         {
             // check if index is in range
-            if (index < 0 || index >= Utils.songs.Length)
+            if (index < 0 || index > Utils.songs.Length)
             {
-                Console.WriteLine("Index out of range");
+                AnsiConsole.MarkupLine("[red]Index out of range[/]");
                 return;
             }
             // remove song from current Utils.songs
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
             ResetMusic();
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            if (index == Utils.songs.Length)
+            {
+                Utils.currentSongIndex = Utils.songs.Length - 1;
+            }
             Start.state = MainStates.playing;
+            PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
         public static void Suffle()
@@ -282,8 +297,7 @@ namespace jammer
             Utils.currentMusic.Play();
 
             // start loop thread
-            loopThread = new Thread(Start.Loop);
-            loopThread.Start();
+            StartLoopThread();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
@@ -299,11 +313,17 @@ namespace jammer
             Utils.currentMusic.Play();
 
             // start loop thread
-            loopThread = new Thread(Start.Loop);
-            loopThread.Start();
+            StartLoopThread();
 
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
         }
+        static void StartLoopThread()
+        {
+            // start loop thread
+            loopThread = new Thread(Start.Loop);
+            loopThread.Start();
+        }
     }
+
 }

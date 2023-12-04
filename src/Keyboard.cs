@@ -53,10 +53,10 @@ namespace jammer
                         state = MainStates.previous; // previous song
                         break;
                     case ConsoleKey.RightArrow: // move forward 5 seconds
-                        Play.SeekSong(5, true);
+                        Play.SeekSong(Preferences.forwardSeconds, true);
                         break;
                     case ConsoleKey.LeftArrow: // move backward 5 seconds
-                        Play.SeekSong(-5, true);
+                        Play.SeekSong(-Preferences.rewindSeconds, true);
                         break;
                     case ConsoleKey.UpArrow: // volume up
                         Play.ModifyVolume(Preferences.GetChangeVolumeBy());
@@ -84,12 +84,81 @@ namespace jammer
                             playerView = "default";
                         }
                         break;
+                    case ConsoleKey.H: // show help
+                        AnsiConsole.Clear();
+                        if (playerView == "help")
+                        {
+                            playerView = "default";
+                            TUI.DrawPlayer();
+                            break;
+                        }
+                        playerView = "help";
+                        TUI.DrawHelp();
+                        break;
+                    case ConsoleKey.C: // show settings
+                        if (playerView == "settings")
+                        {
+                            playerView = "default";
+                            TUI.DrawPlayer();
+                            break;
+                        }
+                        playerView = "settings";
+                        TUI.DrawSettings();
+                        break;
                     case ConsoleKey.D0: // goto song start
                         Play.SeekSong(0, false);
                         break;
                     case ConsoleKey.F2: // playlist options
                         TUI.PlaylistInput();
                         break;
+                    case ConsoleKey.D1: // set forward seek to 1 second
+                        AnsiConsole.Markup("\nEnter forward seconds: ");
+                        string? forwardSecondsString = Console.ReadLine();
+                        if (int.TryParse(forwardSecondsString, out int forwardSeconds))
+                        {
+                            Preferences.forwardSeconds = forwardSeconds;
+                            TUI.RehreshCurrentView();
+                        }
+                        else
+                        {
+                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
+                            Console.ReadKey(true);
+                        }
+                        TUI.RehreshCurrentView();
+                        break;
+                    case ConsoleKey.D2: // set rewind seek to 2 seconds
+                        AnsiConsole.Markup("\nEnter rewind seconds: ");
+                        string? rewindSecondsString = Console.ReadLine();
+                        if (int.TryParse(rewindSecondsString, out int rewindSeconds))
+                        {
+                            Preferences.rewindSeconds = rewindSeconds;
+                            TUI.RehreshCurrentView();
+                        }
+                        else
+                        {
+                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
+                            Console.ReadKey(true);
+                        }
+                        TUI.RehreshCurrentView();
+                        break;
+                    case ConsoleKey.D3: // set volume change to 3
+                        AnsiConsole.Markup("\nEnter volume change (%): ");
+                        string? volumeChangeString = Console.ReadLine();
+                        if (int.TryParse(volumeChangeString, out int volumeChange))
+                        {
+                            float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
+                            Preferences.changeVolumeBy = changeVolumeByFloat;
+                        }
+                        else
+                        {
+                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
+                            Console.ReadKey(true);
+                        }
+                        break;
+                }
+                if (playerView != "all" && playerView != "help" && playerView != "settings")
+                {
+                    AnsiConsole.Clear();
                 }
                 TUI.DrawPlayer();
                 Preferences.SaveSettings();

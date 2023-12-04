@@ -21,6 +21,10 @@ static class TUI
     }
 
     static public void DrawPlayer() {
+        if (Start.playerView == "help" || Start.playerView == "settings")
+        {
+            return;
+        }
         var table = new Table();
         var controlsTable = new Table();
 
@@ -44,9 +48,14 @@ static class TUI
         if (Start.playerView == "default") {
             AnsiConsole.Cursor.SetPosition(0, 0);
         }
+        
         // move cursor to top left
         AnsiConsole.Write(table);
         AnsiConsole.Write(controlsTable);
+
+        AnsiConsole.Markup("Press [red]h[/] for help");
+        AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
+        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
     }
 
     static public void ClearScreen() {
@@ -168,6 +177,7 @@ static class TUI
                 Utils.currentSong = Utils.songs[Utils.currentSongIndex];
                 break;
         }
+        AnsiConsole.Clear();
     }
 
     // "Components" of the TUI
@@ -178,7 +188,7 @@ static class TUI
         table.AddColumn("Suffle");
         table.AddColumn("Volume");
         table.AddColumn("Muted");
-        table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) / 100 + "", Preferences.isMuted + "");
+        table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted + "");
     }
 
     static public void Comp_Songs(Table table) {
@@ -187,7 +197,63 @@ static class TUI
     }
 
     static public void Comp_Normal(Table table) {
-        table.AddColumns("Jamming to: " + Utils.currentSong, "DEBUG");
-        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong(), Utils.preciseTime + " / " + Utils.audioStream?.Length + "\n" + Utils.MusicTimePlayed + " / " + Utils.currentMusicLength);
+        table.AddColumn("Jamming to: " + Utils.currentSong);
+        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong());
+    }
+
+    static public void DrawHelp() {
+        var table = new Table();
+        table.AddColumns("Controls", "Description");
+        table.AddRow("Space", "Play/Pause");
+        table.AddRow("Q", "Quit");
+        table.AddRow("Left", "Rewind 5 seconds");
+        table.AddRow("Right", "Forward 5 seconds");
+        table.AddRow("Up", "Volume up");
+        table.AddRow("Down", "Volume down");
+        table.AddRow("L", "Toggle looping");
+        table.AddRow("M", "Toggle mute");
+        table.AddRow("S", "Toggle shuffle");
+        table.AddRow("Playlist", "");
+        table.AddRow("P", "Previous song");
+        table.AddRow("N", "Next song");
+        table.AddRow("R", "Play random song");
+        table.AddRow("F2", "Show playlist options");
+
+        AnsiConsole.Clear();
+        AnsiConsole.Write(table);
+        AnsiConsole.Markup("Press [red]h[/] to hide help");
+        AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+    }
+    static public void DrawSettings() {
+        var table = new Table();
+
+        table.AddColumns("Settings", "Value", "Change Value");
+
+        table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]1[/] to change");
+        table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]2[/] to change");
+        table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]3[/] to change");
+
+        AnsiConsole.Clear();
+        AnsiConsole.Write(table);
+        AnsiConsole.Markup("Press [red]h[/] for help");
+        AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
+        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+    }
+
+    public static void RehreshCurrentView() {
+        AnsiConsole.Clear();
+        if (Start.playerView == "default") {
+            DrawPlayer();
+        }
+        else if (Start.playerView == "help") {
+            DrawHelp();
+        }
+        else if (Start.playerView == "settings") {
+            DrawSettings();
+        }
+        else if (Start.playerView == "all") {
+            DrawPlayer();
+        }
     }
 }

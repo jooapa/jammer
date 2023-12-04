@@ -86,6 +86,7 @@ namespace jammer
             }
 
             TUI.ClearScreen();
+            drawOnce = true;
             while (true)
             {
                 if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
@@ -128,9 +129,8 @@ namespace jammer
                         }
 
                         // if song is finished, play next song
-                        if (Utils.MusicTimePlayed >= Utils.currentMusicLength)
+                        if (Utils.preciseTime >= Utils.audioStream.Length - 2000)
                         {
-                            Play.StopSong();
                             Play.MaybeNextSong();
                         }
 
