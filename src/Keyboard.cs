@@ -20,13 +20,22 @@ namespace jammer
                             state = MainStates.pause;
                             drawOnce = true;
                         }
-                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused)
+                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused && Utils.audioStream != null)
                         {
+                            if (Utils.audioStream.Position == Utils.audioStream.Length)
+                            {
+                                Utils.audioStream.Position = 0;
+                                lastSeconds = 0;
+                                state = MainStates.playing;
+                                Utils.currentMusic.Play();
+                                drawOnce = true;
+                                break;
+                            }
                             Play.PlaySong();
                             state = MainStates.playing;
                             drawOnce = true;
                         }
-                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped)
+                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped && Utils.audioStream != null)
                         {
                             state = MainStates.play;
                             drawOnce = true;

@@ -2,6 +2,7 @@ using Spectre.Console;
 using NAudio.Wave;
 using AngleSharp.Common;
 using System.Runtime.InteropServices;
+using System;
 
 namespace jammer
 {
@@ -33,7 +34,8 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         private static int consoleWidth = Console.WindowWidth;
         private static int consoleHeight = Console.WindowHeight;
-        public static double lastSeconds = 0;
+        public static double lastSeconds = -1;
+        public static double lastPlaybackTime = -1;
         //  
         // Run
         //
@@ -44,6 +46,31 @@ namespace jammer
                     Utils.isDebug = true;
                     Debug.dprint("--- Started ---");
                 }
+                if (args[i] == "-help" || args[i] == "-h") {
+                    TUI.ClearScreen();
+                    TUI.Help();
+                    return;
+                }
+            }
+
+            if (args.Length != 0) {
+                
+                if (args[0] == "playlist") {
+                    TUI.ClearScreen();
+                    TUI.PlaylistCMD(args);
+                    return;
+                }
+                if (args[0] == "selfdestruct") {
+                    var assembly = System.Reflection.Assembly.GetEntryAssembly();
+                    if (assembly != null)
+                    {
+                        AnsiConsole.MarkupLine("[red]Selfdestructing Jammer...[/]");
+                        // run the uninstaller selfdestruct.bat
+                        string? path = Path.GetDirectoryName(assembly.Location);
+                        System.Diagnostics.Process.Start(path + "/selfdestruct.bat");
+                        Environment.Exit(0);
+                    }
+                }
             }
 
             Preferences.CheckJammerFolderExists();
@@ -52,13 +79,12 @@ namespace jammer
             Utils.songs = Absolute.Correctify(Utils.songs);
             // if no args, ask for input
             if (Utils.songs.Length == 0) {
-                AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path[/]");
+                AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path.[/] Type -help for help");
                 Utils.songs = new string[1];
                 Utils.songs[0] = AnsiConsole.Ask<string>("Enter URL or file path: ");
             }
-            // Play.InitAudio();
+
             StartPlaying();
-            // NOTE(ra): This is for testing purposes.
             TUI.ClearScreen();
         }
 
@@ -68,11 +94,6 @@ namespace jammer
         //
         public static void StartPlaying()
         {
-            // new thread for playing music
-            // loopThread = new Thread(() => {
-            //     Loop();
-            // });
-            // loopThread.Start();
             Play.PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
@@ -81,6 +102,7 @@ namespace jammer
         //
         public static void Loop()
         {
+            lastSeconds = -1;
             if (Utils.audioStream == null || Utils.currentMusic == null) {
                 return;
             }
@@ -129,17 +151,35 @@ namespace jammer
                         }
 
                         // if song is finished, play next song
-                        if (Utils.preciseTime >= Utils.audioStream.Length - 2000)
+                        if (Utils.preciseTime == lastPlaybackTime)
                         {
-                            Play.MaybeNextSong();
+                            // If the time hasn't changed, it might be near the end of the song
+                            // Check if it's close to the end and play the next song
+                            if (Utils.preciseTime >= Utils.audioStream.Length - 3000)
+                            {
+                                Play.MaybeNextSong();
+                            }
+                        }
+                        else
+                        {
+                            // If the time has changed, update the last observed playback time
+                            lastPlaybackTime = Utils.preciseTime;
                         }
 
                         // every second, update screen
                         if (Utils.MusicTimePlayed >= lastSeconds + 1)
                         {
                             lastSeconds = Utils.MusicTimePlayed;
+
+                            // this check is to prevent lastSeconds from being greater than the song length, 
+                            // early bug when AudioStream.position was changed to 0
+                            if (lastSeconds + 1 >= Utils.currentMusicLength)
+                            {
+                                lastSeconds = -1;
+                            }
                             TUI.DrawPlayer();
                         }
+
                         CheckKeyboard();
                         break;
                     case MainStates.pause:

@@ -40,13 +40,8 @@ namespace jammer
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(songs[Currentindex]);
             }
-            else
-            {
-                Console.WriteLine("Invalid url");
-                Debug.dprint("Invalid url");
-                return;
-            }
 
+            Start.lastSeconds = -1;
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
 
@@ -67,7 +62,14 @@ namespace jammer
                 {
                     Console.WriteLine("Unsupported file format");
                     Debug.dprint("Unsupported file format");
-                    return;
+                    // remove song from current Utils.songs
+                    Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
+                    if (Currentindex == Utils.songs.Length)
+                    {
+                        Utils.currentSongIndex = Utils.songs.Length - 1;
+                    }
+                    Start.state = MainStates.playing;
+                    PlaySong(Utils.songs, Utils.currentSongIndex);
                 }
             }
             catch (Exception e)
@@ -227,14 +229,17 @@ namespace jammer
 
         public static void MaybeNextSong()
         {
-            if (Utils.songs.Length == 1)
+            if (Preferences.isLoop && Utils.audioStream != null)
             {
-                SeekSong(0, false);
-                return;
+                Utils.audioStream.Position = 0;
+                // Start.lastSeconds = -1;
             }
-            if (Preferences.isLoop)
-            {
-                SeekSong(0, false);
+            else if (Utils.songs.Length == 1 && !Preferences.isLoop && Utils.audioStream != null){
+                Utils.audioStream.Position = Utils.audioStream.Length;
+                Start.state = MainStates.pause;
+                Utils.currentMusic.Pause();
+                Start.lastSeconds = 0;
+                Start.drawOnce = true;
             }
             else if (Preferences.isShuffle)
             {

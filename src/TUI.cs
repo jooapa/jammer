@@ -197,8 +197,9 @@ static class TUI
     }
 
     static public void Comp_Normal(Table table) {
-        table.AddColumn("Jamming to: " + Utils.currentSong);
+        table.AddColumns("Jamming to: " + Utils.currentSong);
         table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong());
+
     }
 
     static public void DrawHelp() {
@@ -255,5 +256,107 @@ static class TUI
         else if (Start.playerView == "all") {
             DrawPlayer();
         }
+    }
+
+    public static void PlaylistCMD(string[] args){
+        if (args[0] == "playlist")
+        {
+            if (args.Length < 2)
+            {
+                AnsiConsole.WriteLine("No playlist command given");
+            }
+            else
+            {
+                switch (args[1])
+                {
+                    case "play":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine("No playlist name given");
+                            return;
+                        }
+                        Playlists.Play(args[2]);
+                        return;
+                    case "create":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine("No playlist name given");
+                            return;
+                        }
+                        Playlists.Create(args[2]);
+                        return;
+                    case "delete":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine("No playlist name given");
+                            return;
+                        }
+                        Playlists.Delete(args[2]);
+                        return;
+                    case "add":
+                        if (args.Length < 4)
+                        {
+                            AnsiConsole.WriteLine("No playlist name or song given");
+                            return;
+                        }
+                        Playlists.Add(args);
+                        return;
+                    case "remove":
+                        if (args.Length < 4)
+                        {
+                            AnsiConsole.WriteLine("No playlist name or song given");
+                            return;
+                        }
+                        Playlists.Remove(args);
+                        return;
+                    case "show":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine("No playlist name given");
+                            return;
+                        }
+                        Playlists.Show(args[2]);
+                        return;
+                    case "list":
+                        Playlists.List();
+                        return;
+                }
+            }
+
+            PlaylistHelp();
+            return;
+        }
+    }
+
+    static void PlaylistHelp() {
+        var table = new Table();
+        table.AddColumn("Playlist Commands");
+        table.AddColumn("Description");
+
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]play [/]<name>", "Play playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]create [/]<name>", "Create playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]delete [/]<name>", "Delete playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]add [/]<name> <song> ...", "Add songs to playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]remove [/]<name> <song> ...", "Remove songs from playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]show [/]<name>", "Show songs in playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]list [/]", "List all playlists");
+
+        AnsiConsole.Write(table);
+    }
+    public static void Help() {
+        var table = new Table();
+        table.AddColumn("Commands");
+        table.AddColumn("Description");
+
+        table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
+        table.AddRow("[grey]jammer[/] <file> ...", "Play song(s) from file(s)");
+        table.AddRow("[grey]jammer[/] [green]soundcloud[/] <url> ...", "Play song(s) from soundcloud url(s)");
+        table.AddRow("[grey]jammer[/] [green]youtube[/] <url> ...", "Play song(s) from youtube url(s)");
+        table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
+        table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
+        
+        AnsiConsole.Write(table);
+
+        PlaylistHelp();
     }
 }

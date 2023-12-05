@@ -37,12 +37,12 @@ namespace jammer
                 Utils.songs = songs;
 
                 jammer.Play.ResetMusic();
+                Start.state = MainStates.playing;
                 jammer.Play.PlaySong(Utils.songs, Utils.currentSongIndex);
-                Start.state = MainStates.play;
             }
             else
             {
-                AnsiConsole.WriteLine("[red]Playlist does not exist[/]");
+                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
                 Console.ReadLine();
             }
         }
@@ -59,7 +59,7 @@ namespace jammer
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist does not exist[/]");
+                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
             }
         }
 
@@ -103,7 +103,7 @@ namespace jammer
             }
             else
             {
-                Console.WriteLine("Playlist does not exist");
+                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
             }
 
         }
@@ -152,7 +152,7 @@ namespace jammer
             }
             else
             {
-                Console.WriteLine("Playlist does not exist");
+                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
             }
         }
 
@@ -176,7 +176,7 @@ namespace jammer
             }
             else
             {
-                AnsiConsole.WriteLine("Playlist does not exist");
+                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
                 Console.ReadLine();
             }
         }
