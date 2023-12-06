@@ -78,14 +78,20 @@ namespace jammer {
                 return;
             }
             url = oldUrl;
-            var track = await soundcloud.Tracks.GetAsync(url);
-            if (track != null) {
-                var trackName = formattedUrl;
-                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName;
+            try {
+                var track = await soundcloud.Tracks.GetAsync(url);
+                if (track != null) {
+                    var trackName = formattedUrl;
+                    songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName;
 
-                await soundcloud.DownloadAsync(track, songPath);
-            } else {
-                Debug.dprint("track returns null");
+                    await soundcloud.DownloadAsync(track, songPath);
+                } else {
+                    Debug.dprint("track returns null");
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Error: " + ex.Message);
+                songPath = "";
             }
         }
 
