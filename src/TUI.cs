@@ -127,6 +127,8 @@ static class TUI
                 AnsiConsole.Markup("\nEnter song to add to playlist: ");
                 string? songToAdd = Console.ReadLine();
                 if (songToAdd == "" || songToAdd == null) { break; }
+                // remove quotes from songToAdd
+                songToAdd = songToAdd.Replace("\"", "");
                 Play.AddSong(songToAdd);
                 break;
             case "2": // delete current song from playlist

@@ -40,6 +40,17 @@ namespace jammer
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(songs[Currentindex]);
             }
+            // else if (URL.IsUrl(songs[Currentindex]))
+            // {
+            //     AnsiConsole.MarkupLine("[green]URL is valid[/]");
+            //     isInternetURL = true;
+            //     path = songs[Currentindex];
+            // }
+            else
+            {
+                AnsiConsole.MarkupLine("[red] Song not found[/]");
+                return;
+            }
 
             Start.lastSeconds = -1;
             Utils.currentSong = path;
@@ -50,7 +61,7 @@ namespace jammer
             {
                 string extension = Path.GetExtension(path);
 
-                if (extension == ".mp3" || extension == ".wav" || extension == ".flac")
+                if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".mp4")
                 {
                     PlayMediaFoundation();
                 }
@@ -146,7 +157,6 @@ namespace jammer
             playDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
-
         public static void SeekSong(float seconds, bool relative)
         {
             if (Utils.audioStream == null)
@@ -295,6 +305,14 @@ namespace jammer
         static public void PlayMediaFoundation()
         {
             using var reader = new MediaFoundationReader(Utils.currentSong);
+            // if file extension is mp4
+            if (Path.GetExtension(Utils.currentSong) == ".mp4")
+            {
+                AnsiConsole.MarkupLine("[green]Converting mp4 to aac[/]");
+                MediaFoundationEncoder.EncodeToAac(reader, Path.ChangeExtension(Utils.currentSong, ".aac"));
+                // position reader to start of file
+                reader.Position = 0;
+            }
             using var outputDevice = new WaveOutEvent();
             outputDevice.Init(reader);
             Utils.currentMusic = outputDevice;

@@ -9,6 +9,7 @@ namespace jammer
             for (int i = 0; i < args.Length; i++)
             {
                 string item = args[i];
+                AnsiConsole.MarkupLine($"[green]Checking {item}[/]");
                 if (URL.IsUrl(item))
                 {
                     // if url doesnt have http:// or https://
@@ -34,6 +35,10 @@ namespace jammer
                         {
                             item = item.Substring(0, index);
                         }
+                    }
+                    else if (URL.IsUrl(item))
+                    {
+                        AnsiConsole.MarkupLine($"[green]URL {item} is valid[/]");
                     }
                     else {
                         AnsiConsole.MarkupLine($"[red]URL {item} is not valid[/]");

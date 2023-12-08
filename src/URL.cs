@@ -24,7 +24,20 @@ namespace jammer
 
         public static bool IsUrl(string uri)
         {
-            return IsValidSoundcloudSong(uri) || IsValidYoutubeSong(uri);
+            return IsUrlHTTPS(uri) || IsUrlHTTP(uri);
+        }
+
+
+        public static bool IsUrlHTTPS(string uri)
+        {
+            Regex regex = new Regex(Utils.urlPatternHTTPS, RegexOptions.IgnoreCase);
+            return regex.IsMatch(uri);
+        }
+
+        public static bool IsUrlHTTP(string uri)
+        {
+            Regex regex = new Regex(Utils.urlPatternHTTP, RegexOptions.IgnoreCase);
+            return regex.IsMatch(uri);
         }
     }
 }

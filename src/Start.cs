@@ -36,6 +36,7 @@ namespace jammer
         private static int consoleHeight = Console.WindowHeight;
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
+        public static double treshhold = 1;
         //  
         // Run
         //
@@ -46,7 +47,7 @@ namespace jammer
                     Utils.isDebug = true;
                     Debug.dprint("--- Started ---");
                 }
-                if (args[i] == "-help" || args[i] == "-h") {
+                if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help") {
                     TUI.ClearScreen();
                     TUI.Help();
                     return;
@@ -70,6 +71,12 @@ namespace jammer
                         System.Diagnostics.Process.Start(path + "/selfdestruct.bat");
                         Environment.Exit(0);
                     }
+                }
+                if (args[0] == "start") {
+                    // open explorer in jammer folder
+                    AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");
+                    System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
+                    return;
                 }
             }
 
@@ -155,7 +162,7 @@ namespace jammer
                         {
                             // If the time hasn't changed, it might be near the end of the song
                             // Check if it's close to the end and play the next song
-                            if (Utils.preciseTime >= Utils.audioStream.Length - 3000)
+                            if (Utils.preciseTime >= Utils.audioStream.Length - treshhold)
                             {
                                 Play.MaybeNextSong();
                             }
@@ -176,6 +183,7 @@ namespace jammer
                             if (lastSeconds + 1 >= Utils.currentMusicLength)
                             {
                                 lastSeconds = -1;
+                                treshhold += 69;
                             }
                             TUI.DrawPlayer();
                         }

@@ -65,95 +65,98 @@ namespace jammer
 
         static public void Add(string[] args)
         {
-            Console.WriteLine("Adding songs to playlist");
-
             string playlistName = args[2];
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
-            if (System.IO.File.Exists(playlistPath))
+            string playlistPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "jammer",
+                "playlists",
+                playlistName + ".jammer"
+            );
+
+            AnsiConsole.MarkupLine("[green]Adding songs to " + playlistPath + "[/]");
+            if (File.Exists(playlistPath))
             {
+                // take args and remove first 3 elements
+                args = args.Skip(3).ToArray();
+
                 // absoulutify arg if its a relative path and add https:// if url
                 args = Absolute.Correctify(args);
-
                 // get all songs in playlist
-                string[] songs = System.IO.File.ReadAllLines(playlistPath);
+                string[] songs = File.ReadAllLines(playlistPath);
 
                 // add songs to playlist
-                for (int i = 3; i < args.Length; i++)
+                for (int i = 0; i < args.Length; i++)
                 {
                     string song = args[i];
+                    AnsiConsole.MarkupLine("[green]Adding " + song + "[/]");
 
-                    // check if song is valid
-                    if (File.Exists(song) || song.StartsWith("https://") || song.StartsWith("http://"))
+                    // check if song is already in playlist
+                    if (songs.Contains(song))
                     {
-                        // check if song is already in playlist
-                        if (songs.Contains(song))
-                        {
-                            Console.WriteLine("Song already in playlist");
-                        }
-                        else
-                        {
-                            File.AppendAllText(playlistPath, song + "\n");
-                        }
+                        AnsiConsole.MarkupLine("[red]" + song + " is already in playlist[/]"); 
                     }
                     else
                     {
-                        Console.WriteLine("Song does not exist: " + song);
+                        File.AppendAllText(playlistPath, song + "\n");
                     }
+
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
+                AnsiConsole.MarkupLine("[red]Playlist: "+ playlistName + " doesn't exist[/]");
             }
-
+            AnsiConsole.MarkupLine("[green]Done![/]");
+            Environment.Exit(0);
         }
 
         static public void Remove(string[] args)
         {
-            Console.WriteLine("Removing songs from playlist");
-
             string playlistName = args[2];
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
-            if (System.IO.File.Exists(playlistPath))
+            string playlistPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "jammer",
+                "playlists",
+                playlistName + ".jammer"
+            );
+
+            AnsiConsole.MarkupLine("[green]Removing songs from " + playlistPath + "[/]");
+            if (File.Exists(playlistPath))
             {
+                // take args and remove first 3 elements
+                args = args.Skip(3).ToArray();
+
                 // absoulutify arg if its a relative path and add https:// if url
                 args = Absolute.Correctify(args);
-
                 // get all songs in playlist
                 string[] songs = File.ReadAllLines(playlistPath);
 
                 // remove songs from playlist
-                for (int i = 3; i < args.Length; i++)
+                for (int i = 0; i < args.Length; i++)
                 {
                     string song = args[i];
+                    AnsiConsole.MarkupLine("[green]Removing " + song + "[/]");
 
-                    // check if song is valid
-                    if (File.Exists(song) || song.StartsWith("https://") || song.StartsWith("http://"))
+                    // check if song is already in playlist
+                    if (songs.Contains(song))
                     {
-                        // check if song is already in playlist
-                        if (songs.Contains(song))
-                        {
-                            // remove song from playlist
-                            List<string> songsList = songs.ToList();
-                            songsList.Remove(song);
-                            songs = songsList.ToArray();
-                            File.WriteAllLines(playlistPath, songs);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Song not in playlist");
-                        }
+                        // delete song from playlist
+                        songs = songs.Where(val => val != song).ToArray();
+                        File.WriteAllLines(playlistPath, songs);
                     }
                     else
                     {
-                        Console.WriteLine("Song does not exist: " + song);
+                        AnsiConsole.MarkupLine("[red]" + song + " is not in playlist[/]");
                     }
+
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
+                AnsiConsole.MarkupLine("[red]Playlist: " + playlistName + " doesn't exist[/]");
             }
+            AnsiConsole.MarkupLine("[green]Done![/]");
+            Environment.Exit(0);
         }
 
         static public void Show(string playlist)

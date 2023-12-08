@@ -116,6 +116,8 @@ namespace jammer
                         break;
                     case ConsoleKey.D0: // goto song start
                         Play.SeekSong(0, false);
+                        lastSeconds = 0;
+                        drawOnce = true;
                         break;
                     case ConsoleKey.F2: // playlist options
                         TUI.PlaylistInput();

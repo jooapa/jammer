@@ -5,7 +5,7 @@
 ## Play songs from cli with youtube and soundcloud support
 
 ### Usage
-```
+```bash
 jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
 jammer soundcloud.com/username/sets/playlist-name
@@ -13,13 +13,28 @@ jammer youtube.com/watch?v=video-id
 jammer start // opens jammer folder
 jammer playlist // playlist controls
 jammer selfdestruct // deletes jammer
+jammer --help // show help
 ```
 
+```bash
+jammer playlist play <name>
+jammer playlist create <name>
+jammer playlist delete <name>
+jammer playlist add <name> <song> ...
+jammer playlist remove <name> <song> ...
+jammer playlist show <name>
+jammer playlist list
+```
+
+
 ### Supported formats
-- mp3
-- wav
-- ogg
-- flac
+- **MP3:** MPEG Audio Layer III
+- **OGG:** Ogg Vorbis
+- **WAV:** Waveform Audio File Format
+- **FLAC:** Free Lossless Audio Codec
+- **AAC:** Advanced Audio Coding
+- **WMA:** Windows Media Audio
+- **MP4:** MPEG-4
 
 ### Controls
 
