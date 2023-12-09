@@ -110,6 +110,7 @@ namespace jammer
         public static void Loop()
         {
             lastSeconds = -1;
+            treshhold = 1;
             if (Utils.audioStream == null || Utils.currentMusic == null) {
                 return;
             }

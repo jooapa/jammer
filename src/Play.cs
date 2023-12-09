@@ -308,8 +308,12 @@ namespace jammer
             // if file extension is mp4
             if (Path.GetExtension(Utils.currentSong) == ".mp4")
             {
+                string mp4Path = Path.Combine(
+                    Utils.jammerPath,
+                    Path.GetFileNameWithoutExtension(Utils.currentSong) + ".aac"
+                );
                 AnsiConsole.MarkupLine("[green]Converting mp4 to aac[/]");
-                MediaFoundationEncoder.EncodeToAac(reader, Path.ChangeExtension(Utils.currentSong, ".aac"));
+                MediaFoundationEncoder.EncodeToAac(reader, mp4Path);
                 // position reader to start of file
                 reader.Position = 0;
             }
