@@ -375,6 +375,8 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]youtube[/] <url> ...", "Play song(s) from youtube url(s)");
         table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
         table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
+        table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
+        table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
         
         AnsiConsole.Write(table);
 
@@ -400,5 +402,9 @@ static class TUI
         AnsiConsole.Markup("Press [red]h[/] for help");
         AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
         AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+    }
+
+    public static void Version() {
+        AnsiConsole.MarkupLine("[green]Jammer version " + Utils.version + "[/]");
     }
 }

@@ -52,6 +52,11 @@ namespace jammer
                     TUI.Help();
                     return;
                 }
+                if (args[i] == "-v" || args[i] == "--version" || args[i] == "version") {
+                    TUI.ClearScreen();
+                    TUI.Version();
+                    return;
+                }
             }
 
             if (args.Length != 0) {

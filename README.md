@@ -10,10 +10,14 @@ jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
 jammer soundcloud.com/username/sets/playlist-name
 jammer youtube.com/watch?v=video-id
-jammer start // opens jammer folder
-jammer playlist // playlist controls
-jammer selfdestruct // deletes jammer
-jammer --help // show help
+jammer start          // opens jammer folder
+jammer playlist       // playlist controls
+jammer selfdestruct   // deletes jammer
+jammer start          // opens jammer folder
+jammer --help         // show help
+jamemr --version      // show version
+
+```
 ```
 
 ```bash
@@ -72,4 +76,4 @@ dotnet run -- "path/to/song.mp3"
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```
 
-![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer.png)
+![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
