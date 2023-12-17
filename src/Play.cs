@@ -13,7 +13,8 @@ namespace jammer
         {
             if (Currentindex < 0 || Currentindex >= songs.Length)
             {
-                Console.WriteLine("Index out of range");
+                Start.playerView = "fake";
+                Start.FakeLoop();
                 return;
             }
             Debug.dprint("Play song");
@@ -99,11 +100,19 @@ namespace jammer
 
         public static void ResumeSong()
         {
+            if (Utils.songs.Length == 0)
+            {
+                return;
+            }
             Utils.currentMusic.Play();
         }
 
         public static void PlaySong()
         {
+            if (Utils.songs.Length == 0)
+            {
+                return;
+            }   
             // Utils.currentMusic.Stop();
             Utils.currentMusic.Play();
         }
@@ -242,6 +251,7 @@ namespace jammer
             if (Preferences.isLoop && Utils.audioStream != null)
             {
                 Utils.audioStream.Position = 0;
+                Start.state = MainStates.playing;
                 // Start.lastSeconds = -1;
             }
             else if (Utils.songs.Length == 1 && !Preferences.isLoop && Utils.audioStream != null){

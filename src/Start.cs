@@ -85,11 +85,11 @@ namespace jammer
             // Turns relative paths into absolute paths, and adds https:// to urls
             Utils.songs = Absolute.Correctify(Utils.songs);
             // if no args, ask for input
-            if (Utils.songs.Length == 0) {
-                AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path.[/] Type -help for help");
-                Utils.songs = new string[1];
-                Utils.songs[0] = AnsiConsole.Ask<string>("Enter URL or file path: ");
-            }
+            // if (Utils.songs.Length == 0) {
+            //     AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path.[/] Type -help for help");
+            //     Utils.songs = new string[1];
+            //     Utils.songs[0] = AnsiConsole.Ask<string>("Enter URL or file path: ");
+            // }
 
             StartPlaying();
             TUI.ClearScreen();
@@ -181,10 +181,10 @@ namespace jammer
 
                             // this check is to prevent lastSeconds from being greater than the song length, 
                             // early bug when AudioStream.position was changed to 0
-                            if (lastSeconds + 1 >= Utils.currentMusicLength)
+                            if (lastSeconds >= Utils.currentMusicLength)
                             {
                                 lastSeconds = -1;
-                                treshhold += 69;
+                                treshhold += 1;
                             }
                             TUI.DrawPlayer();
                         }
@@ -208,6 +208,30 @@ namespace jammer
                         Play.PrevSong();
                         TUI.ClearScreen();
                         break;
+                }
+            }
+        }
+        public static void FakeLoop()
+        {
+            Utils.currentMusicLength = 0;
+            Utils.MusicTimePlayed = 0;
+            Utils.currentSong = "";
+            Utils.currentSongIndex = 0;
+            AnsiConsole.Clear();
+            TUI.DrawFakePlayer();
+            while (true)
+            {
+                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
+                    consoleHeight = Console.WindowHeight;
+                    consoleWidth = Console.WindowWidth;
+                    TUI.ClearScreen();
+                    TUI.DrawPlayer();
+                }
+                CheckKeyboard();
+                if (Utils.songs.Length != 0) {
+                    playerView = "default";
+                    TUI.ClearScreen();
+                    Run(Utils.songs);
                 }
             }
         }

@@ -5,7 +5,7 @@ namespace jammer
 {
     public partial class Start
     {
-        public static string playerView = "default"; // default, all
+        public static string playerView = "default"; // default, all, help, settings, fake
         public static void CheckKeyboard()
         {
             if (Console.KeyAvailable)
@@ -43,7 +43,6 @@ namespace jammer
                         else
                         //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.
                         {
-                            Console.WriteLine("Resumed");
                             Play.ResumeSong();
                         }
                         break;
@@ -167,11 +166,14 @@ namespace jammer
                         }
                         break;
                 }
-                if (playerView != "all" && playerView != "help" && playerView != "settings")
+                if (playerView != "all" && playerView != "help" && playerView != "settings" && playerView != "fake")
                 {
                     AnsiConsole.Clear();
                 }
-                TUI.DrawPlayer();
+                if (playerView != "fake")
+                {
+                    TUI.DrawPlayer();
+                }
                 Preferences.SaveSettings();
             }
         }

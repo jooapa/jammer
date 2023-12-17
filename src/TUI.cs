@@ -25,6 +25,10 @@ static class TUI
         {
             return;
         }
+        if (Start.playerView == "fake")
+        {
+            DrawFakePlayer();
+        }
         var table = new Table();
         var controlsTable = new Table();
 
@@ -45,7 +49,7 @@ static class TUI
             AnsiConsole.Clear();
             cls = false;
         }
-        if (Start.playerView == "default") {
+        if (Start.playerView == "default" || Start.playerView == "fake") {
             AnsiConsole.Cursor.SetPosition(0, 0);
         }
         
@@ -63,6 +67,9 @@ static class TUI
     }
 
     static public string GetAllSongs() {
+        if (Utils.songs.Length == 0) {
+            return "[grey]No songs in playlist[/]";
+        }
         string allSongs = "";
         foreach (string song in Utils.songs) {
             // add green color to current song, based on the index
@@ -79,23 +86,34 @@ static class TUI
 
     public static string GetPrevCurrentNextSong() {
         // return previous, current and next song in playlist
-        string prevSong = "";
-        string currentSong = "";
-        string nextSong = "";
+        string prevSong;
+        string nextSong;
+        string currentSong;
+        if (Utils.songs.Length == 0)
+        {
+            currentSong = "[grey]current  : -[/]";
+        }
+        else
+        {
+            currentSong = "[green]current  : " + Utils.songs[Utils.currentSongIndex] + "[/]";   
+        }
 
-        if (Utils.currentSongIndex > 0) {
+        if (Utils.currentSongIndex > 0)
+        {
             prevSong = "[grey]previous : " + Utils.songs[Utils.currentSongIndex - 1] + "[/]";
         }
-        else {
+        else
+        {
             prevSong = "[grey]previous : -[/]";
         }
 
-        currentSong =  "[grey]current  : [/]" + Utils.songs[Utils.currentSongIndex];
 
-        if (Utils.currentSongIndex < Utils.songs.Length - 1) {
+        if (Utils.currentSongIndex < Utils.songs.Length - 1)
+        {
             nextSong = "[grey]next     : " + Utils.songs[Utils.currentSongIndex + 1] + "[/]";
         }
-        else {
+        else
+        {
             nextSong = "[grey]next     : -[/]";
         }
 
@@ -345,6 +363,7 @@ static class TUI
 
         AnsiConsole.Write(table);
     }
+    
     public static void Help() {
         var table = new Table();
         table.AddColumn("Commands");
@@ -360,5 +379,26 @@ static class TUI
         AnsiConsole.Write(table);
 
         PlaylistHelp();
+    }
+    
+    public static void DrawFakePlayer() {
+        var table = new Table();
+        table.AddColumn("State");
+        table.AddColumn("Current Position");
+        table.AddColumn("Looping");
+        table.AddColumn("Suffle");
+        table.AddColumn("Volume");
+        table.AddColumn("Muted");
+        
+        table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted + "");
+        var table1 = new Table();
+        Comp_Normal(table1);
+        AnsiConsole.Cursor.SetPosition(0, 0);
+
+        AnsiConsole.Write(table1);
+        AnsiConsole.Write(table);
+        AnsiConsole.Markup("Press [red]h[/] for help");
+        AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
+        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
     }
 }
