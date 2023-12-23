@@ -165,6 +165,7 @@ static class TUI
                 Playlists.List();
                 break;
             case "5": // play other playlist
+                Playlists.ListOnly();
                 AnsiConsole.Markup("\nEnter playlist name: ");
                 string? playlistNameToPlay = Console.ReadLine();
                 if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
@@ -239,6 +240,7 @@ static class TUI
         table.AddRow("N", "Next song");
         table.AddRow("R", "Play random song");
         table.AddRow("F2", "Show playlist options");
+        table.AddRow("tab", "Show cmd Help");
 
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
@@ -274,6 +276,9 @@ static class TUI
             DrawSettings();
         }
         else if (Start.playerView == "all") {
+            DrawPlayer();
+        }
+        else if (Start.playerView == "fake") {
             DrawPlayer();
         }
     }
@@ -338,7 +343,7 @@ static class TUI
                         Playlists.Show(args[2]);
                         return;
                     case "list":
-                        Playlists.List();
+                        Playlists.ListOnly();
                         return;
                 }
             }
@@ -348,7 +353,7 @@ static class TUI
         }
     }
 
-    static void PlaylistHelp() {
+    static public void PlaylistHelp() {
         var table = new Table();
         table.AddColumn("Playlist Commands");
         table.AddColumn("Description");
@@ -371,8 +376,9 @@ static class TUI
 
         table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
         table.AddRow("[grey]jammer[/] <file> ...", "Play song(s) from file(s)");
-        table.AddRow("[grey]jammer[/] [green]soundcloud[/] <url> ...", "Play song(s) from soundcloud url(s)");
-        table.AddRow("[grey]jammer[/] [green]youtube[/] <url> ...", "Play song(s) from youtube url(s)");
+        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
+        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
+        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
         table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
         table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");

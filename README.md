@@ -60,6 +60,7 @@ jammer playlist list
 | `n` | next song in playlist |
 | `p` | previous song in playlist |
 | `F2` | show playlist options |
+| `tab` | show CMD help screen|
 
 
 ### Install

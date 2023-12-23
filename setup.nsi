@@ -34,6 +34,9 @@ WriteUninstaller "$INSTDIR\Uninstall.exe"
 ; Create shortcut to sendto folder in AppData\Roaming\Microsoft\Windows\SendTo
 CreateShortCut "$SENDTO\${APP_NAME}.lnk" "$INSTDIR\${EXE_NAME}" "" "$INSTDIR\jammer_1024px.ico" 0
 
+; shortcut to desktop
+CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${EXE_NAME}" "" "$INSTDIR\jammer_1024px.ico" 0
+
 ; run setup.ps1 
 ExecWait '"powershell.exe" -ExecutionPolicy Bypass -File "$INSTDIR\setup.ps1"'
 
@@ -56,7 +59,8 @@ Section "Uninstall"
 
     ; Remove shortcut
     Delete "$SENDTO\${APP_NAME}.lnk"
-
+    Delete "$DESKTOP\${APP_NAME}.lnk"
+    
     ; Remove directories
     RMDir "$INSTDIR"
 

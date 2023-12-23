@@ -89,12 +89,6 @@ namespace jammer
             Utils.songs = args;
             // Turns relative paths into absolute paths, and adds https:// to urls
             Utils.songs = Absolute.Correctify(Utils.songs);
-            // if no args, ask for input
-            // if (Utils.songs.Length == 0) {
-            //     AnsiConsole.MarkupLine("[red]No arguments given, please enter a URL or file path.[/] Type -help for help");
-            //     Utils.songs = new string[1];
-            //     Utils.songs[0] = AnsiConsole.Ask<string>("Enter URL or file path: ");
-            // }
 
             StartPlaying();
             TUI.ClearScreen();
@@ -222,6 +216,7 @@ namespace jammer
             Utils.MusicTimePlayed = 0;
             Utils.currentSong = "";
             Utils.currentSongIndex = 0;
+            Start.playerView = "default";
             AnsiConsole.Clear();
             TUI.DrawFakePlayer();
             while (true)

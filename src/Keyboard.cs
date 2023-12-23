@@ -165,15 +165,21 @@ namespace jammer
                             Console.ReadKey(true);
                         }
                         break;
+                    case ConsoleKey.Tab:
+                        TUI.Help();
+                        
+                        AnsiConsole.MarkupLine("\nPress any key to continue.");
+                        Console.ReadLine();
+                        break;
                 }
-                if (playerView != "all" && playerView != "help" && playerView != "settings" && playerView != "fake")
+
+                // clear id not help or settings
+                if (playerView != "help" && playerView != "settings")
                 {
                     AnsiConsole.Clear();
                 }
-                if (playerView != "fake")
-                {
-                    TUI.DrawPlayer();
-                }
+                TUI.DrawPlayer();
+
                 Preferences.SaveSettings();
             }
         }

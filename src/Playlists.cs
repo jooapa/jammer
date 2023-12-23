@@ -26,7 +26,7 @@ namespace jammer
 
         static public void Play(string playlist)
         {
-            Console.WriteLine("Starting up " + playlist + ".jammer");
+            AnsiConsole.WriteLine("Starting up " + playlist + ".jammer");
             string playlistName = playlist;
             string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
             if (File.Exists(playlistPath))
@@ -206,13 +206,17 @@ namespace jammer
 
         static public void List()
         {
+            ListOnly();
+            Console.ReadLine();
+        }
+
+        static public void ListOnly() {
             Console.WriteLine("Listing playlists: ");
             string[] playlists = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/");
             foreach (string playlist in playlists)
             {
-                AnsiConsole.WriteLine(playlist);
+                AnsiConsole.WriteLine(Path.GetFileName(playlist));
             }
-            Console.ReadLine();
         }
     }
 }
