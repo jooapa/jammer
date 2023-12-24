@@ -1,5 +1,5 @@
-﻿using System;
-using jammer;
+﻿using jammer;
+
 class Program
 {
     public static void Main(string[] args)

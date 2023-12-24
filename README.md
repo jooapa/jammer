@@ -76,5 +76,8 @@ dotnet run -- "path/to/song.mp3"
 ```
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```
+```
+build.bat
+```
 
 ![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
