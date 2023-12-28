@@ -39,6 +39,8 @@ jammer playlist list
 - **AAC:** Advanced Audio Coding
 - **WMA:** Windows Media Audio
 - **MP4:** MPEG-4
+- **JAMMER:** Jammer playlist
+- **FOLDER:** Folder / Directory
 
 ### Controls
 
@@ -65,6 +67,17 @@ jammer playlist list
 
 ### Install
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
+
+### Example usage
+```bash
+jammer "path/to/song.mp3" ./another/song.aac C:\Users\user\jammer\playlists\playlist.jammer "path/to/folder"
+```
+```bash
+jammer https://soundcloud.com/username/track-name https://soundcloud.com/username/sets/playlist-name
+```
+```bash
+jammer https://www.youtube.com/watch?v=video-id
+```
 
 ### Build/Run yourself
 ```

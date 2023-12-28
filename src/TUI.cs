@@ -1,5 +1,6 @@
 using Spectre.Console;
 using jammer;
+using System.Runtime.CompilerServices;
 static class TUI
 {
 
@@ -56,6 +57,11 @@ static class TUI
         // move cursor to top left
         AnsiConsole.Write(table);
         AnsiConsole.Write(controlsTable);
+
+        // var debug = new Table();
+        // debug.AddColumn("Debug");
+        // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
+        // AnsiConsole.Write(debug);
 
         AnsiConsole.Markup("Press [red]h[/] for help");
         AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
@@ -137,6 +143,8 @@ static class TUI
         AnsiConsole.MarkupLine("[grey]6. save/replace playlist[/]");
         // AnsiConsole.MarkupLine("[grey]7. goto song in playlist[/]");
         AnsiConsole.MarkupLine("[grey]8. suffle playlist[/]");
+        AnsiConsole.MarkupLine("[grey]9. play song(s)[/]");
+        AnsiConsole.MarkupLine("[grey]0. exit[/]");
 
         string? playlistInput = Console.ReadLine();
         if (playlistInput == "" || playlistInput == null) { return; }
@@ -159,7 +167,7 @@ static class TUI
                 // show songs in playlist
                 Playlists.Show(playlistNameToShow);
                 AnsiConsole.Markup("\nPress any key to continue");
-                Console.ReadLine();
+                Console.ReadKey(true);
                 break;
             case "4": // list all playlists
                 Playlists.List();
@@ -196,6 +204,23 @@ static class TUI
                 Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
                 // set newsong from suffle to the current song
                 Utils.currentSong = Utils.songs[Utils.currentSongIndex];
+                break;
+
+            case "9": // play single song
+                AnsiConsole.Markup("\nEnter song(s) to play: ");
+                string[]? songsToPlay = Console.ReadLine()?.Split(" ");
+                if (songsToPlay == null) { break; }
+                // remove " from start and end of each song
+                for (int i = 0; i < songsToPlay.Length; i++) {
+                    songsToPlay[i] = songsToPlay[i].Replace("\"", "");
+                }
+                Utils.songs = songsToPlay;
+                Utils.currentSongIndex = 0;
+                Play.StopSong();
+                Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                break;
+
+            case "0": // exit
                 break;
         }
         AnsiConsole.Clear();

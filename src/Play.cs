@@ -11,6 +11,7 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         public static void PlaySong(string[] songs, int Currentindex)
         {
+
             if (Currentindex < 0 || Currentindex >= songs.Length)
             {
                 Start.playerView = "fake";
@@ -25,6 +26,19 @@ namespace jammer
             {
                 // id related to local file path, convert to absolute path
                 path = Path.GetFullPath(songs[Currentindex]);
+            }
+            // iof folder
+            else if (Directory.Exists(songs[Currentindex]))
+            {
+                // add all files in folder to Utils.songs
+                string[] files = Directory.GetFiles(songs[Currentindex]);
+                foreach (string file in files)
+                {
+                    AddSong(file);
+                }
+                // remove folder from Utils.songs
+                Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
+                path = Utils.songs[Currentindex];
             }
             else if (URL.isValidSoundCloudPlaylist(songs[Currentindex])) {
                 // id related to url, download and convert to absolute path
@@ -41,12 +55,6 @@ namespace jammer
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(songs[Currentindex]);
             }
-            // else if (URL.IsUrl(songs[Currentindex]))
-            // {
-            //     AnsiConsole.MarkupLine("[green]URL is valid[/]");
-            //     isInternetURL = true;
-            //     path = songs[Currentindex];
-            // }
             else
             {
                 AnsiConsole.MarkupLine("[red] Song not found[/]");
@@ -70,6 +78,22 @@ namespace jammer
                 {
                     PlayOgg();
                 }
+                else if (extension == ".jammer") {
+                    // read playlist
+                    string[] playlist = File.ReadAllLines(path);
+                    // add all songs in playlist to Utils.songs
+                    foreach (string song in playlist) {
+                        AddSong(song);
+                    }
+                    // remove playlist from Utils.songs
+                    Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
+                    if (Currentindex == Utils.songs.Length)
+                    {
+                        Utils.currentSongIndex = Utils.songs.Length - 1;
+                    }
+                    Start.state = MainStates.playing;
+                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                }
                 else
                 {
                     Console.WriteLine("Unsupported file format");
@@ -90,7 +114,6 @@ namespace jammer
                 Debug.dprint("Error: " + e);
                 return;
             }
-            // LoadMusic(Utils.currentSong);
         }
 
         public static void PauseSong()
@@ -113,7 +136,6 @@ namespace jammer
             {
                 return;
             }   
-            // Utils.currentMusic.Stop();
             Utils.currentMusic.Play();
         }
 

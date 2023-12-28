@@ -49,6 +49,13 @@ namespace jammer
 
                     args[i] = item;
                 }
+                // if folder exists, convert to absolute path
+                else if (Directory.Exists(item))
+                {
+                    if (IsRelativePath(item)) {
+                        args[i] = ConvertToAbsolutePath(item);
+                    }
+                }
                 // if exits, convert to absolute path
                 else if (File.Exists(item))
                 {

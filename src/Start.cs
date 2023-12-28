@@ -94,10 +94,6 @@ namespace jammer
             TUI.ClearScreen();
         }
 
-
-        //
-        // StartPlaying
-        //
         public static void StartPlaying()
         {
             Play.PlaySong(Utils.songs, Utils.currentSongIndex);
@@ -157,18 +153,14 @@ namespace jammer
                             drawOnce = false;
                         }
 
-                        // if song is finished, play next song
-                        if (Utils.preciseTime == lastPlaybackTime)
-                        {
-                            // If the time hasn't changed, it might be near the end of the song
-                            // Check if it's close to the end and play the next song
-                            if (Utils.preciseTime >= Utils.audioStream.Length - treshhold)
-                            {
+                        // If the song is finished, play next song
+                        if (treshhold % 100 == 0) {
+                            // If the time hasn't changed, the song is finished
+                            if (lastPlaybackTime == Utils.preciseTime) {
                                 Play.MaybeNextSong();
                             }
                         }
-                        else
-                        {
+                        else {
                             // If the time has changed, update the last observed playback time
                             lastPlaybackTime = Utils.preciseTime;
                         }

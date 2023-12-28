@@ -169,7 +169,7 @@ namespace jammer
                         TUI.Help();
                         
                         AnsiConsole.MarkupLine("\nPress any key to continue.");
-                        Console.ReadLine();
+                        Console.ReadKey(true);
                         break;
                 }
 
