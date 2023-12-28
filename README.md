@@ -72,10 +72,10 @@ Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
 jammer "path/to/song.mp3" ./another/song.aac C:\Users\user\jammer\playlists\playlist.jammer "path/to/folder"
 ```
 ```bash
-jammer https://soundcloud.com/username/track-name https://soundcloud.com/username/sets/playlist-name
+jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/cohen-campbell-823175156/sets/angry-birds-epic
 ```
 ```bash
-jammer https://www.youtube.com/watch?v=video-id
+jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
 ### Build/Run yourself
