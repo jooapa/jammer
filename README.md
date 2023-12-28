@@ -80,9 +80,6 @@ jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 
 ### Build/Run yourself
 ```
-dotnet build --configuration Release
-```
-```
 dotnet run -- "path/to/song.mp3"
 ```
 ```
