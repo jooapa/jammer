@@ -18,7 +18,6 @@ jammer --help         // show help
 jamemr --version      // show version
 
 ```
-```
 
 ```bash
 jammer playlist play <name>
