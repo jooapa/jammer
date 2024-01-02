@@ -37,15 +37,21 @@ namespace jammer
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
-        //  
+        //
         // Run
         //
         public static void Run(string[] args)
         {
+            Debug.dprint("Run");
+
             for (int i=0; i < args.Length; i++) {
                 if (args[i] == "-d") {
                     Utils.isDebug = true;
-                    Debug.dprint("--- Started ---");
+                    Debug.dprint("\n--- Debug Started ---\n");
+                    List<string> argumentsList = new List<string>(args);
+                    argumentsList.RemoveAt(0);
+                    args = argumentsList.ToArray();
+                    break;
                 }
                 if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help") {
                     TUI.ClearScreen();
@@ -60,7 +66,6 @@ namespace jammer
             }
 
             if (args.Length != 0) {
-                
                 if (args[0] == "playlist") {
                     TUI.ClearScreen();
                     TUI.PlaylistCMD(args);
@@ -86,17 +91,17 @@ namespace jammer
             }
 
             Preferences.CheckJammerFolderExists();
-            Utils.songs = args;
-            // Turns relative paths into absolute paths, and adds https:// to urls
-            Utils.songs = Absolute.Correctify(Utils.songs);
 
-            StartPlaying();
-            TUI.ClearScreen();
-        }
-
-        public static void StartPlaying()
-        {
-            Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+            if (args.Length != 0 ) {
+                Utils.songs = args;
+                Utils.songs = Absolute.Correctify(Utils.songs);
+                Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+            } else {
+                state = MainStates.idle;
+                Debug.dprint("Start Loop");
+                loopThread = new Thread(Start.Loop);
+                loopThread.Start();
+            }
         }
 
         //
@@ -106,9 +111,10 @@ namespace jammer
         {
             lastSeconds = -1;
             treshhold = 1;
-            if (Utils.audioStream == null || Utils.currentMusic == null) {
-                return;
-            }
+            // if (Utils.audioStream == null || Utils.currentMusic == null) {
+            //     Debug.dprint("Audiostream");
+            //     return;
+            // }
 
             TUI.ClearScreen();
             drawOnce = true;
@@ -132,15 +138,19 @@ namespace jammer
                         }
                         break;
                     case MainStates.play:
-                        Play.PlaySong();
-                        TUI.ClearScreen();
-                        TUI.DrawPlayer();
-                        drawOnce = true;
-                        Utils.MusicTimePlayed = 0;
-                        state = MainStates.playing;
+                        Debug.dprint("Play");
+                        if (Utils.songs.Length > 0) {
+                            Debug.dprint("Play - len");
+                            Play.PlaySong();
+                            TUI.ClearScreen();
+                            TUI.DrawPlayer();
+                            drawOnce = true;
+                            Utils.MusicTimePlayed = 0;
+                            state = MainStates.playing;
+                        }
                         break;
                     case MainStates.playing:
-                        // get current time 
+                        // get current time
                         Utils.preciseTime = Utils.audioStream.Position;
                         // get current time in seconds
                         Utils.MusicTimePlayed = Utils.audioStream.Position / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
@@ -170,7 +180,7 @@ namespace jammer
                         {
                             lastSeconds = Utils.MusicTimePlayed;
 
-                            // this check is to prevent lastSeconds from being greater than the song length, 
+                            // this check is to prevent lastSeconds from being greater than the song length,
                             // early bug when AudioStream.position was changed to 0
                             if (lastSeconds >= Utils.currentMusicLength)
                             {
@@ -199,31 +209,6 @@ namespace jammer
                         Play.PrevSong();
                         TUI.ClearScreen();
                         break;
-                }
-            }
-        }
-        public static void FakeLoop()
-        {
-            Utils.currentMusicLength = 0;
-            Utils.MusicTimePlayed = 0;
-            Utils.currentSong = "";
-            Utils.currentSongIndex = 0;
-            Start.playerView = "default";
-            AnsiConsole.Clear();
-            TUI.DrawFakePlayer();
-            while (true)
-            {
-                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
-                    consoleHeight = Console.WindowHeight;
-                    consoleWidth = Console.WindowWidth;
-                    TUI.ClearScreen();
-                    TUI.DrawPlayer();
-                }
-                CheckKeyboard();
-                if (Utils.songs.Length != 0) {
-                    playerView = "default";
-                    TUI.ClearScreen();
-                    Run(Utils.songs);
                 }
             }
         }

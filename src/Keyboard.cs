@@ -14,6 +14,10 @@ namespace jammer
                 switch (key)
                 {
                     case ConsoleKey.Spacebar:
+                        if (Utils.audioStream == null) {
+                            Debug.dprint("No audio");
+                            break;
+                        }
                         if (Utils.currentMusic.PlaybackState == PlaybackState.Playing)
                         {
                             Play.PauseSong();
@@ -55,9 +59,17 @@ namespace jammer
                         Environment.Exit(0);
                         break;
                     case ConsoleKey.N:
+                        if (Utils.audioStream == null) {
+                            Debug.dprint("No Next");
+                            break;
+                        }
                         state = MainStates.next; // next song
                         break;
                     case ConsoleKey.P:
+                        if (Utils.audioStream == null) {
+                            Debug.dprint("No Prev");
+                            break;
+                        }
                         state = MainStates.previous; // previous song
                         break;
                     case ConsoleKey.RightArrow: // move forward 5 seconds
@@ -167,7 +179,7 @@ namespace jammer
                         break;
                     case ConsoleKey.Tab:
                         TUI.Help();
-                        
+
                         AnsiConsole.MarkupLine("\nPress any key to continue.");
                         Console.ReadKey(true);
                         break;

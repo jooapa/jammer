@@ -26,10 +26,6 @@ static class TUI
         {
             return;
         }
-        if (Start.playerView == "fake")
-        {
-            DrawFakePlayer();
-        }
         var table = new Table();
         var controlsTable = new Table();
 
@@ -53,7 +49,7 @@ static class TUI
         if (Start.playerView == "default" || Start.playerView == "fake") {
             AnsiConsole.Cursor.SetPosition(0, 0);
         }
-        
+
         // move cursor to top left
         AnsiConsole.Write(table);
         AnsiConsole.Write(controlsTable);
@@ -101,7 +97,7 @@ static class TUI
         }
         else
         {
-            currentSong = "[green]current  : " + Utils.songs[Utils.currentSongIndex] + "[/]";   
+            currentSong = "[green]current  : " + Utils.songs[Utils.currentSongIndex] + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
@@ -393,7 +389,7 @@ static class TUI
 
         AnsiConsole.Write(table);
     }
-    
+
     public static void Help() {
         var table = new Table();
         table.AddColumn("Commands");
@@ -408,31 +404,10 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
-        
+
         AnsiConsole.Write(table);
 
         PlaylistHelp();
-    }
-    
-    public static void DrawFakePlayer() {
-        var table = new Table();
-        table.AddColumn("State");
-        table.AddColumn("Current Position");
-        table.AddColumn("Looping");
-        table.AddColumn("Suffle");
-        table.AddColumn("Volume");
-        table.AddColumn("Muted");
-        
-        table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted + "");
-        var table1 = new Table();
-        Comp_Normal(table1);
-        AnsiConsole.Cursor.SetPosition(0, 0);
-
-        AnsiConsole.Write(table1);
-        AnsiConsole.Write(table);
-        AnsiConsole.Markup("Press [red]h[/] for help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
     }
 
     public static void Version() {
