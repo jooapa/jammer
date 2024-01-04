@@ -11,15 +11,7 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         public static void PlaySong(string[] songs, int Currentindex)
         {
-
-            if (Currentindex < 0 || Currentindex >= songs.Length)
-            {
-                Start.playerView = "fake";
-                Start.FakeLoop();
-                return;
-            }
             Debug.dprint("Play song");
-
             var path = "";
             // check if file is a local
             if (File.Exists(songs[Currentindex]))
@@ -68,17 +60,21 @@ namespace jammer
             // Init audio
             try
             {
+                Debug.dprint("Init audio");
                 string extension = Path.GetExtension(path);
 
                 if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".mp4")
                 {
+                    Debug.dprint("Audiofile");
                     PlayMediaFoundation();
                 }
                 else if (extension == ".ogg")
                 {
+                    Debug.dprint("Oggfile");
                     PlayOgg();
                 }
                 else if (extension == ".jammer") {
+                    Debug.dprint("Jammer");
                     // read playlist
                     string[] playlist = File.ReadAllLines(path);
                     // add all songs in playlist to Utils.songs
@@ -114,6 +110,7 @@ namespace jammer
                 Debug.dprint("Error: " + e);
                 return;
             }
+            Debug.dprint("End of PlaySong");
         }
 
         public static void PauseSong()
@@ -135,7 +132,7 @@ namespace jammer
             if (Utils.songs.Length == 0)
             {
                 return;
-            }   
+            }
             Utils.currentMusic.Play();
         }
 
@@ -220,7 +217,7 @@ namespace jammer
                 // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
                 seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
             }
-            
+
             // Update the audio stream's position
             if (Utils.audioStream.Length == seekPosition)
             {
@@ -336,6 +333,8 @@ namespace jammer
 
         static public void PlayMediaFoundation()
         {
+            Debug.dprint("PlayMediaFoundation");
+
             using var reader = new MediaFoundationReader(Utils.currentSong);
             // if file extension is mp4
             if (Path.GetExtension(Utils.currentSong) == ".mp4")
@@ -358,8 +357,11 @@ namespace jammer
             // start loop thread
             StartLoopThread();
 
+            //NOTE(ra) When music is playing code execution stops here
             ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
+
+            Debug.dprint("End of PlayMediaFoundation");
         }
 
         static public void PlayOgg()
@@ -372,10 +374,10 @@ namespace jammer
             Utils.currentMusic.Play();
 
             // start loop thread
-            StartLoopThread();
+            // StartLoopThread();
 
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
+            // ManualResetEvent manualEvent = new ManualResetEvent(false);
+            // manualEvent.WaitOne();
         }
         static void StartLoopThread()
         {
