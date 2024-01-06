@@ -60,7 +60,7 @@ static class TUI
         // AnsiConsole.Write(debug);
 
         AnsiConsole.Markup("Press [red]h[/] for help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
+        AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
         AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
     }
 

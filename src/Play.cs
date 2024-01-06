@@ -374,10 +374,10 @@ namespace jammer
             Utils.currentMusic.Play();
 
             // start loop thread
-            // StartLoopThread();
+            StartLoopThread();
 
-            // ManualResetEvent manualEvent = new ManualResetEvent(false);
-            // manualEvent.WaitOne();
+            ManualResetEvent manualEvent = new ManualResetEvent(false);
+            manualEvent.WaitOne();
         }
         static void StartLoopThread()
         {

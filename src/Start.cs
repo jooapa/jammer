@@ -151,11 +151,14 @@ namespace jammer
                         break;
                     case MainStates.playing:
                         // get current time
-                        Utils.preciseTime = Utils.audioStream.Position;
-                        // get current time in seconds
-                        Utils.MusicTimePlayed = Utils.audioStream.Position / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
-                        // get whole song length in seconds
-                        Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                        if (Utils.audioStream != null)
+                        {
+                            Utils.preciseTime = Utils.audioStream.Position;
+                            // get current time in seconds
+                            Utils.MusicTimePlayed = Utils.audioStream.Position / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                            // get whole song length in seconds
+                            Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                        }
 
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
