@@ -11,6 +11,14 @@ namespace jammer
         private static Thread loopThread = new Thread(() => { });
         public static void PlaySong(string[] songs, int Currentindex)
         {
+            if (songs.Length == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No songs in playlist[/]");
+                Currentindex = 0;
+                Start.Run(new string[] {});
+                return;
+            }
+
             Debug.dprint("Play song");
             var path = "";
             // check if file is a local
@@ -271,7 +279,6 @@ namespace jammer
             {
                 Utils.audioStream.Position = 0;
                 Start.state = MainStates.playing;
-                // Start.lastSeconds = -1;
             }
             else if (Utils.songs.Length == 1 && !Preferences.isLoop && Utils.audioStream != null){
                 Utils.audioStream.Position = Utils.audioStream.Length;
@@ -300,6 +307,10 @@ namespace jammer
                     Console.WriteLine("Song already in playlist");
                     return;
                 }
+            }
+            if (!File.Exists(song)) {
+                AnsiConsole.MarkupLine("[red]Song not found[/]");
+                return;
             }
             // add song to current Utils.songs
             Array.Resize(ref Utils.songs, Utils.songs.Length + 1);

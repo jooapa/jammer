@@ -1,3 +1,4 @@
+using System.Collections;
 using NAudio.Wave;
 using Spectre.Console;
 
@@ -98,6 +99,12 @@ namespace jammer
                         if (playerView == "default")
                         {
                             playerView = "all";
+                            var table = new Table();
+                            TUI.UIComponent_Songs(table);
+                            AnsiConsole.Write(table);
+                            AnsiConsole.Markup("Press [red]h[/] for help");
+                            AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
+                            AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
                         }
                         else
                         {
@@ -129,6 +136,9 @@ namespace jammer
                         Play.SeekSong(0, false);
                         lastSeconds = 0;
                         drawOnce = true;
+                        break;
+                    case ConsoleKey.D9: // goto song end
+                        Play.MaybeNextSong();
                         break;
                     case ConsoleKey.F2: // playlist options
                         TUI.PlaylistInput();
@@ -182,6 +192,9 @@ namespace jammer
 
                         AnsiConsole.MarkupLine("\nPress any key to continue.");
                         Console.ReadKey(true);
+                        break;
+                    case ConsoleKey.Delete:
+                        Play.DeleteSong(Utils.currentSongIndex);
                         break;
                 }
 

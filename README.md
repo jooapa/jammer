@@ -60,6 +60,7 @@ jammer playlist list
 | `f` | show/hide playlist view |
 | `n` | next song in playlist |
 | `p` | previous song in playlist |
+| `Delete` | delete current song from playlist |
 | `F2` | show playlist options |
 | `tab` | show CMD help screen|
 

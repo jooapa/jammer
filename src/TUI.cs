@@ -22,46 +22,52 @@ static class TUI
     }
 
     static public void DrawPlayer() {
-        if (Start.playerView == "help" || Start.playerView == "settings")
-        {
-            return;
-        }
-        var table = new Table();
-        var controlsTable = new Table();
+        try {
 
-        if (Start.playerView == "default") {
-            Comp_Normal(table);
-        }
-        else if (Start.playerView == "all") {
-            Comp_Songs(table);
-        }
-
-        Comp_Controls(controlsTable);
-
-        if (cls) {
-            if (Start.playerView == "all") {
-                cls = false;
+            if (Start.playerView == "help" || Start.playerView == "settings")
+            {
                 return;
             }
-            AnsiConsole.Clear();
-            cls = false;
+            var table = new Table();
+            var controlsTable = new Table();
+
+            if (Start.playerView == "default") {
+                UIComponent_Normal(table);
+            }
+            else if (Start.playerView == "all") {
+                UIComponent_Songs(table);
+            }
+
+            UIComponent_Controls(controlsTable);
+
+            if (cls) {
+                if (Start.playerView != "all") {
+                    AnsiConsole.Clear();
+                }
+                cls = false;
+            }
+            if (Start.playerView == "default" || Start.playerView == "fake") {
+                AnsiConsole.Cursor.SetPosition(0, 0);
+            }
+
+            // move cursor to top left
+            AnsiConsole.Write(table);
+            AnsiConsole.Write(controlsTable);
+
+            // var debug = new Table();
+            // debug.AddColumn("Debug");
+            // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
+            // AnsiConsole.Write(debug);
+
+            AnsiConsole.Markup("Press [red]h[/] for help");
+            AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
+            AnsiConsole.Markup("\nPress [green]f[/] to show playlist\n");
         }
-        if (Start.playerView == "default" || Start.playerView == "fake") {
-            AnsiConsole.Cursor.SetPosition(0, 0);
+        catch (Exception e) {
+            AnsiConsole.MarkupLine("[red]Error in DrawPlayer()[/]");
+            AnsiConsole.MarkupLine("[red] Controls still work[/]");
+            AnsiConsole.MarkupLine("[red]" + e.Message + "[/]");
         }
-
-        // move cursor to top left
-        AnsiConsole.Write(table);
-        AnsiConsole.Write(controlsTable);
-
-        // var debug = new Table();
-        // debug.AddColumn("Debug");
-        // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
-        // AnsiConsole.Write(debug);
-
-        AnsiConsole.Markup("Press [red]h[/] for help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
-        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
     }
 
     static public void ClearScreen() {
@@ -151,6 +157,7 @@ static class TUI
                 if (songToAdd == "" || songToAdd == null) { break; }
                 // remove quotes from songToAdd
                 songToAdd = songToAdd.Replace("\"", "");
+                songToAdd = Absolute.ConvertToAbsolutePath(songToAdd);
                 Play.AddSong(songToAdd);
                 break;
             case "2": // delete current song from playlist
@@ -209,7 +216,17 @@ static class TUI
                 // remove " from start and end of each song
                 for (int i = 0; i < songsToPlay.Length; i++) {
                     songsToPlay[i] = songsToPlay[i].Replace("\"", "");
+                    songsToPlay[i] = Absolute.ConvertToAbsolutePath(songsToPlay[i]);
+
+                    // if doesnt exist, remove from array
+                    if (!File.Exists(songsToPlay[i])) {
+                        songsToPlay = songsToPlay.Take(i).Concat(songsToPlay.Skip(i + 1)).ToArray();
+                        i--;
+                    }
                 }
+                // if no songs left, break
+                if (songsToPlay.Length == 0) { break; }
+                
                 Utils.songs = songsToPlay;
                 Utils.currentSongIndex = 0;
                 Play.StopSong();
@@ -223,7 +240,7 @@ static class TUI
     }
 
     // "Components" of the TUI
-    static public void Comp_Controls(Table table) {
+    static public void UIComponent_Controls(Table table) {
         table.AddColumn("State");
         table.AddColumn("Current Position");
         table.AddColumn("Looping");
@@ -233,15 +250,33 @@ static class TUI
         table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted + "");
     }
 
-    static public void Comp_Songs(Table table) {
+    static public void UIComponent_Songs(Table table) {
         table.AddColumn("Jamming to: " + Utils.currentSong);
-        table.AddRow("'playlist name.jammer'\n" + GetAllSongs());
+        if (Utils.currentPlaylist == "") {
+            table.AddColumns(GetAllSongs());
+        } else {
+            table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetAllSongs());
+        }
     }
 
-    static public void Comp_Normal(Table table) {
+    static public void UIComponent_Normal(Table table) {
         table.AddColumns("Jamming to: " + Utils.currentSong);
-        table.AddRow("'playlist name.jammer'\n" + GetPrevCurrentNextSong());
+        if (Utils.currentPlaylist == "") {
+            table.AddColumns(GetPrevCurrentNextSong());
+        } else {
+            table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetPrevCurrentNextSong());
+        }
+    }
 
+    public static void DrawAllSongsView() {
+        AnsiConsole.Clear();
+        var table = new Table();
+        UIComponent_Songs(table);
+        AnsiConsole.Write(table);
+        AnsiConsole.Markup("Press [red]h[/] for help");
+        AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
+        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+        AnsiConsole.WriteLine("\n");
     }
 
     static public void DrawHelp() {
@@ -260,6 +295,7 @@ static class TUI
         table.AddRow("P", "Previous song");
         table.AddRow("N", "Next song");
         table.AddRow("R", "Play random song");
+        table.AddRow("Delete", "Delete current song from playlist");
         table.AddRow("F2", "Show playlist options");
         table.AddRow("tab", "Show cmd Help");
 
