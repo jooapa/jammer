@@ -1,10 +1,10 @@
 using Spectre.Console;
 using jammer;
-using System.Runtime.CompilerServices;
+
 static class TUI
 {
-
     static bool cls = false;
+    
     static public void InitScreen()
     {
         // Loading statusbar just for kicks

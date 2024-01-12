@@ -1,8 +1,4 @@
 using Spectre.Console;
-using NAudio.Wave;
-using AngleSharp.Common;
-using System.Runtime.InteropServices;
-using System;
 
 namespace jammer
 {
@@ -71,17 +67,20 @@ namespace jammer
                     TUI.PlaylistCMD(args);
                     return;
                 }
-                if (args[0] == "selfdestruct") {
-                    var assembly = System.Reflection.Assembly.GetEntryAssembly();
-                    if (assembly != null)
-                    {
-                        AnsiConsole.MarkupLine("[red]Selfdestructing Jammer...[/]");
-                        // run the uninstaller selfdestruct.bat
-                        string? path = Path.GetDirectoryName(assembly.Location);
-                        System.Diagnostics.Process.Start(path + "/selfdestruct.bat");
-                        Environment.Exit(0);
-                    }
-                }
+                if (args[0] == "selfdestruct")
+                {
+                    AnsiConsole.MarkupLine("[red]Selfdestructing Jammer...[/]");
+
+                    // Get the base directory of the application
+                    string baseDirectory = AppContext.BaseDirectory;
+
+                    // Run the uninstaller selfdestruct.bat
+                    string selfDestructScriptPath = Path.Combine(baseDirectory, "selfdestruct.bat");
+                    System.Diagnostics.Process.Start(selfDestructScriptPath);
+
+                    // Exit the application
+                    Environment.Exit(0);
+            }
                 if (args[0] == "start") {
                     // open explorer in jammer folder
                     AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");

@@ -1,4 +1,3 @@
-using System.Collections;
 using NAudio.Wave;
 using Spectre.Console;
 

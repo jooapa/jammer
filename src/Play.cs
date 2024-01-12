@@ -1,7 +1,5 @@
 using NAudio.Wave;
 using NAudio.Vorbis;
-using System.Diagnostics;
-using NAudio.Wave.SampleProviders;
 using Spectre.Console;
 
 namespace jammer
