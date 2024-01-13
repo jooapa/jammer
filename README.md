@@ -1,39 +1,31 @@
-# jammer 
+# jammer - Play songs from cli with youtube and soundcloud support
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/jammer_banner.gif)
 
-## Play songs from cli with youtube and soundcloud support
-
 ### Usage
+```bash
+jammer [song] ... [song]
+jammer soundcloud.com/username/track-name 
+jammer soundcloud.com/username/sets/playlist-name
+jammer youtube.com/watch?v=video-id
+jammer start          // opens jammer folder
+jammer playlist       // playlist controls
+jammer selfdestruct   // deletes jammer
+jammer start          // opens jammer folder
+jammer --help         // show help
+jamemr --version      // show version
 
-#### Commands:
+```
 
-- `$ jammer [song] ... [song]`
-- `$ jammer soundcloud.com/username/track-name`
-- `$ jammer soundcloud.com/username/sets/playlist-name`
-- `$ jammer youtube.com/watch?v=video-id`
-- `$ jammer start`  
-  Opens jammer folder
-- `$ jammer playlist`  
-  Playlist controls
-- `$ jammer selfdestruct`  
-  Deletes jammer
-- `$ jammer start`  
-  Opens jammer folder
-- `$ jammer --help`  
-  Show help
-- `$ jammer --version`  
-  Show version
-
-#### Playlist Commands:
-
-- `$ jammer playlist play <name>`
-- `$ jammer playlist create <name>`
-- `$ jammer playlist delete <name>`
-- `$ jammer playlist add <name> <song> ...`
-- `$ jammer playlist remove <name> <song> ...`
-- `$ jammer playlist show <name>`
-- `$ jammer playlist list`
+```bash
+jammer playlist play <name>
+jammer playlist create <name>
+jammer playlist delete <name>
+jammer playlist add <name> <song> ...
+jammer playlist remove <name> <song> ...
+jammer playlist show <name>
+jammer playlist list
+```
 
 
 ### Supported formats
@@ -69,7 +61,8 @@
 | `Delete` | delete current song from playlist |
 | `F2` | show playlist options |
 | `tab` | show CMD help screen|
-
+| `0` | goto start of the song|
+| `9` | goto end of the song|
 
 ### Install
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
