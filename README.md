@@ -5,29 +5,35 @@
 ## Play songs from cli with youtube and soundcloud support
 
 ### Usage
-```bash
-jammer [song] ... [song]
-jammer soundcloud.com/username/track-name 
-jammer soundcloud.com/username/sets/playlist-name
-jammer youtube.com/watch?v=video-id
-jammer start          // opens jammer folder
-jammer playlist       // playlist controls
-jammer selfdestruct   // deletes jammer
-jammer start          // opens jammer folder
-jammer --help         // show help
-jamemr --version      // show version
 
-```
+#### Commands:
 
-```bash
-jammer playlist play <name>
-jammer playlist create <name>
-jammer playlist delete <name>
-jammer playlist add <name> <song> ...
-jammer playlist remove <name> <song> ...
-jammer playlist show <name>
-jammer playlist list
-```
+- `$ jammer [song] ... [song]`
+- `$ jammer soundcloud.com/username/track-name`
+- `$ jammer soundcloud.com/username/sets/playlist-name`
+- `$ jammer youtube.com/watch?v=video-id`
+- `$ jammer start`  
+  Opens jammer folder
+- `$ jammer playlist`  
+  Playlist controls
+- `$ jammer selfdestruct`  
+  Deletes jammer
+- `$ jammer start`  
+  Opens jammer folder
+- `$ jammer --help`  
+  Show help
+- `$ jammer --version`  
+  Show version
+
+#### Playlist Commands:
+
+- `$ jammer playlist play <name>`
+- `$ jammer playlist create <name>`
+- `$ jammer playlist delete <name>`
+- `$ jammer playlist add <name> <song> ...`
+- `$ jammer playlist remove <name> <song> ...`
+- `$ jammer playlist show <name>`
+- `$ jammer playlist list`
 
 
 ### Supported formats
