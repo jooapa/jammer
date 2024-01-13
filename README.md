@@ -1,8 +1,6 @@
-# jammer 
+# jammer - Play songs from cli with youtube and soundcloud support
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/jammer_banner.gif)
-
-## Play songs from cli with youtube and soundcloud support
 
 ### Usage
 ```bash
@@ -63,7 +61,8 @@ jammer playlist list
 | `Delete` | delete current song from playlist |
 | `F2` | show playlist options |
 | `tab` | show CMD help screen|
-
+| `0` | goto start of the song|
+| `9` | goto end of the song|
 
 ### Install
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
