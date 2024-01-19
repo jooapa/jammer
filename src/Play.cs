@@ -306,10 +306,6 @@ namespace jammer
                     return;
                 }
             }
-            if (!File.Exists(song)) {
-                AnsiConsole.MarkupLine("[red]Song not found[/]");
-                return;
-            }
             // add song to current Utils.songs
             Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
             Utils.songs[Utils.songs.Length - 1] = song;
@@ -327,9 +323,16 @@ namespace jammer
             ResetMusic();
             if (index == Utils.songs.Length)
             {
-                Utils.currentSongIndex = Utils.songs.Length - 1;
+                if (Utils.songs.Length == 0) {
+                    Utils.songs = new string[] { "" };
+                }
+                else {
+                    Utils.currentSongIndex = Utils.songs.Length - 1;
+                }
             }
             Start.state = MainStates.playing;
+            
+            // if no songs left, add "" to Utils.songs
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 

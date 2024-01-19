@@ -98,7 +98,7 @@ namespace jammer
             } else {
                 state = MainStates.idle;
                 Debug.dprint("Start Loop");
-                loopThread = new Thread(Start.Loop);
+                loopThread = new Thread(Loop);
                 loopThread.Start();
             }
         }
@@ -117,14 +117,22 @@ namespace jammer
 
             TUI.ClearScreen();
             drawOnce = true;
+
             while (true)
             {
+                // if the frist song is "" then there are more songs
+                if (Utils.songs[0] == "" && Utils.songs.Length > 1) {
+                    state = MainStates.play;
+                    Play.DeleteSong(0);
+                }
+
                 if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
                     TUI.ClearScreen();
                     TUI.DrawPlayer();
                 }
+
                 switch (state)
                 {
                     case MainStates.idle:

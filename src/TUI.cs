@@ -157,7 +157,7 @@ static class TUI
                 if (songToAdd == "" || songToAdd == null) { break; }
                 // remove quotes from songToAdd
                 songToAdd = songToAdd.Replace("\"", "");
-                songToAdd = Absolute.ConvertToAbsolutePath(songToAdd);
+                songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
                 Play.AddSong(songToAdd);
                 break;
             case "2": // delete current song from playlist
