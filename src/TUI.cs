@@ -253,7 +253,7 @@ static class TUI
     static public void UIComponent_Songs(Table table) {
         table.AddColumn("Jamming to: " + Utils.currentSong);
         if (Utils.currentPlaylist == "") {
-            table.AddColumns(GetAllSongs());
+            table.AddRow(GetAllSongs());
         } else {
             table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetAllSongs());
         }
@@ -262,7 +262,7 @@ static class TUI
     static public void UIComponent_Normal(Table table) {
         table.AddColumns("Jamming to: " + Utils.currentSong);
         if (Utils.currentPlaylist == "") {
-            table.AddColumns(GetPrevCurrentNextSong());
+            table.AddRow(GetPrevCurrentNextSong());
         } else {
             table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetPrevCurrentNextSong());
         }
