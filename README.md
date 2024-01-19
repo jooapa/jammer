@@ -8,6 +8,7 @@ jammer [song] ... [song]
 jammer soundcloud.com/username/track-name 
 jammer soundcloud.com/username/sets/playlist-name
 jammer youtube.com/watch?v=video-id
+
 jammer start          // opens jammer folder
 jammer playlist       // playlist controls
 jammer selfdestruct   // deletes jammer
@@ -82,13 +83,8 @@ jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 dotnet run -- "path/to/song.mp3" ..
 ```
-### Windows
 ```
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
-```
-### Linux
-```
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 ```
 ```
 build.bat
