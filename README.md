@@ -4,20 +4,21 @@
 
 ### Usage
 ```bash
-jammer [song] ... [song]
-jammer soundcloud.com/username/track-name 
-jammer soundcloud.com/username/sets/playlist-name
-jammer youtube.com/watch?v=video-id
+jammer [song] ... [folder]
+jammer https://soundcloud.com/username/track-name 
+jammer https://soundcloud.com/username/sets/playlist-name
+jammer https://youtube.com/watch?v=video-id
 
-jammer start          // opens jammer folder
-jammer playlist       // playlist controls
-jammer selfdestruct   // deletes jammer
-jammer start          // opens jammer folder
-jammer --help         // show help
-jamemr --version      // show version
+jammer start          opens jammer folder
+jammer playlist       playlist controls
+jammer selfdestruct   deletes jammer
+jammer start          opens jammer folder
+jammer --help         show help
+jammer -d             debug mode
+jammer --version      show version
 
 ```
-
+_when using soundcloud or youtube links dont forget to use `https://` at the start._
 ```bash
 jammer playlist play <name>
 jammer playlist create <name>
@@ -78,6 +79,8 @@ jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcl
 ```bash
 jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
+
+You can also use `-d` flag that will add logs to to local jammer folder.
 
 ### Build/Run yourself
 ```
