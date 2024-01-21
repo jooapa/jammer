@@ -87,6 +87,21 @@ namespace jammer
                     System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
                     return;
                 }
+                if (args[0] == "update") {
+                    AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
+
+                    string latestVersion = Update.CheckForUpdate(Utils.version);
+                    
+                    AnsiConsole.MarkupLine("[green]Current version: " + Utils.version + "[/]");
+                    
+                    if (latestVersion != "") {
+                        AnsiConsole.MarkupLine("[green]Update found![/]");
+                    } else {
+                        AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
+                    }
+
+                    Environment.Exit(0);
+                }
             }
 
             Preferences.CheckJammerFolderExists();

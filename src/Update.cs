@@ -19,16 +19,14 @@ namespace jammer {
             }
         }
 
-        public static bool checkForUpdate(string version) {
+        public static string CheckForUpdate(string version) {
             string url = "https://raw.githubusercontent.com/jooapa/jammer/master/VERSION";
-            string latestVersion = "";
-            using (HttpClient client = new HttpClient()) {
-                latestVersion = client.GetStringAsync(url).Result;
-            }
+            using HttpClient client = new HttpClient();
+            string latestVersion = client.GetStringAsync(url).Result;
             if (latestVersion != version) {
-                return true;
+                return latestVersion;
             }
-            return false;
+            return "";
         }
     }
 }
