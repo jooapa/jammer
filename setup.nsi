@@ -6,7 +6,7 @@
 RequestExecutionLevel admin
 
 ; Set the output folder for the installer
-Outfile "jammer-Setup.exe"
+Outfile "jammer-Setup_V1.X.X.exe"
 
 ; default installation directory
 InstallDir "$PROGRAMFILES\${APP_NAME}"
