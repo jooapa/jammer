@@ -103,7 +103,6 @@ namespace jammer
                     } else {
                         AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
                     }
-
                     Environment.Exit(0);
                 }
             }

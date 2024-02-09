@@ -413,6 +413,27 @@ static class TUI
         }
     }
 
+    public static void Help() {
+        var table = new Table();
+        table.AddColumn("Commands");
+        table.AddColumn("Description");
+
+        table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
+        table.AddRow("[grey]jammer[/] <file> ...", "Play song(s) from file(s)");
+        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
+        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
+        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
+        table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
+        table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
+        table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
+        table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
+        table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
+
+        AnsiConsole.Write(table);
+
+        PlaylistHelp();
+    }
+
     static public void PlaylistHelp() {
         var table = new Table();
         table.AddColumn("Playlist Commands");
@@ -429,25 +450,6 @@ static class TUI
         AnsiConsole.Write(table);
     }
 
-    public static void Help() {
-        var table = new Table();
-        table.AddColumn("Commands");
-        table.AddColumn("Description");
-
-        table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
-        table.AddRow("[grey]jammer[/] <file> ...", "Play song(s) from file(s)");
-        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
-        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
-        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
-        table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
-        table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
-        table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
-        table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
-
-        AnsiConsole.Write(table);
-
-        PlaylistHelp();
-    }
 
     public static void Version() {
         AnsiConsole.MarkupLine("[green]Jammer version " + Utils.version + "[/]");

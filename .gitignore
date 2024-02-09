@@ -132,7 +132,7 @@ $RECYCLE.BIN/
 
 _NCrunch*
 
-jammer-Setup.exe
+jammer-Setup_V1.X.X.exe
 nsis-folder/jammer.exe
 nsis-folder/raylib.dll
 .vscode/launch.json
