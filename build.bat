@@ -6,7 +6,6 @@ set "targetFolder=nsis-folder"
 
 rem Copy jammer.exe
 copy /y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
-copy /y "%sourceFolder%\raylib.dll" "%targetFolder%\raylib.dll"
 
 echo Files copied successfully.
 
@@ -18,4 +17,4 @@ if exist "C:\Program Files (x86)\jammer" (
     start "" "C:\Program Files (x86)\jammer\Uninstall.exe"
 )
 
-jammer-Setup.exe
+jammer-Setup_V1.X.X.exe
