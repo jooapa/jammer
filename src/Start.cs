@@ -91,11 +91,15 @@ namespace jammer
                     AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
 
                     string latestVersion = Update.CheckForUpdate(Utils.version);
-                    
-                    AnsiConsole.MarkupLine("[green]Current version: " + Utils.version + "[/]");
-                    
                     if (latestVersion != "") {
-                        AnsiConsole.MarkupLine("[green]Update found![/]");
+                        AnsiConsole.MarkupLine("[green]Update found![/]" + "\n" + "Version: [green]" + latestVersion + "[/]");
+                        AnsiConsole.MarkupLine("[green]Downloading...[/]");
+                        string downloadPath = Update.UpdateJammer(latestVersion);
+
+                        AnsiConsole.MarkupLine("[green]Downloaded to: " + downloadPath + "[/]");
+                        AnsiConsole.MarkupLine("[cyan]Installing...[/]");
+                        // Run run_command.bat with argument as the path to the downloaded file
+                        System.Diagnostics.Process.Start("run_command.bat", downloadPath);
                     } else {
                         AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
                     }

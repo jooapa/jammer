@@ -55,7 +55,7 @@ Section "Uninstall"
     Delete "$INSTDIR\selfdestruct.bat"
     Delete "$INSTDIR\setup.ps1"
     Delete "$INSTDIR\uninstall.ps1"
-    Delete "$INSTDIR\raylib.dll"
+    Delete "$INSTDIR\run_command.bat"
 
     ; Remove shortcut
     Delete "$SENDTO\${APP_NAME}.lnk"

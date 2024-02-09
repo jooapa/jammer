@@ -157,6 +157,9 @@ static class TUI
                 if (songToAdd == "" || songToAdd == null) { break; }
                 // remove quotes from songToAdd
                 songToAdd = songToAdd.Replace("\"", "");
+                if (!File.Exists(songToAdd) && !URL.IsUrl(songToAdd)) {
+                    break;
+                }
                 songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
                 Play.AddSong(songToAdd);
                 break;
