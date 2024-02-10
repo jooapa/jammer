@@ -186,6 +186,10 @@ namespace jammer
                             Console.ReadKey(true);
                         }
                         break;
+                    case ConsoleKey.D4: // autosave or not
+                        Preferences.isAutoSave = !Preferences.isAutoSave;
+                        TUI.RehreshCurrentView();
+                        break;
                     case ConsoleKey.Tab:
                         TUI.Help();
 

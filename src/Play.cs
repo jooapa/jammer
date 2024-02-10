@@ -76,7 +76,7 @@ namespace jammer
             Start.lastSeconds = -1;
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
-
+            Playlists.AutoSave();
             // Init audio
             try
             {
@@ -346,6 +346,7 @@ namespace jammer
             }
             Start.state = MainStates.playing;
             
+            Playlists.AutoSave();
             // if no songs left, add "" to Utils.songs
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }

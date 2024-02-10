@@ -162,9 +162,11 @@ static class TUI
                 }
                 songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
                 Play.AddSong(songToAdd);
+                Playlists.AutoSave();
                 break;
             case "2": // delete current song from playlist
                 Play.DeleteSong(Utils.currentSongIndex);
+                Playlists.AutoSave();
                 break;
             case "3": // show songs in playlist
                 AnsiConsole.Markup("\nEnter playlist name: ");
@@ -210,6 +212,7 @@ static class TUI
                 Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
                 // set newsong from suffle to the current song
                 Utils.currentSong = Utils.songs[Utils.currentSongIndex];
+                Playlists.AutoSave();
                 break;
             case "9": // play single song
                 AnsiConsole.Markup("\nSeperate songs with space\n");
@@ -232,6 +235,7 @@ static class TUI
                 
                 Utils.songs = songsToPlay;
                 Utils.currentSongIndex = 0;
+                Utils.currentPlaylist = "";
                 Play.StopSong();
                 Play.PlaySong(Utils.songs, Utils.currentSongIndex);
                 break;
@@ -267,7 +271,7 @@ static class TUI
         if (Utils.currentPlaylist == "") {
             table.AddRow(GetAllSongs());
         } else {
-            table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetAllSongs());
+            table.AddRow("playlist [cyan]" + Utils.currentPlaylist + "[/]\n" + GetAllSongs());
         }
     }
 
@@ -276,7 +280,7 @@ static class TUI
         if (Utils.currentPlaylist == "") {
             table.AddRow(GetPrevCurrentNextSong());
         } else {
-            table.AddRow("'playlist " + Utils.currentPlaylist + ".jammer'\n" + GetPrevCurrentNextSong());
+            table.AddRow("playlist [cyan]" + Utils.currentPlaylist + "[/]\n" + GetPrevCurrentNextSong());
         }
     }
 
@@ -325,6 +329,7 @@ static class TUI
         table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]1[/] to change");
         table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]2[/] to change");
         table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]3[/] to change");
+        table.AddRow("Auto Save", Preferences.isAutoSave + "", "[green]4[/] to toggle");
 
         AnsiConsole.Clear();
         AnsiConsole.Write(table);

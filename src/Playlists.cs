@@ -15,11 +15,13 @@ namespace jammer
                 // y/n prompt
                 if (Console.ReadLine() == "y")
                 {
+                    Utils.currentPlaylist = playlistName;
                     File.Create(playlistPath);
                 }
             }
             else
             {
+                Utils.currentPlaylist = playlistName;
                 File.Create(playlistPath);
             }
         }
@@ -185,24 +187,40 @@ namespace jammer
             }
         }
 
-        static public void Save(string playlistName)
+        static public void Save(string playlistName, bool force = false)
         {
             string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))
             {
-                Console.WriteLine("Playlist already exists in " + playlistPath + ". Overwrite? (y/n)");
-                // y/n prompt
-                if (Console.ReadLine() == "y")
-                {
-                    File.Delete(playlistPath);
-                    File.WriteAllLines(playlistPath, Utils.songs);
+                if (!force) {
+                    Console.WriteLine("Playlist already exists in " + playlistPath + ". Overwrite? (y/n)");
+                    string? input = Console.ReadLine();
+                    // y/n prompt
+                    if (input != "y")
+                    {
+                        return;
+                    }
                 }
+                File.Delete(playlistPath);
+                File.WriteAllLines(playlistPath, Utils.songs);
+                Utils.currentPlaylist = playlistName;
             }
             else
             {
                 File.WriteAllLines(playlistPath, Utils.songs);
+                Utils.currentPlaylist = playlistName;
             }
+        }
+
+        static public void AutoSave() {
+            if (!Preferences.isAutoSave) {
+                return;
+            }
+            if (Utils.currentPlaylist == "") {
+                return;
+            }
+            Save(Utils.currentPlaylist, true);
         }
 
         static public void List()
@@ -216,7 +234,7 @@ namespace jammer
             string[] playlists = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/");
             foreach (string playlist in playlists)
             {
-                AnsiConsole.WriteLine(Path.GetFileName(playlist));
+                AnsiConsole.WriteLine(Path.GetFileNameWithoutExtension(playlist));
             }
         }
     }

@@ -14,6 +14,7 @@ namespace jammer
         public static bool isLoop = GetIsLoop();
         public static bool isMuted = GetIsMuted();
         public static bool isShuffle = GetIsShuffle();
+        public static bool isAutoSave = GetIsAutoSave();
 
         static public void CheckJammerFolderExists()
         {
@@ -48,6 +49,8 @@ namespace jammer
             settings.rewindSeconds = rewindSeconds;
             settings.changeVolumeBy = changeVolumeBy;
             settings.isShuffle = isShuffle;
+            settings.isAutoSave = isAutoSave;
+            
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (File.Exists(jammerPath))
@@ -177,6 +180,21 @@ namespace jammer
             }
         }
 
+        static public bool GetIsAutoSave()
+        {
+            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            if (File.Exists(jammerPath))
+            {
+                string jsonString = File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.isAutoSave ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         static public void OpenJammerFolder()
         {
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer";
@@ -205,6 +223,7 @@ namespace jammer
             public int rewindSeconds { get; set; }
             public float changeVolumeBy { get; set; }
             public bool isShuffle { get; set; }
+            public bool isAutoSave { get; set; }
         }
     }
 }
