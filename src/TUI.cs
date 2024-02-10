@@ -157,7 +157,7 @@ static class TUI
                 if (songToAdd == "" || songToAdd == null) { break; }
                 // remove quotes from songToAdd
                 songToAdd = songToAdd.Replace("\"", "");
-                if (!File.Exists(songToAdd) && !URL.IsUrl(songToAdd)) {
+                if (!isValidSong(songToAdd)) {
                     break;
                 }
                 songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
@@ -211,9 +211,9 @@ static class TUI
                 // set newsong from suffle to the current song
                 Utils.currentSong = Utils.songs[Utils.currentSongIndex];
                 break;
-
             case "9": // play single song
-                AnsiConsole.Markup("\nEnter song(s) to play: ");
+                AnsiConsole.Markup("\nSeperate songs with space\n");
+                AnsiConsole.Markup("Enter song(s) to play: ");
                 string[]? songsToPlay = Console.ReadLine()?.Split(" ");
                 if (songsToPlay == null) { break; }
                 // remove " from start and end of each song
@@ -222,7 +222,7 @@ static class TUI
                     songsToPlay[i] = Absolute.ConvertToAbsolutePath(songsToPlay[i]);
 
                     // if doesnt exist, remove from array
-                    if (!File.Exists(songsToPlay[i])) {
+                    if (!isValidSong(songsToPlay[i])) {
                         songsToPlay = songsToPlay.Take(i).Concat(songsToPlay.Skip(i + 1)).ToArray();
                         i--;
                     }
@@ -240,6 +240,15 @@ static class TUI
                 break;
         }
         AnsiConsole.Clear();
+    }
+
+    public static bool isValidSong(string song) {
+        if (File.Exists(song) || URL.IsUrl(song) || Directory.Exists(song)) {
+            AnsiConsole.Markup("\n[green]Valid song[/]");
+            return true;
+        }
+        AnsiConsole.Markup("\n[red]Invalid song[/]");
+        return false;
     }
 
     // "Components" of the TUI

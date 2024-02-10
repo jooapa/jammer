@@ -7,6 +7,8 @@ namespace jammer
     public class Play
     {
         private static Thread loopThread = new Thread(() => { });
+
+        // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
         {
             if (songs.Length == 0)
@@ -28,15 +30,27 @@ namespace jammer
             // iof folder
             else if (Directory.Exists(songs[Currentindex]))
             {
+                int originalLengthMinusFolder = Utils.songs.Length - 1;
                 // add all files in folder to Utils.songs
                 string[] files = Directory.GetFiles(songs[Currentindex]);
                 foreach (string file in files)
                 {
                     AddSong(file);
                 }
+
                 // remove folder from Utils.songs
-                Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
-                path = Utils.songs[Currentindex];
+                Play.DeleteSong(Currentindex);
+                
+                AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
+
+                if (Utils.songs.Length == originalLengthMinusFolder) {
+                    path = Utils.songs[originalLengthMinusFolder - 1];
+                }
+                else {
+                    path = Utils.songs[Currentindex];
+                }
+                
+                
             }
             else if (URL.isValidSoundCloudPlaylist(songs[Currentindex])) {
                 // id related to url, download and convert to absolute path
