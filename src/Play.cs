@@ -67,7 +67,7 @@ namespace jammer
             try
             {
                 Debug.dprint("Init audio");
-                string extension = Path.GetExtension(path);
+                string extension = Path.GetExtension(path).ToLower();
 
                 if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".mp4")
                 {
