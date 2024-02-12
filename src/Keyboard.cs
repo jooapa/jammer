@@ -99,7 +99,7 @@ namespace jammer
                         {
                             playerView = "all";
                             var table = new Table();
-                            TUI.UIComponent_Songs(table);
+                            // TUI.UIComponent_Songs(table);
                             AnsiConsole.Write(table);
                             AnsiConsole.Markup("Press [red]h[/] for help");
                             AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");

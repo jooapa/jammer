@@ -1,25 +1,10 @@
 using Spectre.Console;
 using jammer;
+using System.ComponentModel.DataAnnotations;
 
 static class TUI
 {
-    static bool cls = false;
-    
-    static public void InitScreen()
-    {
-        // Loading statusbar just for kicks
-        AnsiConsole.Progress()
-            .Start(ctx =>
-            {
-                var task1 = ctx.AddTask("[green]Loading[/]");
-
-                while(!ctx.IsFinished)
-                {
-                    task1.Increment(5.5);
-                    Thread.Sleep(1);
-                }
-            });
-    }
+    static bool cls = false; // clear screen
 
     static public void DrawPlayer() {
         try {
@@ -28,14 +13,16 @@ static class TUI
             {
                 return;
             }
-            var table = new Table();
+            var mainTable = new Table();
+            var songsTable = new Table();
             var controlsTable = new Table();
+            var timeTable = new Table();
 
             if (Start.playerView == "default") {
-                UIComponent_Normal(table);
+                UIComponent_Normal(songsTable);
             }
             else if (Start.playerView == "all") {
-                UIComponent_Songs(table);
+                UIComponent_Songs(songsTable);
             }
 
             UIComponent_Controls(controlsTable);
@@ -50,10 +37,13 @@ static class TUI
                 AnsiConsole.Cursor.SetPosition(0, 0);
             }
 
-            // move cursor to top left
-            AnsiConsole.Write(table);
-            AnsiConsole.Write(controlsTable);
+            // render maintable with tables in it
+            mainTable.AddColumns(Utils.currentSong);
+            mainTable.AddRow(songsTable.Centered());
+            mainTable.AddRow(controlsTable.Centered());
+            mainTable.AddRow(UIComponent_Time(timeTable, 55).Centered());
 
+            AnsiConsole.Write(mainTable);
             // var debug = new Table();
             // debug.AddColumn("Debug");
             // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
@@ -64,7 +54,8 @@ static class TUI
             AnsiConsole.Markup("\nPress [green]f[/] to show playlist\n");
         }
         catch (Exception e) {
-            AnsiConsole.MarkupLine("[red]Error in DrawPlayer()[/]");
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine("[red]Error in Drawing the player[/]");
             AnsiConsole.MarkupLine("[red] Controls still work[/]");
             AnsiConsole.MarkupLine("[red]" + e.Message + "[/]");
         }
@@ -219,6 +210,10 @@ static class TUI
                 AnsiConsole.Markup("Enter song(s) to play: ");
                 string[]? songsToPlay = Console.ReadLine()?.Split(" ");
                 if (songsToPlay == null) { break; }
+
+                // if blank "  " remove
+                songsToPlay = songsToPlay.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
                 // remove " from start and end of each song
                 for (int i = 0; i < songsToPlay.Length; i++) {
                     songsToPlay[i] = songsToPlay[i].Replace("\"", "");
@@ -257,31 +252,51 @@ static class TUI
 
     // "Components" of the TUI
     static public void UIComponent_Controls(Table table) {
-        table.AddColumn("State");
-        table.AddColumn("Current Position");
         table.AddColumn("Looping");
         table.AddColumn("Suffle");
         table.AddColumn("Volume");
         table.AddColumn("Muted");
-        table.AddRow(Start.state + "", CalculateTime(Utils.MusicTimePlayed) + " / " + CalculateTime(Utils.currentMusicLength), Preferences.isLoop + "", Preferences.isShuffle + "", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted + "");
-    }
+        table.AddRow(Preferences.isLoop ? "on" : "off", Preferences.isShuffle ? "on" : "off", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted ? "on" : "off");    }
 
     static public void UIComponent_Songs(Table table) {
-        table.AddColumn("Jamming to: " + Utils.currentSong);
         if (Utils.currentPlaylist == "") {
-            table.AddRow(GetAllSongs());
+            table.AddColumn(GetAllSongs());
         } else {
-            table.AddRow("playlist [cyan]" + Utils.currentPlaylist + "[/]\n" + GetAllSongs());
+            table.AddColumn("playlist [cyan]" + Utils.currentPlaylist + "[/]");
+            table.AddRow(GetAllSongs());
         }
     }
 
     static public void UIComponent_Normal(Table table) {
-        table.AddColumns("Jamming to: " + Utils.currentSong);
         if (Utils.currentPlaylist == "") {
-            table.AddRow(GetPrevCurrentNextSong());
+            table.AddColumn(GetPrevCurrentNextSong());
         } else {
-            table.AddRow("playlist [cyan]" + Utils.currentPlaylist + "[/]\n" + GetPrevCurrentNextSong());
+            table.AddColumn("playlist [cyan]" + Utils.currentPlaylist + "[/]");
+            table.AddRow(GetPrevCurrentNextSong());
         }
+    }
+
+    public static Table UIComponent_Time(Table table, int? length = 100) {
+        table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, length));
+        return table;
+    }
+
+    public static string ProgressBar(double value, double max, int? length = 100) {
+        if (length == null) {
+            length = 100;
+        }
+        int progress = (int)(value / max * length);
+        string progressBar = CalculateTime(value) + " |";
+        for (int i = 0; i < length; i++) {
+            if (i < progress) {
+                progressBar += "=";
+            }
+            else {
+                progressBar += " ";
+            }
+        }
+        progressBar += "| " + CalculateTime(max);
+        return progressBar;
     }
 
     public static void DrawAllSongsView() {
@@ -463,8 +478,6 @@ static class TUI
 
         AnsiConsole.Write(table);
     }
-
-
     public static void Version() {
         AnsiConsole.MarkupLine("[green]Jammer version " + Utils.version + "[/]");
     }
