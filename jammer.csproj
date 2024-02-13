@@ -7,6 +7,7 @@
     <RootNamespace>jammer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ApplicationIcon>jammer_HQ.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,7 +6,12 @@
 *.user
 *.sln.docstates
 
+# NSIS
+nsis/LICENSE
+nsis/*.exe
+
 # Build results
+build/
 
 [Dd]ebug/
 [Rr]elease/
@@ -133,7 +138,7 @@ $RECYCLE.BIN/
 _NCrunch*
 
 jammer-Setup_V1.X.X.exe
-nsis-folder/jammer.exe
-nsis-folder/raylib.dll
+nsis/jammer.exe
+nsis/raylib.dll
 .vscode/launch.json
 .vscode/tasks.json
