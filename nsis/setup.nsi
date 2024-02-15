@@ -1,5 +1,3 @@
-; Script to run as administrator, execute PowerShell, and extract files
-
 unicode True
 
 !include LogicLib.nsh
@@ -7,7 +5,9 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-Outfile "jammer-Setup_V1.X.X.exe"
+!define VERSION "1.2.1" ; Define the version number here
+
+Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup"
 Name "Jammer Setup"
 RequestExecutionLevel admin
