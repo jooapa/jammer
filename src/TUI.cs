@@ -139,10 +139,10 @@ static class TUI
         AnsiConsole.MarkupLine("[grey]9. play song(s)[/]");
         AnsiConsole.MarkupLine("[grey]0. exit[/]");
 
-        string? playlistInput = Console.ReadLine();
-        if (playlistInput == "" || playlistInput == null) { return; }
+        var playlistInput = Console.ReadKey(true).Key;
+        // if (playlistInput == "" || playlistInput == null) { return; }
         switch (playlistInput) {
-            case "1": // add song to playlist
+            case ConsoleKey.D1: // add song to playlist
                 AnsiConsole.Markup("\nEnter song to add to playlist: ");
                 string? songToAdd = Console.ReadLine();
                 if (songToAdd == "" || songToAdd == null) { break; }
@@ -155,11 +155,11 @@ static class TUI
                 Play.AddSong(songToAdd);
                 Playlists.AutoSave();
                 break;
-            case "2": // delete current song from playlist
+            case ConsoleKey.D2: // delete current song from playlist
                 Play.DeleteSong(Utils.currentSongIndex);
                 Playlists.AutoSave();
                 break;
-            case "3": // show songs in playlist
+            case ConsoleKey.D3: // show songs in playlist
                 AnsiConsole.Markup("\nEnter playlist name: ");
                 string? playlistNameToShow = Console.ReadLine();
                 if (playlistNameToShow == "" || playlistNameToShow == null) { break; }
@@ -168,10 +168,10 @@ static class TUI
                 AnsiConsole.Markup("\nPress any key to continue");
                 Console.ReadKey(true);
                 break;
-            case "4": // list all playlists
+            case ConsoleKey.D4: // list all playlists
                 Playlists.List();
                 break;
-            case "5": // play other playlist
+            case ConsoleKey.D5: // play other playlist
                 Playlists.ListOnly();
                 AnsiConsole.Markup("\nEnter playlist name: ");
                 string? playlistNameToPlay = Console.ReadLine();
@@ -179,20 +179,20 @@ static class TUI
                 // play other playlist
                 Playlists.Play(playlistNameToPlay);
                 break;
-            case "6": // save/replace playlist
+            case ConsoleKey.D6: // save/replace playlist
                 AnsiConsole.Markup("\nEnter playlist name: ");
                 string? playlistNameToSave = Console.ReadLine();
                 if (playlistNameToSave == "" || playlistNameToSave == null) { break; }
                 // save playlist
                 Playlists.Save(playlistNameToSave);
                 break;
-            case "7": // goto song in playlist
+            case ConsoleKey.D7: // goto song in playlist
                 AnsiConsole.Markup("\nEnter song to goto: ");
                 string? songToGoto = Console.ReadLine();
                 if (songToGoto == "" || songToGoto == null) { break; }
                 // songToGoto = GotoSong(songToGoto);
                 break;
-            case "8": // suffle playlist ( randomize )
+            case ConsoleKey.D8: // suffle playlist ( randomize )
                 // get the name of the current song
                 string currentSong = Utils.songs[Utils.currentSongIndex];
                 // suffle playlist
@@ -205,7 +205,7 @@ static class TUI
                 Utils.currentSong = Utils.songs[Utils.currentSongIndex];
                 Playlists.AutoSave();
                 break;
-            case "9": // play single song
+            case ConsoleKey.D9: // play single song
                 AnsiConsole.Markup("\nSeperate songs with space\n");
                 AnsiConsole.Markup("Enter song(s) to play: ");
                 string[]? songsToPlay = Console.ReadLine()?.Split(" ");
@@ -234,8 +234,7 @@ static class TUI
                 Play.StopSong();
                 Play.PlaySong(Utils.songs, Utils.currentSongIndex);
                 break;
-
-            case "0": // exit
+            case ConsoleKey.D0: // exit
                 break;
         }
         AnsiConsole.Clear();
