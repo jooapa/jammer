@@ -5,11 +5,11 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-!define VERSION "1.2.1" ; Define the version number here
+!define VERSION "1.2.1"
 
 Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
-BrandingText /TRIMCENTER "Jammer Setup"
-Name "Jammer Setup"
+BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
+Name "Jammer Setup V${VERSION}"
 RequestExecutionLevel admin
 
 ManifestSupportedOS Win10
@@ -108,7 +108,8 @@ ${If}  ${FileExists} $INSTALL_DIR
     Abort "Setup aborted by user."
 agree:
     DetailPrint 'Removing "$INSTALL_DIR" and its contents.'
-    RMDir /r $INSTALL_DIR
+    ; run uninstaller
+    nsExec::ExecToLog 'Powershell.exe -ExecutionPolicy Bypass -File "$INSTALL_DIR\Uninstall.exe" "$INSTALL_DIR"'
 ${EndIf}
 FunctionEnd
 
@@ -229,6 +230,7 @@ ${EndIf}
 
 # Create shortcut on DESKTOP
 CreateShortcut "$DESKTOP\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico"
+CreateShortCut "$SENDTO\jammer.lnk" "$INSTDIR\jammer.exe" "" "$INSTDIR\jammer_1024px.ico" 0
 
 ; Create an uninstaller in the same directory as the installer
 WriteUninstaller "$INSTALL_DIR\Uninstall.exe"
@@ -267,6 +269,7 @@ Delete "$INSTDIR\setup.ps1"
 Delete "$INSTDIR\run_command.bat"
 Delete "$INSTDIR\open_with_jammer.cmd"
 Delete "$DESKTOP\jammer.lnk"
+Delete "$SENDTO\jammer.lnk"
 
 ; Remove the installation directory and TEMP directory if it still exists
 RMDir /r $INSTDIR

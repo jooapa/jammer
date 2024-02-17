@@ -9,3 +9,12 @@ COPY /B /Y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
 COPY /Y LICENSE %targetFolder%
 
 makensis %targetFolder%\setup.nsi  
+
+cd nsis
+SET "start_name=jammer-Setup"  REM Set the start name of the files you want to run
+
+REM Loop through files in the current directory with the specified start name
+for %%F in ("%start_name%*.exe") do (
+    ECHO Running %%F
+    START "" "%%F"
+)

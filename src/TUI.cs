@@ -39,19 +39,19 @@ static class TUI
 
             // render maintable with tables in it
             mainTable.AddColumns(Utils.currentSong);
-            mainTable.AddRow(songsTable.Centered());
+            mainTable.AddRow(songsTable.Centered().Width(100));
             mainTable.AddRow(controlsTable.Centered());
             mainTable.AddRow(UIComponent_Time(timeTable, 55).Centered());
+            // mainTable.Width(100);
+            var helpTable = new Table();
+            helpTable.AddColumn("[red]h[/] for help | [yellow]c[/] for settings | [green]f[/] for playlist");
+            mainTable.AddRow(helpTable.Centered());
+            AnsiConsole.Write(mainTable);            
 
-            AnsiConsole.Write(mainTable);
             // var debug = new Table();
             // debug.AddColumn("Debug");
             // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
             // AnsiConsole.Write(debug);
-
-            AnsiConsole.Markup("Press [red]h[/] for help");
-            AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
-            AnsiConsole.Markup("\nPress [green]f[/] to show playlist\n");
         }
         catch (Exception e) {
             AnsiConsole.Clear();
@@ -67,7 +67,7 @@ static class TUI
 
     static public string GetAllSongs() {
         if (Utils.songs.Length == 0) {
-            return "[grey]No songs in playlist[/]";
+            return "[grey]No songs in 'on' playlist[/]";
         }
         string allSongs = "";
         foreach (string song in Utils.songs) {
@@ -83,6 +83,13 @@ static class TUI
         return allSongs;
     }
 
+    static string GetSongWithdots(string song) {
+        int length = 80;
+        if (song.Length > length) {
+            song = string.Concat("...", song.AsSpan(song.Length - length));
+        }
+        return song;
+    }
     public static string GetPrevCurrentNextSong() {
         // return previous, current and next song in playlist
         string prevSong;
@@ -94,12 +101,12 @@ static class TUI
         }
         else
         {
-            currentSong = "[green]current  : " + Utils.songs[Utils.currentSongIndex] + "[/]";
+            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex]) + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = "[grey]previous : " + Utils.songs[Utils.currentSongIndex - 1] + "[/]";
+            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1]) + "[/]";
         }
         else
         {
@@ -109,7 +116,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = "[grey]next     : " + Utils.songs[Utils.currentSongIndex + 1] + "[/]";
+            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1]) + "[/]";
         }
         else
         {
@@ -254,8 +261,9 @@ static class TUI
         table.AddColumn("Looping");
         table.AddColumn("Suffle");
         table.AddColumn("Volume");
-        table.AddColumn("Muted");
-        table.AddRow(Preferences.isLoop ? "on" : "off", Preferences.isShuffle ? "on" : "off", Math.Round(Preferences.volume * 100) + "%", Preferences.isMuted ? "on" : "off");    }
+        string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
+        table.AddRow(Preferences.isLoop ? "[green]on[/]" : "[red]off[/]", Preferences.isShuffle ? "[green]on[/]" : "[red]off[/]", volume);
+    }
 
     static public void UIComponent_Songs(Table table) {
         if (Utils.currentPlaylist == "") {

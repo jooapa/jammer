@@ -138,10 +138,14 @@ namespace jammer
 
             while (true)
             {
-                // if the frist song is "" then there are more songs
-                if (Utils.songs[0] == "" && Utils.songs.Length > 1) {
-                    state = MainStates.play;
-                    Play.DeleteSong(0);
+
+                if (Utils.songs.Length != 0) {
+                    // if the first song is "" then there are more songs
+                    if (Utils.songs[0] == "" && Utils.songs.Length > 1) {
+                        state = MainStates.play;
+                        Play.DeleteSong(0);
+                        Play.PlaySong();
+                    }
                 }
 
                 if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {

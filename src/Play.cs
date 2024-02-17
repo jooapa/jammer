@@ -326,6 +326,10 @@ namespace jammer
         }
         public static void DeleteSong(int index)
         {
+            if (Utils.songs.Length == 0)
+            {
+                return;
+            }
             // check if index is in range
             if (index < 0 || index > Utils.songs.Length)
             {

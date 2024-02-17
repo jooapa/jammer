@@ -1,130 +1,36 @@
-# Check if the script is running with administrator privileges
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+# setup.ps1
+
+# Check if the script is running with administrative privileges
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
 if (-not $isAdmin) {
-    Write-Host "You need to run this script as an administrator."
-    Write-Host "Please right-click on the script and select 'Run as administrator.'"
-    pause
-    exit 1
+    # Relaunch the script with administrative privileges
+    Start-Process powershell -Verb RunAs -ArgumentList ("-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"")
+    exit
 }
-# Argument got from .bat
-# Contains the directory it was called from
-$callDir = $args[0]
-# $mode = $args[1]
 
+# Define the path to the Jammer folder
+$jammerFolderPath = "$PSScriptRoot"
 
-
-# Windows PATH Environment Variable Setup
-#
-# ---------------------------------------------------------------------
-# Add the current directory to the PATH environment variable
-# Check if folder $callDir is already in the path
-$pathDir = "$callDir"
-
-Write-Host Adding current path to System Environmental Variables.
-if($Env:PATH -notlike "*$pathDir*"){
-    # TRUE, ADD TO PATH
-
-
-    # Make oldPath and newPath variables
-    $oldpath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-    $newpath = "$oldpath;$pathDir"
-    
-    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newpath
-
-    Write-Host Added current path to System Environmental Variables.
+# Check if Jammer folder path is already in the system's PATH environment variable
+$currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
+if ($currentPath -split ";" -notcontains $jammerFolderPath) {
+    # Add the Jammer folder to the system's PATH environment variable
+    $newPath = $currentPath + ";" + $jammerFolderPath
+    [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
+    Write-Host "Jammer folder added to the system PATH."
 } else {
-	# FALSE DON'T ADD
-    Write-Host Current path is already found in System Environmental Variables.
+    Write-Host "Jammer folder is already present in the system PATH."
 }
 
-# Windows PATHEXT Environmental Variable Setup
-#
-# ---------------------------------------------------------------------
-# Setting the PATHEXT environment variable
-$oldpathext = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATHEXT).pathext
-
-$newpathext = "$oldpathext;.jammer"
-
-# Check if .jammer is already in the pathext
-Write-Host Adding .jammer to PATHEXT.
-if($Env:PATHEXT -notlike "*.jammer*"){
-    # TRUE, ADD TO PATHEXT
-    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATHEXT -Value $newpathext
-    Write-Host Added .jammer to PATHEXT.
-} else {
-    # FALSE, DON'T ADD
-    Write-Host .jammer already found in PATHEXT.
-}
-# ---------------------------------------------------------------------
-
-# Windows HKCR Setup
-#
-# Define file extensions
-# ! EXECUTABLE ICON
-$iconPathExe = "$PSScriptRoot\jammer.ico"
-
-# ! .JAMMER ICON
-$iconPath = "$PSScriptRoot\jammer.ico"
-
-# $cmdScriptPath = "$PSScriptRoot\run_command.bat"
-$cmdScriptPath = "$PSScriptRoot\open_with_jammer.cmd"
-$registryKeyPath = "HKCR\.jammer"
-$registryKeyValuePerceivedType = "PerceivedType"
-$registryKeyValuePerceivedTypeValue = "text"
-$registryShellKeyPath = "HKCR\.jammer\shell\Jam with jammer"
-$registryCommandKeyPath = "HKCR\.jammer\shell\Jam with jammer\command"
-# Create registry entries
-reg.exe add "$registryKeyPath" /v "$registryKeyValuePerceivedType" /d "$registryKeyValuePerceivedTypeValue" /f
-reg.exe add "$registryShellKeyPath" /ve /d "Jam with jammer" /f
-reg.exe add "$registryCommandKeyPath" /ve /d "$cmdScriptPath `"%1`"" /f
-# Context menu icon
-reg.exe add "$registryShellKeyPath" /v "Icon" /d "$iconPathExe" /f
-# Add position
-# reg.exe add "$registryKeyPath" /v "Position" /d "Top" /f
-Write-Host "Context menu entry added for .jammer files."
-# Add the DefaultIcon registry key with the path to your custom icon
-reg.exe add "$registryKeyPath\DefaultIcon" /ve /d "$iconPath" /f
-Write-Host "Custom icon added for .jammer files."
-
-# foreach ($extension in $fileExtensions) {
-    $registryKeyPath = "HKCR\SystemFileAssociations\audio"
-    $registryShellKeyPath = "$registryKeyPath\shell\Jam with jammer"
-    $registryCommandKeyPath = "$registryShellKeyPath\command"
-    #HKEY_CLASSES_ROOT\SystemFileAssociations\audio\Shell\
-    # Create registry entries
-    reg.exe add "$registryKeyPath" /v "PerceivedType" /d "text" /f
-    reg.exe add "$registryShellKeyPath" /ve /d "Jam with jammer" /f
-    reg.exe add "$registryCommandKeyPath" /ve /d "$cmdScriptPath `"%1`"" /f
-    reg.exe add "$registryShellKeyPath" /v "Icon" /d "$iconPathExe" /f
-    reg.exe add "$registryShellKeyPath\DefaultIcon" /ve /d "$iconPath" /f
-
-    Write-Host "Context menu entry added for audio files."
+# # Add a "jammer" as context menu item that will run jammer.exe with the selected file(s) as argument. and it will not open multiple cmd windows
+# $jammerCommand = "cmd /c start /b jammer.exe `"%1`""
+# $jammerCommandKey = "Software\Classes\*\shell\jammer\command"
+# $jammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($jammerCommandKey, $true)
+# if (-not $jammerCommandValue) {
+#     $jammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey($jammerCommandKey)
+#     $jammerCommandValue.SetValue("", $jammerCommand)
+#     Write-Host "Jammer context menu item added."
+# } else {
+#     Write-Host "Jammer context menu item is already present."
 # }
-
-# Add global reged encrypt dir with atk
-
-$cryptCmd2 = "$PSScriptRoot\open_with_jammer.cmd"
-reg.exe add "HKCR\Directory\shell\Jam with jammer" /ve /d "Jam with jammer" /f
-reg.exe add "HKCR\Directory\shell\Jam with jammer\command" /ve /d "$cryptCmd2 `"%1`"" /f
-Write-Host "Context menu entry added for all files."
-
-# Context menu icon
-reg.exe add "HKCR\Directory\shell\Jam with jammer" /v "Icon" /d "$iconPathExe" /f
-Write-Host "Context menu icon added for all directories."
-#####################################################
-$registryKeyPath = "HKCU\SOFTWARE\Classes\Directory\Background"
-$registryShellKeyPath = "$registryKeyPath\shell\Jam with jammer"
-$registryCommandKeyPath = "$registryShellKeyPath\command"
-
-reg.exe add "$registryKeyPath" /v "PerceivedType" /d "text" /f
-reg.exe add "$registryShellKeyPath" /ve /d "Jam with jammer" /f
-reg.exe add "$registryCommandKeyPath" /ve /d "$cmdScriptPath `"%1`"" /f
-reg.exe add "$registryShellKeyPath" /v "Icon" /d "$iconPathExe" /f
-reg.exe add "$registryShellKeyPath\DefaultIcon" /ve /d "$iconPath" /f
-# Context menu icon
-Write-Host "Context menu icon added for all directories."
-
-
-
-$Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
-Write-Host "Setup succesfull."
