@@ -40,11 +40,15 @@ static class TUI
             // render maintable with tables in it
             mainTable.AddColumns(Utils.currentSong);
             mainTable.AddRow(songsTable.Centered().Width(100));
+            songsTable.Border = TableBorder.Square;
             mainTable.AddRow(controlsTable.Centered());
-            mainTable.AddRow(UIComponent_Time(timeTable, 55).Centered());
+            mainTable.AddRow(UIComponent_Time(timeTable, 75).Centered());
             // mainTable.Width(100);
             var helpTable = new Table();
             helpTable.AddColumn("[red]h[/] for help | [yellow]c[/] for settings | [green]f[/] for playlist");
+            helpTable.Border = TableBorder.Rounded;
+            
+            mainTable.Border = TableBorder.HeavyEdge;
             mainTable.AddRow(helpTable.Centered());
             AnsiConsole.Write(mainTable);            
 
@@ -296,7 +300,7 @@ static class TUI
         string progressBar = CalculateTime(value) + " |";
         for (int i = 0; i < length; i++) {
             if (i < progress) {
-                progressBar += "=";
+                progressBar += "█";
             }
             else {
                 progressBar += " ";

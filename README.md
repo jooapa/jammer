@@ -105,4 +105,10 @@ dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 build.bat
 ```
 
+you can also use `change_version.py` to change the version of the app.
+
+```bash
+python change_version.py [version]
+```
+
 ![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
