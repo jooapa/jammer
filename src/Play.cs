@@ -268,7 +268,7 @@ namespace jammer
 
         }
 
-        public static void MuteSong()
+        public static void ToggleMute()
         {
             if (Preferences.isMuted)
             {

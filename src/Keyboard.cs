@@ -91,7 +91,7 @@ namespace jammer
                         Preferences.isLoop = !Preferences.isLoop;
                         break;
                     case ConsoleKey.M: // mute
-                        Play.MuteSong();
+                        Play.ToggleMute();
                         break;
                     case ConsoleKey.F: // show all view
                         AnsiConsole.Clear();
