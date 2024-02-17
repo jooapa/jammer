@@ -1,6 +1,6 @@
 # jammer - Play songs from cli with youtube and soundcloud support
 
-![banner](https://raw.githubusercontent.com/jooapa/jammer/main/images/jammer_banner.gif)
+![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
 
 ## Usage
 
