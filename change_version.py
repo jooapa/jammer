@@ -29,3 +29,13 @@ with open(os.path.join('src', 'Utils.cs'), 'w') as new_utils_file:
             new_utils_file.write('        public static string version = "' + sys.argv[1] + '";\n')
         else:
             new_utils_file.write(line)
+
+with open(os.path.join('jammer.csproj'), 'r') as jammer_file:
+    lines = jammer_file.readlines()
+    
+with open(os.path.join('jammer.csproj'), 'w') as new_jammer_file:
+    for line in lines:
+        if line.startswith('      <Version>'):
+            new_jammer_file.write('      <Version>' + sys.argv[1] + '</Version>\n')
+        else:
+            new_jammer_file.write(line)
