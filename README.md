@@ -1,6 +1,7 @@
 # jammer - Play songs from cli with youtube and soundcloud support
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
+<br>
 *In this example I fist open the PvZ playlist from SoundCloud. Then I delete some songs at the start using the `delete`. Then I save the current playlist to name `plant`. After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.*
 ## Usage
 
