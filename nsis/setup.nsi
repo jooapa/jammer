@@ -5,7 +5,7 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-!define VERSION "1.2.1"
+!define VERSION "1.2.2"
 
 Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
@@ -23,63 +23,12 @@ PageEx license
 PageExEnd
 
 ########### COMPONENTS #####################
-
-InstType "Full" IT_FULL
-InstType "Minimal" IT_MIN
-
 PageEx components
-    ComponentText "Choose files you want to install." \
+    ComponentText "This is the main program. It contains all necessary components for basic functioning." \
     #"About" \
     #"Main program contains all necessary components for basic functioning. \
     #Additional components contain all extra files, mainly used by the context menu."
 PageExEnd
-
-SectionGroup "!Main Program" RO
-    Section !jammer.exe sec1_id
-        DetailPrint "These files go to your TEMP folder. These will be deleted after setup."
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "jammer.exe"
-    SectionEnd
-    Section !jammer_1024px.ico sec2_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "jammer_1024px.ico"
-    SectionEnd
-    Section !jammer.ico sec3_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "jammer.ico"
-    SectionEnd
-    Section !setup.ps1 sec4_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "setup.ps1"
-    SectionEnd
-    Section !uninstall.ps1 sec5_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "uninstall.ps1"
-    SectionEnd
-    Section !run_command.bat sec6_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "run_command.bat"
-    SectionEnd
-    Section !open_with_jammer.cmd sec7_id
-        SectionInstType ${IT_FULL} ${IT_MIN} RO
-        SectionIn 1 ${sec1_id}
-        SetOutPath "$TEMP\jammer"
-        File "open_with_jammer.cmd"
-    SectionEnd
-SectionGroupEnd
-
 
 ############ DIRECTORY ######################
 Var INSTALL_DIR
@@ -97,7 +46,6 @@ Function .onVerifyInstDir
     Call CheckFolder
 FunctionEnd
 
-
 ; Checks if the folder exists, if it exists and user wants to delete
 ; it and it's contents the script will continue
 Function CheckFolder
@@ -108,8 +56,7 @@ ${If}  ${FileExists} $INSTALL_DIR
     Abort "Setup aborted by user."
 agree:
     DetailPrint 'Removing "$INSTALL_DIR" and its contents.'
-    ; run uninstaller
-    nsExec::ExecToLog 'Powershell.exe -ExecutionPolicy Bypass -File "$INSTALL_DIR\Uninstall.exe" "$INSTALL_DIR"'
+    RMDir /r $INSTALL_DIR
 ${EndIf}
 FunctionEnd
 
@@ -126,21 +73,6 @@ FunctionEnd
 
 ############################## START ##############################
 Section 
-; Delete the $TEMP folder stuff before extracting more files
-; and taking up more space from the disk
-Delete "$TEMP\jammer\jammer.exe"
-Delete "$TEMP\jammer\jammer.ico"
-Delete "$TEMP\jammer\jammer_1024px.ico"
-Delete "$TEMP\jammer\LICENSE"
-Delete "$TEMP\jammer\uninstall.exe"
-Delete "$TEMP\jammer\setup.ps1"
-Delete "$TEMP\jammer\run_command.bat"
-Delete "$TEMP\jammer\open_with_jammer.cmd"
-
-; The folder will be deleted in the Uninstall section
-RMDir /r $TEMP\jammer
-
-DetailPrint 'Files from "$TEMP\jammer" deleted. beginning setup.' 
 
 ; After deletion begin with setup
 
@@ -153,8 +85,16 @@ SetOutPath $INSTALL_DIR
 ; Create the installation directory if it doesn't exist
 CreateDirectory $INSTALL_DIR
 
-SectionEnd
+; Files to install
+File "jammer.exe"
+File "jammer_1024px.ico"
+File "jammer.ico"
+File "setup.ps1"
+File "uninstall.ps1"
+File "run_command.bat"
+File "open_with_jammer.cmd"
 
+SectionEnd
 
 ############# SETUP ################
 Section 
@@ -165,8 +105,6 @@ File "setup.ps1"
 
 ; Execute setup.ps1 script
 nsExec::ExecToLog 'Powershell.exe -ExecutionPolicy Bypass -File "$INSTALL_DIR\setup.ps1" "$INSTALL_DIR" "no"'
-
-
 
 ; Check if setup ran succesfully
 Pop $0
@@ -203,31 +141,6 @@ Delete "setup.ps1"
 ; Extract uninstallation script
 File "uninstall.ps1"
 
-########## MAIN PROGRAM ##########
-${If} ${SectionIsSelected} ${sec1_id}
-    File "jammer.exe"
-${EndIf}
-${If} ${SectionIsSelected} ${sec2_id}
-    File "jammer_1024px.ico"
-${EndIf}
-${If} ${SectionIsSelected} ${sec3_id}
-    File "jammer.ico"
-${EndIf}
-${If} ${SectionIsSelected} ${sec4_id}
-    File "setup.ps1"
-${EndIf}
-${If} ${SectionIsSelected} ${sec5_id}
-    File "uninstall.ps1"
-${EndIf}
-${If} ${SectionIsSelected} ${sec6_id}
-    File "run_command.bat"
-${EndIf}
-${If} ${SectionIsSelected} ${sec7_id}
-    File "open_with_jammer.cmd"
-${EndIf}
-
-
-
 # Create shortcut on DESKTOP
 CreateShortcut "$DESKTOP\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico"
 CreateShortCut "$SENDTO\jammer.lnk" "$INSTDIR\jammer.exe" "" "$INSTDIR\jammer_1024px.ico" 0
@@ -240,18 +153,8 @@ SectionEnd
 
 ########## UNINSTALL ##########
 
-
 UninstPage uninstConfirm
 UninstPage instfiles
-
-# Call must be used with function names starting with "un." in the uninstall section.
-;Function unRefresh
-;    ; Refreshes icons
-;    System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) i(0x8000000, 0, 0, 0)'
-;
-;    ; Refreshes Environmental variables
-;    System::Call 'user32::SendMessage(i ${HWND_BROADCAST}, i ${WM_WININICHANGE}, i 0, t "Environment")'
-;FunctionEnd
 
 Section "Uninstall"
 ; Execute the PowerShell script with elevated privileges and pass the parameters
@@ -271,11 +174,7 @@ Delete "$INSTDIR\open_with_jammer.cmd"
 Delete "$DESKTOP\jammer.lnk"
 Delete "$SENDTO\jammer.lnk"
 
-; Remove the installation directory and TEMP directory if it still exists
+; Remove the installation directory if it still exists
 RMDir /r $INSTDIR
-RMDir /r $TEMP\jammer
-
-; Lastly refresh icons and env
-;Call unRefresh
 
 SectionEnd

@@ -10,6 +10,11 @@ COPY /Y LICENSE %targetFolder%
 
 makensis %targetFolder%\setup.nsi  
 
+IF ErrorLevel 1 (
+    ECHO Error building installer
+    EXIT /B 1
+)
+
 cd nsis
 SET "start_name=jammer-Setup"  REM Set the start name of the files you want to run
 

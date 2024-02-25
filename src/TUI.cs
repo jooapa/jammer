@@ -38,7 +38,7 @@ static class TUI
             }
 
             // render maintable with tables in it
-            mainTable.AddColumns(Utils.currentSong);
+            mainTable.AddColumns(GetSongWithdots(Utils.currentSong, 90)).Width(100);
             mainTable.AddRow(songsTable.Centered().Width(100));
             songsTable.Border = TableBorder.Square;
             mainTable.AddRow(controlsTable.Centered());
@@ -87,8 +87,7 @@ static class TUI
         return allSongs;
     }
 
-    static string GetSongWithdots(string song) {
-        int length = 80;
+    static string GetSongWithdots(string song, int length = 80) {
         if (song.Length > length) {
             song = string.Concat("...", song.AsSpan(song.Length - length));
         }
@@ -105,12 +104,12 @@ static class TUI
         }
         else
         {
-            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex]) + "[/]";
+            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], 75) + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1]) + "[/]";
+            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], 75) + "[/]";
         }
         else
         {
@@ -120,7 +119,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1]) + "[/]";
+            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], 75) + "[/]";
         }
         else
         {
