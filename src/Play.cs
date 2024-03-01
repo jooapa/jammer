@@ -355,7 +355,7 @@ namespace jammer
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
-        public static void Suffle()
+        public static void Shuffle()
         {
             // suffle songs
             Random rnd = new Random();

@@ -152,102 +152,174 @@ static class TUI
         var playlistInput = Console.ReadKey(true).Key;
         // if (playlistInput == "" || playlistInput == null) { return; }
         switch (playlistInput) {
-            case ConsoleKey.D1: // add song to playlist
-                AnsiConsole.Markup("\nEnter song to add to playlist: ");
-                string? songToAdd = Console.ReadLine();
-                if (songToAdd == "" || songToAdd == null) { break; }
-                // remove quotes from songToAdd
-                songToAdd = songToAdd.Replace("\"", "");
-                if (!isValidSong(songToAdd)) {
-                    break;
-                }
-                songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
-                Play.AddSong(songToAdd);
-                Playlists.AutoSave();
+            // Add song to playlist
+            case ConsoleKey.D1:
+                AddSongToPlaylist();
                 break;
-            case ConsoleKey.D2: // delete current song from playlist
-                Play.DeleteSong(Utils.currentSongIndex);
-                Playlists.AutoSave();
+            // Delete current song from playlist
+            case ConsoleKey.D2:
+                DeleteCurrentSongFromPlaylist();
                 break;
-            case ConsoleKey.D3: // show songs in playlist
-                AnsiConsole.Markup("\nEnter playlist name: ");
-                string? playlistNameToShow = Console.ReadLine();
-                if (playlistNameToShow == "" || playlistNameToShow == null) { break; }
-                // show songs in playlist
-                Playlists.Show(playlistNameToShow);
-                AnsiConsole.Markup("\nPress any key to continue");
-                Console.ReadKey(true);
+            // Show songs in playlist
+            case ConsoleKey.D3:
+                ShowSongsInPlaylist();
                 break;
-            case ConsoleKey.D4: // list all playlists
-                Playlists.List();
+            // List all playlists
+            case ConsoleKey.D4:
+                ListAllPlaylists();
                 break;
-            case ConsoleKey.D5: // play other playlist
-                Playlists.ListOnly();
-                AnsiConsole.Markup("\nEnter playlist name: ");
-                string? playlistNameToPlay = Console.ReadLine();
-                if (playlistNameToPlay == "" || playlistNameToPlay == null) { break; }
-                // play other playlist
-                Playlists.Play(playlistNameToPlay);
+            // Play other playlist
+            case ConsoleKey.D5:
+                PlayOtherPlaylist();
                 break;
-            case ConsoleKey.D6: // save/replace playlist
-                AnsiConsole.Markup("\nEnter playlist name: ");
-                string? playlistNameToSave = Console.ReadLine();
-                if (playlistNameToSave == "" || playlistNameToSave == null) { break; }
-                // save playlist
-                Playlists.Save(playlistNameToSave);
+            // Save/replace playlist
+            case ConsoleKey.D6:
+                SaveReplacePlaylist();
                 break;
-            case ConsoleKey.D7: // goto song in playlist
-                AnsiConsole.Markup("\nEnter song to goto: ");
-                string? songToGoto = Console.ReadLine();
-                if (songToGoto == "" || songToGoto == null) { break; }
-                // songToGoto = GotoSong(songToGoto);
+            // Goto song in playlist
+            case ConsoleKey.D7:
+                GotoSongInPlaylist();
                 break;
-            case ConsoleKey.D8: // suffle playlist ( randomize )
-                // get the name of the current song
-                string currentSong = Utils.songs[Utils.currentSongIndex];
-                // suffle playlist
-                Play.Suffle();
-                // delete duplicates
-                Utils.songs = Utils.songs.Distinct().ToArray();
-
-                Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
-                // set newsong from suffle to the current song
-                Utils.currentSong = Utils.songs[Utils.currentSongIndex];
-                Playlists.AutoSave();
-                break;
-            case ConsoleKey.D9: // play single song
-                AnsiConsole.Markup("\nSeperate songs with space\n");
-                AnsiConsole.Markup("Enter song(s) to play: ");
-                string[]? songsToPlay = Console.ReadLine()?.Split(" ");
-                if (songsToPlay == null) { break; }
-
-                // if blank "  " remove
-                songsToPlay = songsToPlay.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-
-                // remove " from start and end of each song
-                for (int i = 0; i < songsToPlay.Length; i++) {
-                    songsToPlay[i] = songsToPlay[i].Replace("\"", "");
-                    songsToPlay[i] = Absolute.ConvertToAbsolutePath(songsToPlay[i]);
-
-                    // if doesnt exist, remove from array
-                    if (!isValidSong(songsToPlay[i])) {
-                        songsToPlay = songsToPlay.Take(i).Concat(songsToPlay.Skip(i + 1)).ToArray();
-                        i--;
-                    }
-                }
-                // if no songs left, break
-                if (songsToPlay.Length == 0) { break; }
                 
-                Utils.songs = songsToPlay;
-                Utils.currentSongIndex = 0;
-                Utils.currentPlaylist = "";
-                Play.StopSong();
-                Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+            // Shuffle playlist (randomize)
+            case ConsoleKey.D8:
+                ShufflePlaylist();
                 break;
-            case ConsoleKey.D0: // exit
+            // Play single song
+            case ConsoleKey.D9:
+                PlaySingleSong();
                 break;
+            // Exit
+            case ConsoleKey.D0:
+                return;
         }
         AnsiConsole.Clear();
+    }
+
+    public static void AddSongToPlaylist()
+    {
+        AnsiConsole.Markup("\n[bold]Add song to playlist[/]");
+        AnsiConsole.Markup("\nEnter song to add to playlist: ");
+        string? songToAdd = Console.ReadLine();
+        if (songToAdd == "" || songToAdd == null) { return; }
+        // remove quotes from songToAdd
+        songToAdd = songToAdd.Replace("\"", "");
+        if (!isValidSong(songToAdd)) {
+            return;
+        }
+        songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
+        Play.AddSong(songToAdd);
+        Playlists.AutoSave();
+    }
+
+    // Delete current song from playlist
+    public static void DeleteCurrentSongFromPlaylist()
+    {
+        Play.DeleteSong(Utils.currentSongIndex);
+        Playlists.AutoSave();
+    }
+
+    // Show songs in playlist
+    public static void ShowSongsInPlaylist()
+    {
+        AnsiConsole.Markup("\n[bold]Show songs in playlist[/]");
+        AnsiConsole.Markup("\nEnter playlist name: ");
+        string? playlistNameToShow = Console.ReadLine();
+        if (playlistNameToShow == "" || playlistNameToShow == null) { return; }
+        // show songs in playlist
+        Playlists.Show(playlistNameToShow);
+        AnsiConsole.Markup("\nPress any key to continue");
+        Console.ReadKey(true);
+    }
+
+    // List all playlists
+    public static void ListAllPlaylists()
+    {
+        Playlists.List();
+    }
+
+    // Play other playlist
+    public static void PlayOtherPlaylist()
+    {
+        Playlists.ListOnly();
+        AnsiConsole.Markup("\n[bold]Play other playlist[/]");
+        AnsiConsole.Markup("\nEnter playlist name: ");
+        string? playlistNameToPlay = Console.ReadLine();
+        if (playlistNameToPlay == "" || playlistNameToPlay == null) { return; }
+        // play other playlist
+        Playlists.Play(playlistNameToPlay);
+    }
+
+    // Save/replace playlist
+    public static void SaveReplacePlaylist()
+    {
+        AnsiConsole.Markup("\n[bold]Save/Replace playlist[/]");
+        AnsiConsole.Markup("\nEnter playlist name: ");
+        string? playlistNameToSave = Console.ReadLine();
+        if (playlistNameToSave == "" || playlistNameToSave == null) { return; }
+        // save playlist
+        Playlists.Save(playlistNameToSave);
+    }
+
+    // Goto song in playlist
+    public static void GotoSongInPlaylist()
+    {
+        AnsiConsole.Markup("\n[bold]Goto song in playlist[/]");
+        AnsiConsole.Markup("\nEnter song to goto: ");
+        string? songToGoto = Console.ReadLine();
+        if (songToGoto == "" || songToGoto == null) { return; }
+        // songToGoto = GotoSong(songToGoto);
+    }
+
+    // Shuffle playlist (randomize)
+    public static void ShufflePlaylist()
+    {
+        // get the name of the current song
+        string currentSong = Utils.songs[Utils.currentSongIndex];
+        // shuffle playlist
+        Play.Shuffle();
+        // delete duplicates
+        Utils.songs = Utils.songs.Distinct().ToArray();
+
+        Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
+        // set new song from shuffle to the current song
+        Utils.currentSong = Utils.songs[Utils.currentSongIndex];
+        Playlists.AutoSave();
+    }
+
+    // Play single song
+    public static void PlaySingleSong()
+    {
+        AnsiConsole.Markup("\n[bold]Play song(s)[/]");
+        AnsiConsole.Markup("\nSeparate songs with space\n");
+        AnsiConsole.Markup("Enter song(s) to play: ");
+        string[]? songsToPlay = Console.ReadLine()?.Split(" ");
+        if (songsToPlay == null) { return; }
+
+        // if blank "  " remove
+        songsToPlay = songsToPlay.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+        // remove " from start and end of each song
+        for (int i = 0; i < songsToPlay.Length; i++)
+        {
+            songsToPlay[i] = songsToPlay[i].Replace("\"", "");
+            songsToPlay[i] = Absolute.ConvertToAbsolutePath(songsToPlay[i]);
+
+            // if doesn't exist, remove from array
+            if (!isValidSong(songsToPlay[i]))
+            {
+                songsToPlay = songsToPlay.Take(i).Concat(songsToPlay.Skip(i + 1)).ToArray();
+                i--;
+            }
+        }
+        // if no songs left, return
+        if (songsToPlay.Length == 0) { return; }
+
+        Utils.songs = songsToPlay;
+        Utils.currentSongIndex = 0;
+        Utils.currentPlaylist = "";
+        Play.StopSong();
+        Play.PlaySong(Utils.songs, Utils.currentSongIndex);
     }
 
     public static bool isValidSong(string song) {
@@ -322,14 +394,14 @@ static class TUI
 
     static public void DrawHelp() {
         var table = new Table();
-        table.AddColumns("Controls", "Description");
-        table.AddRow("Space", "Play/Pause");
-        table.AddRow("Q", "Quit");
-        table.AddRow("Left", "Rewind 5 seconds");
-        table.AddRow("Right", "Forward 5 seconds");
-        table.AddRow("Up", "Volume up");
-        table.AddRow("Down", "Volume down");
-        table.AddRow("L", "Toggle looping");
+        table.AddColumns("Controls", "Description", "Controls", "Description");
+        table.AddRow("Space", "Play/Pause", "shift + a", "Add song to playlist");
+        table.AddRow("Q", "Quit", "shift + ?", "List all songs in other playlist");
+        table.AddRow("Left", "Rewind 5 seconds", "ctrl + a", "List all playlists");
+        table.AddRow("Right", "Forward 5 seconds", "ctrl + o", "Play other playlist");
+        table.AddRow("Up", "Volume up", "ctrl + s", "Save/Replace playlist");
+        table.AddRow("Down", "Volume down", "shift + s", "Suffle playlist");
+        table.AddRow("L", "Toggle looping", "ctrl + p", "Play song(s)");
         table.AddRow("M", "Toggle mute");
         table.AddRow("S", "Toggle shuffle");
         table.AddRow("Playlist", "");

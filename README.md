@@ -6,6 +6,18 @@
 
 *In this example I first open the PvZ playlist from SoundCloud. Then I delete some songs at the start using the `delete`. Then I save the current playlist to name `plant`. After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.*
 
+## Install/Update
+
+### Install
+
+Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
+
+### Update existing
+
+```bash
+jammer update
+```
+
 ## Usage
 
 ```bash
@@ -53,6 +65,10 @@ jammer playlist list
 
 | key | action |
 |  --------  |  -------  |
+| `h` | show/hide help |
+| `c` | show/hide settings |
+| `f` | show/hide playlist view |
+|    |    |
 | `space` | play/pause |
 | `q` | quit |
 | `→` | forward |
@@ -63,9 +79,6 @@ jammer playlist list
 | `L` | toggle loop |
 | `s` | toggle shuffle |
 | `r` | play in random song |
-| `h` | show/hide help |
-| `c` | show/hide settings |
-| `f` | show/hide playlist view |
 | `n` | next song in playlist |
 | `p` | previous song in playlist |
 | `Delete` | delete current song from playlist |
@@ -74,9 +87,17 @@ jammer playlist list
 | `0` | goto start of the song|
 | `9` | goto end of the song|
 
-### Install
+### Playlist Options
 
-Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
+| key | action |
+| ------ | ----------- |
+| `ctrl + a`| Add song to playlist |
+| `ctrl + d`| Show songs in other playlist |
+| `shift + a`| List all playlists |
+| `ctrl + o`| Play other playlist |
+| `ctrl + s`| Save/replace playlist |
+| `shift + s`| Shuffle playlist |
+| `ctrl + p`| Play song(s) |
 
 ### Example usage
 

@@ -10,8 +10,8 @@ namespace jammer
         {
             if (Console.KeyAvailable)
             {
-                var key = Console.ReadKey(true).Key;
-                switch (key)
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                switch (key.Key)
                 {
                     case ConsoleKey.Spacebar:
                         if (Utils.audioStream == null) {
@@ -66,6 +66,11 @@ namespace jammer
                         state = MainStates.next; // next song
                         break;
                     case ConsoleKey.P:
+                        if (IfHoldingDownCTRL(key))
+                        {
+                            TUI.PlaySingleSong();
+                            break;
+                        }
                         if (Utils.audioStream == null) {
                             Debug.dprint("No Prev");
                             break;
@@ -85,6 +90,16 @@ namespace jammer
                         Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                         break;
                     case ConsoleKey.S: // suffle
+                        if (IfHoldingDownCTRL(key))
+                        {
+                            TUI.SaveReplacePlaylist();
+                            break;
+                        }
+                        if (IfHoldingDownSHIFT(key))
+                        {
+                            TUI.ShufflePlaylist();
+                            break;
+                        }
                         Preferences.isShuffle = !Preferences.isShuffle;
                         break;
                     case ConsoleKey.L: // loop
@@ -143,6 +158,8 @@ namespace jammer
                         TUI.PlaylistInput();
                         break;
                     case ConsoleKey.D1: // set forward seek to 1 second
+                        if (!IfHoldingDownCTRL(key)) break;
+
                         AnsiConsole.Markup("\nEnter forward seconds: ");
                         string? forwardSecondsString = Console.ReadLine();
                         if (int.TryParse(forwardSecondsString, out int forwardSeconds))
@@ -158,6 +175,8 @@ namespace jammer
                         TUI.RehreshCurrentView();
                         break;
                     case ConsoleKey.D2: // set rewind seek to 2 seconds
+                        if (!IfHoldingDownCTRL(key)) break;
+
                         AnsiConsole.Markup("\nEnter rewind seconds: ");
                         string? rewindSecondsString = Console.ReadLine();
                         if (int.TryParse(rewindSecondsString, out int rewindSeconds))
@@ -173,6 +192,7 @@ namespace jammer
                         TUI.RehreshCurrentView();
                         break;
                     case ConsoleKey.D3: // set volume change to 3
+                        if (!IfHoldingDownCTRL(key)) break;
                         AnsiConsole.Markup("\nEnter volume change (%): ");
                         string? volumeChangeString = Console.ReadLine();
                         if (int.TryParse(volumeChangeString, out int volumeChange))
@@ -187,6 +207,8 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.D4: // autosave or not
+                        if (!IfHoldingDownCTRL(key)) break;
+
                         Preferences.isAutoSave = !Preferences.isAutoSave;
                         TUI.RehreshCurrentView();
                         break;
@@ -198,6 +220,33 @@ namespace jammer
                         break;
                     case ConsoleKey.Delete:
                         Play.DeleteSong(Utils.currentSongIndex);
+                        break;
+                    
+                    // Case For A
+                    case ConsoleKey.A:
+                        if (IfHoldingDownCTRL(key))
+                        {
+                            TUI.AddSongToPlaylist();
+                        }
+
+                        if (IfHoldingDownSHIFT(key))
+                        {
+                            TUI.ListAllPlaylists();
+                        }
+
+                        break;
+                    // Case For ?
+                    case ConsoleKey.D:
+                        if (IfHoldingDownCTRL(key))
+                        {
+                            TUI.ShowSongsInPlaylist();
+                        }
+                        break;
+                    case ConsoleKey.O:
+                        if (IfHoldingDownCTRL(key))
+                        {
+                            TUI.PlayOtherPlaylist();
+                        }
                         break;
                 }
 
@@ -211,5 +260,33 @@ namespace jammer
                 Preferences.SaveSettings();
             }
         }
+
+        public static bool IfHoldingDownCTRL(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != ConsoleModifiers.Control)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IfHoldingDownSHIFT(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != ConsoleModifiers.Shift)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IfHoldingDownALT(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != ConsoleModifiers.Alt)
+            {
+                return false;
+            }
+            return true;
+        }
     }
+
 }

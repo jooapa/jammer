@@ -22,6 +22,8 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageReference Include="NVorbis" Version="0.10.5" />
+    <PackageReference Include="SharpHook" Version="5.3.0" />
+    <PackageReference Include="SharpHook.Reactive" Version="5.3.0" />
     <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.12" />
