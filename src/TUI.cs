@@ -423,10 +423,10 @@ static class TUI
 
         table.AddColumns("Settings", "Value", "Change Value");
 
-        table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]1[/] to change");
-        table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]2[/] to change");
-        table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]3[/] to change");
-        table.AddRow("Auto Save", Preferences.isAutoSave + "", "[green]4[/] to toggle");
+        table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]ctrl + 1[/] to change");
+        table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]ctrl + 2[/] to change");
+        table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]ctrl + 3[/] to change");
+        table.AddRow("Auto Save", Preferences.isAutoSave + "", "[green]ctrl + 4[/] to toggle");
 
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
