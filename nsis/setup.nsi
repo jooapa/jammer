@@ -143,7 +143,7 @@ File "uninstall.ps1"
 
 # Create shortcut on DESKTOP
 CreateShortcut "$DESKTOP\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico"
-CreateShortCut "$SENDTO\jammer.lnk" "$INSTDIR\jammer.exe" "" "$INSTDIR\jammer_1024px.ico" 0
+CreateShortCut "$SENDTO\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico" 0
 
 ; Create an uninstaller in the same directory as the installer
 WriteUninstaller "$INSTALL_DIR\Uninstall.exe"
