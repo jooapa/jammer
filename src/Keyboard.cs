@@ -66,7 +66,7 @@ namespace jammer
                         state = MainStates.next; // next song
                         break;
                     case ConsoleKey.P:
-                        if (IfHoldingDownCTRL(key))
+                        if (IfHoldingDownSHIFT(key))
                         {
                             TUI.PlaySingleSong();
                             break;
@@ -114,6 +114,11 @@ namespace jammer
                         Play.ToggleMute();
                         break;
                     case ConsoleKey.F: // show all view
+                        if (IfHoldingDownSHIFT(key))
+                        {
+                            TUI.ListAllPlaylists();
+                            break;
+                        }
                         AnsiConsole.Clear();
                         if (playerView == "default")
                         {
@@ -224,16 +229,10 @@ namespace jammer
                     
                     // Case For A
                     case ConsoleKey.A:
-                        if (IfHoldingDownCTRL(key))
-                        {
-                            TUI.ListAllPlaylists();
-                        }
-
                         if (IfHoldingDownSHIFT(key))
                         {
                             TUI.AddSongToPlaylist();
                         }
-
                         break;
                     // Case For ?
                     case ConsoleKey.D:
@@ -243,7 +242,7 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.O:
-                        if (IfHoldingDownCTRL(key))
+                        if (IfHoldingDownSHIFT(key))
                         {
                             TUI.PlayOtherPlaylist();
                         }

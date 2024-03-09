@@ -91,13 +91,14 @@ jammer playlist list
 
 | key | action |
 | ------ | ----------- |
-| `ctrl + a`| Add song to playlist |
-| `ctrl + d`| Show songs in other playlist |
-| `shift + a`| List all playlists |
-| `ctrl + o`| Play other playlist |
-| `ctrl + s`| Save/replace playlist |
-| `shift + s`| Shuffle playlist |
-| `ctrl + p`| Play song(s) |
+| `shift + A`| Add song to playlist |
+| `shift + D`| Show songs in other playlist |
+| `shift + F`| List all playlists |
+| `shift + O`| Play other playlist |
+| `ctrl + s`| Save playlist |
+| `ctrl + alt + s`| Save as |
+| `alt + s`| Shuffle playlist |
+| `shift + p`| Play song(s) |
 
 ### Example usage
 

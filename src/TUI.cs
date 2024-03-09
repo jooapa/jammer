@@ -432,15 +432,15 @@ static class TUI
 
     static public void DrawHelp() {
         var table = new Table();
-        table.AddColumns("Controls", "Description",      "Controls", "Description");
-        table.AddRow("Space", "Play/Pause",              "shift + a", "Add song to playlist");
-        table.AddRow("Q", "Quit",                        "shift + d", "List all songs in other playlist");
-        table.AddRow("Left", "Rewind 5 seconds",         "ctrl + p", "List all playlists");
-        table.AddRow("Right", "Forward 5 seconds",       "ctrl + o", "Play other playlist");
-        table.AddRow("Up", "Volume up",                  "shift + s", "Save playlist");
-        table.AddRow("Down", "Volume down",              "shift + alt + s", "Save as");
-        table.AddRow("L", "Toggle looping",              "alt + s", "Suffle playlist");
-        table.AddRow("M", "Toggle mute",                 "ctrl + p", "Play song(s)");
+        table.AddColumns("Controls", "Description",      "Mod Controls", "Description");
+        table.AddRow("Space", "Play/Pause",              "[green1]shift[/] + [cyan1]A[/]", "Add song to playlist");
+        table.AddRow("Q", "Quit",                        "[green1]shift[/] + [cyan1]D[/]", "List all songs in other playlist");
+        table.AddRow("Left", "Rewind 5 seconds",         "[green1]shift[/] + [cyan1]F[/]", "List all playlists");
+        table.AddRow("Right", "Forward 5 seconds",       "[green1]shift[/] + [cyan1]O[/]", "Play other playlist");
+        table.AddRow("Up", "Volume up",                  "[green1]shift[/] + [cyan1]S[/]", "Save playlist");
+        table.AddRow("Down", "Volume down",              "[green1]shift[/] + [turquoise2]alt[/] + [cyan1]S[/]", "Save as");
+        table.AddRow("L", "Toggle looping",              "[turquoise2]alt[/] + [cyan1]S[/]", "Suffle playlist");
+        table.AddRow("M", "Toggle mute",                 "[green1]shift[/] + [cyan1]P[/]", "Play song(s)");
         table.AddRow("S", "Toggle shuffle");
         table.AddRow("Playlist", "");
         table.AddRow("P", "Previous song");
