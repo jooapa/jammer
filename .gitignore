@@ -142,3 +142,5 @@ nsis/jammer.exe
 nsis/raylib.dll
 .vscode/launch.json
 .vscode/tasks.json
+
+.vs/

@@ -1,5 +1,6 @@
 using Spectre.Console;
 
+
 namespace jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState
@@ -33,6 +34,8 @@ namespace jammer
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
+        private static bool initWMP = false;
+
         //
         // Run
         //
@@ -126,6 +129,10 @@ namespace jammer
         //
         public static void Loop()
         {
+            if (initWMP == false) {
+                initWMP = true;
+            }
+            
             lastSeconds = -1;
             treshhold = 1;
             // if (Utils.audioStream == null || Utils.currentMusic == null) {
@@ -138,7 +145,6 @@ namespace jammer
             TUI.RehreshCurrentView();
             while (true)
             {
-
                 if (Utils.songs.Length != 0) {
                     // if the first song is "" then there are more songs
                     if (Utils.songs[0] == "" && Utils.songs.Length > 1) {

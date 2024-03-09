@@ -14,41 +14,7 @@ namespace jammer
                 switch (key.Key)
                 {
                     case ConsoleKey.Spacebar:
-                        if (Utils.audioStream == null) {
-                            Debug.dprint("No audio");
-                            break;
-                        }
-                        if (Utils.currentMusic.PlaybackState == PlaybackState.Playing)
-                        {
-                            Play.PauseSong();
-                            state = MainStates.pause;
-                            drawOnce = true;
-                        }
-                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused && Utils.audioStream != null)
-                        {
-                            if (Utils.audioStream.Position == Utils.audioStream.Length)
-                            {
-                                Utils.audioStream.Position = 0;
-                                lastSeconds = 0;
-                                state = MainStates.playing;
-                                Utils.currentMusic.Play();
-                                drawOnce = true;
-                                break;
-                            }
-                            Play.PlaySong();
-                            state = MainStates.playing;
-                            drawOnce = true;
-                        }
-                        else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped && Utils.audioStream != null)
-                        {
-                            state = MainStates.play;
-                            drawOnce = true;
-                        }
-                        else
-                        //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.
-                        {
-                            Play.ResumeSong();
-                        }
+                        PauseSong();
                         break;
                     case ConsoleKey.F12:
                         Console.WriteLine("CurrentState: " + state);
@@ -260,6 +226,45 @@ namespace jammer
             }
         }
 
+        public static void PauseSong()
+        {
+            if (Utils.audioStream == null)
+            {
+                Debug.dprint("No audio");
+                return;
+            }
+            if (Utils.currentMusic.PlaybackState == PlaybackState.Playing)
+            {
+                Play.PauseSong();
+                state = MainStates.pause;
+                drawOnce = true;
+            }
+            else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused && Utils.audioStream != null)
+            {
+                if (Utils.audioStream.Position == Utils.audioStream.Length)
+                {
+                    Utils.audioStream.Position = 0;
+                    lastSeconds = 0;
+                    state = MainStates.playing;
+                    Utils.currentMusic.Play();
+                    drawOnce = true;
+                    return;
+                }
+                Play.PlaySong();
+                state = MainStates.playing;
+                drawOnce = true;
+            }
+            else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped && Utils.audioStream != null)
+            {
+                state = MainStates.play;
+                drawOnce = true;
+            }
+            else
+            //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.
+            {
+                Play.ResumeSong();
+            }
+        }
         public static bool IfHoldingDownCTRL(ConsoleKeyInfo key)
         {
             if (key.Modifiers != ConsoleModifiers.Control)

@@ -7,6 +7,7 @@ namespace jammer
     public class Play
     {
         private static Thread loopThread = new Thread(() => { });
+        public static ManualResetEvent manualEvent = new ManualResetEvent(false);
 
         // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
@@ -130,6 +131,7 @@ namespace jammer
                 Debug.dprint("Error: " + e);
                 return;
             }
+            Utils.currentMusic.Volume = Preferences.volume;
             Debug.dprint("End of PlaySong");
         }
 
@@ -161,9 +163,19 @@ namespace jammer
             Utils.currentMusic.Stop();
         }
 
-        public static void ResetMusic() {
+        public static void ResetMusic()
+        {
             Utils.currentMusic.Stop();
             Utils.currentMusic.Dispose();
+            if (Utils.audioStream != null)
+            {
+                Utils.audioStream.Dispose();
+            }
+
+            if (loopThread.IsAlive) // no more memory leaks
+            {
+                manualEvent.Reset(); // Reset the ManualResetEvent
+            }
         }
         public static void NextSong()
         {
@@ -389,8 +401,15 @@ namespace jammer
             StartLoopThread();
 
             //NOTE(ra) When music is playing code execution stops here
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
-            manualEvent.WaitOne();
+            try
+            {
+                manualEvent.WaitOne();
+            }
+            catch (ThreadInterruptedException ex)
+            {
+                // Handle the interruption gracefully
+                Debug.dprint("Thread was interrupted: " + ex.Message);
+            }
 
             Debug.dprint("End of PlayMediaFoundation");
         }
@@ -407,7 +426,6 @@ namespace jammer
             // start loop thread
             StartLoopThread();
 
-            ManualResetEvent manualEvent = new ManualResetEvent(false);
             manualEvent.WaitOne();
         }
         static void StartLoopThread()
