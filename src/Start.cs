@@ -28,8 +28,8 @@ namespace jammer
         public static MainStates state = MainStates.playing;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
-        private static int consoleWidth = Console.WindowWidth;
-        private static int consoleHeight = Console.WindowHeight;
+        public static int consoleWidth = Console.WindowWidth;
+        public static int consoleHeight = Console.WindowHeight;
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
@@ -64,7 +64,7 @@ namespace jammer
             if (args.Length != 0) {
                 if (args[0] == "playlist") {
                     TUI.ClearScreen();
-                    TUI.PlaylistCMD(args);
+                    TUI.PlaylistCli(args);
                     return;
                 }
                 if (args[0] == "selfdestruct")
@@ -135,7 +135,7 @@ namespace jammer
 
             TUI.ClearScreen();
             drawOnce = true;
-
+            TUI.RehreshCurrentView();
             while (true)
             {
 
@@ -151,8 +151,7 @@ namespace jammer
                 if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
-                    TUI.ClearScreen();
-                    TUI.DrawPlayer();
+                    TUI.RehreshCurrentView();
                 }
 
                 switch (state)

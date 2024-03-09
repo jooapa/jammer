@@ -38,11 +38,10 @@ static class TUI
             }
 
             // render maintable with tables in it
-            mainTable.AddColumns(GetSongWithdots(Utils.currentSong, 90)).Width(100);
-            mainTable.AddRow(songsTable.Centered().Width(100));
+            mainTable.AddColumns(GetSongWithdots(Utils.currentSong, Start.consoleWidth - 8)).Width(Start.consoleWidth);
+            mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
             songsTable.Border = TableBorder.Square;
             mainTable.AddRow(controlsTable.Centered());
-            mainTable.AddRow(UIComponent_Time(timeTable, 75).Centered());
             // mainTable.Width(100);
             var helpTable = new Table();
             helpTable.AddColumn("[red]h[/] for help | [yellow]c[/] for settings | [green]f[/] for playlist");
@@ -50,6 +49,19 @@ static class TUI
             
             mainTable.Border = TableBorder.HeavyEdge;
             mainTable.AddRow(helpTable.Centered());
+
+            if (Start.playerView != "all") {
+                // add \n to the end of the maintable until the end of the console by height
+                int tableRowCount = Start.consoleHeight - 25;
+                if (tableRowCount < 0) {
+                    tableRowCount = 0;
+                }
+
+                for (int i = 0; i < tableRowCount; i++) {
+                    mainTable.AddRow("").Width(Start.consoleWidth);
+                }
+            }
+            mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth-20).Centered()).Width(Start.consoleWidth);
             AnsiConsole.Write(mainTable);            
 
             // var debug = new Table();
@@ -98,18 +110,19 @@ static class TUI
         string prevSong;
         string nextSong;
         string currentSong;
+        int songLength = Start.consoleWidth - 23;
         if (Utils.songs.Length == 0)
         {
             currentSong = "[grey]current  : -[/]";
         }
         else
         {
-            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], 75) + "[/]";
+            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength) + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], 75) + "[/]";
+            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength) + "[/]";
         }
         else
         {
@@ -119,7 +132,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], 75) + "[/]";
+            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength) + "[/]";
         }
         else
         {
@@ -198,13 +211,15 @@ static class TUI
 
     public static void AddSongToPlaylist()
     {
-        AnsiConsole.Markup("\n[bold]Add song to playlist[/]");
-        AnsiConsole.Markup("\nEnter song to add to playlist: ");
-        string? songToAdd = Console.ReadLine();
-        if (songToAdd == "" || songToAdd == null) { return; }
+        string songToAdd = Message.Input("Enter song to add to playlist:", "Add song to playlist");
+        if (songToAdd == "" || songToAdd == null) {
+            Message.Data("Error: Add song to playlist", "no song given", true);
+            return;
+        }
         // remove quotes from songToAdd
         songToAdd = songToAdd.Replace("\"", "");
         if (!isValidSong(songToAdd)) {
+            Message.Data("Error: " + songToAdd, "invalid song: Make sure you typed it correctly", true);
             return;
         }
         songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
@@ -222,30 +237,30 @@ static class TUI
     // Show songs in playlist
     public static void ShowSongsInPlaylist()
     {
-        AnsiConsole.Markup("\n[bold]Show songs in playlist[/]");
-        AnsiConsole.Markup("\nEnter playlist name: ");
-        string? playlistNameToShow = Console.ReadLine();
-        if (playlistNameToShow == "" || playlistNameToShow == null) { return; }
+        string? playlistNameToShow = Message.Input("Enter playlist name:", "Show songs in playlist");
+        if (playlistNameToShow == "" || playlistNameToShow == null) { 
+            Message.Data("Error: Show songs in playlist", "no playlist given", true);
+            return;
+        }
         // show songs in playlist
         Playlists.Show(playlistNameToShow);
-        AnsiConsole.Markup("\nPress any key to continue");
-        Console.ReadKey(true);
     }
 
     // List all playlists
     public static void ListAllPlaylists()
     {
-        Playlists.List();
+        Message.Data(Playlists.GetList(), "All playlists");
     }
 
     // Play other playlist
     public static void PlayOtherPlaylist()
     {
-        Playlists.ListOnly();
-        AnsiConsole.Markup("\n[bold]Play other playlist[/]");
-        AnsiConsole.Markup("\nEnter playlist name: ");
-        string? playlistNameToPlay = Console.ReadLine();
-        if (playlistNameToPlay == "" || playlistNameToPlay == null) { return; }
+        string? playlistNameToPlay = Message.Input("Enter song to add to playlist:", "Add song to playlist");
+        if (playlistNameToPlay == "" || playlistNameToPlay == null) { 
+            Message.Data("Error: Play other playlist", "no playlist given", true);
+            return;
+        }
+
         // play other playlist
         Playlists.Play(playlistNameToPlay);
     }
@@ -253,10 +268,32 @@ static class TUI
     // Save/replace playlist
     public static void SaveReplacePlaylist()
     {
-        AnsiConsole.Markup("\n[bold]Save/Replace playlist[/]");
-        AnsiConsole.Markup("\nEnter playlist name: ");
-        string? playlistNameToSave = Console.ReadLine();
-        if (playlistNameToSave == "" || playlistNameToSave == null) { return; }
+        string playlistNameToSave = Message.Input("Enter playlist name:", "Save/Replace playlist");
+        if (playlistNameToSave == "" || playlistNameToSave == null) {
+            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            return;
+        }
+        // save playlist
+        Playlists.Save(playlistNameToSave);
+    }
+
+    public static void SaveCurrentPlaylist()
+    {
+        if (Utils.currentPlaylist == "") {
+            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            return;
+        }
+        // save playlist
+        Playlists.Save(Utils.currentPlaylist, true);
+    }
+
+    public static void SaveAsPlaylist()
+    {
+        string playlistNameToSave = Message.Input("Enter playlist name:", "Save as playlist");
+        if (playlistNameToSave == "" || playlistNameToSave == null) {
+            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            return;
+        }
         // save playlist
         Playlists.Save(playlistNameToSave);
     }
@@ -264,10 +301,11 @@ static class TUI
     // Goto song in playlist
     public static void GotoSongInPlaylist()
     {
-        AnsiConsole.Markup("\n[bold]Goto song in playlist[/]");
-        AnsiConsole.Markup("\nEnter song to goto: ");
-        string? songToGoto = Console.ReadLine();
-        if (songToGoto == "" || songToGoto == null) { return; }
+        string songToGoto = Message.Input("Enter song to goto:", "Goto song in playlist");
+        if (songToGoto == "" || songToGoto == null) {
+            Message.Data("Error: Goto song in playlist", "no song given", true);
+            return;
+        }
         // songToGoto = GotoSong(songToGoto);
     }
 
@@ -394,15 +432,15 @@ static class TUI
 
     static public void DrawHelp() {
         var table = new Table();
-        table.AddColumns("Controls", "Description", "Controls", "Description");
-        table.AddRow("Space", "Play/Pause", "shift + a", "Add song to playlist");
-        table.AddRow("Q", "Quit", "shift + ?", "List all songs in other playlist");
-        table.AddRow("Left", "Rewind 5 seconds", "ctrl + a", "List all playlists");
-        table.AddRow("Right", "Forward 5 seconds", "ctrl + o", "Play other playlist");
-        table.AddRow("Up", "Volume up", "ctrl + s", "Save/Replace playlist");
-        table.AddRow("Down", "Volume down", "shift + s", "Suffle playlist");
-        table.AddRow("L", "Toggle looping", "ctrl + p", "Play song(s)");
-        table.AddRow("M", "Toggle mute");
+        table.AddColumns("Controls", "Description",      "Controls", "Description");
+        table.AddRow("Space", "Play/Pause",              "shift + a", "Add song to playlist");
+        table.AddRow("Q", "Quit",                        "shift + d", "List all songs in other playlist");
+        table.AddRow("Left", "Rewind 5 seconds",         "ctrl + p", "List all playlists");
+        table.AddRow("Right", "Forward 5 seconds",       "ctrl + o", "Play other playlist");
+        table.AddRow("Up", "Volume up",                  "shift + s", "Save playlist");
+        table.AddRow("Down", "Volume down",              "shift + alt + s", "Save as");
+        table.AddRow("L", "Toggle looping",              "alt + s", "Suffle playlist");
+        table.AddRow("M", "Toggle mute",                 "ctrl + p", "Play song(s)");
         table.AddRow("S", "Toggle shuffle");
         table.AddRow("Playlist", "");
         table.AddRow("P", "Previous song");
@@ -454,7 +492,7 @@ static class TUI
         }
     }
 
-    public static void PlaylistCMD(string[] args){
+    public static void PlaylistCli(string[] args){
         if (args[0] == "playlist")
         {
             if (args.Length < 2)

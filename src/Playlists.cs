@@ -183,8 +183,8 @@ namespace jammer
             else
             {
                 AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
-                Console.ReadLine();
             }
+            Console.ReadLine();
         }
 
         static public void Save(string playlistName, bool force = false)
@@ -230,12 +230,19 @@ namespace jammer
         }
 
         static public void ListOnly() {
-            Console.WriteLine("Listing playlists: ");
+            AnsiConsole.WriteLine("Playlists:");
+            GetList();
+        }
+
+        public static string GetList() {
             string[] playlists = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/");
+            string playlistList = "";
             foreach (string playlist in playlists)
             {
-                AnsiConsole.WriteLine(Path.GetFileNameWithoutExtension(playlist));
+                playlistList += Path.GetFileNameWithoutExtension(playlist) + "\n";
             }
+            playlistList = playlistList.Remove(playlistList.Length - 1);
+            return playlistList;
         }
     }
 }

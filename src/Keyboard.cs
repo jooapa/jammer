@@ -89,13 +89,18 @@ namespace jammer
                     case ConsoleKey.DownArrow: // volume down
                         Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                         break;
-                    case ConsoleKey.S: // suffle
-                        if (IfHoldingDownCTRL(key))
+                    case ConsoleKey.S: // suffle or save
+                        if (IfHoldingDownSHIFTandALT(key))
                         {
-                            TUI.SaveReplacePlaylist();
+                            TUI.SaveAsPlaylist();
                             break;
                         }
                         if (IfHoldingDownSHIFT(key))
+                        {
+                            TUI.SaveCurrentPlaylist();
+                            break;
+                        }
+                        if (IfHoldingDownALT(key))
                         {
                             TUI.ShufflePlaylist();
                             break;
@@ -165,14 +170,12 @@ namespace jammer
                         if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                         {
                             Preferences.forwardSeconds = forwardSeconds;
-                            TUI.RehreshCurrentView();
                         }
                         else
                         {
                             AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
                             Console.ReadKey(true);
                         }
-                        TUI.RehreshCurrentView();
                         break;
                     case ConsoleKey.D2: // set rewind seek to 2 seconds
                         if (!IfHoldingDownCTRL(key)) break;
@@ -182,14 +185,12 @@ namespace jammer
                         if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                         {
                             Preferences.rewindSeconds = rewindSeconds;
-                            TUI.RehreshCurrentView();
                         }
                         else
                         {
                             AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
                             Console.ReadKey(true);
                         }
-                        TUI.RehreshCurrentView();
                         break;
                     case ConsoleKey.D3: // set volume change to 3
                         if (!IfHoldingDownCTRL(key)) break;
@@ -210,7 +211,6 @@ namespace jammer
                         if (!IfHoldingDownCTRL(key)) break;
 
                         Preferences.isAutoSave = !Preferences.isAutoSave;
-                        TUI.RehreshCurrentView();
                         break;
                     case ConsoleKey.Tab:
                         TUI.Help();
@@ -226,12 +226,12 @@ namespace jammer
                     case ConsoleKey.A:
                         if (IfHoldingDownCTRL(key))
                         {
-                            TUI.AddSongToPlaylist();
+                            TUI.ListAllPlaylists();
                         }
 
                         if (IfHoldingDownSHIFT(key))
                         {
-                            TUI.ListAllPlaylists();
+                            TUI.AddSongToPlaylist();
                         }
 
                         break;
@@ -248,15 +248,15 @@ namespace jammer
                             TUI.PlayOtherPlaylist();
                         }
                         break;
+                    // case ConsoleKey.J:
+                    //     Message.Input();
+                    //     break;
+                    // case ConsoleKey.K:
+                    //     Message.Data(Playlists.GetList());
+                    //     break;
                 }
 
-                // clear id not help or settings
-                if (playerView != "help" && playerView != "settings")
-                {
-                    AnsiConsole.Clear();
-                }
-                TUI.DrawPlayer();
-
+                TUI.RehreshCurrentView();
                 Preferences.SaveSettings();
             }
         }
@@ -264,6 +264,25 @@ namespace jammer
         public static bool IfHoldingDownCTRL(ConsoleKeyInfo key)
         {
             if (key.Modifiers != ConsoleModifiers.Control)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IfHoldingDownSHIFTandCTRL(ConsoleKeyInfo key)
+        {
+            // if key.Modifiers has the value of both shift and control
+            if (key.Modifiers != (ConsoleModifiers.Shift | ConsoleModifiers.Control))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IfHoldingDownSHIFTandALT(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != (ConsoleModifiers.Shift | ConsoleModifiers.Alt))
             {
                 return false;
             }
