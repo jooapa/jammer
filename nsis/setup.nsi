@@ -5,7 +5,7 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-!define VERSION "1.2.2"
+!define VERSION "1.2.3"
 
 Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
@@ -20,14 +20,6 @@ PageEx license
     LicenseText "LICENSE"
     LicenseData LICENSE
     LicenseForceSelection checkbox
-PageExEnd
-
-########### COMPONENTS #####################
-PageEx components
-    ComponentText "This is the main program. It contains all necessary components for basic functioning." \
-    #"About" \
-    #"Main program contains all necessary components for basic functioning. \
-    #Additional components contain all extra files, mainly used by the context menu."
 PageExEnd
 
 ############ DIRECTORY ######################
