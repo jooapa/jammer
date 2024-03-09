@@ -95,10 +95,10 @@ jammer playlist list
 | `shift + D`| Show songs in other playlist |
 | `shift + F`| List all playlists |
 | `shift + O`| Play other playlist |
-| `ctrl + s`| Save playlist |
-| `ctrl + alt + s`| Save as |
-| `alt + s`| Shuffle playlist |
-| `shift + p`| Play song(s) |
+| `shift + S`| Save playlist |
+| `shift + alt + S`| Save as |
+| `alt + S`| Shuffle playlist |
+| `shift + P`| Play song(s) |
 
 ### Example usage
 
