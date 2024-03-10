@@ -57,7 +57,7 @@ jammer playlist list
 - **FLAC:** Free Lossless Audio Codec
 - **AAC:** Advanced Audio Coding
 - **WMA:** Windows Media Audio
-- **MP4:** MPEG-4
+- **MP4:** MPEG-4 _(Converts to AAC to the jammer folder)_
 - **JAMMER:** Jammer playlist
 - **FOLDER:** Folder / Directory
 
