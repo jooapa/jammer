@@ -242,6 +242,7 @@ static class TUI
             Message.Data("Error: Show songs in playlist", "no playlist given", true);
             return;
         }
+        AnsiConsole.Clear();
         // show songs in playlist
         Playlists.Show(playlistNameToShow);
     }
@@ -255,7 +256,7 @@ static class TUI
     // Play other playlist
     public static void PlayOtherPlaylist()
     {
-        string? playlistNameToPlay = Message.Input("Enter song to add to playlist:", "Add song to playlist");
+        string? playlistNameToPlay = Message.Input("Enter playlist name:", "Play other playlist");
         if (playlistNameToPlay == "" || playlistNameToPlay == null) { 
             Message.Data("Error: Play other playlist", "no playlist given", true);
             return;
@@ -280,7 +281,7 @@ static class TUI
     public static void SaveCurrentPlaylist()
     {
         if (Utils.currentPlaylist == "") {
-            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            Message.Data("Error: Save playlist", "no playlist given", true);
             return;
         }
         // save playlist
@@ -291,7 +292,7 @@ static class TUI
     {
         string playlistNameToSave = Message.Input("Enter playlist name:", "Save as playlist");
         if (playlistNameToSave == "" || playlistNameToSave == null) {
-            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            Message.Data("Error: Save as playlist", "no playlist given", true);
             return;
         }
         // save playlist
@@ -328,28 +329,18 @@ static class TUI
     // Play single song
     public static void PlaySingleSong()
     {
-        AnsiConsole.Markup("\n[bold]Play song(s)[/]");
-        AnsiConsole.Markup("\nSeparate songs with space\n");
-        AnsiConsole.Markup("Enter song(s) to play: ");
-        string[]? songsToPlay = Console.ReadLine()?.Split(" ");
-        if (songsToPlay == null) { return; }
+        string[]? songsToPlay = Message.Input("Enter song(s) to play:", "Play song(s) | Separate songs with space").Split(" ");
+        
+        if (songsToPlay == null || songsToPlay.Length == 0) {
+            Message.Data("Error: Play song(s)", "no song(s) given", true);
+            return;
+        }
 
         // if blank "  " remove
         songsToPlay = songsToPlay.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
-        // remove " from start and end of each song
-        for (int i = 0; i < songsToPlay.Length; i++)
-        {
-            songsToPlay[i] = songsToPlay[i].Replace("\"", "");
-            songsToPlay[i] = Absolute.ConvertToAbsolutePath(songsToPlay[i]);
-
-            // if doesn't exist, remove from array
-            if (!isValidSong(songsToPlay[i]))
-            {
-                songsToPlay = songsToPlay.Take(i).Concat(songsToPlay.Skip(i + 1)).ToArray();
-                i--;
-            }
-        }
+        songsToPlay = Absolute.Correctify(songsToPlay);
+        
         // if no songs left, return
         if (songsToPlay.Length == 0) { return; }
 

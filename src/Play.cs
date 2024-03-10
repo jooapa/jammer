@@ -131,7 +131,6 @@ namespace jammer
                 Debug.dprint("Error: " + e);
                 return;
             }
-            Utils.currentMusic.Volume = Preferences.volume;
             Debug.dprint("End of PlaySong");
         }
 
@@ -394,6 +393,7 @@ namespace jammer
             using var outputDevice = new WaveOutEvent();
             outputDevice.Init(reader);
             Utils.currentMusic = outputDevice;
+            Utils.currentMusic.Volume = Preferences.volume;
             Utils.audioStream = reader;
             Utils.currentMusic.Play();
 
@@ -420,6 +420,7 @@ namespace jammer
             using var outputDevice = new WaveOutEvent();
             outputDevice.Init(reader);
             Utils.currentMusic = outputDevice;
+            Utils.currentMusic.Volume = Preferences.volume;
             Utils.audioStream = reader;
             Utils.currentMusic.Play();
 

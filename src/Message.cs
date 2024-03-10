@@ -17,7 +17,6 @@ namespace jammer
             AnsiConsole.Write(mainTable);
             AnsiConsole.Cursor.SetPosition(inputSaying.Length + 6, 5);
             string input = Console.ReadLine() ?? string.Empty;
-            AnsiConsole.Clear();
             return input;
         }
 

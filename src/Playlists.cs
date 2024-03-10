@@ -164,7 +164,7 @@ namespace jammer
 
         static public void Show(string playlist)
         {
-            AnsiConsole.MarkupLine("Showing [red]" + playlist + ".jammer[/]");
+            AnsiConsole.MarkupLine("Showing playlist [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
             string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlist;
 
@@ -194,8 +194,7 @@ namespace jammer
             if (File.Exists(playlistPath))
             {
                 if (!force) {
-                    Console.WriteLine("Playlist already exists in " + playlistPath + ". Overwrite? (y/n)");
-                    string? input = Console.ReadLine();
+                    string input = Message.Input("(y/n)", "Playlist already exists in " + playlistPath + ". Overwrite?");
                     // y/n prompt
                     if (input != "y")
                     {

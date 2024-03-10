@@ -202,7 +202,7 @@ namespace jammer
                         break;
                     // Case For ?
                     case ConsoleKey.D:
-                        if (IfHoldingDownCTRL(key))
+                        if (IfHoldingDownSHIFT(key))
                         {
                             TUI.ShowSongsInPlaylist();
                         }
