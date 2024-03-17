@@ -21,6 +21,7 @@ jammer update
 ## Usage
 
 ```bash
+jammer
 jammer [song] ... [folder]
 jammer https://soundcloud.com/username/track-name 
 jammer https://soundcloud.com/username/sets/playlist-name
