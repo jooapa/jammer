@@ -1,4 +1,6 @@
 using Spectre.Console;
+using ManagedBass;
+using System.IO;
 
 
 namespace jammer
@@ -171,6 +173,7 @@ namespace jammer
                             drawOnce = false;
                         }
                         break;
+
                     case MainStates.play:
                         Debug.dprint("Play");
                         if (Utils.songs.Length > 0) {
@@ -183,16 +186,17 @@ namespace jammer
                             state = MainStates.playing;
                         }
                         break;
+
                     case MainStates.playing:
                         // get current time
-                        if (Utils.audioStream != null)
-                        {
-                            Utils.preciseTime = Utils.audioStream.Position;
-                            // get current time in seconds
-                            Utils.MusicTimePlayed = Utils.audioStream.Position / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
-                            // get whole song length in seconds
-                            Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
-                        }
+                        
+                        Utils.preciseTime = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
+                        // get current time in seconds
+                        Utils.MusicTimePlayed = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
+                        // get whole song length in seconds
+                        //Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                        Utils.currentMusicLength = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
+
 
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce) {
@@ -201,52 +205,54 @@ namespace jammer
                         }
 
                         // If the song is finished, play next song
-                        if (treshhold % 100 == 0) {
-                            // If the time hasn't changed, the song is finished
-                            if (lastPlaybackTime == Utils.preciseTime) {
-                                Play.MaybeNextSong();
-                            }
-                        }
-                        else {
-                            // If the time has changed, update the last observed playback time
-                            lastPlaybackTime = Utils.preciseTime;
+                        if (Utils.MusicTimePlayed >= Utils.currentMusicLength - treshhold)
+                        {
+                            Play.NextSong();
+                            TUI.RehreshCurrentView();
                         }
 
                         // every second, update screen
+                        //if (Utils.MusicTimePlayed >= lastSeconds + 1)
                         if (Utils.MusicTimePlayed >= lastSeconds + 1)
                         {
                             lastSeconds = Utils.MusicTimePlayed;
 
                             // this check is to prevent lastSeconds from being greater than the song length,
                             // early bug when AudioStream.position was changed to 0
-                            if (lastSeconds >= Utils.currentMusicLength)
+                            if (lastSeconds > Utils.currentMusicLength)
                             {
                                 lastSeconds = -1;
                                 treshhold += 1;
                             }
-                            TUI.DrawPlayer();
+                            TUI.RehreshCurrentView();
                         }
 
                         CheckKeyboard();
                         break;
+
                     case MainStates.pause:
                         Play.PauseSong();
                         state = MainStates.idle;
                         break;
+
                     case MainStates.stop:
                         Play.StopSong();
                         state = MainStates.idle;
                         break;
+
                     case MainStates.next:
                         Debug.dprint("next");
                         Play.NextSong();
                         TUI.ClearScreen();
                         break;
+
                     case MainStates.previous:
                         Play.PrevSong();
                         TUI.ClearScreen();
                         break;
                 }
+
+                Thread.Sleep(100);
             }
         }
     }

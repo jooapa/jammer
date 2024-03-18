@@ -155,9 +155,16 @@ namespace jammer
             string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
             if (File.Exists(jammerPath))
             {
-                string jsonString = File.ReadAllText(jammerPath);
-                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.changeVolumeBy ?? 0.05f;
+                try {
+                    string jsonString = File.ReadAllText(jammerPath);
+                    Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                    return settings?.changeVolumeBy ?? 0.05f;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return 0.05f;
+                }   
             }
             else
             {

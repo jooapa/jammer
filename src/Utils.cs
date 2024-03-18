@@ -1,14 +1,14 @@
-using NAudio.Wave;
+using ManagedBass;
+
 
 namespace jammer
 {
     public struct Utils
     {
-        public static WaveOutEvent currentMusic = new WaveOutEvent();
-        public static WaveStream? audioStream = null;
+        public static int currentMusic { get; set; }
         public static string[] songs = { "" };
         public static string currentSong = "";
-        public static long currentMusicLength = 0; // length in seconds
+        public static double currentMusicLength = 0; // length in seconds
         public static double MusicTimePlayed = 0; // time played in seconds
         public static double preciseTime = 0;
         public static int currentSongIndex = 0;

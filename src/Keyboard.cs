@@ -1,5 +1,6 @@
-using NAudio.Wave;
+using ManagedBass;
 using Spectre.Console;
+using System.IO;
 
 namespace jammer
 {
@@ -25,20 +26,12 @@ namespace jammer
                         Environment.Exit(0);
                         break;
                     case ConsoleKey.N:
-                        if (Utils.audioStream == null) {
-                            Debug.dprint("No Next");
-                            break;
-                        }
                         state = MainStates.next; // next song
                         break;
                     case ConsoleKey.P:
                         if (IfHoldingDownSHIFT(key))
                         {
                             TUI.PlaySingleSong();
-                            break;
-                        }
-                        if (Utils.audioStream == null) {
-                            Debug.dprint("No Prev");
                             break;
                         }
                         state = MainStates.previous; // previous song
@@ -228,42 +221,10 @@ namespace jammer
 
         public static void PauseSong()
         {
-            if (Utils.audioStream == null)
-            {
-                Debug.dprint("No audio");
-                return;
-            }
-            if (Utils.currentMusic.PlaybackState == PlaybackState.Playing)
-            {
-                Play.PauseSong();
-                state = MainStates.pause;
-                drawOnce = true;
-            }
-            else if (Utils.currentMusic.PlaybackState == PlaybackState.Paused && Utils.audioStream != null)
-            {
-                if (Utils.audioStream.Position == Utils.audioStream.Length)
-                {
-                    Utils.audioStream.Position = 0;
-                    lastSeconds = 0;
-                    state = MainStates.playing;
-                    Utils.currentMusic.Play();
-                    drawOnce = true;
-                    return;
-                }
-                Play.PlaySong();
-                state = MainStates.playing;
-                drawOnce = true;
-            }
-            else if (Utils.currentMusic.PlaybackState == PlaybackState.Stopped && Utils.audioStream != null)
-            {
-                state = MainStates.play;
-                drawOnce = true;
-            }
+            if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Playing)
+                Bass.ChannelPause(Utils.currentMusic);
             else
-            //NOTE(ra) Resumed is not called at all. PlaySong resumes after pause.
-            {
-                Play.ResumeSong();
-            }
+                Bass.ChannelPlay(Utils.currentMusic);
         }
         public static bool IfHoldingDownCTRL(ConsoleKeyInfo key)
         {

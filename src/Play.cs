@@ -1,6 +1,7 @@
-using NAudio.Wave;
-using NAudio.Vorbis;
+using ManagedBass;
 using Spectre.Console;
+using System.IO;
+
 
 namespace jammer
 {
@@ -84,15 +85,10 @@ namespace jammer
                 Debug.dprint("Init audio");
                 string extension = Path.GetExtension(path).ToLower();
 
-                if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".mp4")
+                if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".ogg")
                 {
                     Debug.dprint("Audiofile");
-                    PlayMediaFoundation();
-                }
-                else if (extension == ".ogg")
-                {
-                    Debug.dprint("Oggfile");
-                    PlayOgg();
+                    StartPlaying();
                 }
                 else if (extension == ".jammer") {
                     Debug.dprint("Jammer");
@@ -136,7 +132,7 @@ namespace jammer
 
         public static void PauseSong()
         {
-            Utils.currentMusic.Pause();
+            Bass.ChannelPause(Utils.currentMusic);
         }
 
         public static void ResumeSong()
@@ -145,7 +141,7 @@ namespace jammer
             {
                 return;
             }
-            Utils.currentMusic.Play();
+            Bass.ChannelPause(Utils.currentMusic);
         }
 
         public static void PlaySong()
@@ -154,31 +150,26 @@ namespace jammer
             {
                 return;
             }
-            Utils.currentMusic.Play();
+            Bass.ChannelPause(Utils.currentMusic);
         }
 
         public static void StopSong()
         {
-            Utils.currentMusic.Stop();
+            Bass.ChannelPause(Utils.currentMusic);
         }
 
         public static void ResetMusic()
         {
-            Utils.currentMusic.Stop();
-            Utils.currentMusic.Dispose();
-            if (Utils.audioStream != null)
-            {
-                Utils.audioStream.Dispose();
-            }
+            Bass.StreamFree(Utils.currentMusic);
+            Bass.Free();
 
             if (loopThread.IsAlive) // no more memory leaks
             {
-                manualEvent.Reset(); // Reset the ManualResetEvent
+                loopThread.Abort();
             }
         }
         public static void NextSong()
         {
-            ResetMusic();
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
             playDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
@@ -193,7 +184,6 @@ namespace jammer
 
         public static void RandomSong()
         {
-            ResetMusic();
             int lastSongIndex = Utils.currentSongIndex;
             Random rnd = new Random();
             Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
@@ -207,7 +197,6 @@ namespace jammer
         }
         public static void PrevSong()
         {
-            ResetMusic();
             Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
             if (Utils.currentSongIndex < 0)
             {
@@ -218,13 +207,8 @@ namespace jammer
         }
         public static void SeekSong(float seconds, bool relative)
         {
-            if (Utils.audioStream == null)
-            {
-                return;
-            }
-
             // Calculate the seek position based on the requested seconds
-            long seekPosition = (long)(Utils.audioStream.WaveFormat.AverageBytesPerSecond * Math.Abs(seconds));
+            var pos = Bass.ChannelGetPosition(Utils.currentMusic);
 
             // If seeking relative to the current position, adjust the seek position
             if (relative)
@@ -232,31 +216,33 @@ namespace jammer
                 // if negative, move backwards
                 if (seconds < 0)
                 {
-                    seekPosition = Utils.audioStream.Position - seekPosition;
+                    pos = pos - Bass.ChannelSeconds2Bytes(Utils.currentMusic, 5);
                 }
                 else
                 {
-                    seekPosition = Utils.audioStream.Position + seekPosition;
+                    pos = pos + Bass.ChannelSeconds2Bytes(Utils.currentMusic, 5);
                 }
                 // Clamp again to ensure it's within the valid range
-                seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
+                //pos = Math.Max(0, Math.Min(pos, Utils.audioStream.Length));
                 Start.lastSeconds = 0;
                 Start.drawOnce = true;
             }
             else
             {
                 // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
-                seekPosition = Math.Max(0, Math.Min(seekPosition, Utils.audioStream.Length));
+                pos = Math.Max(0, Math.Min(pos, pos));
             }
 
             // Update the audio stream's position
-            if (Utils.audioStream.Length == seekPosition)
+            //if (Utils.audioStream.Length == pos)
+            if (Bass.ChannelGetPosition(Utils.currentMusic) == Bass.ChannelGetLength(Utils.currentMusic))
             {
                 MaybeNextSong();
                 return;
             }
             try {
-                Utils.audioStream.Position = seekPosition;
+                //Utils.audioStream.Position = seekPosition;
+                Bass.ChannelSetPosition(Utils.currentMusic, pos);
             }
             catch (Exception e) {
                 AnsiConsole.WriteException(e);
@@ -275,7 +261,7 @@ namespace jammer
                 Preferences.volume = 0;
             }
 
-            Utils.currentMusic.Volume = Preferences.volume;
+            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
 
         }
 
@@ -284,31 +270,36 @@ namespace jammer
             if (Preferences.isMuted)
             {
                 Preferences.isMuted = false;
-                Utils.currentMusic.Volume = Preferences.oldVolume;
+                //Utils.currentMusic.Volume = Preferences.oldVolume;
+                Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.oldVolume);
                 Preferences.volume = Preferences.oldVolume;
             }
             else
             {
                 Preferences.isMuted = true;
                 Preferences.oldVolume = Preferences.volume;
-                Utils.currentMusic.Volume = 0;
+                Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, 0);
                 Preferences.volume = 0;
             }
         }
 
         public static void MaybeNextSong()
         {
-            if (Preferences.isLoop && Utils.audioStream != null)
+            Bass.ChannelSetPosition(Utils.currentMusic, 0);
+            Start.drawOnce = true;
+
+            if (Preferences.isLoop)
             {
-                Utils.audioStream.Position = 0;
                 Start.state = MainStates.playing;
             }
-            else if (Utils.songs.Length == 1 && !Preferences.isLoop && Utils.audioStream != null){
-                Utils.audioStream.Position = Utils.audioStream.Length;
+            else if (Utils.songs.Length == 1 && !Preferences.isLoop){
+                //Utils.audioStream.Position = Utils.audioStream.Length;
+                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
                 Start.state = MainStates.pause;
-                Utils.currentMusic.Pause();
+                //Utils.currentMusic.Pause();
+                Bass.ChannelPause(Utils.currentMusic);
                 Start.lastSeconds = 0;
-                Start.drawOnce = true;
+                
             }
             else if (Preferences.isShuffle)
             {
@@ -349,7 +340,7 @@ namespace jammer
             }
             // remove song from current Utils.songs
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
-            ResetMusic();
+            // PREV RESET
             if (index == Utils.songs.Length)
             {
                 if (Utils.songs.Length == 0) {
@@ -373,62 +364,32 @@ namespace jammer
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
         }
 
-        static public void PlayMediaFoundation()
+        static public async Task StartPlaying()
         {
-            Debug.dprint("PlayMediaFoundation");
-
-            using var reader = new MediaFoundationReader(Utils.currentSong);
-            // if file extension is mp4
-            if (Path.GetExtension(Utils.currentSong) == ".mp4")
+            // bass init
+            ResetMusic();
+            if (!Bass.Init())
             {
-                string mp4Path = Path.Combine(
-                    Utils.jammerPath,
-                    Path.GetFileNameWithoutExtension(Utils.currentSong) + ".aac"
-                );
-                AnsiConsole.MarkupLine("[green]Converting mp4 to aac[/]");
-                MediaFoundationEncoder.EncodeToAac(reader, mp4Path);
-                // position reader to start of file
-                reader.Position = 0;
+                Console.WriteLine("Bass init failed");
+                Console.ReadLine();
+                return;
             }
-            using var outputDevice = new WaveOutEvent();
-            outputDevice.Init(reader);
-            Utils.currentMusic = outputDevice;
-            Utils.currentMusic.Volume = Preferences.volume;
-            Utils.audioStream = reader;
-            Utils.currentMusic.Play();
+            Console.WriteLine("Bass init success");
+
+            // create stream
+            Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+
+            // set volume
+            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
+
+            // play stream
+            Bass.ChannelPlay(Utils.currentMusic);
+            TUI.RehreshCurrentView();
 
             // start loop thread
-            StartLoopThread();
-
-            //NOTE(ra) When music is playing code execution stops here
-            try
-            {
-                manualEvent.WaitOne();
-            }
-            catch (ThreadInterruptedException ex)
-            {
-                // Handle the interruption gracefully
-                Debug.dprint("Thread was interrupted: " + ex.Message);
-            }
-
-            Debug.dprint("End of PlayMediaFoundation");
+            await Task.Run(() => StartLoopThread());
         }
 
-        static public void PlayOgg()
-        {
-            using var reader = new VorbisWaveReader(Utils.currentSong);
-            using var outputDevice = new WaveOutEvent();
-            outputDevice.Init(reader);
-            Utils.currentMusic = outputDevice;
-            Utils.currentMusic.Volume = Preferences.volume;
-            Utils.audioStream = reader;
-            Utils.currentMusic.Play();
-
-            // start loop thread
-            StartLoopThread();
-
-            manualEvent.WaitOne();
-        }
         static void StartLoopThread()
         {
             // start loop thread

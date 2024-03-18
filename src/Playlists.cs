@@ -39,7 +39,6 @@ namespace jammer
                 Utils.songs = songs;
 
                 Utils.currentPlaylist = playlistName;
-                jammer.Play.ResetMusic();
                 Start.state = MainStates.playing;
                 jammer.Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             }
