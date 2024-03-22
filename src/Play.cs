@@ -76,6 +76,7 @@ namespace jammer
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
             Playlists.AutoSave();
+
             // Init audio
             try
             {
@@ -179,7 +180,7 @@ namespace jammer
         {
             Start.state = MainStates.playing;
             Start.drawOnce = true;
-            Start.lastSeconds = 0;
+            Start.prevMusicTimePlayed = 0;
         }
 
         public static void RandomSong()
@@ -234,17 +235,23 @@ namespace jammer
 
             // Update the audio stream's position
             //if (Utils.audioStream.Length == pos)
-            if (Bass.ChannelGetPosition(Utils.currentMusic) >= Bass.ChannelGetLength(Utils.currentMusic))
-            {
-                MaybeNextSong();
-            }
-            else if (pos < 0)
+            if (pos < 0)
             {
                 Bass.ChannelSetPosition(Utils.currentMusic, 0);
+            }
+            else if (pos >= Bass.ChannelGetLength(Utils.currentMusic))
+            {
+                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
             }
             else
             {
                 Bass.ChannelSetPosition(Utils.currentMusic, pos);
+            }
+
+            if (Bass.ChannelGetPosition(Utils.currentMusic) >= Bass.ChannelGetLength(Utils.currentMusic))
+            {
+                Message.Data("Song ended by seek", "Playing next song");
+                MaybeNextSong();
             }
             PlayDrawReset();
             return;
@@ -299,8 +306,6 @@ namespace jammer
                 Start.state = MainStates.pause;
                 //Utils.currentMusic.Pause();
                 Bass.ChannelPause(Utils.currentMusic);
-                Start.lastSeconds = 0;
-                
             }
             else if (Preferences.isShuffle)
             {
@@ -383,9 +388,10 @@ namespace jammer
             }
 
             // set volume
-            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
+            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
             // play stream
+            Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
             TUI.RehreshCurrentView();

@@ -64,10 +64,10 @@ static class TUI
             mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth-20).Centered()).Width(Start.consoleWidth);
             AnsiConsole.Write(mainTable);            
 
-            // var debug = new Table();
-            // debug.AddColumn("Debug");
-            // debug.AddRow(Utils.preciseTime + " / " + Utils.audioStream.Length);
-            // AnsiConsole.Write(debug);
+            var debug = new Table();
+            debug.AddColumn("Debug");
+            debug.AddRow("lastseconds" + Start.prevMusicTimePlayed);
+            AnsiConsole.Write(debug);
         }
         catch (Exception e) {
             AnsiConsole.Clear();

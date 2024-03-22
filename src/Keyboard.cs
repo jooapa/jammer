@@ -44,9 +44,11 @@ namespace jammer
                         break;
                     case ConsoleKey.UpArrow: // volume up
                         Play.ModifyVolume(Preferences.GetChangeVolumeBy());
+                        Preferences.SaveSettings();
                         break;
                     case ConsoleKey.DownArrow: // volume down
                         Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
+                        Preferences.SaveSettings();
                         break;
                     case ConsoleKey.S: // suffle or save
                         if (IfHoldingDownSHIFTandALT(key))
@@ -65,12 +67,15 @@ namespace jammer
                             break;
                         }
                         Preferences.isShuffle = !Preferences.isShuffle;
+                        Preferences.SaveSettings();
                         break;
                     case ConsoleKey.L: // loop
                         Preferences.isLoop = !Preferences.isLoop;
+                        Preferences.SaveSettings();
                         break;
                     case ConsoleKey.M: // mute
                         Play.ToggleMute();
+                        Preferences.SaveSettings();
                         break;
                     case ConsoleKey.F: // show all view
                         if (IfHoldingDownSHIFT(key))
@@ -215,7 +220,6 @@ namespace jammer
                 }
 
                 TUI.RehreshCurrentView();
-                //Preferences.SaveSettings();
             }
         }
 

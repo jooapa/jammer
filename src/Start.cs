@@ -36,6 +36,7 @@ namespace jammer
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
         private static bool initWMP = false;
+        public static double prevMusicTimePlayed = 0;
 
         //
         // Run
@@ -234,26 +235,18 @@ namespace jammer
                             drawOnce = false;
                         }
 
-                        // If the song is finished, play next song
-                        if (Utils.MusicTimePlayed >= Utils.currentMusicLength - treshhold)
+                        // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
+                        if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
                         {
-                            Play.NextSong();
                             TUI.RehreshCurrentView();
+                            prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
-                        // every second, update screen
-                        //if (Utils.MusicTimePlayed >= lastSeconds + 1)
-                        if (Utils.MusicTimePlayed >= lastSeconds + 1)
+                        // If the song is finished, play next song
+                        if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped)
                         {
-                            lastSeconds = Utils.MusicTimePlayed;
-
-                            // this check is to prevent lastSeconds from being greater than the song length,
-                            // early bug when AudioStream.position was changed to 0
-                            if (lastSeconds > Utils.currentMusicLength)
-                            {
-                                lastSeconds = -1;
-                                treshhold += 1;
-                            }
+                            Play.MaybeNextSong();
+                            prevMusicTimePlayed = 0;
                             TUI.RehreshCurrentView();
                         }
 
@@ -281,9 +274,12 @@ namespace jammer
                         TUI.ClearScreen();
                         break;
                 }
-
-                //Thread.Sleep(100);
             }
+        }
+
+        public static void SetLastseconds(float s)
+        {
+            lastSeconds = s;
         }
     }
 }

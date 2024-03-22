@@ -6,6 +6,14 @@
 
 *In this example I first open the PvZ playlist from SoundCloud. Then I delete some songs at the start using the `delete`. Then I save the current playlist to name `plant`. After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.*
 
+## Introduction
+
+Jammer is a simple CLI music player that supports playing songs from local files, youtube and soundcloud. For Windows, Linux and OSX.
+The player doesn't stream the songs but downloads them to local storage.
+It can also make these playlists that can be saved and loaded later. 
+The jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.
+It uses bass for playing the songs, SoundCloudExplode, YoutubeExplode for downloading the songs and Spectre.Console for the UI.
+
 ## Install/Update
 
 ### Install
@@ -52,38 +60,34 @@ jammer playlist list
 
 ### Supported formats
 
-- **FLAC:** Free Lossless Audio Codec
-- **AAC:** Advanced Audio Coding
-- **WMA:** Windows Media Audio
 - **JAMMER:** Jammer playlist
-- **FOLDER:** Folder/Directory (to support playing all audio files within a folder)
-- **MP3:** MPEG Audio Layer III
-- **OGG:** Ogg Vorbis
-- **WAV:** Waveform Audio File Format
-- **MP2:** MPEG Audio Layer II
-- **MP1:** MPEG Audio Layer I
-- **AIFF:** Audio Interchange File Format
-- **M2A:** MPEG-1 Audio Layer II
-- **MPA:** MPEG Audio
-- **M1A:** MPEG-1 Audio Layer I
-- **MPG:** MPEG-1 Audio Layer III
-- **MPEG:** Moving Picture Experts Group
-- **AIF:** Audio Interchange File Format
-- **MP3PRO:** MPEG Audio Layer III PRO
-- **BWF:** Broadcast Wave Format
-- **MUS:** Finale Music Score
-- **MOD:** Tracker Module
-- **MO3:** Compressed MOD format
-- **S3M:** ScreamTracker 3 Module
-- **XM:** FastTracker 2 Extended Module
-- **IT:** Impulse Tracker Module
-- **MTM:** MultiTracker Module
-- **UMX:** Unreal Music Package
-- **MDZ:** Compressed MMD3 Module
-- **S3Z:** Compressed S3M Module
-- **ITZ:** Impulse Tracker 2 Module
-- **XMZ:** Compressed XM Module
-- 
+- **FOLDER:** Folder/Directory (support playing all audio files within a folder)
+- **MP3:**
+- **OGG:**
+- **WAV:**
+- **MP2:**
+- **MP1:**
+- **AIFF:**
+- **M2A:**
+- **MPA:**
+- **M1A:**
+- **MPG:**
+- **MPEG:**
+- **AIF:**
+- **MP3PRO:**
+- **BWF:**
+- **MUS:**
+- **MOD:**
+- **MO3:**
+- **S3M:**
+- **XM:**
+- **IT:**
+- **MTM:**
+- **UMX:**
+- **MDZ:**
+- **S3Z:**
+- **ITZ:**
+- **XMZ:**
 
 ### Controls
 
@@ -138,7 +142,7 @@ jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcl
 jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
-You can also use `-d` flag that will add logs to to local jammer folder.
+You can also use `-d` flag that will add logs to current folder.
 
 ### Build/Run yourself
 
@@ -149,6 +153,8 @@ dotnet run -- "path/to/song.mp3" ..
 
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
+
 ```
 
 ```bash
