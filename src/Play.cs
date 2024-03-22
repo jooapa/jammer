@@ -82,7 +82,12 @@ namespace jammer
                 Debug.dprint("Init audio");
                 string extension = Path.GetExtension(path).ToLower();
 
-                if (extension == ".mp3" || extension == ".wav" || extension == ".flac" || extension == ".aac" || extension == ".wma" || extension == ".ogg")
+                if (extension == ".mp3" || extension == ".ogg" || extension == ".wav" || extension == ".mp2" || extension == ".mp1" ||
+                    extension == ".aiff" || extension == ".m2a" || extension == ".mpa" || extension == ".m1a" || extension == ".mpg" ||
+                    extension == ".mpeg" || extension == ".aif" || extension == ".mp3pro" || extension == ".bwf" || extension == ".mus" ||
+                    extension == ".mod" || extension == ".mo3" || extension == ".s3m" || extension == ".xm" || extension == ".it" ||
+                   extension == ".mtm" || extension == ".umx" || extension == ".mdz" || extension == ".s3z" || extension == ".itz" ||
+                    extension == ".xmz")
                 {
                     Debug.dprint("Audiofile");
                     StartPlaying();
@@ -90,6 +95,7 @@ namespace jammer
                 else if (extension == ".jammer") {
                     Debug.dprint("Jammer");
                     // read playlist
+
                     string[] playlist = File.ReadAllLines(path);
                     // add all songs in playlist to Utils.songs
                     foreach (string song in playlist) {
@@ -165,11 +171,11 @@ namespace jammer
         public static void NextSong()
         {
             Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-            playDrawReset();
+            PlayDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
-        private static void playDrawReset() // play, draw, reset lastSeconds
+        private static void PlayDrawReset() // play, draw, reset lastSeconds
         {
             Start.state = MainStates.playing;
             Start.drawOnce = true;
@@ -186,7 +192,7 @@ namespace jammer
             {
                 Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
             }
-            playDrawReset();
+            PlayDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
         public static void PrevSong()
@@ -196,7 +202,7 @@ namespace jammer
             {
                 Utils.currentSongIndex = Utils.songs.Length - 1;
             }
-            playDrawReset();
+            PlayDrawReset();
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
         public static void SeekSong(float seconds, bool relative)
@@ -240,7 +246,7 @@ namespace jammer
             {
                 Bass.ChannelSetPosition(Utils.currentMusic, pos);
             }
-            Start.lastSeconds = 0;
+            PlayDrawReset();
             return;
         }
 
@@ -340,12 +346,14 @@ namespace jammer
             {
                 if (Utils.songs.Length == 0) {
                     Utils.songs = new string[] { "" };
+                    ResetMusic();
+                    Start.state = MainStates.pause;
                 }
                 else {
                     Utils.currentSongIndex = Utils.songs.Length - 1;
+                    Start.state = MainStates.playing;
                 }
             }
-            Start.state = MainStates.playing;
             
             Playlists.AutoSave();
             // if no songs left, add "" to Utils.songs
@@ -363,21 +371,23 @@ namespace jammer
         {
 
             ResetMusic();
- 
+
             // create stream
             Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
             if (Utils.currentMusic == 0)
             {
-                Console.WriteLine("Stream creation failed");
-                return;
+                Message.Data("Deleting song from playlist", "Error: Can't play song");
+
+                DeleteSong(Utils.currentSongIndex);
+                
             }
 
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
 
             // play stream
+            PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
-            Start.lastSeconds = 0;
             TUI.RehreshCurrentView();
         }
     }

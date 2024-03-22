@@ -43,7 +43,7 @@ namespace jammer {
             {
                 var youtube = new YoutubeClient();
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
-                var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+                var streamInfo = streamManifest.GetAudioStreams().TryGetWithHighestBitrate();
                 if (streamInfo != null)
                 {
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
@@ -145,6 +145,12 @@ namespace jammer {
                 {
                     url = url.Substring(0, index);
                 }
+
+                string formattedSCUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("-", " ")
+                                     .Replace("?", " ");
+                return formattedSCUrl + ".mp3";
             }
             else if (URL.IsValidYoutubeSong(url))
             {
@@ -154,12 +160,12 @@ namespace jammer {
                     url = url.Substring(0, index);
                 }
             }
-            string formattedUrl = url.Replace("https://", "")
+            string formattedYTUrl = url.Replace("https://", "")
                                      .Replace("/", " ")
                                      .Replace("-", " ")
                                      .Replace("?", " ");
 
-            return formattedUrl + ".mp3";
+            return formattedYTUrl + ".m2a";
         }
 
         static public bool GetDownloadUrlAsyncIsUrl(string input)

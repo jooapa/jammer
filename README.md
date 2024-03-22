@@ -52,15 +52,38 @@ jammer playlist list
 
 ### Supported formats
 
-- **MP3:** MPEG Audio Layer III
-- **OGG:** Ogg Vorbis
-- **WAV:** Waveform Audio File Format
 - **FLAC:** Free Lossless Audio Codec
 - **AAC:** Advanced Audio Coding
 - **WMA:** Windows Media Audio
-- **MP4:** MPEG-4 _(Converts to AAC to the jammer folder)_
 - **JAMMER:** Jammer playlist
-- **FOLDER:** Folder / Directory
+- **FOLDER:** Folder/Directory (to support playing all audio files within a folder)
+- **MP3:** MPEG Audio Layer III
+- **OGG:** Ogg Vorbis
+- **WAV:** Waveform Audio File Format
+- **MP2:** MPEG Audio Layer II
+- **MP1:** MPEG Audio Layer I
+- **AIFF:** Audio Interchange File Format
+- **M2A:** MPEG-1 Audio Layer II
+- **MPA:** MPEG Audio
+- **M1A:** MPEG-1 Audio Layer I
+- **MPG:** MPEG-1 Audio Layer III
+- **MPEG:** Moving Picture Experts Group
+- **AIF:** Audio Interchange File Format
+- **MP3PRO:** MPEG Audio Layer III PRO
+- **BWF:** Broadcast Wave Format
+- **MUS:** Finale Music Score
+- **MOD:** Tracker Module
+- **MO3:** Compressed MOD format
+- **S3M:** ScreamTracker 3 Module
+- **XM:** FastTracker 2 Extended Module
+- **IT:** Impulse Tracker Module
+- **MTM:** MultiTracker Module
+- **UMX:** Unreal Music Package
+- **MDZ:** Compressed MMD3 Module
+- **S3Z:** Compressed S3M Module
+- **ITZ:** Impulse Tracker 2 Module
+- **XMZ:** Compressed XM Module
+- 
 
 ### Controls
 

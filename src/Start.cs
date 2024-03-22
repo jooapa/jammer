@@ -1,9 +1,5 @@
-using Spectre.Console;
 using ManagedBass;
-using System.IO;
-using System;
-using System.IO.Pipes;
-using System.Threading;
+using Spectre.Console;
 
 
 namespace jammer
@@ -39,17 +35,19 @@ namespace jammer
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
-        private static bool initWMP = false;        
+        private static bool initWMP = false;
 
         //
         // Run
         //
         public static void Run(string[] args)
-        { 
+        {
             Debug.dprint("Run");
 
-            for (int i=0; i < args.Length; i++) {
-                if (args[i] == "-d") {
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i] == "-d")
+                {
                     Utils.isDebug = true;
                     Debug.dprint("\n--- Debug Started ---\n");
                     List<string> argumentsList = new List<string>(args);
@@ -57,20 +55,24 @@ namespace jammer
                     args = argumentsList.ToArray();
                     break;
                 }
-                if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help") {
+                if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help")
+                {
                     TUI.ClearScreen();
                     TUI.Help();
                     return;
                 }
-                if (args[i] == "-v" || args[i] == "--version" || args[i] == "version") {
+                if (args[i] == "-v" || args[i] == "--version" || args[i] == "version")
+                {
                     TUI.ClearScreen();
                     TUI.Version();
                     return;
                 }
             }
 
-            if (args.Length != 0) {
-                if (args[0] == "playlist") {
+            if (args.Length != 0)
+            {
+                if (args[0] == "playlist")
+                {
                     TUI.ClearScreen();
                     TUI.PlaylistCli(args);
                     return;
@@ -88,18 +90,21 @@ namespace jammer
 
                     // Exit the application
                     Environment.Exit(0);
-            }
-                if (args[0] == "start") {
+                }
+                if (args[0] == "start")
+                {
                     // open explorer in jammer folder
                     AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");
                     System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
                     return;
                 }
-                if (args[0] == "update") {
+                if (args[0] == "update")
+                {
                     AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
 
                     string latestVersion = Update.CheckForUpdate(Utils.version);
-                    if (latestVersion != "") {
+                    if (latestVersion != "")
+                    {
                         AnsiConsole.MarkupLine("[green]Update found![/]" + "\n" + "Version: [green]" + latestVersion + "[/]");
                         AnsiConsole.MarkupLine("[green]Downloading...[/]");
                         string downloadPath = Update.UpdateJammer(latestVersion);
@@ -108,7 +113,9 @@ namespace jammer
                         AnsiConsole.MarkupLine("[cyan]Installing...[/]");
                         // Run run_command.bat with argument as the path to the downloaded file
                         System.Diagnostics.Process.Start("run_command.bat", downloadPath);
-                    } else {
+                    }
+                    else
+                    {
                         AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
                     }
                     Environment.Exit(0);
@@ -124,16 +131,21 @@ namespace jammer
                 return;
             }
 
-            if (args.Length != 0 ) {
-                Utils.songs = args;
+            Utils.songs = args;
+            if (Utils.songs.Length != 0)
+            {
                 Utils.songs = Absolute.Correctify(Utils.songs);
+                Utils.currentSong = Utils.songs[0];
+                Utils.currentSongIndex = 0;
+
                 Play.PlaySong(Utils.songs, Utils.currentSongIndex);
-            } else {
-                state = MainStates.idle;
-                Debug.dprint("Start Loop");
-                loopThread = new Thread(Loop);
-                loopThread.Start();
             }
+
+            state = MainStates.idle;
+            Debug.dprint("Start Loop");
+            loopThread = new Thread(Loop);
+            loopThread.Start();
+            
         }
 
         //
@@ -142,10 +154,11 @@ namespace jammer
         public static void Loop()
         {
 
-            if (initWMP == false) {
+            if (initWMP == false)
+            {
                 initWMP = true;
             }
-            
+
             lastSeconds = -1;
             treshhold = 1;
             // if (Utils.audioStream == null || Utils.currentMusic == null) {
@@ -158,16 +171,19 @@ namespace jammer
             TUI.RehreshCurrentView();
             while (true)
             {
-                if (Utils.songs.Length != 0) {
+                if (Utils.songs.Length != 0)
+                {
                     // if the first song is "" then there are more songs
-                    if (Utils.songs[0] == "" && Utils.songs.Length > 1) {
+                    if (Utils.songs[0] == "" && Utils.songs.Length > 1)
+                    {
                         state = MainStates.play;
                         Play.DeleteSong(0);
                         Play.PlaySong();
                     }
                 }
 
-                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight) {
+                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
+                {
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
                     TUI.RehreshCurrentView();
@@ -179,7 +195,8 @@ namespace jammer
                         TUI.ClearScreen();
                         CheckKeyboard();
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
-                        if (drawOnce) {
+                        if (drawOnce)
+                        {
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
@@ -187,7 +204,8 @@ namespace jammer
 
                     case MainStates.play:
                         Debug.dprint("Play");
-                        if (Utils.songs.Length > 0) {
+                        if (Utils.songs.Length > 0)
+                        {
                             Debug.dprint("Play - len");
                             Play.PlaySong();
                             TUI.ClearScreen();
@@ -200,7 +218,7 @@ namespace jammer
 
                     case MainStates.playing:
                         // get current time
-                        
+
                         Utils.preciseTime = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
                         // get current time in seconds
                         Utils.MusicTimePlayed = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
@@ -210,7 +228,8 @@ namespace jammer
 
 
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
-                        if (drawOnce) {
+                        if (drawOnce)
+                        {
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
