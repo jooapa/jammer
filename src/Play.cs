@@ -7,9 +7,6 @@ namespace jammer
 {
     public class Play
     {
-        private static Thread loopThread = new Thread(() => { });
-        public static ManualResetEvent manualEvent = new ManualResetEvent(false);
-
         // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
         {
@@ -160,12 +157,9 @@ namespace jammer
 
         public static void ResetMusic()
         {
-            Bass.StreamFree(Utils.currentMusic);
-            Bass.Free();
-
-            if (loopThread.IsAlive) // no more memory leaks
+            if (Utils.currentMusic != 0)
             {
-                loopThread.Abort();
+                Bass.StreamFree(Utils.currentMusic);    
             }
         }
         public static void NextSong()
@@ -224,7 +218,6 @@ namespace jammer
                 }
                 // Clamp again to ensure it's within the valid range
                 //pos = Math.Max(0, Math.Min(pos, Utils.audioStream.Length));
-                Start.lastSeconds = 0;
                 Start.drawOnce = true;
             }
             else
@@ -235,18 +228,20 @@ namespace jammer
 
             // Update the audio stream's position
             //if (Utils.audioStream.Length == pos)
-            if (Bass.ChannelGetPosition(Utils.currentMusic) == Bass.ChannelGetLength(Utils.currentMusic))
+            if (Bass.ChannelGetPosition(Utils.currentMusic) >= Bass.ChannelGetLength(Utils.currentMusic))
             {
                 MaybeNextSong();
-                return;
             }
-            try {
-                //Utils.audioStream.Position = seekPosition;
+            else if (pos < 0)
+            {
+                Bass.ChannelSetPosition(Utils.currentMusic, 0);
+            }
+            else
+            {
                 Bass.ChannelSetPosition(Utils.currentMusic, pos);
             }
-            catch (Exception e) {
-                AnsiConsole.WriteException(e);
-            }
+            Start.lastSeconds = 0;
+            return;
         }
 
         public static void ModifyVolume(float volume)
@@ -364,38 +359,26 @@ namespace jammer
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
         }
 
-        static public async Task StartPlaying()
+        static public void StartPlaying()
         {
-            // bass init
-            ResetMusic();
-            if (!Bass.Init())
-            {
-                Console.WriteLine("Bass init failed");
-                Console.ReadLine();
-                return;
-            }
-            Console.WriteLine("Bass init success");
 
+            ResetMusic();
+ 
             // create stream
             Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+            if (Utils.currentMusic == 0)
+            {
+                Console.WriteLine("Stream creation failed");
+                return;
+            }
 
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
 
             // play stream
             Bass.ChannelPlay(Utils.currentMusic);
+            Start.lastSeconds = 0;
             TUI.RehreshCurrentView();
-
-            // start loop thread
-            await Task.Run(() => StartLoopThread());
-        }
-
-        static void StartLoopThread()
-        {
-            // start loop thread
-            loopThread = new Thread(Start.Loop);
-            loopThread.Start();
         }
     }
-
 }

@@ -7,6 +7,7 @@ SET "targetFolder=nsis"
 @REM COPY jammer.exe
 COPY /B /Y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
 COPY /Y LICENSE %targetFolder%
+COPY /Y "%sourceFolder%\bass.dll" %targetFolder%
 
 makensis %targetFolder%\setup.nsi  
 

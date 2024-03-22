@@ -215,7 +215,7 @@ namespace jammer
                 }
 
                 TUI.RehreshCurrentView();
-                Preferences.SaveSettings();
+                //Preferences.SaveSettings();
             }
         }
 

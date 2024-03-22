@@ -1,6 +1,9 @@
 using Spectre.Console;
 using ManagedBass;
 using System.IO;
+using System;
+using System.IO.Pipes;
+using System.Threading;
 
 
 namespace jammer
@@ -36,13 +39,13 @@ namespace jammer
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
-        private static bool initWMP = false;
+        private static bool initWMP = false;        
 
         //
         // Run
         //
         public static void Run(string[] args)
-        {
+        { 
             Debug.dprint("Run");
 
             for (int i=0; i < args.Length; i++) {
@@ -114,6 +117,13 @@ namespace jammer
 
             Preferences.CheckJammerFolderExists();
 
+            if (!Bass.Init())
+            {
+                Console.WriteLine("Bass init failed");
+                Console.ReadLine();
+                return;
+            }
+
             if (args.Length != 0 ) {
                 Utils.songs = args;
                 Utils.songs = Absolute.Correctify(Utils.songs);
@@ -131,6 +141,7 @@ namespace jammer
         //
         public static void Loop()
         {
+
             if (initWMP == false) {
                 initWMP = true;
             }
@@ -252,7 +263,7 @@ namespace jammer
                         break;
                 }
 
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
             }
         }
     }

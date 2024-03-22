@@ -85,6 +85,8 @@ File "setup.ps1"
 File "uninstall.ps1"
 File "run_command.bat"
 File "open_with_jammer.cmd"
+File "LICENSE"
+File "bass.dll"
 
 SectionEnd
 
@@ -165,6 +167,7 @@ Delete "$INSTDIR\run_command.bat"
 Delete "$INSTDIR\open_with_jammer.cmd"
 Delete "$DESKTOP\jammer.lnk"
 Delete "$SENDTO\jammer.lnk"
+Delete "$INSTDIR\bass.dll"
 
 ; Remove the installation directory if it still exists
 RMDir /r $INSTDIR

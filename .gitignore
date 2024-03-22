@@ -144,3 +144,5 @@ nsis/raylib.dll
 .vscode/tasks.json
 
 .vs/
+
+nsis/bass.dll
