@@ -243,7 +243,7 @@ namespace jammer
                         }
 
                         // If the song is finished, play next song
-                        if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped)
+                        if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
                             Play.MaybeNextSong();
                             prevMusicTimePlayed = 0;

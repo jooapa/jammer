@@ -16,6 +16,7 @@ namespace jammer
                 {
                     case ConsoleKey.Spacebar:
                         PauseSong();
+                        Play.PlayDrawReset();
                         break;
                     case ConsoleKey.F12:
                         Console.WriteLine("CurrentState: " + state);

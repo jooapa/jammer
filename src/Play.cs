@@ -176,7 +176,7 @@ namespace jammer
             PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
-        private static void PlayDrawReset() // play, draw, reset lastSeconds
+        public static void PlayDrawReset() // play, draw, reset lastSeconds
         {
             Start.state = MainStates.playing;
             Start.drawOnce = true;
@@ -250,7 +250,6 @@ namespace jammer
 
             if (Bass.ChannelGetPosition(Utils.currentMusic) >= Bass.ChannelGetLength(Utils.currentMusic))
             {
-                Message.Data("Song ended by seek", "Playing next song");
                 MaybeNextSong();
             }
             PlayDrawReset();
@@ -293,12 +292,12 @@ namespace jammer
 
         public static void MaybeNextSong()
         {
-            Bass.ChannelSetPosition(Utils.currentMusic, 0);
             Start.drawOnce = true;
-
+            
             if (Preferences.isLoop)
             {
-                Start.state = MainStates.playing;
+                Bass.ChannelSetPosition(Utils.currentMusic, 0);
+                Bass.ChannelPlay(Utils.currentMusic);
             }
             else if (Utils.songs.Length == 1 && !Preferences.isLoop){
                 //Utils.audioStream.Position = Utils.audioStream.Length;
@@ -331,6 +330,12 @@ namespace jammer
             // add song to current Utils.songs
             Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
             Utils.songs[Utils.songs.Length - 1] = song;
+
+            if (Utils.songs.Length == 1)
+            {
+                Utils.currentSongIndex = 0;
+                PlaySong(Utils.songs, Utils.currentSongIndex);
+            }
         }
         public static void DeleteSong(int index)
         {

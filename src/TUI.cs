@@ -362,11 +362,12 @@ static class TUI
 
     // "Components" of the TUI
     static public void UIComponent_Controls(Table table) {
+        table.AddColumn("State");
         table.AddColumn("Looping");
         table.AddColumn("Suffle");
         table.AddColumn("Volume");
         string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
-        table.AddRow(Preferences.isLoop ? "[green]on[/]" : "[red]off[/]", Preferences.isShuffle ? "[green]on[/]" : "[red]off[/]", volume);
+        table.AddRow(Start.state.ToString(), Preferences.isLoop ? "[green]on[/]" : "[red]off[/]", Preferences.isShuffle ? "[green]on[/]" : "[red]off[/]", volume);
     }
 
     static public void UIComponent_Songs(Table table) {
