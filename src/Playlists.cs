@@ -40,7 +40,10 @@ namespace jammer
 
                 Utils.currentPlaylist = playlistName;
                 Start.state = MainStates.playing;
-                jammer.Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                
+               
+                // jammer.Play.PlaySong();
+                Console.WriteLine("Playing " + songs[0]);
             }
             else
             {

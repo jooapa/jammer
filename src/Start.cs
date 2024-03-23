@@ -1,6 +1,7 @@
 using ManagedBass;
 using Spectre.Console;
-
+using System;
+using System.Runtime.InteropServices;
 
 namespace jammer
 {
@@ -70,15 +71,15 @@ namespace jammer
                 }
             }
 
-            if (args.Length != 0)
+            Utils.songs = args;
+            if (Utils.songs.Length != 0)
             {
-                if (args[0] == "playlist")
+                if (Utils.songs[0] == "playlist")
                 {
                     TUI.ClearScreen();
-                    TUI.PlaylistCli(args);
-                    return;
+                    TUI.PlaylistCli(Utils.songs);
                 }
-                if (args[0] == "selfdestruct")
+                if (Utils.songs[0] == "selfdestruct")
                 {
                     AnsiConsole.MarkupLine("[red]Selfdestructing Jammer...[/]");
 
@@ -92,15 +93,29 @@ namespace jammer
                     // Exit the application
                     Environment.Exit(0);
                 }
-                if (args[0] == "start")
+                if (Utils.songs[0] == "start")
                 {
                     // open explorer in jammer folder
                     AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");
-                    System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
+                    // if windows
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
+                    }
+                    // if linux
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        System.Diagnostics.Process.Start("xdg-open", Utils.jammerPath);
+                    }
                     return;
                 }
-                if (args[0] == "update")
+                if (Utils.songs[0] == "update")
                 {
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        AnsiConsole.MarkupLine("[red]Run the update command[/]");
+                        return;
+                    }
                     AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
 
                     string latestVersion = Update.CheckForUpdate(Utils.version);
@@ -132,7 +147,6 @@ namespace jammer
                 return;
             }
 
-            Utils.songs = args;
             if (Utils.songs.Length != 0)
             {
                 Utils.songs = Absolute.Correctify(Utils.songs);

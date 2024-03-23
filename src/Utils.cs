@@ -21,6 +21,6 @@ namespace jammer
         public static string jammerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "jammer");
         public static bool isDebug = false;
         public static string currentPlaylist = "";
-        public static string version = "2.0.0";
+        public static string version = "2.0.1";
     }
 }

@@ -43,7 +43,7 @@ namespace jammer {
             {
                 var youtube = new YoutubeClient();
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
-                var streamInfo = streamManifest.GetAudioStreams().TryGetWithHighestBitrate();
+                var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
                 if (streamInfo != null)
                 {
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);

@@ -8,10 +8,10 @@
 
 ## Introduction
 
-Jammer is a simple CLI music player that supports playing songs from local files, youtube and soundcloud. For Windows, Linux and OSX.
-The player doesn't stream the songs but downloads them to local storage.
-It can also make these playlists that can be saved and loaded later. 
-The jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.
+Jammer is a simple CLI music player that supports playing songs from local files, youtube and soundcloud. For Windows, Linux and OSX.<br>
+The player doesn't stream the songs but downloads them to local storage.<br>
+It can also make these playlists that can be saved and loaded later.<br>
+The jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.<br>
 It uses bass for playing the songs, SoundCloudExplode, YoutubeExplode for downloading the songs and Spectre.Console for the UI.
 
 ## Install/Update
@@ -46,7 +46,7 @@ jammer --version      show version
 
 ```
 
-_when using soundcloud or youtube links dont forget to use `https://` at the start._
+*when using soundcloud or youtube links dont forget to use `https://` at the start.*
 
 ```bash
 jammer playlist play <name>
@@ -60,34 +60,34 @@ jammer playlist list
 
 ### Supported formats
 
-- **JAMMER:** Jammer playlist
-- **FOLDER:** Folder/Directory (support playing all audio files within a folder)
-- **MP3:**
-- **OGG:**
-- **WAV:**
-- **MP2:**
-- **MP1:**
-- **AIFF:**
-- **M2A:**
-- **MPA:**
-- **M1A:**
-- **MPG:**
-- **MPEG:**
-- **AIF:**
-- **MP3PRO:**
-- **BWF:**
-- **MUS:**
-- **MOD:**
-- **MO3:**
-- **S3M:**
-- **XM:**
-- **IT:**
-- **MTM:**
-- **UMX:**
-- **MDZ:**
-- **S3Z:**
-- **ITZ:**
-- **XMZ:**
+- **JAMMER** Jammer playlist
+- **FOLDER** Folder/Directory (support playing all audio files within a folder)
+- **MP3**
+- **OGG**
+- **WAV**
+- **MP2**
+- **MP1**
+- **AIFF**
+- **M2A**
+- **MPA**
+- **M1A**
+- **MPG**
+- **MPEG**
+- **AIF**
+- **MP3PRO**
+- **BWF**
+- **MUS**
+- **MOD**
+- **MO3**
+- **S3M**
+- **XM**
+- **IT**
+- **MTM**
+- **UMX**
+- **MDZ**
+- **S3Z**
+- **ITZ**
+- **XMZ**
 
 ### Controls
 
@@ -145,6 +145,8 @@ jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 You can also use `-d` flag that will add logs to current folder.
 
 ### Build/Run yourself
+
+When running the app you need to have the right bass library in the same folder as the executable. The libary is included in the libs folder. You can also download the library from [un4seen](http://www.un4seen.com/).
 
 ```bash
 
