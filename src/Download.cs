@@ -29,8 +29,7 @@ namespace jammer {
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "jammer",
+                Utils.jammerPath,
                 formattedUrl
             );
 
@@ -53,7 +52,10 @@ namespace jammer {
                     Console.WriteLine("This video has no audio streams");
                 }
 
-                songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + formattedUrl;
+                songPath = Path.Combine(
+                    Utils.jammerPath,
+                    formattedUrl
+                );
                 Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
             }
             catch (Exception ex)
@@ -68,8 +70,7 @@ namespace jammer {
             string formattedUrl = FormatUrlForFilename(url);
             string oldUrl = url;
             songPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "jammer",
+                Utils.jammerPath,
                 formattedUrl
             );
 
@@ -82,7 +83,10 @@ namespace jammer {
                 var track = await soundcloud.Tracks.GetAsync(url);
                 if (track != null) {
                     var trackName = formattedUrl;
-                    songPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer\\" + trackName;
+                    songPath = Path.Combine(
+                        Utils.jammerPath,
+                        formattedUrl
+                    );
 
                     await soundcloud.DownloadAsync(track, songPath);
                 } else {

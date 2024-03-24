@@ -8,7 +8,12 @@ namespace jammer
         {
             Console.WriteLine("Creating playlist: " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
+            string playlistPath = Path.Combine(
+                Utils.jammerPath,
+                "playlists",
+                playlistName + ".jammer"
+            );
+
             if (File.Exists(playlistPath))
             {
                 Console.WriteLine("Playlist already exists in " + playlistPath + ". Overwrite? (y/n)");
@@ -30,7 +35,11 @@ namespace jammer
         {
             AnsiConsole.WriteLine("Starting up " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
+            string playlistPath = Path.Combine(
+                Utils.jammerPath,
+                "playlists",
+                playlistName + ".jammer"
+            );
             if (File.Exists(playlistPath))
             {
                 string[] songs = File.ReadAllLines(playlistPath);
@@ -56,7 +65,11 @@ namespace jammer
         {
             Console.WriteLine("Deleting " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
+            string playlistPath = Path.Combine(
+                Utils.jammerPath,
+                "playlists",
+                playlistName + ".jammer"
+            );
 
             if (File.Exists(playlistPath))
             {
@@ -72,8 +85,7 @@ namespace jammer
         {
             string playlistName = args[2];
             string playlistPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "jammer",
+                Utils.jammerPath,
                 "playlists",
                 playlistName + ".jammer"
             );
@@ -119,8 +131,7 @@ namespace jammer
         {
             string playlistName = args[2];
             string playlistPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "jammer",
+                Utils.jammerPath,
                 "playlists",
                 playlistName + ".jammer"
             );
@@ -168,7 +179,11 @@ namespace jammer
         {
             AnsiConsole.MarkupLine("Showing playlist [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlist;
+            string playlistPath = Path.Combine(
+                Utils.jammerPath,
+                "playlists",
+                playlist
+            );
 
             if (File.Exists(playlistPath))
             {
@@ -191,7 +206,11 @@ namespace jammer
 
         static public void Save(string playlistName, bool force = false)
         {
-            string playlistPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/" + playlistName + ".jammer";
+            string playlistPath = Path.Combine(
+                Utils.jammerPath,
+                "playlists",
+                playlistName + ".jammer"
+            );
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))
             {
@@ -236,7 +255,7 @@ namespace jammer
         }
 
         public static string GetList() {
-            string[] playlists = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/playlists/");
+            string[] playlists = Directory.GetFiles(Utils.jammerPath + "/playlists/");
             string playlistList = "";
             foreach (string playlist in playlists)
             {

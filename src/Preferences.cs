@@ -18,11 +18,12 @@ namespace jammer
 
         static public void CheckJammerFolderExists()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer";
+            string jammerPath = Path.Combine(Utils.jammerPath);
+
             if (!Directory.Exists(jammerPath))
             {
                 Directory.CreateDirectory(jammerPath);
-                Directory.CreateDirectory(jammerPath + "/playlists");
+                Directory.CreateDirectory(Path.Combine(jammerPath, "playlists"));
             }
 
             // check if settings.json exists but the file is empty, if so, delete it
@@ -38,7 +39,7 @@ namespace jammer
 
         static public void SaveSettings()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             // wirte hello world to a file
             Settings settings = new Settings();
             settings.IsLoop = isLoop;
@@ -62,7 +63,7 @@ namespace jammer
 
         static public bool GetIsLoop()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -77,7 +78,7 @@ namespace jammer
 
         static public float GetVolume()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -92,7 +93,7 @@ namespace jammer
 
         static public bool GetIsMuted()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -107,7 +108,7 @@ namespace jammer
 
         static public float GetOldVolume()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -122,7 +123,7 @@ namespace jammer
 
         static public int GetForwardSeconds()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -137,7 +138,7 @@ namespace jammer
 
         static public int GetRewindSeconds()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -152,7 +153,7 @@ namespace jammer
 
         static public float GetChangeVolumeBy()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 try {
@@ -174,7 +175,7 @@ namespace jammer
 
         static public bool GetIsShuffle()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -189,7 +190,7 @@ namespace jammer
 
         static public bool GetIsAutoSave()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/jammer/settings.json";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             if (File.Exists(jammerPath))
             {
                 string jsonString = File.ReadAllText(jammerPath);
@@ -204,7 +205,7 @@ namespace jammer
 
         static public void OpenJammerFolder()
         {
-            string jammerPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\jammer";
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
             // start file managert in the given operating system
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
