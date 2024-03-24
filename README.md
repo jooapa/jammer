@@ -1,4 +1,4 @@
-# jammer - Play songs from cli with youtube and soundcloud support
+# Jammer - Play songs from cli with youtube and soundcloud support
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
 
@@ -8,11 +8,11 @@
 
 ## Introduction
 
-Jammer is a simple CLI music player that supports playing songs from local files, youtube and soundcloud. For Windows, Linux and OSX.<br>
-The player doesn't stream the songs but downloads them to local storage.<br>
-It can also make these playlists that can be saved and loaded later.<br>
-The jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.<br>
-It uses bass for playing the songs, SoundCloudExplode, YoutubeExplode for downloading the songs and Spectre.Console for the UI.
+- Jammer is a simple CLI music player that supports playing songs from local files, youtube and soundcloud. For `Windows`, `Linux` and `OSX`.
+- The player doesn't stream the songs but downloads them to local storage.
+- It can also make these playlists that can be saved and loaded later.
+- The jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.
+- It uses [Bass](https://www.un4seen.com/) for playing the songs, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Install/Update
 
@@ -43,10 +43,9 @@ jammer start          opens jammer folder
 jammer --help         show help
 jammer -d             debug mode
 jammer --version      show version
-
 ```
 
-*when using soundcloud or youtube links dont forget to use `https://` at the start.*
+*when using soundcloud or youtube links dont forget to use **`https://`** at the start.*
 
 ```bash
 jammer playlist play <name>
@@ -60,36 +59,14 @@ jammer playlist list
 
 ### Supported formats
 
+Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav***, ***.mp2***, ***.mp1***, ***.aiff***, ***.m2a***, ***.mpa***, ***.m1a***, ***.mpg***, ***.mpeg***, ***.aif***, ***.mp3pro***, ***.bwf***, ***.mus***, ***.mod***, ***.mo3***, ***.s3m***, ***.xm***, ***.it***, ***.mtm***, ***.umx***, ***.mdz***, ***.s3z***, ***.itz***, ***.xmz***
+
 - **JAMMER** Jammer playlist
 - **FOLDER** Folder/Directory (support playing all audio files within a folder)
-- **MP3**
-- **OGG**
-- **WAV**
-- **MP2**
-- **MP1**
-- **AIFF**
-- **M2A**
-- **MPA**
-- **M1A**
-- **MPG**
-- **MPEG**
-- **AIF**
-- **MP3PRO**
-- **BWF**
-- **MUS**
-- **MOD**
-- **MO3**
-- **S3M**
-- **XM**
-- **IT**
-- **MTM**
-- **UMX**
-- **MDZ**
-- **S3Z**
-- **ITZ**
-- **XMZ**
+- **YOUTUBE** Youtube video
+- **SOUNDCLOUD** Soundcloud song/playlist
 
-### Controls
+### Player Controls
 
 | key | action |
 |  --------  |  -------  |
@@ -115,7 +92,7 @@ jammer playlist list
 | `0` | goto start of the song|
 | `9` | goto end of the song|
 
-### Playlist Options
+### Playlist Controls
 
 | key | action |
 | ------ | ----------- |
@@ -144,20 +121,34 @@ jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 
 You can also use `-d` flag that will add logs to current folder.
 
-### Build/Run yourself
+#### Random info
 
-When running the app you need to have the right bass library in the same folder as the executable. The libary is included in the libs folder. You can also download the library from [un4seen](http://www.un4seen.com/).
+You can also stack multiple jammer playlists inside another jammer playlists.
+
+### Build / Run yourself
+
+When running the app you need to have the right **bass library** in the **same folder** as the **executable**. The libary is **included** in the **libs folder**. You can also download the library from [un4seen](http://www.un4seen.com/).
 
 ```bash
 
 dotnet run -- "path/to/song.mp3" ..
 ```
 
+#### Build
+
+##### Windows
+
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
-
 ```
+
+##### Linux
+
+```bash
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
+```
+
+##### Build script for NSIS installer
 
 ```bash
 build.bat
@@ -170,3 +161,17 @@ python change_version.py [version]
 ```
 
 ![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
+
+### Todo bug fixes
+
+[ ] When playing song, and opening a new playlist, the song doesn't change
+[ ] Pressing  `0`, doesn't do anything
+[ ] Download bar
+[ ] Fix playlist cmd
+[ ] Fix time bar not going to new line when 0:-01
+
+### Incoming Features
+
+[ ] Add more audio formats
+[ ] Maybe use curses for UI
+[ ] Linux AppImage
