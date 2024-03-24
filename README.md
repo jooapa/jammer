@@ -4,13 +4,13 @@
 
 <br>
 
-*In this example I first open the PvZ playlist from SoundCloud. Then I delete some songs at the start using the `delete`. Then I save the current playlist to name `plant`. After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.* (**This is old, now you would press `shift + O` and type the name of the playlist.**)
+*In this example I first open the PvZ playlist from SoundCloud. Then I delete some songs at the start, by pressing the `delete` key. ~~Then I save the current playlist to name `plant`~~ (**This is old, now you would press `shift + alt + S` and type the name of the playlist.**). After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.*
 
 ## Introduction
 
 Tired of opening up a browser or app to play music, and even then you can't play local files or the songs are in multiple places. Jammer is a simple CLI music player that supports playing songs from **local files**, **Youtube** and **Soundcloud**. For **`Windows`**, *`Linux`*.
 
-Jammer is made for adding songs to single or multiple playlists for ease of use.
+**Jammer shines it best when using it as a playlist. That's why I created it, for the playlist feature across different platforms**
 
 - The player doesn't stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.
