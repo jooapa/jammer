@@ -168,7 +168,7 @@ python change_version.py [version]
 
 [x] When playing song, and opening a new playlist, the song doesn't change
 [x] Pressing `0`, doesn't do anything
-[ ] Download bar
+[x] Download bar
 [ ] Fix playlist cmd
 [ ] Fix time bar not going to new line when 0:-01
 
