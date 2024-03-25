@@ -38,5 +38,6 @@ namespace jammer
             AnsiConsole.Write(mainTable);
             Console.ReadLine();
         }
+        
     }
 }

@@ -2,6 +2,8 @@ using SoundCloudExplode;
 using System.Text.RegularExpressions;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
+using Spectre.Console;
+using System.Net;
 
 namespace jammer {
     internal class Download {
@@ -45,7 +47,13 @@ namespace jammer {
                 var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
                 if (streamInfo != null)
                 {
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath);
+                    var progress = new Progress<double>(data =>
+                    {
+                        AnsiConsole.Clear();
+                        Console.WriteLine($"Downloading {url}: {data:P}");
+                    });
+
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
                 }
                 else
                 {
@@ -88,7 +96,12 @@ namespace jammer {
                         formattedUrl
                     );
 
-                    await soundcloud.DownloadAsync(track, songPath);
+                    var progress = new Progress<double>(data => {
+                        AnsiConsole.Clear();
+                        Console.WriteLine($"Downloading {trackName}: {data:P}");
+                    });
+
+                    await soundcloud.DownloadAsync(track, songPath, progress);
                 } else {
                     Debug.dprint("track returns null");
                 }
@@ -169,36 +182,7 @@ namespace jammer {
                                      .Replace("-", " ")
                                      .Replace("?", " ");
 
-            return formattedYTUrl + ".m2a";
-        }
-
-        static public bool GetDownloadUrlAsyncIsUrl(string input)
-        {
-            if (input == null)
-            {
-                return false;
-            }
-            // detect if input is url using regex
-            string pattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-            if (regex.IsMatch(input))
-            {
-                return true;
-            }
-            else
-            {
-                // detect youtbe url
-                string pattern2 = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
-                Regex regex2 = new Regex(pattern2, RegexOptions.IgnoreCase);
-                if (regex2.IsMatch(input))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return formattedYTUrl + ".mp4";
         }
     }
 }

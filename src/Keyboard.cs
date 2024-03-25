@@ -123,8 +123,6 @@ namespace jammer
                         break;
                     case ConsoleKey.D0: // goto song start
                         Play.SeekSong(0, false);
-                        lastSeconds = 0;
-                        drawOnce = true;
                         break;
                     case ConsoleKey.D9: // goto song end
                         Play.MaybeNextSong();

@@ -139,10 +139,9 @@ _NCrunch*
 
 jammer-Setup_V1.X.X.exe
 nsis/jammer.exe
-nsis/raylib.dll
 .vscode/launch.json
 .vscode/tasks.json
 
 .vs/
 
-nsis/bass.dll
+

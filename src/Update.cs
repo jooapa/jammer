@@ -12,6 +12,11 @@ namespace jammer {
             try
             {
                 using (var webClient = new WebClient()) {
+                    webClient.DownloadProgressChanged += (sender, e) =>
+                    {
+                        Console.WriteLine($"Downloaded {e.BytesReceived} of {e.TotalBytesToReceive} bytes ({e.ProgressPercentage}%).");
+                    };
+
                     webClient.DownloadFile(downloadUrl, downloadPath);
                 }
             }

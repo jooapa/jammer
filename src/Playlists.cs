@@ -49,10 +49,10 @@ namespace jammer
 
                 Utils.currentPlaylist = playlistName;
                 Start.state = MainStates.playing;
+
                 
                
-                // jammer.Play.PlaySong();
-                Console.WriteLine("Playing " + songs[0]);
+                jammer.Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             }
             else
             {

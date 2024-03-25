@@ -1,4 +1,5 @@
 using ManagedBass;
+using ManagedBass.Aac;
 using Spectre.Console;
 using System.IO;
 
@@ -88,7 +89,8 @@ namespace jammer
                     extension == ".mpeg" || extension == ".aif" || extension == ".mp3pro" || extension == ".bwf" || extension == ".mus" ||
                     extension == ".mod" || extension == ".mo3" || extension == ".s3m" || extension == ".xm" || extension == ".it" ||
                    extension == ".mtm" || extension == ".umx" || extension == ".mdz" || extension == ".s3z" || extension == ".itz" ||
-                    extension == ".xmz")
+                    extension == ".xmz" || extension == ".aac" || extension == ".mp4" || extension == ".m4a" || extension == ".adts" ||
+                    extension == ".m4b")
                 {
                     Debug.dprint("Audiofile");
                     StartPlaying();
@@ -230,7 +232,7 @@ namespace jammer
             else
             {
                 // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
-                pos = Math.Max(0, Math.Min(pos, pos));
+                pos = Bass.ChannelSeconds2Bytes(Utils.currentMusic, seconds);
             }
 
             // Update the audio stream's position
@@ -381,12 +383,33 @@ namespace jammer
         {
 
             ResetMusic();
+            // if extension is aac, use aac decoder
+            if (Path.GetExtension(Utils.currentSong) == ".aac" || 
+            Path.GetExtension(Utils.currentSong) == ".m4a" || 
+            Path.GetExtension(Utils.currentSong) == ".adts" ||
+            Path.GetExtension(Utils.currentSong) == ".m4b")
+            {
+                BassAac.PlayAudioFromMp4 = false;
+                BassAac.AacSupportMp4 = false;
+                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+            }
+            else if (Path.GetExtension(Utils.currentSong) == ".mp4")
+            {
+                // flags
+                BassAac.PlayAudioFromMp4 = true;
+                BassAac.AacSupportMp4 = true;
+                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, BassFlags.Default);
+            }
+            else
+            {
+                // create stream
+                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+            }
 
             // create stream
-            Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
             if (Utils.currentMusic == 0)
             {
-                Message.Data("Deleting song from playlist", "Error: Can't play song");
+                Message.Data("Deleting song from playlist", "Error: Can't play song: " + Utils.currentSong);
 
                 DeleteSong(Utils.currentSongIndex);
                 
