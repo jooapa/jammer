@@ -46,87 +46,175 @@ namespace jammer
         {
             Debug.dprint("Run");
 
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args[i] == "-d")
-                {
-                    Utils.isDebug = true;
-                    Debug.dprint("\n--- Debug Started ---\n");
-                    List<string> argumentsList = new List<string>(args);
-                    argumentsList.RemoveAt(0);
-                    args = argumentsList.ToArray();
-                    break;
+            if (args.Length > 0) {
+                Console.WriteLine("if");
+                for (int i = 0; i < args.Length; i++) {
+                    string arg = args[i];
+
+                    switch (arg) {
+                        case "-h":
+                        case "--help":
+                            TUI.ClearScreen();
+                            TUI.Help();
+                            break;
+
+                        case "-D":
+                            Utils.isDebug = true;
+                            Debug.dprint("\n--- Debug Started ---\n");
+                            List<string> argumentsList = new List<string>(args);
+                            argumentsList.RemoveAt(0);
+                            args = argumentsList.ToArray();
+                            break;
+                        case "--playlist":
+                        case "-p":
+                            if (args.Length > i+1) {
+                                Playlists.Play(args[i+1]);
+                            } else {
+                                AnsiConsole.WriteLine("No playlist name given");
+                                Environment.Exit(1);
+                            }
+                            break;
+                        case "--create":
+                        case "-c":
+                            if (args.Length > i+1) {
+                                Playlists.Create(args[i+1]);
+                            } else {
+                                AnsiConsole.WriteLine("No playlist name given");
+                            }
+                            Environment.Exit(0);
+                            break;
+                        case "--delete":
+                        case "-d":
+                            if (args.Length > i+1) {
+                                Playlists.Delete(args[i+1]);
+                            } else {
+                                AnsiConsole.WriteLine("No playlist name or song given");
+                                Environment.Exit(0);
+                            }
+                            break;
+                        case "--add":
+                        case "-a":
+                            if (args.Length > i+1) {
+                                Playlists.Add(args[i+1]);
+                            } else {
+                                AnsiConsole.WriteLine("No playlist name or song given");
+                                Environment.Exit(0);
+                            }
+                            break;
+                        case "--remove":
+                        case "-r":
+                            if (args.Length > i+1) {
+                                Playlists.Remove(args[i+1]);
+                            } else {
+                                AnsiConsole.WriteLine("No playlist name or song given");
+                                Environment.Exit(0);
+                            }
+                            break;
+                        /* case "--show": */
+                        /* case "-s": */
+                        /*     if (args.Length > i+1) { */
+                        /*         Playlists.ShowCli(args); */
+                        /*     } else { */
+                        /*         AnsiConsole.WriteLine("No playlist name or song given"); */
+                        /*         Environment.Exit(0); */
+                        /*     } */
+                        /*     break; */
+                    }
                 }
-                if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help")
-                {
-                    TUI.ClearScreen();
-                    TUI.Help();
-                    return;
-                }
-                if (args[i] == "-v" || args[i] == "--version" || args[i] == "version")
-                {
-                    TUI.ClearScreen();
-                    TUI.Version();
-                    return;
-                }
+            } else {
+                Console.WriteLine("else");
             }
 
-            Utils.songs = args;
-            if (Utils.songs.Length != 0)
-            {
-                if (Utils.songs[0] == "playlist" || Utils.songs[0] == "pl")
-                {
-                    // TUI.ClearScreen();
-                    TUI.PlaylistCli(Utils.songs);
-                }
-                if (Utils.songs[0] == "start")
-                {
-                    // open explorer in jammer folder
-                    AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");
-                    // if windows
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
-                    }
-                    // if linux
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        System.Diagnostics.Process.Start("xdg-open", Utils.jammerPath);
-                    }
-                    return;
-                }
-                if (Utils.songs[0] == "update")
-                {
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        AnsiConsole.MarkupLine("[red]Run the update command[/]");
-                        return;
-                    }
-                    AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
-
-                    string latestVersion = Update.CheckForUpdate(Utils.version);
-                    if (latestVersion != "")
-                    {
-                        AnsiConsole.MarkupLine("[green]Update found![/]" + "\n" + "Version: [green]" + latestVersion + "[/]");
-                        AnsiConsole.MarkupLine("[green]Downloading...[/]");
-                        string downloadPath = Update.UpdateJammer(latestVersion);
-
-                        AnsiConsole.MarkupLine("[green]Downloaded to: " + downloadPath + "[/]");
-                        AnsiConsole.MarkupLine("[cyan]Installing...[/]");
-                        // Run run_command.bat with argument as the path to the downloaded file
-                        System.Diagnostics.Process.Start("run_command.bat", downloadPath);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
-                    }
-                    Environment.Exit(0);
-                }
+            // NOTE(ilako) Temp hack
+            if (args.Length == 0) {
+                Utils.songs = args;
             }
 
             Preferences.CheckJammerFolderExists();
-
             StartUp();
+            Console.WriteLine("Exit");
+
+            /* for (int i = 0; i < args.Length; i++) */
+            /* { */
+            /*     if (args[i] == "-d") */
+            /*     { */
+            /*         Utils.isDebug = true; */
+            /*         Debug.dprint("\n--- Debug Started ---\n"); */
+            /*         List<string> argumentsList = new List<string>(args); */
+            /*         argumentsList.RemoveAt(0); */
+            /*         args = argumentsList.ToArray(); */
+            /*         break; */
+            /*     } */
+            /*     if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help") */
+            /*     { */
+            /*         TUI.ClearScreen(); */
+            /*         TUI.Help(); */
+            /*         return; */
+            /*     } */
+            /*     if (args[i] == "-v" || args[i] == "--version" || args[i] == "version") */
+            /*     { */
+            /*         TUI.ClearScreen(); */
+            /*         TUI.Version(); */
+            /*         return; */
+            /*     } */
+            /* } */
+
+            /* Utils.songs = args; */
+            /* if (Utils.songs.Length != 0) */
+            /* { */
+            /*     if (Utils.songs[0] == "playlist" || Utils.songs[0] == "pl") */
+            /*     { */
+            /*         // TUI.ClearScreen(); */
+            /*         TUI.PlaylistCli(Utils.songs); */
+            /*     } */
+            /*     if (Utils.songs[0] == "start") */
+            /*     { */
+            /*         // open explorer in jammer folder */
+            /*         AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]"); */
+            /*         // if windows */
+            /*         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) */
+            /*         { */
+            /*             System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath); */
+            /*         } */
+            /*         // if linux */
+            /*         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) */
+            /*         { */
+            /*             System.Diagnostics.Process.Start("xdg-open", Utils.jammerPath); */
+            /*         } */
+            /*         return; */
+            /*     } */
+            /*     if (Utils.songs[0] == "update") */
+            /*     { */
+            /*         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) */
+            /*         { */
+            /*             AnsiConsole.MarkupLine("[red]Run the update command[/]"); */
+            /*             return; */
+            /*         } */
+            /*         AnsiConsole.MarkupLine("[green]Checking for updates...[/]"); */
+
+            /*         string latestVersion = Update.CheckForUpdate(Utils.version); */
+            /*         if (latestVersion != "") */
+            /*         { */
+            /*             AnsiConsole.MarkupLine("[green]Update found![/]" + "\n" + "Version: [green]" + latestVersion + "[/]"); */
+            /*             AnsiConsole.MarkupLine("[green]Downloading...[/]"); */
+            /*             string downloadPath = Update.UpdateJammer(latestVersion); */
+
+            /*             AnsiConsole.MarkupLine("[green]Downloaded to: " + downloadPath + "[/]"); */
+            /*             AnsiConsole.MarkupLine("[cyan]Installing...[/]"); */
+            /*             // Run run_command.bat with argument as the path to the downloaded file */
+            /*             System.Diagnostics.Process.Start("run_command.bat", downloadPath); */
+            /*         } */
+            /*         else */
+            /*         { */
+            /*             AnsiConsole.MarkupLine("[green]Jammer is up to date![/]"); */
+            /*         } */
+            /*         Environment.Exit(0); */
+            /*     } */
+            /* } */
+
+            /* Preferences.CheckJammerFolderExists(); */
+
+            /* StartUp(); */
             
         }
 
