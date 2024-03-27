@@ -74,24 +74,10 @@ namespace jammer
             Utils.songs = args;
             if (Utils.songs.Length != 0)
             {
-                if (Utils.songs[0] == "playlist")
+                if (Utils.songs[0] == "playlist" || Utils.songs[0] == "pl")
                 {
-                    TUI.ClearScreen();
+                    // TUI.ClearScreen();
                     TUI.PlaylistCli(Utils.songs);
-                }
-                if (Utils.songs[0] == "selfdestruct")
-                {
-                    AnsiConsole.MarkupLine("[red]Selfdestructing Jammer...[/]");
-
-                    // Get the base directory of the application
-                    string baseDirectory = AppContext.BaseDirectory;
-
-                    // Run the uninstaller selfdestruct.bat
-                    string selfDestructScriptPath = Path.Combine(baseDirectory, "selfdestruct.bat");
-                    System.Diagnostics.Process.Start(selfDestructScriptPath);
-
-                    // Exit the application
-                    Environment.Exit(0);
                 }
                 if (Utils.songs[0] == "start")
                 {
@@ -140,27 +126,31 @@ namespace jammer
 
             Preferences.CheckJammerFolderExists();
 
+            StartUp();
+            
+        }
+
+        public static void StartUp() {
+
             if (!Bass.Init())
             {
-                Console.WriteLine("Bass init failed");
-                Console.ReadLine();
+                Message.Data("Can't initialize device", "Error", true);
                 return;
             }
 
+            state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.songs.Length != 0)
             {
                 Utils.songs = Absolute.Correctify(Utils.songs);
                 Utils.currentSong = Utils.songs[0];
                 Utils.currentSongIndex = 0;
-
+                state = MainStates.playing; // Start in play state if songs are given
                 Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             }
 
-            state = MainStates.idle;
             Debug.dprint("Start Loop");
             loopThread = new Thread(Loop);
             loopThread.Start();
-            
         }
 
         //

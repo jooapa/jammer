@@ -244,7 +244,7 @@ static class TUI
         }
         AnsiConsole.Clear();
         // show songs in playlist
-        Playlists.Show(playlistNameToShow);
+        Message.Data(Playlists.GetShow(playlistNameToShow), "Songs in playlist " + playlistNameToShow);
     }
 
     // List all playlists
@@ -485,7 +485,7 @@ static class TUI
     }
 
     public static void PlaylistCli(string[] args){
-        if (args[0] == "playlist")
+        if (args[0] == "playlist" || args[0] == "pl") 
         {
             if (args.Length < 2)
             {
@@ -510,6 +510,7 @@ static class TUI
                             return;
                         }
                         Playlists.Create(args[2]);
+                        Environment.Exit(0);
                         return;
                     case "delete":
                         if (args.Length < 3)
@@ -518,6 +519,7 @@ static class TUI
                             return;
                         }
                         Playlists.Delete(args[2]);
+                        Environment.Exit(0);
                         return;
                     case "add":
                         if (args.Length < 4)
@@ -526,6 +528,7 @@ static class TUI
                             return;
                         }
                         Playlists.Add(args);
+                        Environment.Exit(0);
                         return;
                     case "remove":
                         if (args.Length < 4)
@@ -534,6 +537,7 @@ static class TUI
                             return;
                         }
                         Playlists.Remove(args);
+                        Environment.Exit(0);
                         return;
                     case "show":
                         if (args.Length < 3)
@@ -541,10 +545,12 @@ static class TUI
                             AnsiConsole.WriteLine("No playlist name given");
                             return;
                         }
-                        Playlists.Show(args[2]);
+                        Playlists.ShowCli(args[2]);
+                        Environment.Exit(0);
                         return;
                     case "list":
-                        Playlists.ListOnly();
+                        Playlists.PrintList();
+                        Environment.Exit(0);
                         return;
                 }
             }
@@ -565,7 +571,6 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
         table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
         table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
-        table.AddRow("[grey]jammer[/] [green]selfdestruct[/]", "Uninstall Jammer");
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
         table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
@@ -580,13 +585,13 @@ static class TUI
         table.AddColumn("Playlist Commands");
         table.AddColumn("Description");
 
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]play [/]<name>", "Play playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]create [/]<name>", "Create playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]delete [/]<name>", "Delete playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]add [/]<name> <song> ...", "Add songs to playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]remove [/]<name> <song> ...", "Remove songs from playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]show [/]<name>", "Show songs in playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/] [green]list [/]", "List all playlists");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<name>", "Play playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<name>", "Create playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<name>", "Delete playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<name> <song> ...", "Add songs to playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<name> <song> ...", "Remove songs from playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<name>", "Show songs in playlist");
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", "List all playlists");
 
         AnsiConsole.Write(table);
     }

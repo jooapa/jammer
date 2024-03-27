@@ -40,6 +40,7 @@ namespace jammer
                 "playlists",
                 playlistName + ".jammer"
             );
+
             if (File.Exists(playlistPath))
             {
                 string[] songs = File.ReadAllLines(playlistPath);
@@ -48,16 +49,17 @@ namespace jammer
                 Utils.songs = songs;
 
                 Utils.currentPlaylist = playlistName;
-                Start.state = MainStates.playing;
+                // Start.state = MainStates.playing;
 
-                
-               
-                jammer.Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                foreach (string song in songs)
+                {
+                    AnsiConsole.MarkupLine("[green]Playing " + song + "[/]");
+                }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
-                Console.ReadLine();
+                Message.Data("Playlist doesn't exist:" + playlist + ".jammer", "Error Playing Playlist", true);
+                Environment.Exit(0);
             }
         }
 
@@ -175,7 +177,12 @@ namespace jammer
             Environment.Exit(0);
         }
 
-        static public void Show(string playlist)
+        static public void ShowCli(string playlist)
+        {
+            AnsiConsole.MarkupLine(GetShow(playlist));
+        }
+
+        static public string GetShow(string playlist)
         {
             AnsiConsole.MarkupLine("Showing playlist [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
@@ -185,23 +192,25 @@ namespace jammer
                 playlist
             );
 
+            string playlistList = "";
             if (File.Exists(playlistPath))
             {
                 string[] songs = File.ReadAllLines(playlistPath);
                 if (songs.Length == 0)
                 {
-                    AnsiConsole.MarkupLine("[red]Playlist is empty[/]");
+                    playlistList = "[red]Playlist is empty[/]";
                 }
                 foreach (string song in songs)
                 {
-                    AnsiConsole.MarkupLine("[green]" + song + "[/]");
+                    playlistList += "[green]" + song + "[/]" + "\n";
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
+                playlistList = "[red]Playlist doesn't exist[/]";
             }
-            Console.ReadLine();
+
+            return playlistList;
         }
 
         static public void Save(string playlistName, bool force = false)
@@ -243,19 +252,15 @@ namespace jammer
             Save(Utils.currentPlaylist, true);
         }
 
-        static public void List()
+        static public void PrintList()
         {
-            ListOnly();
-            Console.ReadLine();
-        }
-
-        static public void ListOnly() {
-            AnsiConsole.WriteLine("Playlists:");
-            GetList();
+            Console.WriteLine("Playlists:");
+            Console.WriteLine(GetList());
         }
 
         public static string GetList() {
-            string[] playlists = Directory.GetFiles(Utils.jammerPath + "/playlists/");
+            string playlistDir = Path.Combine(Utils.jammerPath, "playlists");
+            string[] playlists = Directory.GetFiles(playlistDir);
             string playlistList = "";
             foreach (string playlist in playlists)
             {

@@ -40,7 +40,6 @@ jammer https://youtube.com/watch?v=video-id
 jammer start          opens jammer folder
 jammer update         checks for updates and installs
 jammer playlist       playlist controls
-jammer selfdestruct   deletes jammer
 jammer start          opens jammer folder
 jammer --help -h      show help
 jammer -d             debug mode
@@ -50,13 +49,13 @@ jammer --version      show version
 *when using **soundcloud** or **youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-jammer playlist play <name>
-jammer playlist create <name>
-jammer playlist delete <name>
-jammer playlist add <name> <song> ...
-jammer playlist remove <name> <song> ...
-jammer playlist show <name>
-jammer playlist list
+jammer playlist/pl play <name>
+jammer playlist/pl create <name>
+jammer playlist/pl delete <name>
+jammer playlist/pl add <name> <song> ...
+jammer playlist/pl remove <name> <song> ...
+jammer playlist/pl show <name>
+jammer playlist/pl list
 ```
 
 ### Supported formats

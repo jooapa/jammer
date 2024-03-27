@@ -73,6 +73,7 @@ namespace jammer
                 return;
             }
 
+            Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
