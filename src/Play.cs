@@ -319,6 +319,14 @@ namespace jammer
             }
         }
 
+        public static void ReDownloadSong()
+        {
+            string path = Utils.currentSong;
+            File.Delete(path);
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            SeekSong(0, false);
+        }
+
         public static void AddSong(string song)
         {
             // check if song is already in playlist

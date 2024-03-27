@@ -7,7 +7,7 @@ namespace jammer
     {
         public static int currentMusic { get; set; }
         public static string[] songs = { "" };
-        public static string currentSong = "";
+        public static string currentSong = ""; // current path to song
         public static double currentMusicLength = 0; // length in seconds
         public static double MusicTimePlayed = 0; // time played in seconds
         public static double preciseTime = 0;

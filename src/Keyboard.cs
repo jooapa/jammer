@@ -210,6 +210,12 @@ namespace jammer
                             TUI.PlayOtherPlaylist();
                         }
                         break;
+                    case ConsoleKey.B:
+                        if (IfHoldingDownSHIFT(key))
+                        {
+                            Play.ReDownloadSong();
+                        }
+                        break;
                     // case ConsoleKey.J:
                     //     Message.Input();
                     //     break;

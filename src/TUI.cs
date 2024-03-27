@@ -433,7 +433,7 @@ static class TUI
         table.AddRow("Down", "Volume down",              "[green1]shift[/] + [turquoise2]alt[/] + [cyan1]S[/]", "Save as");
         table.AddRow("L", "Toggle looping",              "[turquoise2]alt[/] + [cyan1]S[/]", "Suffle playlist");
         table.AddRow("M", "Toggle mute",                 "[green1]shift[/] + [cyan1]P[/]", "Play song(s)");
-        table.AddRow("S", "Toggle shuffle");
+        table.AddRow("S", "Toggle shuffle",              "[green1]shift[/] + [cyan1]B[/]", "Redownload current song");
         table.AddRow("Playlist", "");
         table.AddRow("P", "Previous song");
         table.AddRow("N", "Next song");
