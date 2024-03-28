@@ -210,10 +210,6 @@ namespace jammer
 
             lastSeconds = -1;
             treshhold = 1;
-            // if (Utils.audioStream == null || Utils.currentMusic == null) {
-            //     Debug.dprint("Audiostream");
-            //     return;
-            // }
 
             TUI.ClearScreen();
             drawOnce = true;
