@@ -14,7 +14,7 @@ namespace jammer {
                 using (var webClient = new WebClient()) {
                     webClient.DownloadProgressChanged += (sender, e) =>
                     {
-                        Console.WriteLine($"Downloaded {e.BytesReceived} of {e.TotalBytesToReceive} bytes ({e.ProgressPercentage}%).");
+                        Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
                     };
 
                     webClient.DownloadFile(downloadUrl, downloadPath);
@@ -22,7 +22,7 @@ namespace jammer {
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred during download: " + ex.Message);
+                Console.WriteLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message);
             }
 
             return Path.GetFullPath(downloadPath);
@@ -34,7 +34,7 @@ namespace jammer {
             using (HttpClient client = new HttpClient()) {
                 latestVersion = client.GetStringAsync(url).Result;
             }
-            AnsiConsole.MarkupLine("Latest dversion: [green]" + latestVersion + "[/]");
+            AnsiConsole.MarkupLine($"{Locale.OutsideItems.LatestVersion}: [green]" + latestVersion + "[/]");
             if (latestVersion != version) {
                 return latestVersion;
             }

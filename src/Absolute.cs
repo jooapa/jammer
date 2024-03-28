@@ -9,7 +9,7 @@ namespace jammer
             for (int i = 0; i < args.Length; i++)
             {
                 string item = args[i];
-                AnsiConsole.MarkupLine($"[green]Checking {item}[/]");
+                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
                 if (URL.IsUrl(item))
                 {
                     // if url doesnt have http:// or https://
@@ -38,10 +38,10 @@ namespace jammer
                     }
                     else if (URL.IsUrl(item))
                     {
-                        AnsiConsole.MarkupLine($"[green]URL {item} is valid[/]");
+                        AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
                     }
                     else {
-                        AnsiConsole.MarkupLine($"[red]URL {item} is not valid[/]");
+                        AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
                         // delete item from args
                         args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                         i--;
@@ -65,7 +65,7 @@ namespace jammer
                 }
                 else if (!File.Exists(item))
                 {
-                    AnsiConsole.MarkupLine($"[red]File {item} does not exist[/]");
+                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} {item} {Locale.OutsideItems.DoesntExist}[/]");
                     // delete item from args
                     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                     i--;

@@ -44,7 +44,7 @@ static class TUI
             mainTable.AddRow(controlsTable.Centered());
             // mainTable.Width(100);
             var helpTable = new Table();
-            helpTable.AddColumn("[red]h[/] for help | [yellow]c[/] for settings | [green]f[/] for playlist");
+            helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
             helpTable.Border = TableBorder.Rounded;
             
             mainTable.Border = TableBorder.HeavyEdge;
@@ -71,8 +71,8 @@ static class TUI
         }
         catch (Exception e) {
             AnsiConsole.Clear();
-            AnsiConsole.MarkupLine("[red]Error in Drawing the player[/]");
-            AnsiConsole.MarkupLine("[red] Controls still work[/]");
+            AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
+            AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
             AnsiConsole.MarkupLine("[red]" + e.Message + "[/]");
         }
     }
@@ -83,7 +83,7 @@ static class TUI
 
     static public string GetAllSongs() {
         if (Utils.songs.Length == 0) {
-            return "[grey]No songs in 'on' playlist[/]";
+            return $"[grey]{Locale.Player.NoSongsInPlaylist}[/]";
         }
         string allSongs = "";
         foreach (string song in Utils.songs) {
@@ -113,33 +113,33 @@ static class TUI
         int songLength = Start.consoleWidth - 23;
         if (Utils.songs.Length == 0)
         {
-            currentSong = "[grey]current  : -[/]";
+            currentSong = $"[grey]{Locale.Player.Current}  : -[/]";
         }
         else
         {
-            currentSong = "[green]current  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength) + "[/]";
+            currentSong = $"[green]{Locale.Player.Current}  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength) + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = "[grey]previous : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength) + "[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength) + "[/]";
         }
         else
         {
-            prevSong = "[grey]previous : -[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : -[/]";
         }
 
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = "[grey]next     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength) + "[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength) + "[/]";
         }
         else
         {
-            nextSong = "[grey]next     : -[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : -[/]";
         }
 
-        return prevSong + "\n[green]" + currentSong + "[/]\n" + nextSong;
+        return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
     static public string CalculateTime(double time) {
@@ -150,17 +150,17 @@ static class TUI
     }
 
     public static void PlaylistInput() {
-        AnsiConsole.Markup("\nEnter playlist command: \n");
-        AnsiConsole.MarkupLine("[grey]1. add song to playlist[/]");
-        AnsiConsole.MarkupLine("[grey]2. delete song current song from playlist[/]");
-        AnsiConsole.MarkupLine("[grey]3. show songs in other playlist[/]");
-        AnsiConsole.MarkupLine("[grey]4. list all playlists[/]");
-        AnsiConsole.MarkupLine("[grey]5. play other playlist[/]");
-        AnsiConsole.MarkupLine("[grey]6. save/replace playlist[/]");
-        // AnsiConsole.MarkupLine("[grey]7. goto song in playlist[/]");
-        AnsiConsole.MarkupLine("[grey]8. suffle playlist[/]");
-        AnsiConsole.MarkupLine("[grey]9. play song(s)[/]");
-        AnsiConsole.MarkupLine("[grey]0. exit[/]");
+        AnsiConsole.Markup($"\n{Locale.PlaylistOptions.EnterPlayListCmd} \n");
+        AnsiConsole.MarkupLine($"[grey]1. {Locale.PlaylistOptions.AddSongToPlaylist}[/]");
+        AnsiConsole.MarkupLine($"[grey]2. {Locale.PlaylistOptions.Deletesong}[/]");
+        AnsiConsole.MarkupLine($"[grey]3. {Locale.PlaylistOptions.ShowSongs}[/]");
+        AnsiConsole.MarkupLine($"[grey]4. {Locale.PlaylistOptions.ListAll}[/]");
+        AnsiConsole.MarkupLine($"[grey]5. {Locale.PlaylistOptions.PlayOther}[/]");
+        AnsiConsole.MarkupLine($"[grey]6. {Locale.PlaylistOptions.SaveReplace}[/]");
+        // AnsiConsole.MarkupLine($"[grey]7. {Locale.PlaylistOptions.GoToSong}[/]");
+        AnsiConsole.MarkupLine($"[grey]8. {Locale.PlaylistOptions.Shuffle}[/]");
+        AnsiConsole.MarkupLine($"[grey]9. {Locale.PlaylistOptions.PlaySong}[/]");
+        AnsiConsole.MarkupLine($"[grey]0. {Locale.PlaylistOptions.Exit}[/]");
 
         var playlistInput = Console.ReadKey(true).Key;
         // if (playlistInput == "" || playlistInput == null) { return; }
@@ -211,15 +211,15 @@ static class TUI
 
     public static void AddSongToPlaylist()
     {
-        string songToAdd = Message.Input("Enter song to add to playlist:", "Add song to playlist");
+        string songToAdd = Message.Input(Locale.Player.AddSongToPlaylistMessage1, Locale.Player.AddSongToPlaylistMessage2);
         if (songToAdd == "" || songToAdd == null) {
-            Message.Data("Error: Add song to playlist", "no song given", true);
+            Message.Data(Locale.Player.AddSongToPlaylistError1, Locale.Player.AddSongToPlaylistError2, true);
             return;
         }
         // remove quotes from songToAdd
         songToAdd = songToAdd.Replace("\"", "");
-        if (!isValidSong(songToAdd)) {
-            Message.Data("Error: " + songToAdd, "invalid song: Make sure you typed it correctly", true);
+        if (!IsValidSong(songToAdd)) {
+            Message.Data( Locale.Player.AddSongToPlaylistError3+ " " + songToAdd, Locale.Player.AddSongToPlaylistError4, true);
             return;
         }
         songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
@@ -237,28 +237,28 @@ static class TUI
     // Show songs in playlist
     public static void ShowSongsInPlaylist()
     {
-        string? playlistNameToShow = Message.Input("Enter playlist name:", "Show songs in playlist");
+        string? playlistNameToShow = Message.Input(Locale.Player.ShowSongsInPlaylistMessage1, Locale.Player.ShowSongsInPlaylistMessage2);
         if (playlistNameToShow == "" || playlistNameToShow == null) { 
-            Message.Data("Error: Show songs in playlist", "no playlist given", true);
+            Message.Data(Locale.Player.ShowSongsInPlaylistError1, Locale.Player.ShowSongsInPlaylistError2, true);
             return;
         }
         AnsiConsole.Clear();
         // show songs in playlist
-        Message.Data(Playlists.GetShow(playlistNameToShow), "Songs in playlist " + playlistNameToShow);
+        Message.Data(Playlists.GetShow(playlistNameToShow), Locale.Player.SongsInPlaylist +" "+ playlistNameToShow);
     }
 
     // List all playlists
     public static void ListAllPlaylists()
     {
-        Message.Data(Playlists.GetList(), "All playlists");
+        Message.Data(Playlists.GetList(), Locale.Player.AllPlaylists);
     }
 
     // Play other playlist
     public static void PlayOtherPlaylist()
     {
-        string? playlistNameToPlay = Message.Input("Enter playlist name:", "Play other playlist");
+        string? playlistNameToPlay = Message.Input(Locale.Player.PlayOtherPlaylistMessage1,Locale.Player.PlayOtherPlaylistMessage2);
         if (playlistNameToPlay == "" || playlistNameToPlay == null) { 
-            Message.Data("Error: Play other playlist", "no playlist given", true);
+            Message.Data(Locale.Player.PlayOtherPlaylistError1, Locale.Player.PlayOtherPlaylistError2, true);
             return;
         }
 
@@ -269,9 +269,9 @@ static class TUI
     // Save/replace playlist
     public static void SaveReplacePlaylist()
     {
-        string playlistNameToSave = Message.Input("Enter playlist name:", "Save/Replace playlist");
+        string playlistNameToSave = Message.Input(Locale.Player.SaveReplacePlaylistMessage1, Locale.Player.SaveReplacePlaylistMessage2);
         if (playlistNameToSave == "" || playlistNameToSave == null) {
-            Message.Data("Error: Save/Replace playlist", "no playlist given", true);
+            Message.Data(Locale.Player.SaveReplacePlaylistError1, Locale.Player.SaveReplacePlaylistError2, true);
             return;
         }
         // save playlist
@@ -281,7 +281,7 @@ static class TUI
     public static void SaveCurrentPlaylist()
     {
         if (Utils.currentPlaylist == "") {
-            Message.Data("Error: Save playlist", "no playlist given", true);
+            Message.Data(Locale.Player.SaveCurrentPlaylistError1,Locale.Player.SaveCurrentPlaylistError2, true);
             return;
         }
         // save playlist
@@ -290,9 +290,9 @@ static class TUI
 
     public static void SaveAsPlaylist()
     {
-        string playlistNameToSave = Message.Input("Enter playlist name:", "Save as playlist");
+        string playlistNameToSave = Message.Input(Locale.Player.SaveAsPlaylistMessage1, Locale.Player.SaveAsPlaylistMessage2);
         if (playlistNameToSave == "" || playlistNameToSave == null) {
-            Message.Data("Error: Save as playlist", "no playlist given", true);
+            Message.Data(Locale.Player.SaveAsPlaylistError1, Locale.Player.SaveAsPlaylistError2, true);
             return;
         }
         // save playlist
@@ -302,9 +302,9 @@ static class TUI
     // Goto song in playlist
     public static void GotoSongInPlaylist()
     {
-        string songToGoto = Message.Input("Enter song to goto:", "Goto song in playlist");
+        string songToGoto = Message.Input(Locale.Player.GotoSongInPlaylistMessage1, Locale.Player.GotoSongInPlaylistMessage2);
         if (songToGoto == "" || songToGoto == null) {
-            Message.Data("Error: Goto song in playlist", "no song given", true);
+            Message.Data(Locale.Player.GotoSongInPlaylistError1, Locale.Player.GotoSongInPlaylistError2, true);
             return;
         }
         // songToGoto = GotoSong(songToGoto);
@@ -329,10 +329,10 @@ static class TUI
     // Play single song
     public static void PlaySingleSong()
     {
-        string[]? songsToPlay = Message.Input("Enter song(s) to play:", "Play song(s) | Separate songs with space").Split(" ");
+        string[]? songsToPlay = Message.Input(Locale.Player.PlaySingleSongMessage1, Locale.Player.PlaySingleSongMessage2).Split(" ");
         
         if (songsToPlay == null || songsToPlay.Length == 0) {
-            Message.Data("Error: Play song(s)", "no song(s) given", true);
+            Message.Data(Locale.Player.PlaySingleSongError1, Locale.Player.PlaySingleSongError2, true);
             return;
         }
 
@@ -351,30 +351,35 @@ static class TUI
         Play.PlaySong(Utils.songs, Utils.currentSongIndex);
     }
 
-    public static bool isValidSong(string song) {
+    public static bool IsValidSong(string song) {
         if (File.Exists(song) || URL.IsUrl(song) || Directory.Exists(song)) {
-            AnsiConsole.Markup("\n[green]Valid song[/]");
+            AnsiConsole.Markup($"\n[green]{Locale.Player.ValidSong}[/]");
             return true;
         }
-        AnsiConsole.Markup("\n[red]Invalid song[/]");
+        AnsiConsole.Markup($"\n[red]{Locale.Player.InvalidSong}[/]");
         return false;
     }
 
     // "Components" of the TUI
     static public void UIComponent_Controls(Table table) {
-        table.AddColumn("State");
-        table.AddColumn("Looping");
-        table.AddColumn("Suffle");
-        table.AddColumn("Volume");
+        table.AddColumn(Locale.Player.State);
+        table.AddColumn(Locale.Player.Looping);
+        table.AddColumn(Locale.Player.Shuffle);
+        table.AddColumn(Locale.Player.Volume);
         string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
-        table.AddRow(Start.state.ToString(), Preferences.isLoop ? "[green]on[/]" : "[red]off[/]", Preferences.isShuffle ? "[green]on[/]" : "[red]off[/]", volume);
+        // TODO ADD STATE TO LOCALE
+        table.AddRow(Start.state.ToString(), 
+        Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : 
+                            $"[red]{Locale.Miscellaneous.Off}[/]", 
+        Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : 
+                            $"[red]{Locale.Miscellaneous.Off}[/]", volume);
     }
 
     static public void UIComponent_Songs(Table table) {
         if (Utils.currentPlaylist == "") {
             table.AddColumn(GetAllSongs());
         } else {
-            table.AddColumn("playlist [cyan]" + Utils.currentPlaylist + "[/]");
+            table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
             table.AddRow(GetAllSongs());
         }
     }
@@ -383,7 +388,7 @@ static class TUI
         if (Utils.currentPlaylist == "") {
             table.AddColumn(GetPrevCurrentNextSong());
         } else {
-            table.AddColumn("playlist [cyan]" + Utils.currentPlaylist + "[/]");
+            table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
             table.AddRow(GetPrevCurrentNextSong());
         }
     }
@@ -411,58 +416,102 @@ static class TUI
         return progressBar;
     }
 
-    public static void DrawAllSongsView() {
-        AnsiConsole.Clear();
-        var table = new Table();
-        UIComponent_Songs(table);
-        AnsiConsole.Write(table);
-        AnsiConsole.Markup("Press [red]h[/] for help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] to show settings");
-        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
-        AnsiConsole.WriteLine("\n");
-    }
-
     static public void DrawHelp() {
         var table = new Table();
-        table.AddColumns("Controls", "Description",      "Mod Controls", "Description");
-        table.AddRow("Space", "Play/Pause",              "[green1]shift[/] + [cyan1]A[/]", "Add song to playlist");
-        table.AddRow("Q", "Quit",                        "[green1]shift[/] + [cyan1]D[/]", "List all songs in other playlist");
-        table.AddRow("Left", "Rewind 5 seconds",         "[green1]shift[/] + [cyan1]F[/]", "List all playlists");
-        table.AddRow("Right", "Forward 5 seconds",       "[green1]shift[/] + [cyan1]O[/]", "Play other playlist");
-        table.AddRow("Up", "Volume up",                  "[green1]shift[/] + [cyan1]S[/]", "Save playlist");
-        table.AddRow("Down", "Volume down",              "[green1]shift[/] + [turquoise2]alt[/] + [cyan1]S[/]", "Save as");
-        table.AddRow("L", "Toggle looping",              "[turquoise2]alt[/] + [cyan1]S[/]", "Suffle playlist");
-        table.AddRow("M", "Toggle mute",                 "[green1]shift[/] + [cyan1]P[/]", "Play song(s)");
-        table.AddRow("S", "Toggle shuffle",              "[green1]shift[/] + [cyan1]B[/]", "Redownload current song");
-        table.AddRow("Playlist", "");
-        table.AddRow("P", "Previous song");
-        table.AddRow("N", "Next song");
-        table.AddRow("R", "Play random song");
-        table.AddRow("Delete", "Delete current song from playlist");
-        table.AddRow("F2", "Show playlist options");
-        table.AddRow("tab", "Show cmd Help");
+        char separator = '+';
+        string[] AddSongToPlaylist = (Keybindings.AddSongToPlaylist).Replace(" ", "").Split(separator);
+        string[] ShowSongsInPlaylists = (Keybindings.ShowSongsInPlaylists).Replace(" ", "").Split(separator);
+        string[] ListAllPlaylists = (Keybindings.ListAllPlaylists).Replace(" ", "").Split(separator);
+        string[] PlayOtherPlaylist = (Keybindings.PlayOtherPlaylist).Replace(" ", "").Split(separator);
+        string[] SaveCurrentPlaylist = (Keybindings.SaveCurrentPlaylist).Replace(" ", "").Split(separator);
+        string[] SaveAsPlaylist = (Keybindings.SaveAsPlaylist).Replace(" ", "").Split(separator);
+        string[] ShufflePlaylist = (Keybindings.ShufflePlaylist).Replace(" ", "").Split(separator);
+        string[] PlaySong = (Keybindings.PlaySong).Replace(" ", "").Split(separator);
+        string[] RedownloadCurrentSong = (Keybindings.RedownloadCurrentSong).Replace(" ", "").Split(separator);
+        string[] PlayPause = (Keybindings.PlayPause).Replace(" ", "").Split(separator);
+        string[] Quit = (Keybindings.Quit).Replace(" ", "").Split(separator);
+        string[] Backwards5s = (Keybindings.Backwards5s).Replace(" ", "").Split(separator);
+        string[] Forward5s = (Keybindings.Forward5s).Replace(" ", "").Split(separator);
+        string[] VolumeUp = (Keybindings.VolumeUp).Replace(" ", "").Split(separator);
+        string[] VolumeDown = (Keybindings.VolumeDown).Replace(" ", "").Split(separator);
+        string[] Loop = (Keybindings.Loop).Replace(" ", "").Split(separator);
+        string[] Mute = (Keybindings.Mute).Replace(" ", "").Split(separator);
+        string[] Shuffle = (Keybindings.Shuffle).Replace(" ", "").Split(separator);
+        string[] NextSong = (Keybindings.NextSong).Replace(" ", "").Split(separator);
+        string[] PreviousSong = (Keybindings.PreviousSong).Replace(" ", "").Split(separator);
+        string[] PlayRandomSong = (Keybindings.PlayRandomSong).Replace(" ", "").Split(separator);
+        string[] DeleteCurrentSong = (Keybindings.DeleteCurrentSong).Replace(" ", "").Split(separator);
+        string[] PlaylistOptions = (Keybindings.PlaylistOptions).Replace(" ", "").Split(separator);
+        string[] CommandHelpScreen = (Keybindings.CommandHelpScreen).Replace(" ", "").Split(separator);
+        string[] EditKeybindings = (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
+        string[] ChangeLanguage = (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
 
+
+        table.AddColumns(Locale.Help.Controls, Locale.Help.Description,Locale.Help.ModControls,Locale.Help.Description);
+
+        table.AddRow(DrawHelpTextColouring(PlayPause), Locale.Help.PlayPause,                                               DrawHelpTextColouring(AddSongToPlaylist), Locale.Help.AddsongToPlaylist);
+        table.AddRow(DrawHelpTextColouring(Quit), Locale.Help.Quit,                                                         DrawHelpTextColouring(ShowSongsInPlaylists), Locale.Help.ListAllSongsInOtherPlaylist);
+        table.AddRow(DrawHelpTextColouring(Backwards5s), $"{Locale.Help.Rewind} {Preferences.changeVolumeBy * 100} {Locale.Help.Seconds}",  
+                                                                                                                                                        DrawHelpTextColouring(ListAllPlaylists), Locale.Help.ListAllPlaylists);
+        table.AddRow(DrawHelpTextColouring(Forward5s), $"{Locale.Help.Forward} {Preferences.changeVolumeBy * 100} {Locale.Help.Seconds}",   
+                                                                                                                                                        DrawHelpTextColouring(PlayOtherPlaylist), Locale.Help.PlayOtherPlaylist);
+        table.AddRow(DrawHelpTextColouring(VolumeUp), Locale.Help.VolumeUp,                                                 DrawHelpTextColouring(SaveCurrentPlaylist), Locale.Help.SavePlaylist);
+        table.AddRow(DrawHelpTextColouring(VolumeDown), Locale.Help.VolumeDown,                                             DrawHelpTextColouring(SaveAsPlaylist), Locale.Help.SaveAs);
+        table.AddRow(DrawHelpTextColouring(Loop), Locale.Help.ToggleLooping,                                                DrawHelpTextColouring(ShufflePlaylist), Locale.Help.ShufflePlaylist);
+        table.AddRow(DrawHelpTextColouring(Mute), Locale.Help.ToggleMute,                                                       DrawHelpTextColouring(PlaySong), Locale.Help.PlaySongs);
+        table.AddRow(DrawHelpTextColouring(Shuffle), Locale.Help.ToggleShuffle,                                             DrawHelpTextColouring(RedownloadCurrentSong), Locale.Help.RedownloadCurrentSong);
+
+        table.AddRow(Locale.Help.Playlist, "" ,DrawHelpTextColouring(EditKeybindings), Locale.Help.EditKeybinds);
+        table.AddRow(DrawHelpTextColouring(NextSong), Locale.Help.NextSong, DrawHelpTextColouring(ChangeLanguage), Locale.Help.ChangeLanguage);
+        table.AddRow(DrawHelpTextColouring(PreviousSong), Locale.Help.PreviousSong);
+        table.AddRow(DrawHelpTextColouring(PlayRandomSong), Locale.Help.PlayRandomSong);
+        table.AddRow(DrawHelpTextColouring(DeleteCurrentSong), Locale.Help.DeleteCurrentSongFromPlaylist);
+        table.AddRow(DrawHelpTextColouring(PlaylistOptions), Locale.Help.ShowPlaylistOptions);
+        table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Locale.Help.ShowCmdHelp);
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
-        AnsiConsole.Markup("Press [red]h[/] to hide help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] for settings");
-        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+        DrawHelpSettingInfo();
     }
+    
+    static private string DrawHelpTextColouring(string[] textArray){
+        if(textArray.Length == 1){
+            return textArray[0];
+        }
+        else if(textArray.Length == 2){
+            return $"[green1]{textArray[0]}[/] + {textArray[1]}";
+        }
+        else if(textArray.Length == 3){
+            return $"[green1]{textArray[0]}[/] + [turquoise2]{textArray[1]}[/] + {textArray[2]}";
+        } else {
+            return textArray[0];
+        }
+    } 
     static public void DrawSettings() {
+        string ForwardSecondAmount = (Keybindings.ForwardSecondAmount);
+        string BackwardSecondAmount = (Keybindings.BackwardSecondAmount);
+        string ChangeVolumeAmount = (Keybindings.ChangeVolumeAmount);
+        string Autosave = (Keybindings.Autosave);
+
         var table = new Table();
 
+<<<<<<< Updated upstream
         table.AddColumns("Settings", "Value", "Change Value");
 
         table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]1[/] to change");
         table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]2[/] to change");
         table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]3[/] to change");
         table.AddRow("Auto Save", Preferences.isAutoSave + "", "[green]4[/] to toggle");
+=======
+        table.AddColumns(Locale.Settings._Settings, Locale.Settings.Value, Locale.Settings.ChangeValue);
+>>>>>>> Stashed changes
 
+        table.AddRow(Locale.Settings.Forwardseconds, Preferences.forwardSeconds + " sec", $"[green]{ForwardSecondAmount}[/] {Locale.Settings.ToChange}");
+        table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
+        table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
+        table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
-        AnsiConsole.Markup("Press [red]h[/] for help");
-        AnsiConsole.Markup("\nPress [yellow]c[/] to hide settings");
-        AnsiConsole.Markup("\nPress [green]f[/] to show playlist");
+        DrawHelpSettingInfo();
     }
 
     public static void RehreshCurrentView() {
@@ -482,13 +531,104 @@ static class TUI
         else if (Start.playerView == "fake") {
             DrawPlayer();
         }
+        else if (Start.playerView == "editkeybindings") {
+            EditKeyBindings();
+        }
+        
     }
+    private static void DrawHelpSettingInfo(){
+        AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
+        AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
+        AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
+    }
+<<<<<<< Updated upstream
     
     public static void Help() {
-        var table = new Table();
-        table.AddColumn("Commands");
-        table.AddColumn("Description");
+=======
+    public static void PlaylistCli(string[] args){
+        if (args[0] == "playlist" || args[0] == "pl") 
+        {
+            if (args.Length < 2)
+            {
+                AnsiConsole.WriteLine($"{Locale.OutsideItems.NoCommand}");
+            }
+            else
+            {
+                switch (args[1])
+                {
+                    case "play":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
+                            return;
+                        }
+                        Playlists.Play(args[2]);
+                        return;
+                    case "create":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
+                            return;
+                        }
+                        Playlists.Create(args[2]);
+                        Environment.Exit(0);
+                        return;
+                    case "delete":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
+                            return;
+                        }
+                        Playlists.Delete(args[2]);
+                        Environment.Exit(0);
+                        return;
+                    case "add":
+                        if (args.Length < 4)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
+                            return;
+                        }
+                        Playlists.Add(args);
+                        Environment.Exit(0);
+                        return;
+                    case "remove":
+                        if (args.Length < 4)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
+                            return;
+                        }
+                        Playlists.Remove(args);
+                        Environment.Exit(0);
+                        return;
+                    case "show":
+                        if (args.Length < 3)
+                        {
+                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
+                            return;
+                        }
+                        Playlists.ShowCli(args[2]);
+                        Environment.Exit(0);
+                        return;
+                    case "list":
+                        Playlists.PrintList();
+                        Environment.Exit(0);
+                        return;
+                }
+            }
 
+            PlaylistHelp();
+            return;
+        }
+    }
+
+    public static void CliHelp() {
+        AnsiConsole.Clear();
+>>>>>>> Stashed changes
+        var table = new Table();
+        table.AddColumn(Locale.CliHelp.Commands);
+        table.AddColumn(Locale.CliHelp.Description);
+
+<<<<<<< Updated upstream
         // table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
         table.AddRow("[grey]jammer[/] <[green]file[/]> ...", "Play song(s) from file(s)");
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
@@ -498,6 +638,17 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
         table.AddRow("[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
+=======
+        table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.Url}> ...", Locale.CliHelp.PlaySongFromUrl);
+        table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.File}> ...", Locale.CliHelp.PlaySongFromFile);
+        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
+        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
+        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
+        table.AddRow($"[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands);
+        table.AddRow("[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
+        table.AddRow("[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);
+        table.AddRow("[grey]jammer[/] [green]version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
+>>>>>>> Stashed changes
 
         AnsiConsole.Write(table);
 
@@ -506,9 +657,10 @@ static class TUI
 
     static public void PlaylistHelp() {
         var table = new Table();
-        table.AddColumn("Playlist Commands");
-        table.AddColumn("Description");
+        table.AddColumn(Locale.CliHelp.PlaylistCommands);
+        table.AddColumn(Locale.CliHelp.Description);
 
+<<<<<<< Updated upstream
         table.AddRow("[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <name>", "Play playlist");
         table.AddRow("[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <name>", "Create playlist");
         table.AddRow("[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <name>", "Delete playlist");
@@ -516,10 +668,124 @@ static class TUI
         table.AddRow("[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <name> <song> ...", "Remove songs from playlist");
         table.AddRow("[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <name>", "Show songs in playlist");
         table.AddRow("[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", "List all playlists");
+=======
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.AddSongsToPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
+        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", Locale.CliHelp.ListAllPlaylists);
+>>>>>>> Stashed changes
 
         AnsiConsole.Write(table);
     }
     public static void Version() {
-        AnsiConsole.MarkupLine("[green]Jammer version " + Utils.version + "[/]");
+        AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version} " + Utils.version + "[/]");
+    }
+
+    public static void EditKeyBindings(){
+        string[] description = {
+            Locale.Help.PlayPause,
+            Locale.Help.Quit,
+            Locale.Help.NextSong,
+            Locale.Help.PreviousSong,
+            Locale.Help.PlaySongs,
+            Locale.Help.Forward,
+            Locale.Help.Rewind,
+            Locale.Help.VolumeUp,
+            Locale.Help.VolumeDown,
+            Locale.Help.ToggleShuffle,
+            Locale.Help.SaveAs,
+            Locale.Help.SavePlaylist,
+            Locale.Help.ShufflePlaylist,
+            Locale.Help.ToggleLooping,
+            Locale.Help.ToggleShuffle,
+            Locale.Help.ListAllPlaylists,
+            Locale.Help.ToHideHelp,
+            Locale.Help.ForSettings,
+            "Go to song start",
+            "Go to song end",
+            Locale.Help.ShowPlaylistOptions,
+            "Forward second amount",
+            "Backward second amount",
+            "Change volume by",
+            "Toggle autosave",
+            "Show current state", 
+            Locale.Help.ShowCmdHelp,
+            Locale.Help.DeleteCurrentSongFromPlaylist,
+            Locale.Help.AddsongToPlaylist,
+            Locale.Help.ListAllSongsInOtherPlaylist,
+            Locale.CliHelp.ShowSongsInPlaylist,
+            Locale.Help.PlayOtherPlaylist,
+            Locale.Help.RedownloadCurrentSong,
+            Locale.Help.EditKeybinds,
+            Locale.Help.ChangeLanguage,
+            Locale.Help.PlayRandomSong,
+        };
+
+        // Construct description same way as in readalldata
+        List<string> results = new();
+        int maximum = 15;
+        for(int i = 0; i < description.Length; i++){
+            string keyValue = description[i];
+            if(i >= ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+                results.Add(keyValue);
+            }
+        }
+
+        for(int i = 0; i < description.Length; i++){
+            string keyValue = description[i];
+            if(i < ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+                results.Add(keyValue);
+            }
+        }
+        description = results.ToArray();
+
+        var table = new Table();
+        table.AddColumn("Description");
+        table.AddColumn("Current control");
+        string[] _elements = ReadWriteFile.ReadAll_KeyData();
+
+        // Counter to track the index for the description array
+        int descIndex = 0;
+
+        // Loop through the _elements array
+        for(int i = 0; i < _elements.Length; i++) {
+            // Ensure the description index stays within bounds
+            if (descIndex <= description.Length) {
+                // Check if the description at descIndex is not empty
+                if (!string.IsNullOrEmpty(description[descIndex])) {
+                    // Add row to the table
+                    if(descIndex == 0){
+                        table.AddRow("[red]"+description[descIndex]+"[/]", "[red]"+_elements[i]+"[/]");
+                    } else {
+                        table.AddRow(description[descIndex], _elements[i]);
+                    }
+                } else {
+                    i++;
+                }
+                // Move to the next description index
+                descIndex++;
+            }
+        }
+        AnsiConsole.Write(table);
+        if(ReadWriteFile.EditingKeybind){
+            AnsiConsole.Markup("Press 'Escape' to cancel, Enter to save\n");
+            AnsiConsole.Markup("Allowed modifiers: ctrl, alt, shift, shift+ctrl, alt+ctrl\n\n");
+
+        } else {
+            AnsiConsole.Markup("Press Enter to edit highlighted keybind\n");
+        }
+        DrawHelpSettingInfo();
+    }
+    public static void ChangeLanguage(){
+        var table = new Table();
+        table.AddColumn(Locale.CliHelp.PlaylistCommands);
+        table.AddColumn(Locale.CliHelp.Description);
+
+        table.AddRow("BB", "BB");
+
+        AnsiConsole.Write(table);
     }
 }

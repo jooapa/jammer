@@ -67,13 +67,14 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **YOUTUBE** Youtube video
 - **SOUNDCLOUD** Soundcloud song/playlist
 
-### Player Controls
+### Default Player Controls
 
 | Key | Action |
 |  --------  |  -------  |
 | `h` | show/hide help |
 | `c` | show/hide settings |
 | `f` | show/hide playlist view |
+| `shift + e` | edit keybindings|
 |    |    |
 | `space` | play/pause |
 | `q` | quit |
@@ -92,6 +93,7 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 | `tab` | show CMD help screen|
 | `0` | goto start of the song|
 | `9` | goto end of the song|
+
 
 ### Playlist Controls
 
