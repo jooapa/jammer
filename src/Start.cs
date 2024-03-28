@@ -54,7 +54,7 @@ namespace jammer
                         case "--help":
                             TUI.ClearScreen();
                             TUI.Help();
-                            break;
+                            return;
 
                         case "-D":
                             Utils.isDebug = true;
