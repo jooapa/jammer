@@ -72,7 +72,7 @@ namespace jammer
                         case "--play":
                         case "-p":
                             if (args.Length > i+1) {
-                                Playlists.Play(args[i+1]);
+                                Playlists.Play(args[i+1], true);
                             } else {
                                 AnsiConsole.WriteLine("No playlist name given");
                                 Environment.Exit(1);
@@ -130,6 +130,14 @@ namespace jammer
                                 AnsiConsole.WriteLine("No playlist name or song given");
                                 Environment.Exit(0);
                             }
+                            return;
+                        case "--list":
+                        case "-l":
+                            Playlists.PrintList();
+                            return;
+                        case "--version":
+                        case "-v":
+                            AnsiConsole.MarkupLine("[green]Jammer version: " + Utils.version + "[/]");
                             return;
                         case "start":
                             // open explorer in jammer folder
@@ -202,14 +210,10 @@ namespace jammer
         //
         public static void Loop()
         {
-
-            if (initWMP == false)
-            {
-                initWMP = true;
-            }
-
             lastSeconds = -1;
             treshhold = 1;
+
+            Utils.isInitialized = true;
 
             TUI.ClearScreen();
             drawOnce = true;
@@ -259,6 +263,11 @@ namespace jammer
                             Utils.MusicTimePlayed = 0;
                             state = MainStates.playing;
                         }
+                        else
+                        {   
+                            drawOnce = true;
+                            state = MainStates.idle;
+                        }
                         break;
 
                     case MainStates.playing:
@@ -295,6 +304,7 @@ namespace jammer
                         }
 
                         CheckKeyboard();
+
                         break;
 
                     case MainStates.pause:

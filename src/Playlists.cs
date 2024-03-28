@@ -31,7 +31,7 @@ namespace jammer
             }
         }
 
-        static public void Play(string playlist)
+        static public void Play(string playlist, bool fromCli)
         {
             AnsiConsole.WriteLine("Starting up " + playlist + ".jammer");
             string playlistName = playlist;
@@ -49,11 +49,16 @@ namespace jammer
                 Utils.songs = songs;
 
                 Utils.currentPlaylist = playlistName;
-                // Start.state = MainStates.playing;
-
-                foreach (string song in songs)
+                
+                if (fromCli)
                 {
-                    AnsiConsole.MarkupLine("[green]Playing " + song + "[/]");
+                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                    Start.state = MainStates.play;
+                    jammer.Play.PlaySong(songs, 0);
                 }
             }
             else
@@ -252,9 +257,9 @@ namespace jammer
             Save(Utils.currentPlaylist, true);
         }
 
-        static public void PrintList()
+        public static void PrintList()
         {
-            Console.WriteLine("Playlists:");
+            AnsiConsole.WriteLine("Playlists:");
             Console.WriteLine(GetList());
         }
 

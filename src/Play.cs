@@ -161,7 +161,7 @@ namespace jammer
                     {
                         Utils.currentSongIndex = Utils.songs.Length - 1;
                     }
-                    Start.state = MainStates.playing;
+                    // Start.state = MainStates.playing;
                     PlaySong(Utils.songs, Utils.currentSongIndex);
                 }
             }
@@ -194,7 +194,7 @@ namespace jammer
             {
                 return;
             }
-            Bass.ChannelPause(Utils.currentMusic);
+            Bass.ChannelPlay(Utils.currentMusic);
         }
 
         public static void StopSong()
@@ -218,7 +218,7 @@ namespace jammer
 
         public static void PlayDrawReset() // play, draw, reset lastSeconds
         {
-            Start.state = MainStates.playing;
+            // Start.state = MainStates.playing;
             Start.drawOnce = true;
             Start.prevMusicTimePlayed = 0;
         }
@@ -409,7 +409,7 @@ namespace jammer
                 }
                 else {
                     Utils.currentSongIndex = Utils.songs.Length - 1;
-                    Start.state = MainStates.playing;
+                    // Start.state = MainStates.playing;
                 }
             }
             
@@ -461,6 +461,7 @@ namespace jammer
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
+            Start.state = MainStates.playing;
             // play stream
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();

@@ -131,8 +131,6 @@ namespace jammer
                         TUI.PlaylistInput();
                         break;
                     case ConsoleKey.D1: // set forward seek to 1 second
-                        if (!IfHoldingDownCTRL(key)) break;
-
                         AnsiConsole.Markup("\nEnter forward seconds: ");
                         string? forwardSecondsString = Console.ReadLine();
                         if (int.TryParse(forwardSecondsString, out int forwardSeconds))
@@ -146,8 +144,6 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.D2: // set rewind seek to 2 seconds
-                        if (!IfHoldingDownCTRL(key)) break;
-
                         AnsiConsole.Markup("\nEnter rewind seconds: ");
                         string? rewindSecondsString = Console.ReadLine();
                         if (int.TryParse(rewindSecondsString, out int rewindSeconds))
@@ -161,7 +157,6 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.D3: // set volume change to 3
-                        if (!IfHoldingDownCTRL(key)) break;
                         AnsiConsole.Markup("\nEnter volume change (%): ");
                         string? volumeChangeString = Console.ReadLine();
                         if (int.TryParse(volumeChangeString, out int volumeChange))
@@ -176,8 +171,6 @@ namespace jammer
                         }
                         break;
                     case ConsoleKey.D4: // autosave or not
-                        if (!IfHoldingDownCTRL(key)) break;
-
                         Preferences.isAutoSave = !Preferences.isAutoSave;
                         break;
                     case ConsoleKey.Tab:
@@ -231,9 +224,13 @@ namespace jammer
         public static void PauseSong()
         {
             if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Playing)
-                Bass.ChannelPause(Utils.currentMusic);
+            {
+                state = MainStates.pause;
+            }
             else
-                Bass.ChannelPlay(Utils.currentMusic);
+            {
+                state = MainStates.play;
+            }
         }
         public static bool IfHoldingDownCTRL(ConsoleKeyInfo key)
         {

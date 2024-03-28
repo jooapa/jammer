@@ -33,7 +33,7 @@ jammer update
 ```bash
 jammer
 jammer [song] ... [folder]
-jammer https://soundcloud.com/username/track-name 
+jammer https://soundcloud.com/username/track-name
 jammer https://soundcloud.com/username/sets/playlist-name
 jammer https://youtube.com/watch?v=video-id
 
@@ -49,13 +49,13 @@ jammer --version      show version
 *when using **soundcloud** or **youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-jammer playlist/pl play <name>
-jammer playlist/pl create <name>
-jammer playlist/pl delete <name>
-jammer playlist/pl add <name> <song> ...
-jammer playlist/pl remove <name> <song> ...
-jammer playlist/pl show <name>
-jammer playlist/pl list
+jammer -p, --play <name>
+jammer -c, --create <name>
+jammer -d, --delete <name>
+jammer -a, --add <name> <song> ...
+jammer -r, --remove <name> <song> ...
+jammer -s, --show <name>
+jammer -l, --list
 ```
 
 ### Supported formats
@@ -110,7 +110,7 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 ### Example usage
 
 ```bash
-jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer 
+jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
 ```
 
 ```bash
@@ -129,7 +129,11 @@ You can also stack multiple jammer playlists inside another jammer playlists.
 
 ### Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/) website and place them in the same folder as the executable.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/) website. Add the **BASS** and **BASS_AAC** libraries to the folder and add it to $LD_LIBRARY_PATH.
+
+```bash
+export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
+```
 
 ```bash
 
