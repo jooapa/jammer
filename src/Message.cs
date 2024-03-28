@@ -20,7 +20,7 @@ namespace jammer
             return input;
         }
 
-        public static void Data(string data, string title, bool isError = false) {
+        public static void Data(string data, string title, bool isError = false, bool readKey = true) {
             var mainTable = new Table();
             var messageTable = new Table();
             if (isError)
@@ -36,7 +36,10 @@ namespace jammer
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0,0);
             AnsiConsole.Write(mainTable);
-            Console.ReadLine();
+            if (readKey)
+            {
+                Console.ReadKey();
+            }
         }
         
     }

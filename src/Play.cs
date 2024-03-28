@@ -8,6 +8,49 @@ namespace jammer
 {
     public class Play
     {
+        public static string[] songExtensions = {   ".mp3", ".ogg", ".wav", ".mp2", ".mp1", ".aiff", ".m2a", 
+                                                    ".mpa", ".m1a", ".mpg", ".mpeg", ".aif", ".mp3pro", ".bwf", 
+                                                    ".mus", ".mod", ".mo3", ".s3m", ".xm", ".it", ".mtm", ".umx", 
+                                                    ".mdz", ".s3z", ".itz", ".xmz"};
+        public static string[] aacExtensions = { ".aac", ".m4a", ".adts", ".m4b" };
+        public static string[] mp4Extensions = { ".mp4" };
+        
+        public static bool isValidExtension(string extension)
+        {
+            foreach (string ext in songExtensions)
+            {
+                if (extension == ext)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isValidAACExtension(string extension)
+        {
+            foreach (string ext in aacExtensions)
+            {
+                if (extension == ext)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool isValidMP4Extension(string extension)
+        {
+            foreach (string ext in mp4Extensions)
+            {
+                if (extension == ext)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
         // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
         {
@@ -85,13 +128,7 @@ namespace jammer
                 Debug.dprint("Init audio");
                 string extension = Path.GetExtension(path).ToLower();
 
-                if (extension == ".mp3" || extension == ".ogg" || extension == ".wav" || extension == ".mp2" || extension == ".mp1" ||
-                    extension == ".aiff" || extension == ".m2a" || extension == ".mpa" || extension == ".m1a" || extension == ".mpg" ||
-                    extension == ".mpeg" || extension == ".aif" || extension == ".mp3pro" || extension == ".bwf" || extension == ".mus" ||
-                    extension == ".mod" || extension == ".mo3" || extension == ".s3m" || extension == ".xm" || extension == ".it" ||
-                   extension == ".mtm" || extension == ".umx" || extension == ".mdz" || extension == ".s3z" || extension == ".itz" ||
-                    extension == ".xmz" || extension == ".aac" || extension == ".mp4" || extension == ".m4a" || extension == ".adts" ||
-                    extension == ".m4b")
+                if (isValidExtension(extension) || isValidAACExtension(extension) || isValidMP4Extension(extension))
                 {
                     Debug.dprint("Audiofile");
                     StartPlaying();
@@ -393,16 +430,13 @@ namespace jammer
 
             ResetMusic();
             // if extension is aac, use aac decoder
-            if (Path.GetExtension(Utils.currentSong) == ".aac" || 
-            Path.GetExtension(Utils.currentSong) == ".m4a" || 
-            Path.GetExtension(Utils.currentSong) == ".adts" ||
-            Path.GetExtension(Utils.currentSong) == ".m4b")
+            if (isValidAACExtension(Path.GetExtension(Utils.currentSong)))
             {
                 BassAac.PlayAudioFromMp4 = false;
                 BassAac.AacSupportMp4 = false;
                 Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
             }
-            else if (Path.GetExtension(Utils.currentSong) == ".mp4")
+            else if (isValidMP4Extension(Path.GetExtension(Utils.currentSong)))
             {
                 // flags
                 BassAac.PlayAudioFromMp4 = true;
