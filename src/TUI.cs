@@ -570,7 +570,7 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
         table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
-        table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
+        /* table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands"); */
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
         table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
@@ -585,13 +585,13 @@ static class TUI
         table.AddColumn("Playlist Commands");
         table.AddColumn("Description");
 
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<name>", "Play playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<name>", "Create playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<name>", "Delete playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<name> <song> ...", "Add songs to playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<name> <song> ...", "Remove songs from playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<name>", "Show songs in playlist");
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", "List all playlists");
+        table.AddRow("[grey]jammer[/] [red]-p, --play[/] <name>", "Play playlist");
+        table.AddRow("[grey]jammer[/] [red]-c, --create[/] <name>", "Create playlist");
+        table.AddRow("[grey]jammer[/] [red]-d, --delete[/] <name>", "Delete playlist");
+        table.AddRow("[grey]jammer[/] [red]-a, --add[/] <name> <song> ...", "Add songs to playlist");
+        table.AddRow("[grey]jammer[/] [red]-r, --remove[/] <name> <song> ...", "Remove songs from playlist");
+        table.AddRow("[grey]jammer[/] [red]-s, --show[/] <name>", "Show songs in playlist");
+        table.AddRow("[grey]jammer[/] [red]-l, --list[/] ", "List all playlists");
 
         AnsiConsole.Write(table);
     }

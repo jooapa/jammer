@@ -85,7 +85,7 @@ namespace jammer
 
         static public void Add(string[] args)
         {
-            string playlistName = args[2];
+            string playlistName = args[0];
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
                 "playlists",
@@ -131,7 +131,7 @@ namespace jammer
 
         static public void Remove(string[] args)
         {
-            string playlistName = args[2];
+            string playlistName = args[0];
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
                 "playlists",
