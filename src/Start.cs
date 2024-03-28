@@ -68,7 +68,7 @@ namespace jammer
                             TUI.ClearScreen();
                             TUI.Help();
                             return;
-                        case "--playlist":
+                        case "--play":
                         case "-p":
                             if (args.Length > i+1) {
                                 Playlists.Play(args[i+1]);
