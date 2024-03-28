@@ -570,7 +570,7 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
         table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
-        table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands");
+        /* table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands"); */
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
         table.AddRow("[grey]jammer[/] [green]version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");

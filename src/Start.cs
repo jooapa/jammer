@@ -46,23 +46,28 @@ namespace jammer
         {
             Debug.dprint("Run");
             if (args.Length > 0) {
+                // NOTE(ra) If debug switch is defined remove it from the args list
                 for (int i = 0; i < args.Length; i++) {
                     string arg = args[i];
+                    switch(arg) {
+                        case "-D":
+                            Utils.isDebug = true;
+                            Debug.dprint("\n--- Debug Started ---\n");
+                            List<string> argumentsList = new List<string>(args);
+                            argumentsList.RemoveAt(i);
+                            args = argumentsList.ToArray();
+                            break;
+                    }
+                }
 
+                for (int i = 0; i < args.Length; i++) {
+                    string arg = args[i];
                     switch (arg) {
                         case "-h":
                         case "--help":
                             TUI.ClearScreen();
                             TUI.Help();
                             return;
-
-                        case "-D":
-                            Utils.isDebug = true;
-                            Debug.dprint("\n--- Debug Started ---\n");
-                            List<string> argumentsList = new List<string>(args);
-                            argumentsList.RemoveAt(0);
-                            args = argumentsList.ToArray();
-                            break;
                         case "--playlist":
                         case "-p":
                             if (args.Length > i+1) {
@@ -159,11 +164,7 @@ namespace jammer
                 }
             } 
 
-            // NOTE(ilako) Temp hack. Can be permanent. Who knows! :D
-            if (args.Length == 0) {
-                Utils.songs = args;
-            }
-
+            Utils.songs = args;
             Preferences.CheckJammerFolderExists();
             StartUp();
         }
@@ -180,6 +181,11 @@ namespace jammer
             if (Utils.songs.Length != 0)
             {
                 Utils.songs = Absolute.Correctify(Utils.songs);
+                //NOTE(ra) Correctify removes filenames from Utils.Songs. 
+                //If there is one file that doesn't exist this is a fix
+                if (Utils.songs.Length == 0) { 
+                    return;
+                }
                 Utils.currentSong = Utils.songs[0];
                 Utils.currentSongIndex = 0;
                 state = MainStates.playing; // Start in play state if songs are given
