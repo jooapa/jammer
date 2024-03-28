@@ -63,8 +63,16 @@ namespace jammer
             }
             else
             {
-                Message.Data("Playlist doesn't exist:" + playlist + ".jammer", "Error Playing Playlist", true);
-                Environment.Exit(0);
+                if (!fromCli)
+                {
+                    Message.Data("Playlist doesn't exist:" + playlist + ".jammer", "Error Playing Playlist", true);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[red]Playlist: " + playlist + " doesn't exist[/]");
+                    Environment.Exit(0);
+                    return;
+                }
             }
         }
 
