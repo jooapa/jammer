@@ -209,20 +209,11 @@ namespace jammer
                             playerView = "settings";
                             TUI.DrawSettings();
                             break;
-<<<<<<< Updated upstream
-                        }
-                        playerView = "settings";
-                        TUI.DrawSettings();
-                        break;
-                    case ConsoleKey.D0: // goto song start
-                        Play.SeekSong(0, false);
-                        break;
-                    case ConsoleKey.D9: // goto song end
-                        Play.MaybeNextSong();
-                        break;
-                    case ConsoleKey.F2: // playlist options
-                        TUI.PlaylistInput();
-                        break;
+                    /*
+                    !!!!!!!!
+                    !!!!!!!!
+                    !!!!!!!!
+                    !!!!!!!!
                     case ConsoleKey.D1: // set forward seek to 1 second
                         AnsiConsole.Markup("\nEnter forward seconds: ");
                         string? forwardSecondsString = Console.ReadLine();
@@ -266,21 +257,11 @@ namespace jammer
                     case ConsoleKey.D4: // autosave or not
                         Preferences.isAutoSave = !Preferences.isAutoSave;
                         break;
-                    case ConsoleKey.Tab:
-                        TUI.Help();
-
-                        AnsiConsole.MarkupLine("\nPress any key to continue.");
-                        Console.ReadKey(true);
-                        break;
-                    case ConsoleKey.Delete:
-                        Play.DeleteSong(Utils.currentSongIndex);
-                        break;
-                    
-                    // Case For A
-                    case ConsoleKey.A:
-                        if (IfHoldingDownSHIFT(key))
-                        {
-=======
+                    !!!!!!!
+                    !!!!!!!
+                    !!!!!!!
+                    !!!!!!!
+*/
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
                             break;
@@ -348,7 +329,6 @@ namespace jammer
                         
                         // Case For A
                         case "AddSongToPlaylist":
->>>>>>> Stashed changes
                             TUI.AddSongToPlaylist();
                             break;
                         // Case For ?

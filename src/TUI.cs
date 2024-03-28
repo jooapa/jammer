@@ -493,18 +493,7 @@ static class TUI
         string Autosave = (Keybindings.Autosave);
 
         var table = new Table();
-
-<<<<<<< Updated upstream
-        table.AddColumns("Settings", "Value", "Change Value");
-
-        table.AddRow("Forward seconds", Preferences.forwardSeconds + " sec", "[green]1[/] to change");
-        table.AddRow("Rewind seconds", Preferences.rewindSeconds + " sec", "[green]2[/] to change");
-        table.AddRow("Change Volume by", Preferences.changeVolumeBy * 100 + " %", "[green]3[/] to change");
-        table.AddRow("Auto Save", Preferences.isAutoSave + "", "[green]4[/] to toggle");
-=======
         table.AddColumns(Locale.Settings._Settings, Locale.Settings.Value, Locale.Settings.ChangeValue);
->>>>>>> Stashed changes
-
         table.AddRow(Locale.Settings.Forwardseconds, Preferences.forwardSeconds + " sec", $"[green]{ForwardSecondAmount}[/] {Locale.Settings.ToChange}");
         table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
         table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
@@ -541,94 +530,12 @@ static class TUI
         AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
         AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
     }
-<<<<<<< Updated upstream
     
-    public static void Help() {
-=======
-    public static void PlaylistCli(string[] args){
-        if (args[0] == "playlist" || args[0] == "pl") 
-        {
-            if (args.Length < 2)
-            {
-                AnsiConsole.WriteLine($"{Locale.OutsideItems.NoCommand}");
-            }
-            else
-            {
-                switch (args[1])
-                {
-                    case "play":
-                        if (args.Length < 3)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
-                            return;
-                        }
-                        Playlists.Play(args[2]);
-                        return;
-                    case "create":
-                        if (args.Length < 3)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
-                            return;
-                        }
-                        Playlists.Create(args[2]);
-                        Environment.Exit(0);
-                        return;
-                    case "delete":
-                        if (args.Length < 3)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
-                            return;
-                        }
-                        Playlists.Delete(args[2]);
-                        Environment.Exit(0);
-                        return;
-                    case "add":
-                        if (args.Length < 4)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-                            return;
-                        }
-                        Playlists.Add(args);
-                        Environment.Exit(0);
-                        return;
-                    case "remove":
-                        if (args.Length < 4)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-                            return;
-                        }
-                        Playlists.Remove(args);
-                        Environment.Exit(0);
-                        return;
-                    case "show":
-                        if (args.Length < 3)
-                        {
-                            AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
-                            return;
-                        }
-                        Playlists.ShowCli(args[2]);
-                        Environment.Exit(0);
-                        return;
-                    case "list":
-                        Playlists.PrintList();
-                        Environment.Exit(0);
-                        return;
-                }
-            }
-
-            PlaylistHelp();
-            return;
-        }
-    }
-
     public static void CliHelp() {
-        AnsiConsole.Clear();
->>>>>>> Stashed changes
         var table = new Table();
         table.AddColumn(Locale.CliHelp.Commands);
         table.AddColumn(Locale.CliHelp.Description);
 
-<<<<<<< Updated upstream
         // table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
         table.AddRow("[grey]jammer[/] <[green]file[/]> ...", "Play song(s) from file(s)");
         table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
@@ -638,17 +545,16 @@ static class TUI
         table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
         table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
         table.AddRow("[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
-=======
-        table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.Url}> ...", Locale.CliHelp.PlaySongFromUrl);
-        table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.File}> ...", Locale.CliHelp.PlaySongFromFile);
-        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
-        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
-        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
-        table.AddRow($"[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands);
-        table.AddRow("[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
-        table.AddRow("[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);
-        table.AddRow("[grey]jammer[/] [green]version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
->>>>>>> Stashed changes
+
+        // ! table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.Url}> ...", Locale.CliHelp.PlaySongFromUrl);
+        // ! table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.File}> ...", Locale.CliHelp.PlaySongFromFile);
+        // ! table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
+        // ! table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
+        // ! table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
+        // ! table.AddRow($"[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands);
+        // ! table.AddRow("[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
+        // ! table.AddRow("[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);
+        // ! table.AddRow("[grey]jammer[/] [green]version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
 
         AnsiConsole.Write(table);
 
@@ -660,7 +566,6 @@ static class TUI
         table.AddColumn(Locale.CliHelp.PlaylistCommands);
         table.AddColumn(Locale.CliHelp.Description);
 
-<<<<<<< Updated upstream
         table.AddRow("[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <name>", "Play playlist");
         table.AddRow("[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <name>", "Create playlist");
         table.AddRow("[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <name>", "Delete playlist");
@@ -668,15 +573,14 @@ static class TUI
         table.AddRow("[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <name> <song> ...", "Remove songs from playlist");
         table.AddRow("[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <name>", "Show songs in playlist");
         table.AddRow("[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", "List all playlists");
-=======
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.AddSongsToPlaylist);
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
-        table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
-        table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", Locale.CliHelp.ListAllPlaylists);
->>>>>>> Stashed changes
+
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.AddSongsToPlaylist);
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
+        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
+        // ! table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", Locale.CliHelp.ListAllPlaylists);
 
         AnsiConsole.Write(table);
     }

@@ -7,13 +7,12 @@ namespace jammer
     {
         string FileContent = @"
 ;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
-;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters. 
+;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.
 ;When using numbers, 'd' part is not needed
 ; Allowed modifiers are ctrl, shift, alt, ctrl + shift and ctrl + alt
 ;
 [Keybinds]
 PlayPause = Spacebar
-CurrentState = F12
 Quit = Q
 NextSong = N
 PreviousSong = P
@@ -35,10 +34,11 @@ Settings = C
 ToSongStart = 0
 ToSongEnd = 9
 PlaylistOptions = F2
-ForwardSecondAmount = Ctrl + 1
-BackwardSecondAmount = Ctrl + 2
-ChangeVolumeAmount = Ctrl + 3
-Autosave = Ctrl + 4
+ForwardSecondAmount = 1
+BackwardSecondAmount = 2
+ChangeVolumeAmount = 3
+Autosave = 4
+CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete
 AddSongToPlaylist = Shift + A

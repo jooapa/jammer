@@ -77,7 +77,16 @@ namespace jammer
             else if(isAlt){
                 final = "Alt + " + final;
             }
-            KeyData["Keybinds"]["PlayPause"] = final;
+            int i = 0;
+            foreach (var section in KeyData.Sections){
+                foreach (var key in section.Keys){
+                    if(i == ScrollIndexKeybind){
+                        KeyData["Keybinds"][key.KeyName] = final;
+                        break;
+                    }
+                    i++;
+                }
+            }
             parser.WriteFile("KeyData.ini", KeyData);
         }
         public static string ReadIni_KeyData(string section, string key){
@@ -253,18 +262,6 @@ namespace jammer
             return "NULL"; // idk if possible?
         }
         
-        /*
-        for jindex, letter in enumerate(text):
-            if jindex >= index and len(_final_text) != max:
-                _final_text += letter
-            pass
-        # Looppaa indexistä taaksepäin kaikki kirjaimet tekstiin
-        for jindex, letter in enumerate(text):
-            if jindex < index and len(_final_text) != max:
-                _final_text += letter
-            pass
-        return _final_text
-*/
         public static string[] ReadAll_KeyData()
         {
             List<string> results = new();
@@ -293,7 +290,7 @@ namespace jammer
             return results.ToArray(); // Convert List<string> to string[]
         }
 
-
+        
         // country code. en, fi, se, de etc...
         public static void Ini_LoadNewLocale(string country_code){
             LocaleData = parser.ReadFile($"locales\\{country_code}.ini");

@@ -45,36 +45,6 @@ namespace jammer
         //
         public static void Run(string[] args)
         {
-<<<<<<< Updated upstream
-=======
-            Debug.dprint("Run");
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args[i] == "-d")
-                {
-                    Utils.isDebug = true;
-                    Debug.dprint("\n--- Debug Started ---\n");
-                    List<string> argumentsList = new List<string>(args);
-                    argumentsList.RemoveAt(0);
-                    args = argumentsList.ToArray();
-                    break;
-                }
-                if (args[i] == "-help" || args[i] == "-h" || args[i] == "--help" || args[i] == "--h" || args[i] == "-?" || args[i] == "?" || args[i] == "help")
-                {
-                    TUI.ClearScreen();
-                    TUI.CliHelp();
-                    return;
-                }
-                if (args[i] == "-v" || args[i] == "--version" || args[i] == "version")
-                {
-                    TUI.ClearScreen();
-                    TUI.Version();
-                    return;
-                }
-            }
-
->>>>>>> Stashed changes
             Utils.songs = args;
             Debug.dprint("Run");
             if (args.Length > 0) {
@@ -91,7 +61,6 @@ namespace jammer
                             break;
                     }
                 }
-<<<<<<< Updated upstream
 
                 for (int i = 0; i < args.Length; i++) {
                     string arg = args[i];
@@ -99,7 +68,7 @@ namespace jammer
                         case "-h":
                         case "--help":
                             TUI.ClearScreen();
-                            TUI.Help();
+                            TUI.CliHelp();
                             return;
                         case "--play":
                         case "-p":
@@ -202,50 +171,6 @@ namespace jammer
                             }
                             return;
                     }
-=======
-                if (Utils.songs[0] == "start")
-                {
-                    // open explorer in jammer folder
-                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
-                    // if windows
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
-                    }
-                    // if linux
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        System.Diagnostics.Process.Start("xdg-open", Utils.jammerPath);
-                    }
-                    return;
-                }
-                if (Utils.songs[0] == "update")
-                {
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.RunUpdate}[/]");
-                        return;
-                    }
-                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.CheckingUpdates}[/]");
-
-                    string latestVersion = Update.CheckForUpdate(Utils.version);
-                    if (latestVersion != "")
-                    {
-                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpdateFound}[/]" + "\n" + $"{Locale.Miscellaneous.Version}: [green]" + latestVersion + "[/]");
-                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Downloading}...[/]");
-                        string downloadPath = Update.UpdateJammer(latestVersion);
-
-                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.DownloadedTo}: " + downloadPath + "[/]");
-                        AnsiConsole.MarkupLine($"[cyan]{Locale.OutsideItems.Installing}[/]");
-                        // Run run_command.bat with argument as the path to the downloaded file
-                        System.Diagnostics.Process.Start("run_command.bat", downloadPath);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpToDate}[/]");
-                    }
-                    Environment.Exit(0);
->>>>>>> Stashed changes
                 }
             } 
 

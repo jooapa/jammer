@@ -52,36 +52,28 @@ namespace jammer
                 
                 if (fromCli)
                 {
-<<<<<<< Updated upstream
-                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
                     Start.state = MainStates.play;
                     jammer.Play.PlaySong(songs, 0);
-=======
-                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + song + "[/]");
->>>>>>> Stashed changes
                 }
             }
             else
             {
-<<<<<<< Updated upstream
                 if (!fromCli)
                 {
-                    Message.Data("Playlist doesn't exist:" + playlist + ".jammer", "Error Playing Playlist", true);
+                    Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[red]Playlist: " + playlist + " doesn't exist[/]");
+                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: " + playlist + $" {Locale.OutsideItems.DoesntExist}[/]");
                     Environment.Exit(0);
                     return;
                 }
-=======
-                Message.Data($"{Locale.OutsideItems.Playlist} {Locale.OutsideItems.DoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
                 Environment.Exit(0);
->>>>>>> Stashed changes
             }
         }
 
@@ -276,11 +268,7 @@ namespace jammer
 
         public static void PrintList()
         {
-<<<<<<< Updated upstream
-            AnsiConsole.WriteLine("Playlists:");
-=======
             Console.WriteLine($"{Locale.OutsideItems.Playlists}:");
->>>>>>> Stashed changes
             Console.WriteLine(GetList());
         }
 
