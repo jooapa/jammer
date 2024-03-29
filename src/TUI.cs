@@ -677,6 +677,9 @@ static class TUI
             else if(IniFileHandling.isShiftAlt){
                 final = "Shift + Alt + " + final;
             }
+            else if(IniFileHandling.isCtrlAlt){
+                final = "Ctrl + Alt + " + final;
+            }
             else if(IniFileHandling.isShift){
                 final = "Shift + " + final;
             }
