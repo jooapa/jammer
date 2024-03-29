@@ -229,7 +229,7 @@ namespace jammer{
             public static string ChangeLanguageMessage1 = CheckValueLocale("LocaleKeybind", "ChangeLanguageMessage1", "Enter to choose the language, move with arrow keys");
             public static string Ini_LoadNewLocaleMessage1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage1", "Language has been changed succesfully. Reset needed to load new language");
             public static string Ini_LoadNewLocaleMessage2 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage2", "Language changed succesfully!");
-            public static string Ini_LoadNewLocaleError1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError1", "Error changing languages");
+            public static string Ini_LoadNewLocaleError1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError1", "Error changing languages. Resorting back to English");
             public static string Ini_LoadNewLocaleError2 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError2", "Error: Could not change language");
             public static string WriteIni_KeyDataError1 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError1", "Keybind");
             public static string WriteIni_KeyDataError2 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError2", "already exists");
