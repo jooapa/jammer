@@ -98,6 +98,11 @@ PlayRandomSong = R
             } catch(Exception) {
                 LocaleData = new IniData();
             }
+
+            try {
+                LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                LocaleDataFound = true;
+            } catch(Exception ex) {}
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
 
         }
@@ -485,7 +490,17 @@ PlayRandomSong = R
                     return;
                 }
             }
-            FileInfo[] files = di.GetFiles("*.ini");
+            
+            FileInfo[]? files = null;
+            try{
+                files = di.GetFiles("*.ini");
+            } catch {
+                try {
+                di = new DirectoryInfo(Path.Combine("locales"));
+                files = di.GetFiles("*.ini");
+                } catch(Exception exc) {}
+            }
+
             string country_code = "en";
             for(int i = 0; i < files.Length; i++){
                 if(i==ScrollIndexLanguage){
@@ -507,7 +522,7 @@ PlayRandomSong = R
                     Preferences.SaveSettings();
                 } catch(Exception) {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
-
+                    return;
                 }
             }
 

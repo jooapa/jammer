@@ -1,7 +1,10 @@
 @ECHO off
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained
-
 SET "sourceFolder=bin\Release\net7.0\win10-x64\publish"
+
+@REM dotnet build
+@REM SET "sourceFolder=bin\Debug\net7.0\"
+
 SET "targetFolder=nsis"
 
 @REM COPY jammer.exe
