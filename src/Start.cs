@@ -202,7 +202,7 @@ namespace jammer
         //
         public static void Loop()
         {
-
+            Debug.dprint("Loop");
             if (initWMP == false)
             {
                 initWMP = true;
@@ -295,6 +295,8 @@ namespace jammer
                         }
 
                         CheckKeyboard();
+                        //NOTE(ra) Adding this drops the CPU usage 95%
+                        Thread.Sleep(10);
                         break;
 
                     case MainStates.pause:
