@@ -180,11 +180,8 @@ PlayRandomSong = R
                 try {
                     parser.WriteFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), KeyData);
                 } catch(Exception) {
-                    try {
-                        parser.WriteFile("KeyData.ini", KeyData);
-                    } catch(Exception) {        
-                        KeyData = new IniData();
-                    }
+                    Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
+                    return;
                 }
             } else {
                 Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
@@ -324,30 +321,30 @@ PlayRandomSong = R
                         bool isCtrlAltModifier = altModifier && ctrlModifier;
                         bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                         // Look through matches in modifiers
-                        if(isShiftAltCtrlModifier && isShiftCtrlAlt){
+                        if(isShiftAltCtrlModifier && isShiftCtrlAlt){ // Shift + Alt + Ctrl
                             return key.KeyName;
                         }
-                        else if(isShiftCtrlModifier && isShiftCtrl){
+                        else if(isShiftCtrlModifier && isShiftCtrl){ // Shift + Ctrl
                             return key.KeyName;
                         }
-                        else if(isShiftAltModifier && isShiftAlt){
+                        else if(isShiftAltModifier && isShiftAlt){ // Shift + Alt
                             return key.KeyName;
                         }
-                        else if(isCtrlAltModifier && isCtrlAlt){
+                        else if(isCtrlAltModifier && isCtrlAlt){ // Ctrl + Alt
                             return key.KeyName;
                         }
-                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && altModifier && isAlt){
+                        else if(!isShiftAltModifier && altModifier && isAlt){ // Alt
                             return key.KeyName;
                         }
-                        else if(!isShiftAltCtrlModifier && !isShiftCtrlModifier && ctrlModifier && isCtrl){
+                        else if(!isShiftCtrlModifier && ctrlModifier && isCtrl){ // Ctrl 
                             return key.KeyName;
                         }
-                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && 
-                        !isShiftCtrlModifier && shiftModifier && isShift){
+                        else if(!isShiftAltModifier && 
+                        !isShiftCtrlModifier && shiftModifier && isShift){ // Shift
                             return key.KeyName;
                         } else if (!isAlt && !isCtrl && !isShift
                                     && !isShiftAlt && !isShiftCtrl &&
-                                    !altModifier && !ctrlModifier&& !shiftModifier){
+                                    !altModifier && !ctrlModifier&& !shiftModifier){ // No modifiers
                             return key.KeyName;
                         }
                         

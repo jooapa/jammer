@@ -150,7 +150,7 @@ You can also stack multiple jammer playlists inside another jammer playlists.
 
 ### Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/) website. Add the **BASS** and **BASS_AAC** libraries to the folder and add it to $LD_LIBRARY_PATH.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website. Add the **BASS** and **BASS_AAC** libraries to the folder and add it to $LD_LIBRARY_PATH.
 
 ```bash
 export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
