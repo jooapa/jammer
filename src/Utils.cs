@@ -26,6 +26,6 @@ namespace jammer
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
-        public static string version = "2.0.1";
+        public static string version = "2.0.2";
     }
 }
