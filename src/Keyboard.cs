@@ -131,6 +131,9 @@ namespace jammer
 
                 switch (Action)
                     {
+                        case "ToMainMenu":
+                            playerView = "default";
+                            break;
                         case "PlayPause":
                             PauseSong();
                             Play.PlayDrawReset();
@@ -338,7 +341,7 @@ namespace jammer
                             }
                             break;
                         case "PlayRandomSong":
-                            // TODO 
+                            // TODO: Play random song
                             break;
                         // case ConsoleKey.J:
                         //     Message.Input();

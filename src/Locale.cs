@@ -57,6 +57,7 @@ namespace jammer{
             public static string AddSongToPlaylistError4 = CheckValueLocale("Player", "AddSongToPlaylistError4", "invalid song: Make sure you typed it correctly");
         }
         public static class Help{
+            public static string ToMainMenu = CheckValueLocale("Help", "ToMainMenu", "To Main Menu");
             public static string Controls = CheckValueLocale("Help", "Controls", "Controls");
             public static string Description = CheckValueLocale("Help", "Description", "Description");
             public static string ModControls = CheckValueLocale("Help", "ModControls", "Mod Controls");
@@ -220,7 +221,7 @@ namespace jammer{
             public static string PlaylistDoesntExist = CheckValueLocale("OutsideItems", "PlaylistDoesntExist", "Playlist does not exist");
         }
         public static class LocaleKeybind{
-            public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Description");
+            public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
             public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel, Enter to save");
             public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift and their combinations");

@@ -13,6 +13,7 @@ namespace jammer
 ; Allowed modifiers are ctrl, shift, alt, ctrl + shift and ctrl + alt
 ;
 [Keybinds]
+ToMainMenu = Escape
 PlayPause = Spacebar
 Quit = Q
 NextSong = N
@@ -118,7 +119,10 @@ PlayRandomSong = R
         }
         public static void WriteIni_KeyData(){
             string final = previousClick.ToString();
-            if(isShiftCtrl){
+            if(isShiftCtrlAlt){
+                final = "Shift + Ctrl + Alt + " + final;
+            }
+            else if(isShiftCtrl){
                 final = "Shift + Ctrl + " + final;
             }
             else if(isShiftAlt){
