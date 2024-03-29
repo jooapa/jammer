@@ -61,6 +61,7 @@ namespace jammer
                         IniFileHandling.Create_KeyDataIni(1);
                         Message.Data("Keybinds resetted","Keybinds have been resetted");
                     }
+
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
                         // nullifu action
                         Action = "";
@@ -94,7 +95,7 @@ namespace jammer
                         IniFileHandling.isCtrlAlt = false;
                         IniFileHandling.isShiftCtrlAlt = false;
                     }
-                    if (key.Key == ConsoleKey.Escape && IniFileHandling.EditingKeybind){
+                    if (key.Key == ConsoleKey.Escape && isShift && IniFileHandling.EditingKeybind){
                         Action = "";
                         IniFileHandling.EditingKeybind = false;
                     }
