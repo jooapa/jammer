@@ -5,7 +5,7 @@ using System.IO;
 
 namespace jammer
 {
-    static class ReadWriteFile {
+    static class IniFileHandling {
     private static readonly string FileContent = @"
 ;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
 ;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.
@@ -69,8 +69,10 @@ PlayRandomSong = R
         public static bool isShift = false;
         public static bool isShiftAlt = false;
         public static bool isShiftCtrl = false;
+        public static bool isShiftCtrlAlt = false;
+        
 
-        static ReadWriteFile() {
+        static IniFileHandling() {
             try {
                 KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
@@ -86,11 +88,11 @@ PlayRandomSong = R
             }
 
             try {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
             } catch(Exception) {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                     LocaleDataFound = true;
                 } catch(Exception) {
                     LocaleData = new IniData();
@@ -200,7 +202,8 @@ PlayRandomSong = R
             bool isCtrl,
             bool isShift,
             bool isShiftAlt,
-            bool isShiftCtrl
+            bool isShiftCtrl,
+            bool isShiftCtrlAlt
             ){
             char separator = '+'; // Inside .ini file
             string key_pressed_string = key_pressed.ToString().ToLower();
@@ -251,18 +254,12 @@ PlayRandomSong = R
                     if(currentKeyPress.Equals(key_pressed_string)){
                         bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                         bool isShiftAltModifier = altModifier && shiftModifier;
-
-                        // Console.WriteLine($"{ctrlModifier} {shiftModifier} {isShiftCtrl}");
-                        // Console.WriteLine($"{altModifier} {shiftModifier} {isShiftAlt}");
-                        // Console.WriteLine($"{altModifier} {isAlt}");
-                        // Console.WriteLine($"{ctrlModifier} {isCtrl}");
-                        // Console.WriteLine($"{shiftModifier} {isShift}");
-                        // Console.WriteLine($"{isShiftAltModifier} {isShiftCtrlModifier}");
-                        // Console.WriteLine(key.KeyName);
-                        // Console.WriteLine();
-                        // Console.ReadKey();
+                        bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                         // Look through matches in modifiers
-                        if(isShiftCtrlModifier && isShiftCtrl){
+                        if(isShiftAltCtrlModifier && isShiftCtrlAlt){
+                            return key.KeyName;
+                        }
+                        else if(isShiftCtrlModifier && isShiftCtrl){
                             return key.KeyName;
                         }
                         else if(isShiftAltModifier && isShiftAlt){
@@ -274,7 +271,7 @@ PlayRandomSong = R
                         else if(!isShiftCtrlModifier && ctrlModifier && isCtrl){
                             return key.KeyName;
                         }
-                        else if(!isShiftAltModifier && !isShiftCtrlModifier && shiftModifier && isShift){
+                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && !isShiftCtrlModifier && shiftModifier && isShift){
                             return key.KeyName;
                         } else if (!isAlt && !isCtrl && !isShift
                                     && !isShiftAlt && !isShiftCtrl &&
@@ -326,18 +323,13 @@ PlayRandomSong = R
                 if(currentKeyPress.Equals(key_pressed_string)){
                     bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                     bool isShiftAltModifier = altModifier && shiftModifier;
+                    bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
 
-                    // Console.WriteLine($"{ctrlModifier} {shiftModifier} {isShiftCtrl}");
-                    // Console.WriteLine($"{altModifier} {shiftModifier} {isShiftAlt}");
-                    // Console.WriteLine($"{altModifier} {isAlt}");
-                    // Console.WriteLine($"{ctrlModifier} {isCtrl}");
-                    // Console.WriteLine($"{shiftModifier} {isShift}");
-                    // Console.WriteLine($"{isShiftAltModifier} {isShiftCtrlModifier}");
-                    // Console.WriteLine(property.Name.ToString());
-                    // Console.WriteLine();
-                    // Console.ReadKey();
                     // Look through matches in modifiers
-                    if(isShiftCtrlModifier && isShiftCtrl){
+                    if(isShiftAltCtrlModifier && isShiftCtrlAlt){
+                        return property.Name.ToString();
+                    }
+                    else if(isShiftCtrlModifier && isShiftCtrl){
                         return property.Name.ToString();
                     }
                     else if(isShiftAltModifier && isShiftAlt){
@@ -391,15 +383,17 @@ PlayRandomSong = R
         }
 
 
+
+
         
         // country code. en, fi, se, de etc...
         public static void Ini_LoadNewLocale(){
             DirectoryInfo? di = null;
             try {
-                di = new DirectoryInfo(Path.Combine(Utils.jammerAssemblyPath, "locales"));
+                di = new DirectoryInfo(Path.Combine(Utils.jammerPath, "locales"));
             } catch(Exception) {
                 try {
-                    di = new DirectoryInfo(Path.Combine(Utils.jammerAssemblyPath, "locales"));
+                    di = new DirectoryInfo(Path.Combine(Utils.jammerPath, "locales"));
                 } catch(Exception) {
                     return;
                 }
@@ -414,14 +408,14 @@ PlayRandomSong = R
                 }
             }
             try {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{country_code}.ini"));
+                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"));
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
             } catch(Exception) {
                 try {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{country_code}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"));
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
                 } catch(Exception) {
@@ -440,7 +434,7 @@ PlayRandomSong = R
         public static string[] ReadAll_Locales(){
         List<string> results = new();
         DirectoryInfo? di = null;
-        string path = Path.Combine(Utils.jammerAssemblyPath, "locales");
+        string path = Path.Combine(Utils.jammerPath, "locales");
 
         if (!Directory.Exists(path)) {
             // Handle the situation when the directory does not exist
@@ -461,14 +455,14 @@ PlayRandomSong = R
             int maximum = 15;
             for(int i = 0; i < files.Length; i++){
                 string keyValue = files[i].ToString();
-                if(i >= ReadWriteFile.ScrollIndexLanguage && results.Count != maximum){
+                if(i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum){
                     results.Add(keyValue);
                 }
             }
 
             for(int i = 0; i < files.Length; i++){
                 string keyValue = files[i].ToString();
-                if(i < ReadWriteFile.ScrollIndexLanguage && results.Count != maximum){
+                if(i < IniFileHandling.ScrollIndexLanguage && results.Count != maximum){
                     results.Add(keyValue);
                 }
             }

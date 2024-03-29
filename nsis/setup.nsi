@@ -87,8 +87,9 @@ File "run_command.bat"
 File "open_with_jammer.cmd"
 File "LICENSE"
 File "bass.dll"
-CreateDirectory $INSTALL_DIR\locales
-SetOutPath $INSTALL_DIR\locales
+
+CreateDirectory $PROFILE\jammer\locales
+SetOutPath $PROFILE\jammer\locales
 File /r "locales\*.*"
 SetOutPath $INSTALL_DIR
 
