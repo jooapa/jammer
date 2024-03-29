@@ -679,7 +679,7 @@ static class TUI
             AnsiConsole.Markup($"[cyan]{final}[/]\n\n");
 
         } else {
-            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}[/]\n");
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}[/]\n"); // Press Enter to edit
             AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage4}[/]\n");
         }
         DrawHelpSettingInfo();

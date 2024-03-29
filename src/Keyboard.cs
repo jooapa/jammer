@@ -154,10 +154,18 @@ namespace jammer
                             Play.SeekSong(-Preferences.rewindSeconds, true);
                             break;
                         case "VolumeUp": // volume up
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
                             Play.ModifyVolume(Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             break;
                         case "VolumeDown": // volume down
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
                             Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             break;

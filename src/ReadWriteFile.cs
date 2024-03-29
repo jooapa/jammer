@@ -75,24 +75,24 @@ PlayRandomSong = R
                 KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
-            } catch(Exception ex) {
+            } catch(Exception) {
                 try {
                     KeyData = parser.ReadFile("KeyData.ini");
                     KeyDataFound = true;
                     KeybindAmount = KeyData["Keybinds"].Count;
-                } catch(Exception exc) {        
+                } catch(Exception) {        
                     KeyData = new IniData();
                 }
             }
 
             try {
-                LocaleData = parser.ReadFile(Path.Combine("locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
-            } catch(Exception ex) {
+            } catch(Exception) {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                     LocaleDataFound = true;
-                } catch(Exception exc) {
+                } catch(Exception) {
                     LocaleData = new IniData();
                 }
             }
@@ -104,12 +104,12 @@ PlayRandomSong = R
                 KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
-            } catch(Exception ex) {
+            } catch(Exception) {
                 try {
                     KeyData = parser.ReadFile("KeyData.ini");
                     KeyDataFound = true;
                     KeybindAmount = KeyData["Keybinds"].Count;
-                } catch(Exception exc) {        
+                } catch(Exception) {        
                     KeyData = new IniData();
                 }
             }
@@ -158,10 +158,10 @@ PlayRandomSong = R
                 }
                 try {
                     parser.WriteFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), KeyData);
-                } catch(Exception ex) {
+                } catch(Exception) {
                     try {
                         parser.WriteFile("KeyData.ini", KeyData);
-                    } catch(Exception exc) {        
+                    } catch(Exception) {        
                         KeyData = new IniData();
                     }
                 }
@@ -296,7 +296,7 @@ PlayRandomSong = R
                 bool altModifier = false;
                 bool ctrlModifier = false;
                 bool shiftModifier = false;
-                string keyValue = property.GetValue(property.Name).ToString();
+                string? keyValue = property.GetValue(property.Name)?.ToString();
                 if(keyValue == null){continue;}
                 // Parse spaces
                 keyValue = keyValue.Replace(" ", "");
@@ -358,7 +358,7 @@ PlayRandomSong = R
                     }
                 }
             }
-            Console.ReadKey();
+            // Console.ReadKey();
             return "NULL"; // idk if possible?
         }
         
@@ -396,11 +396,11 @@ PlayRandomSong = R
         public static void Ini_LoadNewLocale(){
             DirectoryInfo? di = null;
             try {
-                di = new DirectoryInfo(Path.Combine("locales"));
-            } catch(Exception ex) {
+                di = new DirectoryInfo(Path.Combine(Utils.jammerAssemblyPath, "locales"));
+            } catch(Exception) {
                 try {
-                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
-                } catch(Exception exc) {
+                    di = new DirectoryInfo(Path.Combine(Utils.jammerAssemblyPath, "locales"));
+                } catch(Exception) {
                     return;
                 }
             }
@@ -414,17 +414,17 @@ PlayRandomSong = R
                 }
             }
             try {
-                LocaleData = parser.ReadFile(Path.Combine("locales", $"{country_code}.ini"));
+                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{country_code}.ini"));
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
-            } catch(Exception ex) {
+            } catch(Exception) {
                 try {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{country_code}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerAssemblyPath, "locales", $"{country_code}.ini"));
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
-                } catch(Exception exc) {
+                } catch(Exception) {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
 
                 }
@@ -438,20 +438,25 @@ PlayRandomSong = R
         }
 
         public static string[] ReadAll_Locales(){
-            List<string> results = new();
-            DirectoryInfo? di = null;
-            try {
-                di = new DirectoryInfo(Path.Combine("locales"));
-            } catch(Exception ex) {
-                try {
-                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
-                } catch(Exception exc) {
-                    bool a = false;
-                }
-            }
-            
-            FileInfo[] files = di.GetFiles("*.ini");
-            LocaleAmount = files.Length;
+        List<string> results = new();
+        DirectoryInfo? di = null;
+        string path = Path.Combine(Utils.jammerAssemblyPath, "locales");
+
+        if (!Directory.Exists(path)) {
+            // Handle the situation when the directory does not exist
+            // For example, you can throw an exception or return an empty array
+            Message.Data("Could not find the 'locales' directory in: '" + path + "' Exiting to Main View... ", "Error");
+            Start.playerView = "default";
+            return results.ToArray();
+        }
+
+        di = new DirectoryInfo(path);
+        FileInfo[] files = di.GetFiles("*.ini");
+        LocaleAmount = files.Length;
+
+        if (LocaleAmount == 0) {
+            throw new Exception("No .ini files found in the locales directory.");
+        }
 
             int maximum = 15;
             for(int i = 0; i < files.Length; i++){
