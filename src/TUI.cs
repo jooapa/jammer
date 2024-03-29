@@ -523,6 +523,9 @@ static class TUI
         else if (Start.playerView == "editkeybindings") {
             EditKeyBindings();
         }
+        else if (Start.playerView == "changelanguage") {
+            ChangeLanguage();
+        }
         
     }
     private static void DrawHelpSettingInfo(){
@@ -537,25 +540,14 @@ static class TUI
         table.AddColumn(Locale.CliHelp.Description);
 
         // table.AddRow("[grey]jammer[/] <url> ...", "Play song(s) from url(s)");
-        table.AddRow("[grey]jammer[/] <[green]file[/]> ...", "Play song(s) from file(s)");
-        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/track-name [/] ...", "Play song(s) from soundcloud url(s)");
-        table.AddRow("[grey]jammer[/] [green]soundcloud.com/username/sets/playlist-name[/] ...", "Play song(s) from soundcloud playlist url(s)");
-        table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", "Play song(s) from youtube url(s)");
-        /* table.AddRow("[grey]jammer[/] [green]playlist[/]", "Show playlist commands"); */
-        table.AddRow("[grey]jammer[/] [green]start[/]", "Open Jammer folder");
-        table.AddRow("[grey]jammer[/] [green]update[/]", "Auto Update Jammer");
-        table.AddRow("[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", "Show Jammer version [grey]" + Utils.version + "[/]");
-
-        // ! table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.Url}> ...", Locale.CliHelp.PlaySongFromUrl);
-        // ! table.AddRow($"[grey]jammer[/] <{Locale.CliHelp.File}> ...", Locale.CliHelp.PlaySongFromFile);
-        // ! table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
-        // ! table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
-        // ! table.AddRow("[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
-        // ! table.AddRow($"[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands);
-        // ! table.AddRow("[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
-        // ! table.AddRow("[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);
-        // ! table.AddRow("[grey]jammer[/] [green]version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
-
+        table.AddRow("[grey]jammer[/] <[green]file[/]> ...", Locale.CliHelp.PlaySongFromFile);
+        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
+        table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
+        table.AddRow($"[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
+        /* table.AddRow("[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands); */
+        table.AddRow($"[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
+        table.AddRow($"[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);
+        table.AddRow($"[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
         AnsiConsole.Write(table);
 
         PlaylistHelp();
@@ -566,22 +558,13 @@ static class TUI
         table.AddColumn(Locale.CliHelp.PlaylistCommands);
         table.AddColumn(Locale.CliHelp.Description);
 
-        table.AddRow("[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <name>", "Play playlist");
-        table.AddRow("[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <name>", "Create playlist");
-        table.AddRow("[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <name>", "Delete playlist");
-        table.AddRow("[grey]jammer[/] [red]-a[/][grey],[/][red] --add   [/] <name> <song> ...", "Add songs to playlist");
-        table.AddRow("[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <name> <song> ...", "Remove songs from playlist");
-        table.AddRow("[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <name>", "Show songs in playlist");
-        table.AddRow("[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", "List all playlists");
-
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]play [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]create [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]delete [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]add [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.AddSongsToPlaylist);
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]remove [/]<{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
-        // ! table.AddRow($"[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]show [/]<{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
-        // ! table.AddRow("[grey]jammer[/] [red]playlist[/][grey]/[/][red]pl[/] [green]list [/]", Locale.CliHelp.ListAllPlaylists);
-
+        table.AddRow($"[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-a[/][grey],[/][red] --add   [/] <{Locale.CliHelp.Name}> <song> ...", Locale.CliHelp.AddSongsToPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
+        table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
         AnsiConsole.Write(table);
     }
     public static void Version() {
@@ -608,14 +591,14 @@ static class TUI
             Locale.Help.ListAllPlaylists,
             Locale.Help.ToHideHelp,
             Locale.Help.ForSettings,
-            "Go to song start",
-            "Go to song end",
+            Locale.LocaleKeybind.GoToSongStart,
+            Locale.LocaleKeybind.GoToSongEnd,
             Locale.Help.ShowPlaylistOptions,
-            "Forward second amount",
-            "Backward second amount",
-            "Change volume by",
-            "Toggle autosave",
-            "Show current state", 
+            Locale.LocaleKeybind.FOrwardSecAmount,
+            Locale.LocaleKeybind.BackwardSecAmount,
+            Locale.LocaleKeybind.ChangeVolume,
+            Locale.LocaleKeybind.ToggleAutosave,
+            Locale.LocaleKeybind.CurrentState, 
             Locale.Help.ShowCmdHelp,
             Locale.Help.DeleteCurrentSongFromPlaylist,
             Locale.Help.AddsongToPlaylist,
@@ -627,7 +610,7 @@ static class TUI
             Locale.Help.ChangeLanguage,
             Locale.Help.PlayRandomSong,
         };
-
+        ReadWriteFile.Create_KeyDataIni(false);
         // Construct description same way as in readalldata
         List<string> results = new();
         int maximum = 15;
@@ -647,8 +630,8 @@ static class TUI
         description = results.ToArray();
 
         var table = new Table();
-        table.AddColumn("Description");
-        table.AddColumn("Current control");
+        table.AddColumn(Locale.LocaleKeybind.Description);
+        table.AddColumn(Locale.LocaleKeybind.CurrentControl);
         string[] _elements = ReadWriteFile.ReadAll_KeyData();
 
         // Counter to track the index for the description array
@@ -675,21 +658,49 @@ static class TUI
         }
         AnsiConsole.Write(table);
         if(ReadWriteFile.EditingKeybind){
-            AnsiConsole.Markup("Press 'Escape' to cancel, Enter to save\n");
-            AnsiConsole.Markup("Allowed modifiers: ctrl, alt, shift, shift+ctrl, alt+ctrl\n\n");
+            string final = ReadWriteFile.previousClick.ToString();
+            if(ReadWriteFile.isShiftCtrl){
+                final = "Shift + Ctrl + " + final;
+            }
+            else if(ReadWriteFile.isShiftAlt){
+                final = "Shift + Alt + " + final;
+            }
+            else if(ReadWriteFile.isShift){
+                final = "Shift + " + final;
+            }
+            else if(ReadWriteFile.isCtrl){
+                final = "Ctrl + " + final;
+            }
+            else if(ReadWriteFile.isAlt){
+                final = "Alt + " + final;
+            }
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1}[/]\n");
+            AnsiConsole.Markup($"{Locale.LocaleKeybind.EditKeyBindMessage2}\n");
+            AnsiConsole.Markup($"[cyan]{final}[/]\n\n");
 
         } else {
-            AnsiConsole.Markup("Press Enter to edit highlighted keybind\n");
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}[/]\n");
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage4}[/]\n");
         }
         DrawHelpSettingInfo();
     }
     public static void ChangeLanguage(){
+
         var table = new Table();
-        table.AddColumn(Locale.CliHelp.PlaylistCommands);
-        table.AddColumn(Locale.CliHelp.Description);
-
-        table.AddRow("BB", "BB");
-
+        table.AddColumn(Locale.LocaleKeybind.Description);
+        string[] _elements = ReadWriteFile.ReadAll_Locales();
+        
+        // Loop through the _elements array
+        for(int i = 0; i < _elements.Length; i++) {
+            if(i==0){
+                table.AddRow("[red]"+_elements[i]+"[/]");
+            } else {
+                table.AddRow(_elements[i]);
+            }
+        }
         AnsiConsole.Write(table);
+        AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1}[/]\n");
+        DrawHelpSettingInfo();
     }
+
 }

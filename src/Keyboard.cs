@@ -53,6 +53,10 @@ namespace jammer
                 }
                 */
                 if(playerView.Equals("editkeybindings") || ReadWriteFile.EditingKeybind){
+                    if(key.Key == ConsoleKey.Delete && isShiftAlt && !ReadWriteFile.EditingKeybind){
+                        ReadWriteFile.Create_KeyDataIni(true);
+                        Message.Data("Keybinds resetted","Keybinds have been resetted");
+                    }
                     if(key.Key == ConsoleKey.DownArrow && !ReadWriteFile.EditingKeybind){
                         // nullifu action
                         Action = "";
@@ -70,7 +74,7 @@ namespace jammer
                             ReadWriteFile.ScrollIndexKeybind -= 1;
                         }
                     } 
-                    else if (key.Key == ConsoleKey.Enter && !ReadWriteFile.EditingKeybind){
+                    if (key.Key == ConsoleKey.Enter && !ReadWriteFile.EditingKeybind){
                         Action = "";
                         ReadWriteFile.EditingKeybind = true;
                     }
@@ -84,7 +88,7 @@ namespace jammer
                         ReadWriteFile.isShiftAlt = false;
                         ReadWriteFile.isShiftCtrl = false;
                     }
-                    else if (key.Key == ConsoleKey.Escape && ReadWriteFile.EditingKeybind){
+                    if (key.Key == ConsoleKey.Escape && ReadWriteFile.EditingKeybind){
                         Action = "";
                         ReadWriteFile.EditingKeybind = false;
                     }
@@ -99,16 +103,26 @@ namespace jammer
                     if(ReadWriteFile.EditingKeybind){
                         Action = "";
                     }
-
                 }
-
-                if(playerView.Equals("changelanguage") && key.Key == ConsoleKey.DownArrow){
-                    Action = "";
-                    ReadWriteFile.ScrollIndexLanguage += 1;
-                } else if(playerView.Equals("changelanguage") && key.Key == ConsoleKey.UpArrow){
-                    Action = "";
-                    ReadWriteFile.ScrollIndexLanguage -= 1;
-                } 
+                if(playerView.Equals("changelanguage")){
+                    if(key.Key == ConsoleKey.DownArrow){
+                        if(ReadWriteFile.ScrollIndexLanguage + 1 > ReadWriteFile.LocaleAmount){
+                            ReadWriteFile.ScrollIndexLanguage = -1;
+                        } else {
+                            ReadWriteFile.ScrollIndexLanguage += 1;
+                        }
+                    } else if(key.Key == ConsoleKey.UpArrow){
+                        Action = "";
+                        if(ReadWriteFile.ScrollIndexLanguage - 1 < 0 ){
+                            ReadWriteFile.ScrollIndexLanguage = ReadWriteFile.LocaleAmount;
+                        } else {
+                            ReadWriteFile.ScrollIndexLanguage -= 1;
+                        }
+                    } 
+                    if(key.Key == ConsoleKey.Enter){
+                        ReadWriteFile.Ini_LoadNewLocale();
+                    }
+                }
 
                 switch (Action)
                     {
@@ -209,59 +223,10 @@ namespace jammer
                             playerView = "settings";
                             TUI.DrawSettings();
                             break;
-                    /*
-                    !!!!!!!!
-                    !!!!!!!!
-                    !!!!!!!!
-                    !!!!!!!!
-                    case ConsoleKey.D1: // set forward seek to 1 second
-                        AnsiConsole.Markup("\nEnter forward seconds: ");
-                        string? forwardSecondsString = Console.ReadLine();
-                        if (int.TryParse(forwardSecondsString, out int forwardSeconds))
-                        {
-                            Preferences.forwardSeconds = forwardSeconds;
-                        }
-                        else
-                        {
-                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
-                            Console.ReadKey(true);
-                        }
-                        break;
-                    case ConsoleKey.D2: // set rewind seek to 2 seconds
-                        AnsiConsole.Markup("\nEnter rewind seconds: ");
-                        string? rewindSecondsString = Console.ReadLine();
-                        if (int.TryParse(rewindSecondsString, out int rewindSeconds))
-                        {
-                            Preferences.rewindSeconds = rewindSeconds;
-                        }
-                        else
-                        {
-                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
-                            Console.ReadKey(true);
-                        }
-                        break;
-                    case ConsoleKey.D3: // set volume change to 3
-                        AnsiConsole.Markup("\nEnter volume change (%): ");
-                        string? volumeChangeString = Console.ReadLine();
-                        if (int.TryParse(volumeChangeString, out int volumeChange))
-                        {
-                            float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
-                            Preferences.changeVolumeBy = changeVolumeByFloat;
-                        }
-                        else
-                        {
-                            AnsiConsole.Markup("[red]\nInvalid input.[/] Press any key to continue.");
-                            Console.ReadKey(true);
-                        }
-                        break;
-                    case ConsoleKey.D4: // autosave or not
-                        Preferences.isAutoSave = !Preferences.isAutoSave;
-                        break;
-                    !!!!!!!
-                    !!!!!!!
-                    !!!!!!!
-                    !!!!!!!
-*/
+
+                        case "Autosave": // autosave or not
+                            Preferences.isAutoSave = !Preferences.isAutoSave;
+                            break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
                             break;
@@ -312,10 +277,6 @@ namespace jammer
                                 AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
                                 Console.ReadKey(true);
                             }
-                            break;
-                        case "Autosave": // autosave or not
-
-                            Preferences.isAutoSave = !Preferences.isAutoSave;
                             break;
                         case "CommandHelpScreen":
                             TUI.CliHelp();

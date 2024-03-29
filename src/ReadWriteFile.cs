@@ -1,14 +1,60 @@
 using IniParser;
 using IniParser.Model;
 using System.Reflection;
+using System.IO;
 
 namespace jammer
 {
     static class ReadWriteFile {
+    private static readonly string FileContent = @"
+;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
+;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.
+;When using numbers, 'd' part is not needed
+; Allowed modifiers are ctrl, shift, alt, ctrl + shift and ctrl + alt
+;
+[Keybinds]
+PlayPause = Spacebar
+Quit = Q
+NextSong = N
+PreviousSong = P
+PlaySong = Shift + p
+Forward5s = RightArrow
+Backwards5s = LeftArrow
+VolumeUp = UpArrow
+VolumeDown = DownArrow
+Shuffle = S
+SaveAsPlaylist = Shift + Alt + S
+SaveCurrentPlaylist = Shift + S
+ShufflePlaylist = Alt + S
+Loop = L
+Mute = M
+ShowHidePlaylist = F
+ListAllPlaylists = Shift + F
+Help = H
+Settings = C
+ToSongStart = 0
+ToSongEnd = 9
+PlaylistOptions = F2
+ForwardSecondAmount = 1
+BackwardSecondAmount = 2
+ChangeVolumeAmount = 3
+Autosave = 4
+CurrentState = F12
+CommandHelpScreen = Tab
+DeleteCurrentSong = Delete
+AddSongToPlaylist = Shift + A
+ShowSongsInPlaylists = Shift + D
+PlayOtherPlaylist = Shift + O
+RedownloadCurrentSong = Shift + B
+EditKeybindings = Shift + E
+ChangeLanguage = Shift + L
+PlayRandomSong = R
+";
+
         private static readonly FileIniDataParser parser = new FileIniDataParser();
         private static IniData KeyData;
         private static IniData LocaleData;
-        
+        public static int LocaleAmount = 0;
         public static bool EditingKeybind = false;
         public static bool KeyDataFound = false;
         public static bool LocaleDataFound = false;
@@ -26,38 +72,46 @@ namespace jammer
 
         static ReadWriteFile() {
             try {
-                KeyData = parser.ReadFile("KeyData.ini");
+                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
             } catch(Exception ex) {
-                // Console.WriteLine("Error loading KeyData.ini: " + ex.Message);
-                // Console.WriteLine("Press any key to continue");
-                // Console.ReadKey();
-                KeyData = new IniData();
+                try {
+                    KeyData = parser.ReadFile("KeyData.ini");
+                    KeyDataFound = true;
+                    KeybindAmount = KeyData["Keybinds"].Count;
+                } catch(Exception exc) {        
+                    KeyData = new IniData();
+                }
             }
 
             try {
-                LocaleData = parser.ReadFile("locales\\fi.ini");
+                LocaleData = parser.ReadFile(Path.Combine("locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
             } catch(Exception ex) {
-                // Console.WriteLine("Error loading locales\\en.ini: " + ex.Message);
-                // Console.WriteLine("Press any key to continue");
-                // Console.ReadKey();
-                // Initialize LocaleData with empty IniData if failed to load
-                LocaleData = new IniData();
+                try {
+                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleDataFound = true;
+                } catch(Exception exc) {
+                    LocaleData = new IniData();
+                }
             }
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
 
         }
         public static void ReadNewKeybinds(){
             try {
-                KeyData = parser.ReadFile("KeyData.ini");
+                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
+                KeybindAmount = KeyData["Keybinds"].Count;
             } catch(Exception ex) {
-                // Console.WriteLine("Error loading KeyData.ini: " + ex.Message);
-                // Console.WriteLine("Press any key to continue");
-                // Console.ReadKey();
-                KeyData = new IniData();
+                try {
+                    KeyData = parser.ReadFile("KeyData.ini");
+                    KeyDataFound = true;
+                    KeybindAmount = KeyData["Keybinds"].Count;
+                } catch(Exception exc) {        
+                    KeyData = new IniData();
+                }
             }
         }
         public static void WriteIni_KeyData(){
@@ -77,23 +131,69 @@ namespace jammer
             else if(isAlt){
                 final = "Alt + " + final;
             }
-            int i = 0;
+            bool isExisting = false;
+            string isExistingKeyName = "";
+            // Check if keybind exists
             foreach (var section in KeyData.Sections){
                 foreach (var key in section.Keys){
-                    if(i == ScrollIndexKeybind){
-                        KeyData["Keybinds"][key.KeyName] = final;
+                    string current = key.Value;
+                    if(current.ToLower().Replace(" ", "").Equals(final.ToLower().Replace(" ", ""))){
+                        isExisting = true;
+                        isExistingKeyName = key.KeyName;
                         break;
                     }
-                    i++;
                 }
             }
-            parser.WriteFile("KeyData.ini", KeyData);
+            // Save if not
+            if(!isExisting){
+                int i = 0;
+                foreach (var section in KeyData.Sections){
+                    foreach (var key in section.Keys){
+                        if(i == ScrollIndexKeybind){
+                            KeyData["Keybinds"][key.KeyName] = final;
+                            break;
+                        }
+                        i++;
+                    }
+                }
+                try {
+                    parser.WriteFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), KeyData);
+                } catch(Exception ex) {
+                    try {
+                        parser.WriteFile("KeyData.ini", KeyData);
+                    } catch(Exception exc) {        
+                        KeyData = new IniData();
+                    }
+                }
+            } else {
+                Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
+            }
+
         }
         public static string ReadIni_KeyData(string section, string key){
             string key_value = KeyData[section][key];
             return key_value;
         }
 
+        public static void Create_KeyDataIni(bool hardReset){
+            if(!hardReset){
+                string filePath = Path.Combine(Utils.jammerPath, "KeyData.ini");
+                if (!File.Exists(filePath))
+                {
+                    
+                    File.WriteAllText(filePath, FileContent);
+                }
+            } else {
+                string filePath = Path.Combine(Utils.jammerPath, "KeyData.ini");
+                // Check if the file exists, if so, delete it
+                if (File.Exists(filePath)){
+                    File.Delete(filePath);
+                }
+                // Create the file and write the content to it
+                File.WriteAllText(filePath, FileContent);
+            }
+            ReadNewKeybinds();
+        }
         public static string FindMatch_KeyData(
             ConsoleKey key_pressed,
             bool isAlt,
@@ -290,15 +390,85 @@ namespace jammer
             return results.ToArray(); // Convert List<string> to string[]
         }
 
+
         
         // country code. en, fi, se, de etc...
-        public static void Ini_LoadNewLocale(string country_code){
-            LocaleData = parser.ReadFile($"locales\\{country_code}.ini");
+        public static void Ini_LoadNewLocale(){
+            DirectoryInfo? di = null;
+            try {
+                di = new DirectoryInfo(Path.Combine("locales"));
+            } catch(Exception ex) {
+                try {
+                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
+                } catch(Exception exc) {
+                    return;
+                }
+            }
+            FileInfo[] files = di.GetFiles("*.ini");
+            string country_code = "en";
+            for(int i = 0; i < files.Length; i++){
+                if(i==ScrollIndexLanguage){
+                    string filename = Path.GetFileName(files[i].ToString());
+                    country_code = filename.Substring(0,2);
+                    break;
+                }
+            }
+            try {
+                LocaleData = parser.ReadFile(Path.Combine("locales", $"{country_code}.ini"));
+                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+                Preferences.localeLanguage = country_code;
+                Preferences.SaveSettings();
+            } catch(Exception ex) {
+                try {
+                    Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{country_code}.ini"));
+                    Preferences.localeLanguage = country_code;
+                    Preferences.SaveSettings();
+                } catch(Exception exc) {
+                    Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+
+                }
+            }
+
         }
 
         public static string ReadIni_LocaleData(string section, string key){
             string key_value = LocaleData[section][key];
             return key_value;
+        }
+
+        public static string[] ReadAll_Locales(){
+            List<string> results = new();
+            DirectoryInfo? di = null;
+            try {
+                di = new DirectoryInfo(Path.Combine("locales"));
+            } catch(Exception ex) {
+                try {
+                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
+                } catch(Exception exc) {
+                    bool a = false;
+                }
+            }
+            
+            FileInfo[] files = di.GetFiles("*.ini");
+            LocaleAmount = files.Length;
+
+            int maximum = 15;
+            for(int i = 0; i < files.Length; i++){
+                string keyValue = files[i].ToString();
+                if(i >= ReadWriteFile.ScrollIndexLanguage && results.Count != maximum){
+                    results.Add(keyValue);
+                }
+            }
+
+            for(int i = 0; i < files.Length; i++){
+                string keyValue = files[i].ToString();
+                if(i < ReadWriteFile.ScrollIndexLanguage && results.Count != maximum){
+                    results.Add(keyValue);
+                }
+            }
+
+            return results.ToArray(); // Convert List<string> to string[]
         }
     }
 }

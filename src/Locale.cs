@@ -1,5 +1,10 @@
 namespace jammer{
     public static class Locale{
+        public static class Country{
+            public static string _Country = CheckValueLocale("Country", "Country", "United kingdom");
+            public static string Language = CheckValueLocale("Country", "Language", "English");
+            public static string CountryCode = CheckValueLocale("Country", "CountryCode", "GB");
+        }
         public static class Player{
             public static string Playlist = CheckValueLocale("Player", "Playlist", "playlist");
             public static string State = CheckValueLocale("Player", "State", "State");
@@ -214,6 +219,30 @@ namespace jammer{
             public static string PlaylistIsEmpty = CheckValueLocale("OutsideItems", "PlaylistIsEmpty", "Playlist is empty");
             public static string PlaylistDoesntExist = CheckValueLocale("OutsideItems", "PlaylistDoesntExist", "Playlist does not exist");
         }
+        public static class LocaleKeybind{
+            public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Description");
+            public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
+            public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel, Enter to save");
+            public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift, shift+ctrl, alt+ctrl");
+            public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move with arrow keys");
+            public static string EditKeyBindMessage4 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage4", "Press Shift + Alt + Delete to reset keybinds");
+            public static string ChangeLanguageMessage1 = CheckValueLocale("LocaleKeybind", "ChangeLanguageMessage1", "Enter to choose the language, move with arrow keys");
+            public static string Ini_LoadNewLocaleMessage1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage1", "Language has been changed succesfully. Reset needed to load new language");
+            public static string Ini_LoadNewLocaleMessage2 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage2", "Language changed succesfully!");
+            public static string Ini_LoadNewLocaleError1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError1", "Error changing languages");
+            public static string Ini_LoadNewLocaleError2 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError2", "Error: Could not change language");
+            public static string WriteIni_KeyDataError1 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError1", "Keybind");
+            public static string WriteIni_KeyDataError2 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError2", "already exists");
+            public static string WriteIni_KeyDataError3 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError3", "Error: Keybind already exists");
+            public static string GoToSongStart = CheckValueLocale("LocaleKeybind", "GoToSongStart", "Go to song start");
+            public static string GoToSongEnd = CheckValueLocale("LocaleKeybind", "GoToSongEnd", "Go to song end");
+            public static string FOrwardSecAmount= CheckValueLocale("LocaleKeybind", "FOrwardSecAmount", "Forward second amount");
+            public static string BackwardSecAmount= CheckValueLocale("LocaleKeybind", "BackwardSecAmount", "Backward second amount");
+            public static string ChangeVolume = CheckValueLocale("LocaleKeybind", "ChangeVolume", "Change volume by");
+            public static string ToggleAutosave = CheckValueLocale("LocaleKeybind", "ToggleAutosave", "Toggle autosave");
+            public static string CurrentState = CheckValueLocale("LocaleKeybind", "CurrentState", "Show current state");
+
+        }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
             string finalValue = ReadWriteFile.ReadIni_LocaleData(key, value);
@@ -227,6 +256,5 @@ namespace jammer{
                 return finalValue;
             }
         }
-
     }
 }

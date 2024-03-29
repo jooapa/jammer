@@ -5,51 +5,6 @@ namespace jammer
 {
     public class Preferences
     {
-        string FileContent = @"
-;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
-;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.
-;When using numbers, 'd' part is not needed
-; Allowed modifiers are ctrl, shift, alt, ctrl + shift and ctrl + alt
-;
-[Keybinds]
-PlayPause = Spacebar
-Quit = Q
-NextSong = N
-PreviousSong = P
-PlaySong = Shift + p
-Forward5s = RightArrow
-Backwards5s = LeftArrow
-VolumeUp = UpArrow
-VolumeDown = DownArrow
-Shuffle = S
-SaveAsPlaylist = Shift + Alt + S
-SaveCurrentPlaylist = Shift + S
-ShufflePlaylist = Alt + S
-Loop = L
-Mute = M
-ShowHidePlaylist = F
-ListAllPlaylists = Shift + F
-Help = H
-Settings = C
-ToSongStart = 0
-ToSongEnd = 9
-PlaylistOptions = F2
-ForwardSecondAmount = 1
-BackwardSecondAmount = 2
-ChangeVolumeAmount = 3
-Autosave = 4
-CurrentState = F12
-CommandHelpScreen = Tab
-DeleteCurrentSong = Delete
-AddSongToPlaylist = Shift + A
-ShowSongsInPlaylists = Shift + D
-PlayOtherPlaylist = Shift + O
-RedownloadCurrentSong = Shift + B
-EditKeybindings = Shift + E
-ChangeLanguage = Shift + L
-PlayRandomSong = R
-";
-
         public static int rewindSeconds = GetRewindSeconds();
         public static int forwardSeconds = GetForwardSeconds();
         public static float volume = GetVolume();
@@ -59,7 +14,7 @@ PlayRandomSong = R
         public static bool isMuted = GetIsMuted();
         public static bool isShuffle = GetIsShuffle();
         public static bool isAutoSave = GetIsAutoSave();
-        public static string localeLanguage = getLocaleLanguage();
+        public static string? localeLanguage = getLocaleLanguage();
 
         static public void CheckJammerFolderExists()
         {
