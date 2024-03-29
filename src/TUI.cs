@@ -40,14 +40,14 @@ static class TUI
             // render maintable with tables in it
             mainTable.AddColumns(GetSongWithdots(Utils.currentSong, Start.consoleWidth - 8)).Width(Start.consoleWidth);
             mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
-            songsTable.Border = TableBorder.Square;
+            songsTable.Border = TableBorder.Rounded;
             mainTable.AddRow(controlsTable.Centered());
             // mainTable.Width(100);
             var helpTable = new Table();
             helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
             helpTable.Border = TableBorder.Rounded;
             
-            mainTable.Border = TableBorder.HeavyEdge;
+            mainTable.Border = TableBorder.Rounded;
             mainTable.AddRow(helpTable.Centered());
 
             if (Start.playerView != "all") {
@@ -419,6 +419,7 @@ static class TUI
     static public void DrawHelp() {
         var table = new Table();
         char separator = '+';
+        string[] ToMainMenu = (Keybindings.ToMainMenu).Replace(" ", "").Split(separator);
         string[] AddSongToPlaylist = (Keybindings.AddSongToPlaylist).Replace(" ", "").Split(separator);
         string[] ShowSongsInPlaylists = (Keybindings.ShowSongsInPlaylists).Replace(" ", "").Split(separator);
         string[] ListAllPlaylists = (Keybindings.ListAllPlaylists).Replace(" ", "").Split(separator);
@@ -449,6 +450,7 @@ static class TUI
 
         table.AddColumns(Locale.Help.Controls, Locale.Help.Description,Locale.Help.ModControls,Locale.Help.Description);
 
+
         table.AddRow(DrawHelpTextColouring(PlayPause), Locale.Help.PlayPause,                                               DrawHelpTextColouring(AddSongToPlaylist), Locale.Help.AddsongToPlaylist);
         table.AddRow(DrawHelpTextColouring(Quit), Locale.Help.Quit,                                                         DrawHelpTextColouring(ShowSongsInPlaylists), Locale.Help.ListAllSongsInOtherPlaylist);
         table.AddRow(DrawHelpTextColouring(Backwards5s), $"{Locale.Help.Rewind} {Preferences.changeVolumeBy * 100} {Locale.Help.Seconds}",  
@@ -468,6 +470,8 @@ static class TUI
         table.AddRow(DrawHelpTextColouring(DeleteCurrentSong), Locale.Help.DeleteCurrentSongFromPlaylist);
         table.AddRow(DrawHelpTextColouring(PlaylistOptions), Locale.Help.ShowPlaylistOptions);
         table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Locale.Help.ShowCmdHelp);
+        table.AddRow(DrawHelpTextColouring(ToMainMenu), Locale.Help.ToMainMenu);
+
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
         DrawHelpSettingInfo();
@@ -482,7 +486,11 @@ static class TUI
         }
         else if(textArray.Length == 3){
             return $"[green1]{textArray[0]}[/] + [turquoise2]{textArray[1]}[/] + {textArray[2]}";
-        } else {
+        }
+        else if(textArray.Length == 4){
+            return $"[green1]{textArray[0]}[/] + [turquoise2]{textArray[1]}[/] + [blue]{textArray[2]}[/] + {textArray[3]}";
+        } 
+        else {
             return textArray[0];
         }
     } 
@@ -531,7 +539,7 @@ static class TUI
     private static void DrawHelpSettingInfo(){
         AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
         AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
-        AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
+        AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}\n");
     }
     
     public static void CliHelp() {
@@ -573,6 +581,7 @@ static class TUI
 
     public static void EditKeyBindings(){
         string[] description = {
+            Locale.Help.ToMainMenu,
             Locale.Help.PlayPause,
             Locale.Help.Quit,
             Locale.Help.NextSong,
@@ -610,29 +619,29 @@ static class TUI
             Locale.Help.ChangeLanguage,
             Locale.Help.PlayRandomSong,
         };
-        ReadWriteFile.Create_KeyDataIni(false);
+        IniFileHandling.Create_KeyDataIni(false);
         // Construct description same way as in readalldata
         List<string> results = new();
         int maximum = 15;
         for(int i = 0; i < description.Length; i++){
             string keyValue = description[i];
-            if(i >= ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+            if(i >= IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
                 results.Add(keyValue);
             }
         }
 
         for(int i = 0; i < description.Length; i++){
             string keyValue = description[i];
-            if(i < ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+            if(i < IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
                 results.Add(keyValue);
             }
         }
         description = results.ToArray();
 
         var table = new Table();
-        table.AddColumn(Locale.LocaleKeybind.Description);
+        table.AddColumn(Locale.Help.Description);
         table.AddColumn(Locale.LocaleKeybind.CurrentControl);
-        string[] _elements = ReadWriteFile.ReadAll_KeyData();
+        string[] _elements = IniFileHandling.ReadAll_KeyData();
 
         // Counter to track the index for the description array
         int descIndex = 0;
@@ -657,21 +666,24 @@ static class TUI
             }
         }
         AnsiConsole.Write(table);
-        if(ReadWriteFile.EditingKeybind){
-            string final = ReadWriteFile.previousClick.ToString();
-            if(ReadWriteFile.isShiftCtrl){
+        if(IniFileHandling.EditingKeybind){
+            string final = IniFileHandling.previousClick.ToString();
+            if(IniFileHandling.isShiftCtrlAlt){
+                final = "Shift + Ctrl + Alt + " + final;
+            }
+            else if(IniFileHandling.isShiftCtrl){
                 final = "Shift + Ctrl + " + final;
             }
-            else if(ReadWriteFile.isShiftAlt){
+            else if(IniFileHandling.isShiftAlt){
                 final = "Shift + Alt + " + final;
             }
-            else if(ReadWriteFile.isShift){
+            else if(IniFileHandling.isShift){
                 final = "Shift + " + final;
             }
-            else if(ReadWriteFile.isCtrl){
+            else if(IniFileHandling.isCtrl){
                 final = "Ctrl + " + final;
             }
-            else if(ReadWriteFile.isAlt){
+            else if(IniFileHandling.isAlt){
                 final = "Alt + " + final;
             }
             AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1}[/]\n");
@@ -688,7 +700,7 @@ static class TUI
 
         var table = new Table();
         table.AddColumn(Locale.LocaleKeybind.Description);
-        string[] _elements = ReadWriteFile.ReadAll_Locales();
+        string[] _elements = IniFileHandling.ReadAll_Locales();
         
         // Loop through the _elements array
         for(int i = 0; i < _elements.Length; i++) {

@@ -5,7 +5,7 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-!define VERSION "2.0.1"
+!define VERSION "2.0.2"
 
 Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
@@ -87,8 +87,10 @@ File "run_command.bat"
 File "open_with_jammer.cmd"
 File "LICENSE"
 File "bass.dll"
-CreateDirectory $INSTALL_DIR\locales
-SetOutPath $INSTALL_DIR\locales
+File "bass_aac.dll"
+
+CreateDirectory $PROFILE\jammer\locales
+SetOutPath $PROFILE\jammer\locales
 File /r "locales\*.*"
 SetOutPath $INSTALL_DIR
 
@@ -172,6 +174,8 @@ Delete "$INSTDIR\open_with_jammer.cmd"
 Delete "$DESKTOP\jammer.lnk"
 Delete "$SENDTO\jammer.lnk"
 Delete "$INSTDIR\bass.dll"
+Delete "$INSTDIR\bass_aac.dll"
+
 
 ; Remove the installation directory if it still exists
 RMDir /r $INSTDIR

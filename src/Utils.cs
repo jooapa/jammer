@@ -23,10 +23,9 @@ namespace jammer
         public static string urlPatternHTTP = @"http?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
         public static bool mainLoop = true;
         public static string jammerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "jammer");
-        public static string jammerAssemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
-        public static string version = "2.0.1";
+        public static string version = "2.0.2";
     }
 }

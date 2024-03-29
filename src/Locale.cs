@@ -16,14 +16,14 @@ namespace jammer{
             public static string Previos = CheckValueLocale("Player", "Previos", "previous");
             public static string Current = CheckValueLocale("Player", "Current", "current");
             public static string Next = CheckValueLocale("Player", "Next", "next");
-            public static string NoSongsInPlaylist = CheckValueLocale("Player", "NoSongsInPlaylist", "No songs in 'on' playlist");
-            public static string DrawingError = CheckValueLocale("Player", "DrawingError", "Error in Drawing the player");
+            public static string NoSongsInPlaylist = CheckValueLocale("Player", "NoSongsInPlaylist", "No songs in playlist");
+            public static string DrawingError = CheckValueLocale("Player", "DrawingError", "Error occured while drawing the UI");
             public static string ControlsWillWork = CheckValueLocale("Player", "ControlsWillWork", "Controls still work");
             public static string ForHelp = CheckValueLocale("Player", "ForHelp", "for help");
             public static string ForPlaylist = CheckValueLocale("Player", "ForPlaylist", "for playlist");
             public static string PlaySingleSongMessage1 = CheckValueLocale("Player", "PlaySingleSongMessage1", "Enter song(s) to play:");
             public static string PlaySingleSongMessage2 = CheckValueLocale("Player", "PlaySingleSongMessage2", "Play song(s) | Separate songs with space");
-            public static string PlaySingleSongError1 = CheckValueLocale("Player", "PlaySingleSongError1", "Error: Play song(s)");
+            public static string PlaySingleSongError1 = CheckValueLocale("Player", "PlaySingleSongError1", "Error in: playing songs");
             public static string PlaySingleSongError2 = CheckValueLocale("Player", "PlaySingleSongError2", "no song(s) given");
             public static string GotoSongInPlaylistMessage1 = CheckValueLocale("Player", "GotoSongInPlaylistMessage1", "Enter song to goto:");
             public static string GotoSongInPlaylistMessage2 = CheckValueLocale("Player", "GotoSongInPlaylistMessage2", "Goto song in playlist");
@@ -57,6 +57,7 @@ namespace jammer{
             public static string AddSongToPlaylistError4 = CheckValueLocale("Player", "AddSongToPlaylistError4", "invalid song: Make sure you typed it correctly");
         }
         public static class Help{
+            public static string ToMainMenu = CheckValueLocale("Help", "ToMainMenu", "To Main Menu");
             public static string Controls = CheckValueLocale("Help", "Controls", "Controls");
             public static string Description = CheckValueLocale("Help", "Description", "Description");
             public static string ModControls = CheckValueLocale("Help", "ModControls", "Mod Controls");
@@ -201,7 +202,7 @@ namespace jammer{
             public static string File = CheckValueLocale("OutsideItems", "File", "File");
             public static string NoTrackPlaylist= CheckValueLocale("OutsideItems", "NoTrackPlaylist", "o tracks in playlist");
             public static string ToLocation = CheckValueLocale("OutsideItems", "ToLocation", "to");
-            public static string NoAudioStream = CheckValueLocale("OutsideItems", "NoAudioStream", "This video has no audio streams");
+            public static string NoAudioStream = CheckValueLocale("OutsideItems", "NoAudioStream", "This video has no audio stream");
             public static string YtFileExists = CheckValueLocale("OutsideItems", "YtFileExists", "Youtube file already exists");
             public static string InvalidUrl = CheckValueLocale("OutsideItems", "InvalidUrl", "Invalid url");
             public static string PressToContinue = CheckValueLocale("OutsideItems", "PressToContinue", "Press any key to continue");
@@ -220,10 +221,10 @@ namespace jammer{
             public static string PlaylistDoesntExist = CheckValueLocale("OutsideItems", "PlaylistDoesntExist", "Playlist does not exist");
         }
         public static class LocaleKeybind{
-            public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Description");
+            public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
             public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel, Enter to save");
-            public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift, shift+ctrl, alt+ctrl");
+            public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift and their combinations");
             public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move with arrow keys");
             public static string EditKeyBindMessage4 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage4", "Press Shift + Alt + Delete to reset keybinds");
             public static string ChangeLanguageMessage1 = CheckValueLocale("LocaleKeybind", "ChangeLanguageMessage1", "Enter to choose the language, move with arrow keys");
@@ -245,7 +246,7 @@ namespace jammer{
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
-            string finalValue = ReadWriteFile.ReadIni_LocaleData(key, value);
+            string finalValue = IniFileHandling.ReadIni_LocaleData(key, value);
 
             if (finalValue == null || finalValue.Equals(""))
             {

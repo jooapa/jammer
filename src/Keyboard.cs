@@ -17,16 +17,18 @@ namespace jammer
                 bool isShift = IfHoldingDownSHIFT(key);
                 bool isShiftAlt = IfHoldingDownSHIFTandALT(key);
                 bool isShiftCtrl = IfHoldingDownSHIFTandCTRL(key);
+                bool isShiftCtrlAlt = IfHoldingDownSHIFTandCTRLandAlt(key);
 
                 var pressed_key = key.Key;
                 
-                string Action = ReadWriteFile.FindMatch_KeyData(
+                string Action = IniFileHandling.FindMatch_KeyData(
                     pressed_key,
                     isAlt,
                     isCtrl,
                     isShift,
                     isShiftAlt,
-                    isShiftCtrl
+                    isShiftCtrl,
+                    isShiftCtrlAlt
                     );
                 // Media key presses
                 /*
@@ -52,80 +54,86 @@ namespace jammer
                         break;
                 }
                 */
-                if(playerView.Equals("editkeybindings") || ReadWriteFile.EditingKeybind){
-                    if(key.Key == ConsoleKey.Delete && isShiftAlt && !ReadWriteFile.EditingKeybind){
-                        ReadWriteFile.Create_KeyDataIni(true);
+                if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
+                    if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
+                        IniFileHandling.Create_KeyDataIni(true);
                         Message.Data("Keybinds resetted","Keybinds have been resetted");
                     }
-                    if(key.Key == ConsoleKey.DownArrow && !ReadWriteFile.EditingKeybind){
+                    if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
                         // nullifu action
                         Action = "";
-                        if(ReadWriteFile.ScrollIndexKeybind + 1 > ReadWriteFile.KeybindAmount){
-                            ReadWriteFile.ScrollIndexKeybind = -1;
+                        if(IniFileHandling.ScrollIndexKeybind + 1 > IniFileHandling.KeybindAmount){
+                            IniFileHandling.ScrollIndexKeybind = -1;
                         } else {
-                            ReadWriteFile.ScrollIndexKeybind += 1;
+                            IniFileHandling.ScrollIndexKeybind += 1;
                         }
                     } 
-                    else if(key.Key == ConsoleKey.UpArrow && !ReadWriteFile.EditingKeybind){
+                    else if(key.Key == ConsoleKey.UpArrow && !IniFileHandling.EditingKeybind){
                         Action = "";
-                        if(ReadWriteFile.ScrollIndexKeybind - 1 < 0 ){
-                            ReadWriteFile.ScrollIndexKeybind = ReadWriteFile.KeybindAmount - 2;
+                        if(IniFileHandling.ScrollIndexKeybind - 1 < 0 ){
+                            IniFileHandling.ScrollIndexKeybind = IniFileHandling.KeybindAmount - 2;
                         } else {
-                            ReadWriteFile.ScrollIndexKeybind -= 1;
+                            IniFileHandling.ScrollIndexKeybind -= 1;
                         }
                     } 
-                    if (key.Key == ConsoleKey.Enter && !ReadWriteFile.EditingKeybind){
+                    if (key.Key == ConsoleKey.Enter && !IniFileHandling.EditingKeybind){
                         Action = "";
-                        ReadWriteFile.EditingKeybind = true;
+                        IniFileHandling.EditingKeybind = true;
                     }
-                    else if (key.Key == ConsoleKey.Enter && ReadWriteFile.EditingKeybind){
+                    else if (key.Key == ConsoleKey.Enter && IniFileHandling.EditingKeybind){
                         Action = "";
-                        ReadWriteFile.EditingKeybind = false;
-                        ReadWriteFile.WriteIni_KeyData();
-                        ReadWriteFile.isAlt = false;
-                        ReadWriteFile.isCtrl = false;
-                        ReadWriteFile.isShift = false;
-                        ReadWriteFile.isShiftAlt = false;
-                        ReadWriteFile.isShiftCtrl = false;
+                        IniFileHandling.EditingKeybind = false;
+                        IniFileHandling.WriteIni_KeyData();
+                        IniFileHandling.isAlt = false;
+                        IniFileHandling.isCtrl = false;
+                        IniFileHandling.isShift = false;
+                        IniFileHandling.isShiftAlt = false;
+                        IniFileHandling.isShiftCtrl = false;
+                        IniFileHandling.isShiftCtrlAlt = false;
                     }
-                    if (key.Key == ConsoleKey.Escape && ReadWriteFile.EditingKeybind){
+                    if (key.Key == ConsoleKey.Escape && IniFileHandling.EditingKeybind){
                         Action = "";
-                        ReadWriteFile.EditingKeybind = false;
+                        IniFileHandling.EditingKeybind = false;
                     }
                     
-                    ReadWriteFile.isAlt = IfHoldingDownALT(key);
-                    ReadWriteFile.isCtrl = IfHoldingDownCTRL(key);
-                    ReadWriteFile.isShift = IfHoldingDownSHIFT(key);
-                    ReadWriteFile.isShiftAlt = IfHoldingDownSHIFTandALT(key);
-                    ReadWriteFile.isShiftCtrl = IfHoldingDownSHIFTandCTRL(key);
-                    ReadWriteFile.previousClick = key.Key;
+                    IniFileHandling.isAlt = IfHoldingDownALT(key);
+                    IniFileHandling.isCtrl = IfHoldingDownCTRL(key);
+                    IniFileHandling.isShift = IfHoldingDownSHIFT(key);
+                    IniFileHandling.isShiftAlt = IfHoldingDownSHIFTandALT(key);
+                    IniFileHandling.isShiftCtrl = IfHoldingDownSHIFTandCTRL(key);
+                    IniFileHandling.isShiftCtrlAlt = IfHoldingDownSHIFTandCTRLandAlt(key);
+                    IniFileHandling.previousClick = key.Key;
 
-                    if(ReadWriteFile.EditingKeybind){
+                    if(IniFileHandling.EditingKeybind){
                         Action = "";
                     }
                 }
                 if(playerView.Equals("changelanguage")){
+                    // Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(key.Key == ConsoleKey.DownArrow){
-                        if(ReadWriteFile.ScrollIndexLanguage + 1 > ReadWriteFile.LocaleAmount){
-                            ReadWriteFile.ScrollIndexLanguage = -1;
+                        if(IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount){
+                            IniFileHandling.ScrollIndexLanguage = 0;
                         } else {
-                            ReadWriteFile.ScrollIndexLanguage += 1;
+                            IniFileHandling.ScrollIndexLanguage += 1;
                         }
                     } else if(key.Key == ConsoleKey.UpArrow){
                         Action = "";
-                        if(ReadWriteFile.ScrollIndexLanguage - 1 < 0 ){
-                            ReadWriteFile.ScrollIndexLanguage = ReadWriteFile.LocaleAmount;
+                        if(IniFileHandling.ScrollIndexLanguage - 1 < 0 ){
+                            IniFileHandling.ScrollIndexLanguage = IniFileHandling.LocaleAmount - 1;
                         } else {
-                            ReadWriteFile.ScrollIndexLanguage -= 1;
+                            IniFileHandling.ScrollIndexLanguage -= 1;
                         }
                     } 
                     if(key.Key == ConsoleKey.Enter){
-                        ReadWriteFile.Ini_LoadNewLocale();
+                        IniFileHandling.Ini_LoadNewLocale();
                     }
                 }
 
                 switch (Action)
                     {
+                        case "ToMainMenu":
+                            playerView = "default";
+                            break;
                         case "PlayPause":
                             PauseSong();
                             Play.PlayDrawReset();
@@ -311,7 +319,7 @@ namespace jammer
                             Play.ReDownloadSong();
                             break;
                         case "EditKeybindings":
-                            ReadWriteFile.ScrollIndexKeybind = 0;
+                            IniFileHandling.ScrollIndexKeybind = 0;
                             if (playerView == "default")
                             {
                                 playerView = "editkeybindings";
@@ -322,7 +330,7 @@ namespace jammer
                             }
                             break;
                         case "ChangeLanguage":
-                            ReadWriteFile.ScrollIndexLanguage = 0;
+                            IniFileHandling.ScrollIndexLanguage = 0;
                             if (playerView == "default")
                             {
                                 playerView = "changelanguage";
@@ -333,7 +341,7 @@ namespace jammer
                             }
                             break;
                         case "PlayRandomSong":
-                            // TODO 
+                            // TODO: Play random song
                             break;
                         // case ConsoleKey.J:
                         //     Message.Input();
@@ -343,7 +351,7 @@ namespace jammer
                         //     break;
                     }
             
-
+                
                 TUI.RehreshCurrentView();
             }
         }
@@ -387,6 +395,14 @@ namespace jammer
         public static bool IfHoldingDownSHIFTandALT(ConsoleKeyInfo key)
         {
             if (key.Modifiers != (ConsoleModifiers.Shift | ConsoleModifiers.Alt))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool IfHoldingDownSHIFTandCTRLandAlt(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != (ConsoleModifiers.Shift | ConsoleModifiers.Alt | ConsoleModifiers.Control))
             {
                 return false;
             }

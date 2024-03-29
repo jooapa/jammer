@@ -81,43 +81,52 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 
 | Key | Action |
 |  --------  |  -------  |
-| `h` | show/hide help |
-| `c` | show/hide settings |
-| `f` | show/hide playlist view |
-| `shift + e` | edit keybindings|
-| `shift + l` | change language|
-| `space` | play/pause |
-| `q` | quit |
-| `→` | forward |
-| `←` | backward |
-| `↑` | volume up |
-| `↓` | volume down |
-| `m` | mute/unmute |
-| `L` | toggle loop |
-| `s` | toggle shuffle |
-| `r` | play in random song |
-| `n` | next song in playlist |
-| `p` | previous song in playlist |
-| `Delete` | delete current song from playlist |
-| `F2` | show playlist options |
-| `tab` | show CMD help screen|
-| `0` | goto start of the song|
-| `9` | goto end of the song|
-
+| `H` | Show/hide help |
+| `C` | Show/hide settings |
+| `F` | Show/hide playlist view |
+| `Shift + E` | Edit keybindings|
+| `Shift + L` | Change language|
+| `Space` | Play/pause |
+| `Q` | Quit |
+| `→` | Forward |
+| `←` | Backward |
+| `↑` | Volume up |
+| `↓` | Volume down |
+| `M` | Mute/unmute |
+| `L` | Toggle loop |
+| `S` | Toggle shuffle |
+| `R` | Play in random song |
+| `N` | Next song in playlist |
+| `P` | Previous song in playlist |
+| `Delete` | Delete current song from playlist |
+| `F2` | Show playlist options |
+| `Tab` | Show CMD help screen|
+| `0` | Goto start of the song|
+| `9` | Goto end of the song|
 
 ### Playlist Controls
 
 | Key | Action |
 | ------ | ----------- |
-| `shift + A`| Add song to playlist |
-| `shift + D`| Show songs in other playlist |
-| `shift + F`| List all playlists |
-| `shift + O`| Play other playlist |
-| `shift + S`| Save playlist |
-| `shift + alt + S`| Save as |
-| `alt + S`| Shuffle playlist |
-| `shift + P`| Play song(s) |
-| `shift + B`| Redownload current song |
+| `Shift + A`| Add song to playlist |
+| `Shift + D`| Show songs in other playlist |
+| `Shift + F`| List all playlists |
+| `Shift + O`| Play other playlist |
+| `Shift + S`| Save playlist |
+| `Shift + Alt + S`| Save as |
+| `Alt + S`| Shuffle playlist |
+| `Shift + P`| Play song(s) |
+| `Shift + B`| Redownload current song |
+
+### Languages
+
+Currently supported languages:
+
+- English
+
+- Finnish
+
+Create new translation by copying already existin .ini file from /locales and translating it.
 
 ### Example usage
 
@@ -211,12 +220,3 @@ python change_version.py [version]
 [ ] pg up/down you can scroll the playlist and modify the selected song
 [ ] you can see whats downloaded from url
 
-### Languages
-
- Currently supported languages:
- - English
- - Finnish
-
- Create new translation by copying already existin .ini file from /locales and translating it
- Name it after the country's [code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements)
- 
