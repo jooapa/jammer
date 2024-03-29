@@ -87,7 +87,7 @@ File "run_command.bat"
 File "open_with_jammer.cmd"
 File "LICENSE"
 File "bass.dll"
-;File "bass_aac.dll"
+File "bass_aac.dll"
 
 CreateDirectory $PROFILE\jammer\locales
 SetOutPath $PROFILE\jammer\locales
@@ -174,7 +174,7 @@ Delete "$INSTDIR\open_with_jammer.cmd"
 Delete "$DESKTOP\jammer.lnk"
 Delete "$SENDTO\jammer.lnk"
 Delete "$INSTDIR\bass.dll"
-;Delete "$INSTDIR\bass_aac.dll"
+Delete "$INSTDIR\bass_aac.dll"
 
 
 ; Remove the installation directory if it still exists
