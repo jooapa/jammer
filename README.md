@@ -94,7 +94,6 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 | `0` | goto start of the song|
 | `9` | goto end of the song|
 
-
 ### Playlist Controls
 
 | Key | Action |
@@ -108,6 +107,16 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 | `alt + S`| Shuffle playlist |
 | `shift + P`| Play song(s) |
 | `shift + B`| Redownload current song |
+
+### Languages
+
+Currently supported languages:
+
+- English
+
+- Finnish
+
+Create new translation by copying already existin .ini file from /locales and translating it.
 
 ### Example usage
 
@@ -185,13 +194,3 @@ python change_version.py [version]
 [ ] Better f mode
 [ ] pg up/down you can scroll the playlist and modify the selected song
 [ ] you can see whats downloaded from url
-
-### Languages
-
- Currently supported languages:
- - English
- - Finnish
-
- Create new translation by copying already existin .ini file from /locales and translating it
- Name it after the country's [code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements)
- 
