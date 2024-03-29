@@ -11,6 +11,11 @@ COPY /Y LICENSE %targetFolder%
 
 mkdir "%targetFolder%\locales"
 XCOPY /S /Y locales "%targetFolder%\locales"
+SET "start_name=jammer-Setup"  REM Set the start name of the files you want to run
+
+for %%F in ("%start_name%*.exe") do (
+    DEL "" "%%F"
+)
 
 makensis %targetFolder%\setup.nsi  
 
@@ -20,7 +25,9 @@ IF ErrorLevel 1 (
 )
 
 cd nsis
-SET "start_name=jammer-Setup"  REM Set the start name of the files you want to run
+REM Loop through files in the current directory with the specified start name
+
+
 
 REM Loop through files in the current directory with the specified start name
 for %%F in ("%start_name%*.exe") do (

@@ -17,6 +17,7 @@ namespace jammer
                 bool isShift = IfHoldingDownSHIFT(key);
                 bool isShiftAlt = IfHoldingDownSHIFTandALT(key);
                 bool isShiftCtrl = IfHoldingDownSHIFTandCTRL(key);
+                bool isCtrlAlt = IfHoldingDownCtrlandALT(key);
                 bool isShiftCtrlAlt = IfHoldingDownSHIFTandCTRLandAlt(key);
 
                 var pressed_key = key.Key;
@@ -28,6 +29,7 @@ namespace jammer
                     isShift,
                     isShiftAlt,
                     isShiftCtrl,
+                    isCtrlAlt,
                     isShiftCtrlAlt
                     );
                 // Media key presses
@@ -89,6 +91,7 @@ namespace jammer
                         IniFileHandling.isShift = false;
                         IniFileHandling.isShiftAlt = false;
                         IniFileHandling.isShiftCtrl = false;
+                        IniFileHandling.isCtrlAlt = false;
                         IniFileHandling.isShiftCtrlAlt = false;
                     }
                     if (key.Key == ConsoleKey.Escape && IniFileHandling.EditingKeybind){
@@ -101,6 +104,7 @@ namespace jammer
                     IniFileHandling.isShift = IfHoldingDownSHIFT(key);
                     IniFileHandling.isShiftAlt = IfHoldingDownSHIFTandALT(key);
                     IniFileHandling.isShiftCtrl = IfHoldingDownSHIFTandCTRL(key);
+                    IniFileHandling.isCtrlAlt = IfHoldingDownCtrlandALT(key);
                     IniFileHandling.isShiftCtrlAlt = IfHoldingDownSHIFTandCTRLandAlt(key);
                     IniFileHandling.previousClick = key.Key;
 
@@ -395,6 +399,14 @@ namespace jammer
         public static bool IfHoldingDownSHIFTandALT(ConsoleKeyInfo key)
         {
             if (key.Modifiers != (ConsoleModifiers.Shift | ConsoleModifiers.Alt))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static bool IfHoldingDownCtrlandALT(ConsoleKeyInfo key)
+        {
+            if (key.Modifiers != (ConsoleModifiers.Control | ConsoleModifiers.Alt))
             {
                 return false;
             }

@@ -69,6 +69,7 @@ PlayRandomSong = R
         public static bool isCtrl = false;
         public static bool isShift = false;
         public static bool isShiftAlt = false;
+        public static bool isCtrlAlt = false;
         public static bool isShiftCtrl = false;
         public static bool isShiftCtrlAlt = false;
         
@@ -127,6 +128,9 @@ PlayRandomSong = R
             }
             else if(isShiftAlt){
                 final = "Shift + Alt + " + final;
+            }
+            else if(isCtrlAlt){
+                final = "Ctrl + Alt + " + final;
             }
             else if(isShift){
                 final = "Shift + " + final;
@@ -207,6 +211,7 @@ PlayRandomSong = R
             bool isShift,
             bool isShiftAlt,
             bool isShiftCtrl,
+            bool isCtrlAlt,
             bool isShiftCtrlAlt
             ){
             char separator = '+'; // Inside .ini file
@@ -258,6 +263,7 @@ PlayRandomSong = R
                     if(currentKeyPress.Equals(key_pressed_string)){
                         bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                         bool isShiftAltModifier = altModifier && shiftModifier;
+                        bool isCtrlAltModifier = altModifier && ctrlModifier;
                         bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                         // Look through matches in modifiers
                         if(isShiftAltCtrlModifier && isShiftCtrlAlt){
@@ -267,6 +273,9 @@ PlayRandomSong = R
                             return key.KeyName;
                         }
                         else if(isShiftAltModifier && isShiftAlt){
+                            return key.KeyName;
+                        }
+                        else if(isCtrlAltModifier && isCtrlAlt){
                             return key.KeyName;
                         }
                         else if(!isShiftAltModifier && altModifier && isAlt){
@@ -328,7 +337,8 @@ PlayRandomSong = R
                     bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                     bool isShiftAltModifier = altModifier && shiftModifier;
                     bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
-
+                    bool isCtrlAltModifier = altModifier && ctrlModifier;
+                    
                     // Look through matches in modifiers
                     if(isShiftAltCtrlModifier && isShiftCtrlAlt){
                         return property.Name.ToString();
@@ -337,6 +347,9 @@ PlayRandomSong = R
                         return property.Name.ToString();
                     }
                     else if(isShiftAltModifier && isShiftAlt){
+                        return property.Name.ToString();
+                    }
+                    else if(isCtrlAltModifier && isCtrlAlt){
                         return property.Name.ToString();
                     }
                     else if(!isShiftAltModifier && altModifier && isAlt){
