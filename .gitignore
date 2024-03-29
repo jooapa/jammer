@@ -9,6 +9,8 @@
 # NSIS
 nsis/LICENSE
 nsis/*.exe
+nsis/locales/
+nsis/bass.dll
 
 # Build results
 build/
