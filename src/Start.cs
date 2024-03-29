@@ -330,12 +330,9 @@ namespace jammer
                         TUI.ClearScreen();
                         break;
                 }
+                
+                Thread.Sleep(5);
             }
-        }
-
-        public static void SetLastseconds(float s)
-        {
-            lastSeconds = s;
         }
     }
 }
