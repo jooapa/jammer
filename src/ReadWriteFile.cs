@@ -88,14 +88,14 @@ PlayRandomSong = R
             try {
                 LocaleData = parser.ReadFile(Path.Combine("locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
-            } catch(Exception ex) {
-                try {
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
-                    LocaleDataFound = true;
-                } catch(Exception exc) {
-                    LocaleData = new IniData();
-                }
+            } catch(Exception exc) {
+                LocaleData = new IniData();
             }
+
+            try {
+                LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                LocaleDataFound = true;
+            } catch(Exception ex) {}
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
 
         }
@@ -396,15 +396,20 @@ PlayRandomSong = R
         public static void Ini_LoadNewLocale(){
             DirectoryInfo? di = null;
             try {
-                di = new DirectoryInfo(Path.Combine("locales"));
+                di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
             } catch(Exception ex) {
-                try {
-                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
-                } catch(Exception exc) {
-                    return;
-                }
             }
-            FileInfo[] files = di.GetFiles("*.ini");
+            
+            FileInfo[]? files = null;
+            try{
+                files = di.GetFiles("*.ini");
+            } catch {
+                try {
+                di = new DirectoryInfo(Path.Combine("locales"));
+                files = di.GetFiles("*.ini");
+                } catch(Exception exc) {}
+            }
+
             string country_code = "en";
             for(int i = 0; i < files.Length; i++){
                 if(i==ScrollIndexLanguage){
@@ -414,19 +419,20 @@ PlayRandomSong = R
                 }
             }
             try {
-                LocaleData = parser.ReadFile(Path.Combine("locales", $"{country_code}.ini"));
-                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                Preferences.localeLanguage = country_code;
-                Preferences.SaveSettings();
-            } catch(Exception ex) {
+            LocaleData = parser.ReadFile(Path.Combine("locales", $"{country_code}.ini"));
+            Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+            Preferences.localeLanguage = country_code;
+            Preferences.SaveSettings();
+            } catch(Exception exc) {
+
                 try {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                     LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{country_code}.ini"));
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
-                } catch(Exception exc) {
+                } catch(Exception ex) {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
-
+                    return;
                 }
             }
 
@@ -440,17 +446,21 @@ PlayRandomSong = R
         public static string[] ReadAll_Locales(){
             List<string> results = new();
             DirectoryInfo? di = null;
+
             try {
-                di = new DirectoryInfo(Path.Combine("locales"));
+                di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
             } catch(Exception ex) {
-                try {
-                    di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales"));
-                } catch(Exception exc) {
-                    bool a = false;
-                }
             }
             
-            FileInfo[] files = di.GetFiles("*.ini");
+            FileInfo[]? files = null;
+            try{
+                files = di.GetFiles("*.ini");
+            } catch {
+                try {
+                di = new DirectoryInfo(Path.Combine("locales"));
+                files = di.GetFiles("*.ini");
+                } catch(Exception exc) {}
+            }
             LocaleAmount = files.Length;
 
             int maximum = 15;
