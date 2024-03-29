@@ -23,10 +23,10 @@ namespace jammer{
         public static string ToSongStart = CheckValue("Keybinds", "ToSongStart", "0");
         public static string ToSongEnd = CheckValue("Keybinds", "ToSongEnd", "9");
         public static string PlaylistOptions = CheckValue("Keybinds", "PlaylistOptions", "F2");
-        public static string ForwardSecondAmount = CheckValue("Keybinds", "ForwardSecondAmount", "Ctrl + 1");
-        public static string BackwardSecondAmount = CheckValue("Keybinds", "BackwardSecondAmount", "Ctrl + 2");
-        public static string ChangeVolumeAmount = CheckValue("Keybinds", "ChangeVolumeAmount", "Ctrl + 3");
-        public static string Autosave = CheckValue("Keybinds", "Autosave", "Ctrl + 4");
+        public static string ForwardSecondAmount = CheckValue("Keybinds", "ForwardSecondAmount", "1");
+        public static string BackwardSecondAmount = CheckValue("Keybinds", "BackwardSecondAmount", "2");
+        public static string ChangeVolumeAmount = CheckValue("Keybinds", "ChangeVolumeAmount", "3");
+        public static string Autosave = CheckValue("Keybinds", "Autosave", "4");
         public static string CommandHelpScreen = CheckValue("Keybinds", "CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("Keybinds", "DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("Keybinds", "AddSongToPlaylist", "Shift + A");
@@ -38,7 +38,7 @@ namespace jammer{
         public static string PlayRandomSong = CheckValue("Keybinds", "PlayRandomSong", "R");
 
         public static string CheckValue(string key, string value, string defaultValue){
-            string finalValue = ReadWriteFile.ReadIni_KeyData(key, value);
+            string finalValue = IniFileHandling.ReadIni_KeyData(key, value);
             if (finalValue == null || finalValue.Equals(""))
             {
                 return defaultValue;

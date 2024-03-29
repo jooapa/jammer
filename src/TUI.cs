@@ -531,7 +531,7 @@ static class TUI
     private static void DrawHelpSettingInfo(){
         AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
         AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
-        AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
+        AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}\n");
     }
     
     public static void CliHelp() {
@@ -610,20 +610,20 @@ static class TUI
             Locale.Help.ChangeLanguage,
             Locale.Help.PlayRandomSong,
         };
-        ReadWriteFile.Create_KeyDataIni(false);
+        IniFileHandling.Create_KeyDataIni(false);
         // Construct description same way as in readalldata
         List<string> results = new();
         int maximum = 15;
         for(int i = 0; i < description.Length; i++){
             string keyValue = description[i];
-            if(i >= ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+            if(i >= IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
                 results.Add(keyValue);
             }
         }
 
         for(int i = 0; i < description.Length; i++){
             string keyValue = description[i];
-            if(i < ReadWriteFile.ScrollIndexKeybind && results.Count != maximum){
+            if(i < IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
                 results.Add(keyValue);
             }
         }
@@ -632,7 +632,7 @@ static class TUI
         var table = new Table();
         table.AddColumn(Locale.LocaleKeybind.Description);
         table.AddColumn(Locale.LocaleKeybind.CurrentControl);
-        string[] _elements = ReadWriteFile.ReadAll_KeyData();
+        string[] _elements = IniFileHandling.ReadAll_KeyData();
 
         // Counter to track the index for the description array
         int descIndex = 0;
@@ -657,21 +657,24 @@ static class TUI
             }
         }
         AnsiConsole.Write(table);
-        if(ReadWriteFile.EditingKeybind){
-            string final = ReadWriteFile.previousClick.ToString();
-            if(ReadWriteFile.isShiftCtrl){
+        if(IniFileHandling.EditingKeybind){
+            string final = IniFileHandling.previousClick.ToString();
+            if(IniFileHandling.isShiftCtrlAlt){
+                final = "Shift + Ctrl + Alt + " + final;
+            }
+            else if(IniFileHandling.isShiftCtrl){
                 final = "Shift + Ctrl + " + final;
             }
-            else if(ReadWriteFile.isShiftAlt){
+            else if(IniFileHandling.isShiftAlt){
                 final = "Shift + Alt + " + final;
             }
-            else if(ReadWriteFile.isShift){
+            else if(IniFileHandling.isShift){
                 final = "Shift + " + final;
             }
-            else if(ReadWriteFile.isCtrl){
+            else if(IniFileHandling.isCtrl){
                 final = "Ctrl + " + final;
             }
-            else if(ReadWriteFile.isAlt){
+            else if(IniFileHandling.isAlt){
                 final = "Alt + " + final;
             }
             AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1}[/]\n");
@@ -688,7 +691,7 @@ static class TUI
 
         var table = new Table();
         table.AddColumn(Locale.LocaleKeybind.Description);
-        string[] _elements = ReadWriteFile.ReadAll_Locales();
+        string[] _elements = IniFileHandling.ReadAll_Locales();
         
         // Loop through the _elements array
         for(int i = 0; i < _elements.Length; i++) {
