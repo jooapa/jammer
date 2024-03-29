@@ -28,6 +28,7 @@ namespace jammer
     {
         //NOTE(ra) Starting state to playing.
         // public static MainStates state = MainStates.idle;
+        // ! Translations needed to locales
         public static MainStates state = MainStates.playing;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
@@ -67,7 +68,7 @@ namespace jammer
                         case "-h":
                         case "--help":
                             TUI.ClearScreen();
-                            TUI.Help();
+                            TUI.CliHelp();
                             return;
                         case "--play":
                         case "-p":
@@ -181,10 +182,11 @@ namespace jammer
 
             if (!Bass.Init())
             {
-                Message.Data("Can't initialize device", "Error", true);
+                Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
                 return;
             }
-
+            
+            // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.songs.Length != 0)
             {

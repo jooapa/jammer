@@ -5,7 +5,6 @@ namespace jammer
 {
     public class Preferences
     {
-
         public static int rewindSeconds = GetRewindSeconds();
         public static int forwardSeconds = GetForwardSeconds();
         public static float volume = GetVolume();
@@ -15,6 +14,7 @@ namespace jammer
         public static bool isMuted = GetIsMuted();
         public static bool isShuffle = GetIsShuffle();
         public static bool isAutoSave = GetIsAutoSave();
+        public static string? localeLanguage = getLocaleLanguage();
 
         static public void CheckJammerFolderExists()
         {
@@ -51,6 +51,7 @@ namespace jammer
             settings.changeVolumeBy = changeVolumeBy;
             settings.isShuffle = isShuffle;
             settings.isAutoSave = isAutoSave;
+            settings.localeLanguage = localeLanguage;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -187,6 +188,20 @@ namespace jammer
                 return false;
             }
         }
+        static public string? getLocaleLanguage()
+        {
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
+            if (File.Exists(jammerPath))
+            {
+                string jsonString = File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.localeLanguage;
+            }
+            else
+            {
+                return "en";
+            }
+        }
 
         static public bool GetIsAutoSave()
         {
@@ -232,6 +247,9 @@ namespace jammer
             public float changeVolumeBy { get; set; }
             public bool isShuffle { get; set; }
             public bool isAutoSave { get; set; }
+            public string? localeLanguage { get; set; }
+            
         }
     }
 }
+

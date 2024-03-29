@@ -56,7 +56,7 @@ namespace jammer
         {
             if (songs.Length == 0)
             {
-                AnsiConsole.MarkupLine("[red]No songs in playlist[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
                 Currentindex = 0;
                 Start.Run(new string[] {});
                 return;
@@ -112,7 +112,7 @@ namespace jammer
             }
             else
             {
-                AnsiConsole.MarkupLine("[red] Song not found[/]");
+                AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
                 return;
             }
 
@@ -153,7 +153,7 @@ namespace jammer
                 }
                 else
                 {
-                    Console.WriteLine("Unsupported file format");
+                    Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
                     Debug.dprint("Unsupported file format");
                     // remove song from current Utils.songs
                     Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
@@ -167,7 +167,7 @@ namespace jammer
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error: " + e);
+                Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
                 Debug.dprint("Error: " + e);
                 return;
             }
@@ -371,7 +371,7 @@ namespace jammer
             {
                 if (s == song)
                 {
-                    Console.WriteLine("Song already in playlist");
+                    Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
                     return;
                 }
             }
@@ -394,7 +394,7 @@ namespace jammer
             // check if index is in range
             if (index < 0 || index > Utils.songs.Length)
             {
-                AnsiConsole.MarkupLine("[red]Index out of range[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
                 return;
             }
             // remove song from current Utils.songs
@@ -452,7 +452,7 @@ namespace jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                Message.Data("Deleting song from playlist", "Error: Can't play song: " + Utils.currentSong);
+                Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
                 DeleteSong(Utils.currentSongIndex);
                 

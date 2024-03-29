@@ -14,13 +14,13 @@ namespace jammer {
 
         public static string DownloadSong(string url2) {
             url = url2;
-            Debug.dprint("Downloading: " + url2.ToString());
+            Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url2.ToString());
             if (URL.IsValidSoundcloudSong(url)) {
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
             } else {
-                Console.WriteLine("Invalid url");
+                Console.WriteLine(Locale.OutsideItems.InvalidUrl);
                 Debug.dprint("Invalid url");
             }
             return songPath;
@@ -37,7 +37,7 @@ namespace jammer {
 
             if (File.Exists(songPath))
             {
-                Console.WriteLine("Youtube file already exists");
+                Console.WriteLine(Locale.OutsideItems.YtFileExists);
                 return;
             }
             try
@@ -50,25 +50,25 @@ namespace jammer {
                     var progress = new Progress<double>(data =>
                     {
                         AnsiConsole.Clear();
-                        Console.WriteLine($"Downloading {url}: {data:P}");
+                        Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
                 }
                 else
                 {
-                    Console.WriteLine("This video has no audio streams");
+                    Console.WriteLine(Locale.OutsideItems.NoAudioStream);
                 }
 
                 songPath = Path.Combine(
                     Utils.jammerPath,
                     formattedUrl
                 );
-                Console.WriteLine("Downloaded: " + formattedUrl + " to " + songPath);
+                Console.WriteLine($"{Locale.OutsideItems.Downloaded}: " + formattedUrl + $" {Locale.OutsideItems.ToLocation} " + songPath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine($"{Locale.OutsideItems.Error}: " + ex.Message);
                 Console.ReadLine();
             }
         }
@@ -98,7 +98,7 @@ namespace jammer {
 
                     var progress = new Progress<double>(data => {
                         AnsiConsole.Clear();
-                        Console.WriteLine($"Downloading {trackName}: {data:P}");
+                        Console.WriteLine($"{Locale.OutsideItems.Downloading} {trackName}: {data:P}");
                     });
 
                     await soundcloud.DownloadAsync(track, songPath, progress);
@@ -107,7 +107,7 @@ namespace jammer {
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine($"{Locale.OutsideItems.Error}: " + ex.Message);
                 songPath = "";
             }
         }
@@ -120,7 +120,7 @@ namespace jammer {
             var playlist = await soundcloud.Playlists.GetAsync(url, true);
 
             if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
-                Console.WriteLine("No tracks in playlist");
+                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 return;
             }

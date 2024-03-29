@@ -6,7 +6,7 @@ namespace jammer
     {
         static public void Create(string playlist)
         {
-            Console.WriteLine("Creating playlist: " + playlist + ".jammer");
+            Console.WriteLine($"{Locale.OutsideItems.CreatingPlaylist}: " + playlist + ".jammer");
             string playlistName = playlist;
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
@@ -16,7 +16,7 @@ namespace jammer
 
             if (File.Exists(playlistPath))
             {
-                Console.WriteLine("Playlist already exists in " + playlistPath + ". Overwrite? (y/n)");
+                Console.WriteLine($"{Locale.OutsideItems.AlreadyExists} " + playlistPath + $". {Locale.OutsideItems.Overwrite} {Locale.Miscellaneous.YesNo}");
                 // y/n prompt
                 if (Console.ReadLine() == "y")
                 {
@@ -33,7 +33,7 @@ namespace jammer
 
         static public void Play(string playlist, bool fromCli)
         {
-            AnsiConsole.WriteLine("Starting up " + playlist + ".jammer");
+            AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist + ".jammer");
             string playlistName = playlist;
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
@@ -52,11 +52,11 @@ namespace jammer
                 
                 if (fromCli)
                 {
-                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[green]Playing " + songs[0] + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
                     Start.state = MainStates.play;
                     jammer.Play.PlaySong(songs, 0);
                 }
@@ -65,20 +65,21 @@ namespace jammer
             {
                 if (!fromCli)
                 {
-                    Message.Data("Playlist doesn't exist:" + playlist + ".jammer", "Error Playing Playlist", true);
+                    Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[red]Playlist: " + playlist + " doesn't exist[/]");
+                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: " + playlist + $" {Locale.OutsideItems.DoesntExist}[/]");
                     Environment.Exit(0);
                     return;
                 }
+                Environment.Exit(0);
             }
         }
 
         static public void Delete(string playlist)
         {
-            Console.WriteLine("Deleting " + playlist + ".jammer");
+            Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist + ".jammer");
             string playlistName = playlist;
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
@@ -92,7 +93,7 @@ namespace jammer
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist doesn't exist[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist} {Locale.OutsideItems.DoesntExist}[/]");
             }
         }
 
@@ -105,7 +106,7 @@ namespace jammer
                 playlistName + ".jammer"
             );
 
-            AnsiConsole.MarkupLine("[green]Adding songs to " + playlistPath + "[/]");
+            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.AddingSongsTo} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
             {
                 // take args and remove first 3 elements
@@ -120,12 +121,12 @@ namespace jammer
                 for (int i = 0; i < args.Length; i++)
                 {
                     string song = args[i];
-                    AnsiConsole.MarkupLine("[green]Adding " + song + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Adding} " + song + "[/]");
 
                     // check if song is already in playlist
                     if (songs.Contains(song))
                     {
-                        AnsiConsole.MarkupLine("[red]" + song + " is already in playlist[/]"); 
+                        AnsiConsole.MarkupLine("[red]" + song + $" {Locale.OutsideItems.IsALreadyInPlaylist}[/]"); 
                     }
                     else
                     {
@@ -136,9 +137,9 @@ namespace jammer
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist: "+ playlistName + " doesn't exist[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: "+ playlistName + $" {Locale.OutsideItems.DoesntExist}[/]");
             }
-            AnsiConsole.MarkupLine("[green]Done![/]");
+            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Done}![/]");
             Environment.Exit(0);
         }
 
@@ -151,7 +152,7 @@ namespace jammer
                 playlistName + ".jammer"
             );
 
-            AnsiConsole.MarkupLine("[green]Removing songs from " + playlistPath + "[/]");
+            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.RemovingFrom} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
             {
                 // take args and remove first 3 elements
@@ -166,7 +167,7 @@ namespace jammer
                 for (int i = 0; i < args.Length; i++)
                 {
                     string song = args[i];
-                    AnsiConsole.MarkupLine("[green]Removing " + song + "[/]");
+                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Removing} " + song + "[/]");
 
                     // check if song is already in playlist
                     if (songs.Contains(song))
@@ -177,16 +178,16 @@ namespace jammer
                     }
                     else
                     {
-                        AnsiConsole.MarkupLine("[red]" + song + " is not in playlist[/]");
+                        AnsiConsole.MarkupLine("[red]" + song + $" {Locale.OutsideItems.NotInPlaylist}[/]");
                     }
 
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Playlist: " + playlistName + " doesn't exist[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: " + playlistName + $" {Locale.OutsideItems.DoesntExist}[/]");
             }
-            AnsiConsole.MarkupLine("[green]Done![/]");
+            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Done}![/]");
             Environment.Exit(0);
         }
 
@@ -197,7 +198,7 @@ namespace jammer
 
         static public string GetShow(string playlist)
         {
-            AnsiConsole.MarkupLine("Showing playlist [red]" + playlist + "[/]");
+            AnsiConsole.MarkupLine($"{Locale.OutsideItems.ShowingPlaylist} [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
             string playlistPath = Path.Combine(
                 Utils.jammerPath,
@@ -211,7 +212,7 @@ namespace jammer
                 string[] songs = File.ReadAllLines(playlistPath);
                 if (songs.Length == 0)
                 {
-                    playlistList = "[red]Playlist is empty[/]";
+                    playlistList = $"[red]{Locale.OutsideItems.PlaylistIsEmpty}[/]";
                 }
                 foreach (string song in songs)
                 {
@@ -220,7 +221,7 @@ namespace jammer
             }
             else
             {
-                playlistList = "[red]Playlist doesn't exist[/]";
+                playlistList = $"[red]{Locale.OutsideItems.PlaylistDoesntExist}[/]";
             }
 
             return playlistList;
@@ -237,7 +238,7 @@ namespace jammer
             if (File.Exists(playlistPath))
             {
                 if (!force) {
-                    string input = Message.Input("(y/n)", "Playlist already exists in " + playlistPath + ". Overwrite?");
+                    string input = Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
                     // y/n prompt
                     if (input != "y")
                     {
@@ -267,7 +268,7 @@ namespace jammer
 
         public static void PrintList()
         {
-            AnsiConsole.WriteLine("Playlists:");
+            Console.WriteLine($"{Locale.OutsideItems.Playlists}:");
             Console.WriteLine(GetList());
         }
 
