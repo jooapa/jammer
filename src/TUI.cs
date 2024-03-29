@@ -580,89 +580,25 @@ static class TUI
     }
 
     public static void EditKeyBindings(){
-        string[] description = {
-            Locale.Help.ToMainMenu,
-            Locale.Help.PlayPause,
-            Locale.Help.Quit,
-            Locale.Help.NextSong,
-            Locale.Help.PreviousSong,
-            Locale.Help.PlaySongs,
-            Locale.Help.Forward,
-            Locale.Help.Rewind,
-            Locale.Help.VolumeUp,
-            Locale.Help.VolumeDown,
-            Locale.Help.ToggleShuffle,
-            Locale.Help.SaveAs,
-            Locale.Help.SavePlaylist,
-            Locale.Help.ShufflePlaylist,
-            Locale.Help.ToggleLooping,
-            Locale.Help.ToggleShuffle,
-            Locale.Help.ListAllPlaylists,
-            Locale.Help.ToHideHelp,
-            Locale.Help.ForSettings,
-            Locale.LocaleKeybind.GoToSongStart,
-            Locale.LocaleKeybind.GoToSongEnd,
-            Locale.Help.ShowPlaylistOptions,
-            Locale.LocaleKeybind.FOrwardSecAmount,
-            Locale.LocaleKeybind.BackwardSecAmount,
-            Locale.LocaleKeybind.ChangeVolume,
-            Locale.LocaleKeybind.ToggleAutosave,
-            Locale.LocaleKeybind.CurrentState, 
-            Locale.Help.ShowCmdHelp,
-            Locale.Help.DeleteCurrentSongFromPlaylist,
-            Locale.Help.AddsongToPlaylist,
-            Locale.Help.ListAllSongsInOtherPlaylist,
-            Locale.CliHelp.ShowSongsInPlaylist,
-            Locale.Help.PlayOtherPlaylist,
-            Locale.Help.RedownloadCurrentSong,
-            Locale.Help.EditKeybinds,
-            Locale.Help.ChangeLanguage,
-            Locale.Help.PlayRandomSong,
-        };
-        IniFileHandling.Create_KeyDataIni(false);
-        // Construct description same way as in readalldata
-        List<string> results = new();
-        int maximum = 15;
-        for(int i = 0; i < description.Length; i++){
-            string keyValue = description[i];
-            if(i >= IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
-                results.Add(keyValue);
-            }
-        }
+        IniFileHandling.Create_KeyDataIni(0);
+        IniFileHandling.Create_KeyDataIni(2);
 
-        for(int i = 0; i < description.Length; i++){
-            string keyValue = description[i];
-            if(i < IniFileHandling.ScrollIndexKeybind && results.Count != maximum){
-                results.Add(keyValue);
-            }
-        }
-        description = results.ToArray();
 
         var table = new Table();
         table.AddColumn(Locale.Help.Description);
         table.AddColumn(Locale.LocaleKeybind.CurrentControl);
-        string[] _elements = IniFileHandling.ReadAll_KeyData();
+        (string[] _elements, string[] _description) = IniFileHandling.ReadAll_KeyData();
 
         // Counter to track the index for the description array
-        int descIndex = 0;
 
         // Loop through the _elements array
         for(int i = 0; i < _elements.Length; i++) {
-            // Ensure the description index stays within bounds
-            if (descIndex <= description.Length) {
-                // Check if the description at descIndex is not empty
-                if (!string.IsNullOrEmpty(description[descIndex])) {
-                    // Add row to the table
-                    if(descIndex == 0){
-                        table.AddRow("[red]"+description[descIndex]+"[/]", "[red]"+_elements[i]+"[/]");
-                    } else {
-                        table.AddRow(description[descIndex], _elements[i]);
-                    }
-                } else {
-                    i++;
-                }
-                // Move to the next description index
-                descIndex++;
+            // Check if the description at descIndex is not empty
+            // Add row to the table
+            if(i == 0){
+                table.AddRow("[red]"+_description[i]+"[/]", "[red]"+_elements[i]+"[/]");
+            } else {
+                table.AddRow(_description[i], _elements[i]);
             }
         }
         AnsiConsole.Write(table);

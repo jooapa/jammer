@@ -58,7 +58,7 @@ namespace jammer
                 */
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
-                        IniFileHandling.Create_KeyDataIni(true);
+                        IniFileHandling.Create_KeyDataIni(1);
                         Message.Data("Keybinds resetted","Keybinds have been resetted");
                     }
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
@@ -73,7 +73,7 @@ namespace jammer
                     else if(key.Key == ConsoleKey.UpArrow && !IniFileHandling.EditingKeybind){
                         Action = "";
                         if(IniFileHandling.ScrollIndexKeybind - 1 < 0 ){
-                            IniFileHandling.ScrollIndexKeybind = IniFileHandling.KeybindAmount - 2;
+                            IniFileHandling.ScrollIndexKeybind = IniFileHandling.KeybindAmount - 1;
                         } else {
                             IniFileHandling.ScrollIndexKeybind -= 1;
                         }

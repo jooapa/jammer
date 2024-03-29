@@ -244,6 +244,47 @@ namespace jammer{
             public static string CurrentState = CheckValueLocale("LocaleKeybind", "CurrentState", "Show current state");
 
         }
+        
+        
+        public static class EditKeysTexts{
+            public static string ToMainMenu = CheckValueLocale("EditKeysTexts", "ToMainMenu", "To main menu");
+            public static string PlayPause = CheckValueLocale("EditKeysTexts", "PlayPause", "Play/Pause");
+            public static string Quit = CheckValueLocale("EditKeysTexts", "Quit", "Quit");
+            public static string NextSong = CheckValueLocale("EditKeysTexts", "NextSong", "Next song");
+            public static string PreviousSong = CheckValueLocale("EditKeysTexts", "PreviousSong", "Previos song");
+            public static string PlaySong = CheckValueLocale("EditKeysTexts", "PlaySong", "Play song");
+            public static string Forward5s = CheckValueLocale("EditKeysTexts", "Forward5s", "Forward");
+            public static string Backwards5s = CheckValueLocale("EditKeysTexts", "Backwards5s", "Rewind");
+            public static string VolumeUp = CheckValueLocale("EditKeysTexts", "VolumeUp", "Volume up");
+            public static string VolumeDown = CheckValueLocale("EditKeysTexts", "VolumeDown", "Volume down");
+            public static string Shuffle = CheckValueLocale("EditKeysTexts", "Shuffle", "Shuffle");
+            public static string SaveAsPlaylist = CheckValueLocale("EditKeysTexts", "SaveAsPlaylist", "Save as playlist");
+            public static string SaveCurrentPlaylist = CheckValueLocale("EditKeysTexts", "SaveCurrentPlaylist", "Save current playlist");
+            public static string ShufflePlaylist = CheckValueLocale("EditKeysTexts", "ShufflePlaylist", "Shuffle playlist");
+            public static string Loop = CheckValueLocale("EditKeysTexts", "Loop", "Toggle Looping");
+            public static string Mute = CheckValueLocale("EditKeysTexts", "Mute", "Toggle Mute");
+            public static string ShowHidePlaylist = CheckValueLocale("EditKeysTexts", "ShowHidePlaylist", "Show playlist");
+            public static string ListAllPlaylists = CheckValueLocale("EditKeysTexts", "ListAllPlaylists", "List all playlists");
+            public static string Help = CheckValueLocale("EditKeysTexts", "Help", "Help");
+            public static string Settings = CheckValueLocale("EditKeysTexts", "Settings", "Settings");
+            public static string ToSongStart = CheckValueLocale("EditKeysTexts", "ToSongStart", "To song start");
+            public static string ToSongEnd = CheckValueLocale("EditKeysTexts", "ToSongEnd", "To song end");
+            public static string PlaylistOptions = CheckValueLocale("EditKeysTexts", "PlaylistOptions", "Playlist options");
+            public static string ForwardSecondAmount = CheckValueLocale("EditKeysTexts", "ForwardSecondAmount", "Forward second amount");
+            public static string BackwardSecondAmount = CheckValueLocale("EditKeysTexts", "BackwardSecondAmount", "Backward second amount");
+            public static string ChangeVolumeAmount = CheckValueLocale("EditKeysTexts", "ChangeVolumeAmount", "Change volume amount");
+            public static string Autosave = CheckValueLocale("EditKeysTexts", "Autosave", "Toggle autosave");
+            public static string CurrentState = CheckValueLocale("EditKeysTexts", "CurrentState", "Show current state");
+            public static string CommandHelpScreen = CheckValueLocale("EditKeysTexts", "CommandHelpScreen", "Command prompt help screen");
+            public static string DeleteCurrentSong = CheckValueLocale("EditKeysTexts", "DeleteCurrentSong", "Delete current song");
+            public static string AddSongToPlaylist = CheckValueLocale("EditKeysTexts", "AddSongToPlaylist", "Add song to playlist");
+            public static string ShowSongsInPlaylists = CheckValueLocale("EditKeysTexts", "ShowSongsInPlaylists", "Show songs in playlist");
+            public static string PlayOtherPlaylist = CheckValueLocale("EditKeysTexts", "PlayOtherPlaylist", "Play other playlist");
+            public static string RedownloadCurrentSong = CheckValueLocale("EditKeysTexts", "RedownloadCurrentSong", "Redownload current song");
+            public static string EditKeybindings = CheckValueLocale("EditKeysTexts", "EditKeybindings", "Edit keybindings");
+            public static string ChangeLanguage = CheckValueLocale("EditKeysTexts", "ChangeLanguage", "Change language");
+            public static string PlayRandomSong = CheckValueLocale("EditKeysTexts", "PlayRandomSong", "Play random song");
+        }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
             string finalValue = IniFileHandling.ReadIni_LocaleData(key, value);

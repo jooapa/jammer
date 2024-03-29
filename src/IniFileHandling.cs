@@ -75,6 +75,9 @@ PlayRandomSong = R
         
 
         static IniFileHandling() {
+            /**
+            Tries loading ini files
+            */
             try {
                 KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
@@ -93,17 +96,13 @@ PlayRandomSong = R
                 LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
             } catch(Exception) {
-                try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
-                    LocaleDataFound = true;
-                } catch(Exception) {
-                    LocaleData = new IniData();
-                }
+                LocaleData = new IniData();
             }
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
 
         }
         public static void ReadNewKeybinds(){
+            // Read new keybinds from file
             try {
                 KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
                 KeyDataFound = true;
@@ -119,7 +118,12 @@ PlayRandomSong = R
             }
         }
         public static void WriteIni_KeyData(){
+            // Write keypress to file
+            // Previous clcik before enter
+
             string final = previousClick.ToString();
+
+            // Add modifiers
             if(isShiftCtrlAlt){
                 final = "Shift + Ctrl + Alt + " + final;
             }
@@ -141,6 +145,7 @@ PlayRandomSong = R
             else if(isAlt){
                 final = "Alt + " + final;
             }
+            // Check if keybinds exist
             bool isExisting = false;
             string isExistingKeyName = "";
             // Check if keybind exists
@@ -154,6 +159,7 @@ PlayRandomSong = R
                     }
                 }
             }
+
             // Save if not
             if(!isExisting){
                 int i = 0;
@@ -185,16 +191,18 @@ PlayRandomSong = R
             return key_value;
         }
 
-        public static void Create_KeyDataIni(bool hardReset){
-            if(!hardReset){
-                string filePath = Path.Combine(Utils.jammerPath, "KeyData.ini");
+       public static void Create_KeyDataIni(int hardReset){
+            string filePath = Path.Combine(Utils.jammerPath, "KeyData.ini");
+            // Create if not existing
+            if(hardReset == 0){
                 if (!File.Exists(filePath))
                 {
-                    
                     File.WriteAllText(filePath, FileContent);
                 }
-            } else {
-                string filePath = Path.Combine(Utils.jammerPath, "KeyData.ini");
+            } 
+            // Delete if exists and create
+            else if(hardReset == 1){
+                
                 // Check if the file exists, if so, delete it
                 if (File.Exists(filePath)){
                     File.Delete(filePath);
@@ -202,8 +210,55 @@ PlayRandomSong = R
                 // Create the file and write the content to it
                 File.WriteAllText(filePath, FileContent);
             }
+            // Add missing keys
+            else if(hardReset == 2){
+                var parser_local_fun = new IniParser.Parser.IniDataParser();
+                IniData iniDataFromString = parser_local_fun.Parse(FileContent);
+                // Extract keys from the string representation
+                HashSet<string> keysFromString = ExtractKeys(iniDataFromString);
+
+                // Extract keys from the file
+                HashSet<string> keysFromFile = ExtractKeys(KeyData);
+
+                // Find missing keys
+                HashSet<string> missingKeys = new HashSet<string>(keysFromString);
+                missingKeys.ExceptWith(keysFromFile);
+                // Append missing keys to the file
+                if (missingKeys.Count > 0){
+                    Type type = typeof(Keybindings);
+                    using (StreamWriter sw = File.AppendText(filePath)){
+                        foreach (string key in missingKeys){
+                            // Get field as string name from public static field
+                            var field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
+                            if (field != null){
+                                var value = field.GetValue(null);
+                                sw.WriteLine($"{key} = {value}");
+                            }
+                            else{
+                                sw.WriteLine($"{key} = Error");
+                            }
+                        }
+                    }
+                }
+            }
             ReadNewKeybinds();
         }
+            // Method to extract keys from IniData object
+        static HashSet<string> ExtractKeys(IniData iniData)
+        {
+            HashSet<string> keys = new HashSet<string>();
+
+            foreach (var section in iniData.Sections)
+            {
+                foreach (var key in section.Keys)
+                {
+                    keys.Add(key.KeyName);
+                }
+            }
+
+            return keys;
+        }
+
         public static string FindMatch_KeyData(
             ConsoleKey key_pressed,
             bool isAlt,
@@ -229,8 +284,6 @@ PlayRandomSong = R
                     bool altModifier = false;
                     bool ctrlModifier = false;
                     bool shiftModifier = false;
-                    // bool shiftAltModifier = false;
-                    // bool shiftCtrlModifier = false;
 
                     // Base value string
                     string keyValue = key.Value;
@@ -278,13 +331,14 @@ PlayRandomSong = R
                         else if(isCtrlAltModifier && isCtrlAlt){
                             return key.KeyName;
                         }
-                        else if(!isShiftAltModifier && altModifier && isAlt){
+                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && altModifier && isAlt){
                             return key.KeyName;
                         }
-                        else if(!isShiftCtrlModifier && ctrlModifier && isCtrl){
+                        else if(!isShiftAltCtrlModifier && !isShiftCtrlModifier && ctrlModifier && isCtrl){
                             return key.KeyName;
                         }
-                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && !isShiftCtrlModifier && shiftModifier && isShift){
+                        else if(!isShiftAltCtrlModifier && !isShiftAltModifier && 
+                        !isShiftCtrlModifier && shiftModifier && isShift){
                             return key.KeyName;
                         } else if (!isAlt && !isCtrl && !isShift
                                     && !isShiftAlt && !isShiftCtrl &&
@@ -296,7 +350,7 @@ PlayRandomSong = R
                 }
             }
 
-            // If no keypresses were found, resort to basics
+            // If no keypresses were found, resort to basics from the class
             Type type = typeof(Keybindings);
             FieldInfo[] properties = type.GetFields();
             
@@ -338,7 +392,7 @@ PlayRandomSong = R
                     bool isShiftAltModifier = altModifier && shiftModifier;
                     bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                     bool isCtrlAltModifier = altModifier && ctrlModifier;
-                    
+
                     // Look through matches in modifiers
                     if(isShiftAltCtrlModifier && isShiftCtrlAlt){
                         return property.Name.ToString();
@@ -371,16 +425,25 @@ PlayRandomSong = R
             return "NULL"; // idk if possible?
         }
         
-        public static string[] ReadAll_KeyData()
+        public static (string[], string[]) ReadAll_KeyData()
         {
             List<string> results = new();
+            List<string> results_locale = new();
             int i = 0;
             int maximum = 15;
+            Type type = typeof(Locale.EditKeysTexts);
             foreach (var section in KeyData.Sections){
                 foreach (var key in section.Keys){
                     string keyValue = key.Value;
                     if(i >= ScrollIndexKeybind && results.Count != maximum){
                         results.Add(keyValue);
+                        var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
+                        if (field != null){
+                            results_locale.Add(field.GetValue(null).ToString());
+                        }
+                        else{
+                            results_locale.Add("Error loading description");
+                        }
                     }
                     i++;
                 }
@@ -392,11 +455,18 @@ PlayRandomSong = R
                     string keyValue = key.Value;
                     if(i < ScrollIndexKeybind && results.Count != maximum){
                         results.Add(keyValue);
+                        var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
+                        if (field != null){
+                            results_locale.Add(field.GetValue(null).ToString());
+                        }
+                        else{
+                            results_locale.Add("Error loading description");
+                        }
                     }
                     i++;
                 }
             }
-            return results.ToArray(); // Convert List<string> to string[]
+            return (results.ToArray(), results_locale.ToArray()); // Convert List<string> to string[]
         }
 
 
