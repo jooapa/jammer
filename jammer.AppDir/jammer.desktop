@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=jammer
+Exec=jammer
+Icon=jammer-icon
+Type=Application
+Categories=Music
+Terminal=true

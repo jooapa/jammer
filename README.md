@@ -4,16 +4,26 @@
 
 <br>
 
-*In this example I first open the PvZ playlist from SoundCloud. Then I delete some songs at the start, by pressing the `delete` key. ~~Then I save the current playlist to name `plant`~~ (**This is old, now you would press `shift + alt + S` and type the name of the playlist.**). After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant playlist.*
+*In this example I first open the PvZ playlist from SoundCloud. Then I delete
+some songs at the start, by pressing the `delete` key. ~~Then I save the
+current playlist to name `plant`~~ (**This is old, now you would press `shift +
+alt + S` and type the name of the playlist.**). After exiting i use the inline
+cli-playlist tool `jammer playlist play plant` this will play the plant
+playlist.*
 
 ## Introduction
 
-Tired of opening up a browser or app to play music, and even then you can't play local files or the songs are in multiple places. Jammer is a simple CLI music player that supports playing songs from **local files**, **Youtube** and **Soundcloud**. For **`Windows`**, *`Linux`*.
+Tired of opening up a browser or app to play music, and even then you can't
+play local files or the songs are in multiple places. Jammer is a simple CLI
+music player that supports playing songs from **local files**, **Youtube** and
+**Soundcloud**. For **`Windows`**, *`Linux`*.
 
-***Jammer shines it best when using it as a playlist. That's why I created it, for the playlist feature across different platforms***
+***Jammer shines it best when using it as a playlist. That's why I created it,
+for the playlist feature across different platforms***
 
 - The player doesn't stream the songs, but downloads them to local storage.
-- The Jammer folder is located in the user's home directory and contains the downloaded songs, playlists and settings.
+- The Jammer folder is located in the user's home directory and contains the
+  downloaded songs, playlists and settings.
 - Jammer uses [Bass](https://www.un4seen.com/) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Install/Update
@@ -155,6 +165,21 @@ dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```bash
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 ```
+
+###### Linux AppImage release
+
+AppImage requires fuse. To install fuse
+```
+sudo apt install fuse
+```
+
+To install appimagetool
+```
+wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+chmod 700 appimagetool-x86_64.AppImage
+```
+
+To create AppImage run `build.sh`
 
 ##### Build script for NSIS installer
 
