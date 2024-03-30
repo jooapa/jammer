@@ -155,6 +155,14 @@ namespace jammer
                     } 
                     if(key.Key == ConsoleKey.Enter){
                         // EDIT MENU
+                        Action = "";
+                        Utils.currentSongIndex = Utils.currentPlaylistSongIndex;
+                        Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                    } else if(Action == "DeleteCurrentSong"){
+                        Action = "";
+                        Play.DeleteSong(Utils.currentPlaylistSongIndex);
+                    } else if(key.Key == ConsoleKey.F1){
+                        Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     }
                 }
 

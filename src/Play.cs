@@ -228,9 +228,19 @@ namespace jammer
         }
         public static void NextSong()
         {
-            Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-            PlayDrawReset();
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            if(Utils.queueSongs.Count > 0){
+                PlayDrawReset();
+                PlaySong(Utils.queueSongs.ToArray(), 0);
+                PlaySong();
+                int index = Array.IndexOf(Utils.songs, Utils.queueSongs[0]);
+                Utils.previousSongIndex = Utils.currentSongIndex;
+                Utils.currentSongIndex = index;
+                Utils.queueSongs.RemoveAt(0);
+            } else {
+                Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+                PlayDrawReset();
+                PlaySong(Utils.songs, Utils.currentSongIndex);
+            }
         }
 
         public static void PlayDrawReset() // play, draw, reset lastSeconds
