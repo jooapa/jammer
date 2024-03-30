@@ -263,44 +263,41 @@ namespace jammer
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
-                            AnsiConsole.Markup($"\n{Locale.OutsideItems.EnterForwardSeconds}: ");
-                            string? forwardSecondsString = Console.ReadLine();
+                            string forwardSecondsString = Message.Input("Enter forward seconds: ", "Enter");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
                             }
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
 
-                            AnsiConsole.Markup("\nEnter rewind seconds: ");
-                            string? rewindSecondsString = Console.ReadLine();
+                            string rewindSecondsString = Message.Input("Enter rewind seconds: ", "Enter");
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
                             }
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
-                            AnsiConsole.Markup("\nEnter volume change (%): ");
-                            string? volumeChangeString = Console.ReadLine();
+                            string volumeChangeString = Message.Input("Enter volume change (%): ", "Enter");
                             if (int.TryParse(volumeChangeString, out int volumeChange))
                             {
                                 float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
                                 Preferences.changeVolumeBy = changeVolumeByFloat;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
                             }
                             break;
                         case "CommandHelpScreen":

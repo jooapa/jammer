@@ -127,7 +127,7 @@ namespace jammer{
             public static string Forwardseconds = CheckValueLocale("Settings", "Forwardseconds", "Forward seconds");
             public static string Rewindseconds = CheckValueLocale("Settings", "Rewindseconds", "Rewind seconds");
             public static string ChangeVolumeBy = CheckValueLocale("Settings", "ChangeVolumeBy", "Change Volume By");
-            public static string AutoSave = CheckValueLocale("Settings", "AutoSave", "Auto Save");
+            public static string AutoSave = CheckValueLocale("Settings", "AutoSave", "Playlist Auto Save");
             public static string ToChange = CheckValueLocale("Settings", "ToChange", "To Change");
             public static string ToToggle = CheckValueLocale("Settings", "ToToggle", "To Toggle");
         }

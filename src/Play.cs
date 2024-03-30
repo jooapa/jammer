@@ -92,9 +92,6 @@ namespace jammer
                 {
                     AddSong(file);
                 }
-
-                // remove folder from Utils.songs
-                Play.DeleteSong(Currentindex);
                 
                 AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
 
@@ -139,10 +136,8 @@ namespace jammer
             Utils.currentSongIndex = Currentindex;
             Playlists.AutoSave();
 
-            // Init audio
             try
             {
-                Debug.dprint("Init audio");
                 string extension = Path.GetExtension(path).ToLower();
 
                 if (isValidExtension(extension) || isValidAACExtension(extension) || isValidMP4Extension(extension))
@@ -267,18 +262,18 @@ namespace jammer
         {
             // Calculate the seek position based on the requested seconds
             var pos = Bass.ChannelGetPosition(Utils.currentMusic);
-
+            
             // If seeking relative to the current position, adjust the seek position
             if (relative)
             {
                 // if negative, move backwards
                 if (seconds < 0)
                 {
-                    pos = pos - Bass.ChannelSeconds2Bytes(Utils.currentMusic, 5);
+                    pos = pos - Bass.ChannelSeconds2Bytes(Utils.currentMusic, Preferences.GetRewindSeconds());
                 }
                 else
                 {
-                    pos = pos + Bass.ChannelSeconds2Bytes(Utils.currentMusic, 5);
+                    pos = pos + Bass.ChannelSeconds2Bytes(Utils.currentMusic, Preferences.GetForwardSeconds());
                 }
                 // Clamp again to ensure it's within the valid range
                 //pos = Math.Max(0, Math.Min(pos, Utils.audioStream.Length));
@@ -298,7 +293,7 @@ namespace jammer
             }
             else if (pos >= Bass.ChannelGetLength(Utils.currentMusic))
             {
-                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
+                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic) - 1);
             }
             else
             {
@@ -375,10 +370,6 @@ namespace jammer
 
         public static void ReDownloadSong()
         {
-
-
-
-
             string path = Utils.currentSong;
             File.Delete(path);
             Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("|")[0];
