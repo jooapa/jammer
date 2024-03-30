@@ -55,9 +55,18 @@ namespace jammer
                         case "-D":
                             Utils.isDebug = true;
                             Debug.dprint("\n--- Debug Started ---\n");
+                            Debug.dprint($"HOME Path Environment Variable: {Environment.GetEnvironmentVariable("APPDIR")}");
+                            var APPDIRlen = Environment.GetEnvironmentVariable("APPDIR");
+                            if (APPDIRlen == null) { 
+                                Debug.dprint("APPDIR == null");
+                            } else {
+                                Debug.dprint(APPDIRlen.Length.ToString());
+                            }
+
                             List<string> argumentsList = new List<string>(args);
                             argumentsList.RemoveAt(i);
                             args = argumentsList.ToArray();
+                            Utils.songs = args;
                             break;
                     }
                 }

@@ -92,20 +92,31 @@ PlayRandomSong = R
                 }
             }
 
-            try {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
-                LocaleDataFound = true;
-            } catch(Exception) {
-                LocaleData = new IniData();
+            //NOTE(ra) Use AppImage locale files
+            if ( Utils.AppDirMount != null ) {
+                try {
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleDataFound = true;
+                } catch(Exception) {
+                    LocaleData = new IniData();
+                }
+            } else {
+                try {
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleDataFound = true;
+                } catch(Exception) {
+                    LocaleData = new IniData();
+                }
+
+                try {
+                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleDataFound = true;
+                } catch(Exception ex) {}
             }
 
-            try {
-                LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
-                LocaleDataFound = true;
-            } catch(Exception ex) {}
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
-
         }
+
         public static void ReadNewKeybinds(){
             // Read new keybinds from file
             try {
