@@ -1,5 +1,30 @@
 namespace jammer{
     public static class Locale{
+        /*
+        Adding new Locale line:
+        1. Create a new class or add to an existing class. Classname is the name for the keyarea
+
+        2. Create a new public static string variable with a new key name unique for the class, for example: RefreshScreenErrorMessage1
+        ```
+        public static string KeyName = CheckValueLocale("KeyArea", "Keyvalue", "Default text");
+        public static string RefreshScreenErrorMessage1 = CheckValueLocale("OutsideItems", "RefreshScreenErrorMessage1", "Error refreshing the screen");
+        ```
+
+        3. Call the variable to display the text
+        ```
+        Message.data(Locale.OutsideItems.KeyName, "Error title here");
+        Message.data(Locale.OutsideItems.RefreshScreenErrorMessage1, "Error title here");
+        ```
+
+        4. Add new locale line to en.ini file in its corresponding keyarea or create a new one for it
+        ```
+        [KeyArea]
+        KeyName = Default text
+
+        [OutsideItems]
+        RefreshScreenErrorMessage1 = Error refreshing the screen
+        ```
+        */
         public static class Country{
             public static string _Country = CheckValueLocale("Country", "Country", "United kingdom");
             public static string Language = CheckValueLocale("Country", "Language", "English");
