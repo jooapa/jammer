@@ -52,7 +52,14 @@ namespace jammer
                 
                 if (fromCli)
                 {
-                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
+                    if (Utils.songs.Length == 0)
+                    {
+                        Utils.currentSongIndex = 0;
+                        AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.PlaylistIsEmpty}[/]");
+                    }
+                    else {
+                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + songs[0] + "[/]");
+                    }
                 }
                 else
                 {
@@ -73,7 +80,6 @@ namespace jammer
                     Environment.Exit(0);
                     return;
                 }
-                Environment.Exit(0);
             }
         }
 
@@ -251,6 +257,11 @@ namespace jammer
             }
             else
             {
+                if (File.Exists(playlistPath))
+                {
+                    File.Delete(playlistPath);
+                }
+                File.Create(playlistPath);
                 File.WriteAllLines(playlistPath, Utils.songs);
                 Utils.currentPlaylist = playlistName;
             }

@@ -116,12 +116,14 @@ namespace jammer
                 if(playerView.Equals("changelanguage")){
                     // Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(key.Key == ConsoleKey.DownArrow){
+                        Action = "";
                         if(IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount){
                             IniFileHandling.ScrollIndexLanguage = 0;
                         } else {
                             IniFileHandling.ScrollIndexLanguage += 1;
                         }
-                    } else if(key.Key == ConsoleKey.UpArrow){
+                    }
+                    if(key.Key == ConsoleKey.UpArrow){
                         Action = "";
                         if(IniFileHandling.ScrollIndexLanguage - 1 < 0 ){
                             IniFileHandling.ScrollIndexLanguage = IniFileHandling.LocaleAmount - 1;
@@ -235,6 +237,7 @@ namespace jammer
                             TUI.DrawHelp();
                             break;
                         case "Settings": // show settings
+                            AnsiConsole.Clear();
                             if (playerView == "settings")
                             {
                                 playerView = "default";
@@ -324,6 +327,7 @@ namespace jammer
                             Play.ReDownloadSong();
                             break;
                         case "EditKeybindings":
+                            AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexKeybind = 0;
                             if (playerView == "default")
                             {
@@ -335,6 +339,7 @@ namespace jammer
                             }
                             break;
                         case "ChangeLanguage":
+                            AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexLanguage = 0;
                             if (playerView == "default")
                             {

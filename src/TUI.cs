@@ -607,6 +607,7 @@ static class TUI
                 table.AddRow(_description[i], _elements[i]);
             }
         }
+        AnsiConsole.Cursor.SetPosition(0, 0);
         AnsiConsole.Write(table);
         if(IniFileHandling.EditingKeybind){
             string final = IniFileHandling.previousClick.ToString();
@@ -655,6 +656,7 @@ static class TUI
                 table.AddRow(_elements[i]);
             }
         }
+        AnsiConsole.Cursor.SetPosition(0, 0);
         AnsiConsole.Write(table);
         AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1}[/]\n");
         DrawHelpSettingInfo();
