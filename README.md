@@ -31,6 +31,8 @@ for the playlist feature across different platforms***
 ### Install
 
 Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
+Linux version of jammer requires fuse2. Ubuntu 22.02 or newer install `apt
+install libfuse2`.
 
 ### Update existing
 
@@ -179,7 +181,7 @@ dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 
 AppImage requires fuse. To install fuse
 ```
-sudo apt install fuse
+sudo apt install libfuse2
 ```
 
 To install appimagetool
