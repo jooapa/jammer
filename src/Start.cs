@@ -55,9 +55,18 @@ namespace jammer
                         case "-D":
                             Utils.isDebug = true;
                             Debug.dprint("\n--- Debug Started ---\n");
+
+                            long size = Preferences.DirSize(new DirectoryInfo(Utils.jammerPath));
+                            Debug.dprint($"JammerDirSize: {size}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToKilobytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToMegabytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToGigabytes(size)}");
+
                             List<string> argumentsList = new List<string>(args);
                             argumentsList.RemoveAt(i);
                             args = argumentsList.ToArray();
+                            //NOTES(ra) So nasty it breaks my hearth,
+                            Utils.songs = args;
                             break;
                     }
                 }
