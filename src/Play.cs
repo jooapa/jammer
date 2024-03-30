@@ -98,12 +98,17 @@ namespace jammer
             else if (URL.isValidSoundCloudPlaylist(songs[Currentindex])) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(songs[Currentindex]);
+                path = Download.GetSongsFromPlaylist(songs[Currentindex], "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(songs[Currentindex]))
             {
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(songs[Currentindex]);
+            }
+            else if (URL.IsValidYoutubePlaylist(songs[Currentindex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(songs[Currentindex], "youtube");
             }
             else if (URL.IsValidYoutubeSong(songs[Currentindex]))
             {

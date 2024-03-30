@@ -16,6 +16,11 @@ namespace jammer
             return regex.IsMatch(uri);
         }
 
+        public static bool IsValidYoutubePlaylist(string uri)
+        {
+            Regex regex = new Regex(Utils.ytPlaylistPattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(uri);
+        }
         public static bool IsValidYoutubeSong(string uri)
         {
             Regex regex = new Regex(Utils.ytSongPattern, RegexOptions.IgnoreCase);

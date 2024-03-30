@@ -1,5 +1,6 @@
 using SoundCloudExplode;
 using YoutubeExplode;
+using YoutubeExplode.Common;
 using Spectre.Console;
 
 namespace jammer {
@@ -8,6 +9,7 @@ namespace jammer {
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
         static string[] playlistSongs = { "" };
+        static readonly YoutubeClient youtube = new();
 
         public static string DownloadSong(string url2) {
             url = url2;
@@ -39,7 +41,6 @@ namespace jammer {
             }
             try
             {
-                var youtube = new YoutubeClient();
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
                 var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
                 if (streamInfo != null)
@@ -130,9 +131,35 @@ namespace jammer {
                 i++;
             }
         }
+        public static async Task GetPlaylistYoutube(string url) {
+            // Get all playlist tracks
+            var playlist = await youtube.Playlists.GetVideosAsync(url);
+            Console.WriteLine(playlist[0]);
+            if (playlist.Count() == 0 || playlist == null) {
+                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                Console.ReadLine();
+                return;
+            }
 
-        public static string GetSongsFromPlaylist(string url) {
-            GetPlaylist(url).Wait();
+            // add all tracks permalinkUrl to songs array
+            playlistSongs = new string[playlist.Count()];
+            int i = 0;
+            foreach (var track in playlist) {
+                playlistSongs[i] = track.Url?.ToString() ?? string.Empty;
+                i++;
+            }
+        }
+
+
+        public static string GetSongsFromPlaylist(string url, string service) {
+            if(service == "soundcloud"){
+                GetPlaylist(url).Wait();
+            }
+            else if( service == "youtube"){
+                GetPlaylistYoutube(url).Wait();
+
+            }
+            
 
             // remove the CurrentSong from Utils.songs
             Utils.songs = Utils.songs.Where(val => val != Utils.songs[Utils.currentSongIndex]).ToArray();
