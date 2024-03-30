@@ -237,7 +237,7 @@ namespace jammer
 
             TUI.ClearScreen();
             drawOnce = true;
-            TUI.RehreshCurrentView();
+            TUI.RefreshCurrentView();
             while (true)
             {
                 if (Utils.songs.Length != 0)
@@ -256,7 +256,7 @@ namespace jammer
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
                     AnsiConsole.Clear();
-                    TUI.RehreshCurrentView();
+                    TUI.RefreshCurrentView();
                 }
 
                 switch (state)
@@ -312,7 +312,7 @@ namespace jammer
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
                         {
-                            TUI.RehreshCurrentView();
+                            TUI.RefreshCurrentView();
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
@@ -321,7 +321,7 @@ namespace jammer
                         {
                             Play.MaybeNextSong();
                             prevMusicTimePlayed = 0;
-                            TUI.RehreshCurrentView();
+                            TUI.RefreshCurrentView();
                         }
 
                         CheckKeyboard();

@@ -136,6 +136,28 @@ namespace jammer
                     }
                 }
 
+                if(playerView.Equals("all")){
+                    if(Action == "PlaylistViewScrolldown"){
+                        Action = "";
+                        if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){
+                            Utils.currentPlaylistSongIndex = Utils.songs.Length -1;
+                        } else {
+                            Utils.currentPlaylistSongIndex += 1;
+                        }
+                    }
+                    if(Action == "PlaylistViewScrollup"){
+                        Action = "";
+                        if(Utils.currentPlaylistSongIndex - 1 < 0 ){
+                            Utils.currentPlaylistSongIndex = 0;
+                        } else {
+                            Utils.currentPlaylistSongIndex -= 1;
+                        }
+                    } 
+                    if(key.Key == ConsoleKey.Enter){
+                        // EDIT MENU
+                    }
+                }
+
                 switch (Action)
                     {
                         case "ToMainMenu":
@@ -208,10 +230,9 @@ namespace jammer
                         case "ShowHidePlaylist": // show all view
                             AnsiConsole.Clear();
                             if (playerView == "default")
-                            {
+                            {   
                                 playerView = "all";
                                 var table = new Table();
-                                // TUI.UIComponent_Songs(table);
                                 AnsiConsole.Write(table);
                                 AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
@@ -360,7 +381,7 @@ namespace jammer
                     }
             
                 
-                TUI.RehreshCurrentView();
+                TUI.RefreshCurrentView();
             }
         }
 

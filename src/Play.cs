@@ -107,12 +107,17 @@ namespace jammer
             else if (URL.isValidSoundCloudPlaylist(song)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(song);
+                path = Download.GetSongsFromPlaylist(song, "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(song))
             {
                 // id related to url, download and convert to absolute path
                 (path, returnPipe) = Download.DownloadSong(song);
+            }
+            else if (URL.IsValidYoutubePlaylist(song))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(song, "youtube");
             }
             else if (URL.IsValidYoutubeSong(song))
             {
@@ -488,7 +493,7 @@ namespace jammer
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
-            TUI.RehreshCurrentView();
+            TUI.RefreshCurrentView();
         }
     }
 }

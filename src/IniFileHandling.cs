@@ -50,6 +50,8 @@ RedownloadCurrentSong = Shift + B
 EditKeybindings = Shift + E
 ChangeLanguage = Shift + L
 PlayRandomSong = R
+PlaylistViewScrollup = PageUp
+PlaylistViewScrolldown = PageDown
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
@@ -111,7 +113,7 @@ PlayRandomSong = R
                 try {
                     LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                     LocaleDataFound = true;
-                } catch(Exception ex) {}
+                } catch(Exception) {}
             }
 
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
