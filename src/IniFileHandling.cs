@@ -503,7 +503,9 @@ PlayRandomSong = R
             for(int i = 0; i < files.Length; i++){
                 if(i==ScrollIndexLanguage){
                     string filename = Path.GetFileName(files[i].ToString());
-                    country_code = filename.Substring(0,2);
+                    char c = '.';
+                    int pos = filename.IndexOf(c);
+                    country_code = filename.Substring(0,pos);
                     break;
                 }
             }

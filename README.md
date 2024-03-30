@@ -213,26 +213,17 @@ python change_version.py [version]
 ### Todo bug fixes
 
 [x] When playing song, and opening a new playlist, the song doesn't change
-
 [x] Pressing `0`, doesn't do anything
-
 [x] Download bar
-
 [x] Fix playlist cmd
-
 [ ] Fix time bar not going to new line when 0:-01
 
 
 ### Incoming Features
 
 [ ] Add more audio formats
-
 [ ] Maybe use curses for UI
-
 [ ] Better f mode
-
 [ ] pg up/down you can scroll the playlist and modify the selected song
-
 [ ] you can see whats downloaded from url
-
 
