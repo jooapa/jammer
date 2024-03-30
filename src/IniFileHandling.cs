@@ -102,7 +102,7 @@ PlayRandomSong = R
             try {
                 LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
                 LocaleDataFound = true;
-            } catch(Exception ex) {}
+            } catch(Exception) {}
             LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
 
         }
@@ -442,10 +442,15 @@ PlayRandomSong = R
                         results.Add(keyValue);
                         var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
                         if (field != null){
-                            results_locale.Add(field.GetValue(null).ToString());
+                            var value = field?.GetValue(null)?.ToString();
+                            if(value!=null){
+                                results_locale.Add(value);
+                            } else {
+                                results_locale.Add("Error loading description"); // TODO LOCALE
+                            }
                         }
                         else{
-                            results_locale.Add("Error loading description");
+                            results_locale.Add("Error loading description"); // TODO LOCALE
                         }
                     }
                     i++;
@@ -460,10 +465,15 @@ PlayRandomSong = R
                         results.Add(keyValue);
                         var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
                         if (field != null){
-                            results_locale.Add(field.GetValue(null).ToString());
+                            var value = field?.GetValue(null)?.ToString();
+                            if(value!=null){
+                                results_locale.Add(value);
+                            } else {
+                                results_locale.Add("Error loading description"); // TODO LOCALE
+                            }
                         }
                         else{
-                            results_locale.Add("Error loading description");
+                            results_locale.Add("Error loading description"); // TODO LOCALE
                         }
                     }
                     i++;
@@ -496,14 +506,16 @@ PlayRandomSong = R
                 try {
                 di = new DirectoryInfo(Path.Combine("locales"));
                 files = di.GetFiles("*.ini");
-                } catch(Exception exc) {}
+                } catch(Exception) {}
             }
 
             string country_code = "en";
-            for(int i = 0; i < files.Length; i++){
+            for(int i = 0; i < files?.Length; i++){
                 if(i==ScrollIndexLanguage){
                     string filename = Path.GetFileName(files[i].ToString());
-                    country_code = filename.Substring(0,2);
+                    char c = '.';
+                    int pos = filename.IndexOf(c);
+                    country_code = filename.Substring(0,pos);
                     break;
                 }
             }
