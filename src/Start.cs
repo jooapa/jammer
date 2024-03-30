@@ -1,6 +1,6 @@
 using ManagedBass;
 using Spectre.Console;
-using System;
+/* using System; */
 using System.Runtime.InteropServices;
 
 namespace jammer
@@ -237,6 +237,7 @@ namespace jammer
                 {
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
+                    AnsiConsole.Clear();
                     TUI.RehreshCurrentView();
                 }
 
