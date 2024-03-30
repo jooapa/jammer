@@ -112,7 +112,7 @@ namespace jammer
                                 var splitIndex = i+1;
                                 string[] firstHalf = args.Take(splitIndex).ToArray();
                                 string[] secondHalf = args.Skip(splitIndex).ToArray();
-                                Console.WriteLine(secondHalf[1]);
+                                Console.WriteLine(secondHalf[0]);
                                 Playlists.Add(secondHalf);
                             } else {
                                 AnsiConsole.WriteLine("No playlist name or song given");

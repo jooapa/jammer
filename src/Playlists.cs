@@ -109,8 +109,8 @@ namespace jammer
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.AddingSongsTo} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
             {
-                // take args and remove first 3 elements
-                args = args.Skip(3).ToArray();
+                // take args and remove playlist name
+                args = args.Skip(1).ToArray();
 
                 // absoulutify arg if its a relative path and add https:// if url
                 args = Absolute.Correctify(args);
