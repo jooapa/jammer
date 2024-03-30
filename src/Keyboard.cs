@@ -250,6 +250,7 @@ namespace jammer
 
                         case "Autosave": // autosave or not
                             Preferences.isAutoSave = !Preferences.isAutoSave;
+                            Preferences.SaveSettings();
                             break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
@@ -262,44 +263,41 @@ namespace jammer
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
-                            AnsiConsole.Markup($"\n{Locale.OutsideItems.EnterForwardSeconds}: ");
-                            string? forwardSecondsString = Console.ReadLine();
+                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
 
-                            AnsiConsole.Markup("\nEnter rewind seconds: ");
-                            string? rewindSecondsString = Console.ReadLine();
+                            string rewindSecondsString = Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
-                            AnsiConsole.Markup("\nEnter volume change (%): ");
-                            string? volumeChangeString = Console.ReadLine();
+                            string volumeChangeString = Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
                             if (int.TryParse(volumeChangeString, out int volumeChange))
                             {
                                 float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
                                 Preferences.changeVolumeBy = changeVolumeByFloat;
+                                Preferences.SaveSettings();
                             }
                             else
                             {
-                                AnsiConsole.Markup($"[red]\n{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.");
-                                Console.ReadKey(true);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "CommandHelpScreen":
