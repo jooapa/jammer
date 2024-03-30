@@ -151,12 +151,12 @@ static class TUI
         }
         else
         {
-            currentSong = $"[green]{Locale.Player.Current}  : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength) + "[/]";
+            currentSong = $"[green]{Locale.Player.Current}  : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength)) + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = $"[grey]{Locale.Player.Previos} : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength) + "[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength)) + "[/]";
         }
         else
         {
@@ -166,7 +166,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = $"[grey]{Locale.Player.Next}     : " + GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength) + "[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength)) + "[/]";
         }
         else
         {
@@ -176,7 +176,14 @@ static class TUI
         return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
-    static public string CalculateTime(double time) {
+    static string GetSongTitle(string song) {
+        string songTitle = song;
+        if (songTitle.Contains("|")) {
+            songTitle = songTitle.Split("|")[1];
+        }
+        return songTitle;
+    }
+    public static string CalculateTime(double time) {
         int minutes = (int)time / 60;
         int seconds = (int)time % 60;
         string timeString = $"{minutes}:{seconds:D2}";
