@@ -104,15 +104,20 @@ namespace jammer {
                     );
 
                     // metadata to pipe
-                    pipe = track.Title;
+                    if(track.Title != null){
+                        pipe = track.Title;
 
-                    var progress = new Progress<double>(data => {
-                        AnsiConsole.Clear();
-                        Console.WriteLine($"{Locale.OutsideItems.Downloading} {trackName}: {data:P}");
-                    });
+                        var progress = new Progress<double>(data => {
+                            AnsiConsole.Clear();
+                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {trackName}: {data:P}");
+                        });
 
 
-                    await soundcloud.DownloadAsync(track, songPath, progress);
+                        await soundcloud.DownloadAsync(track, songPath, progress);
+
+                    } else {
+                        Debug.dprint("track title returns null");
+                    }
                 } else {
                     Debug.dprint("track returns null");
                 }
