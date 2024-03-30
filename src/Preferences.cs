@@ -236,6 +236,27 @@ namespace jammer
             }
         }
 
+	public static long DirSize(DirectoryInfo d)
+	{
+
+	    long size = 0;
+	    // Add file sizes.
+	    FileInfo[] fis = d.GetFiles();
+	    foreach (FileInfo fi in fis) {
+	        size += fi.Length;
+	    }
+	    // Add subdirectory sizes.
+	    DirectoryInfo[] dis = d.GetDirectories();
+	    foreach (DirectoryInfo di in dis) {
+	        size += DirSize(di);
+	    }
+	    return size;
+	}
+
+        public static double ToKilobytes(long bytes) => bytes / 1024d;
+        public static double ToMegabytes(long bytes) => ToKilobytes(bytes) / 1024d;
+        public static double ToGigabytes(long bytes) => ToMegabytes(bytes) / 1024d;
+
         public class Settings
         {
             public bool IsLoop { get; set; }
@@ -248,7 +269,6 @@ namespace jammer
             public bool isShuffle { get; set; }
             public bool isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
-            
         }
     }
 }

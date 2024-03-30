@@ -1,9 +1,6 @@
 using SoundCloudExplode;
-using System.Text.RegularExpressions;
 using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
 using Spectre.Console;
-using System.Net;
 
 namespace jammer {
     internal class Download {

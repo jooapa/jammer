@@ -63,9 +63,17 @@ namespace jammer
                                 Debug.dprint(APPDIRlen.Length.ToString());
                             }
 
+                            long size = Preferences.DirSize(new DirectoryInfo(Utils.jammerPath));
+                            Debug.dprint($"JammerDirSize: {size}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToKilobytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToMegabytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToGigabytes(size)}");
+
                             List<string> argumentsList = new List<string>(args);
                             argumentsList.RemoveAt(i);
                             args = argumentsList.ToArray();
+
+                            //NOTES(ra) So nasty it breaks my hearth,
                             Utils.songs = args;
                             break;
                     }
@@ -184,6 +192,7 @@ namespace jammer
             } 
 
             Preferences.CheckJammerFolderExists();
+            IniFileHandling.Create_KeyDataIni(2);
             StartUp();
         }
 

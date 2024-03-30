@@ -1,4 +1,49 @@
 namespace jammer{
+    /*
+    Adding new keybind:
+
+    1. Create new field to IniFileHandling.cs FileContent. for example 'RefreshConsole = Alt + H'
+
+    2. Create new static string with the name of the new .ini field's name
+        ```
+        public static string IniKeyName = CheckValue("IniKeyName", "DefaultKeybind");
+        public static string RefreshConsole = CheckValue("RefreshConsole", "Alt + H");
+        ```
+
+    3. Go to Keyboard.cs and add a new action to the switch case with the same name as the new .ini field.
+        ```
+        case "RefreshConsole":
+            function_to_refresh_console();
+            break;
+        ```
+
+    4. Add a new translation to Locale with the new keybinds name in the class EditKeysTexts
+        ```
+        public static string ToMainMenu = CheckValueLocale("keyarea", "value", "default value");
+        public static string RefreshConsole = CheckValueLocale("EditKeysTexts", "RefreshConsole", "Refresh console screen");
+        ```
+    
+    5. Adding keybind to help screen (Optional)
+        In TUI.cs DrawHelp() create a new variable:
+        ```
+        string[] IniKeyName = (Keybindings.IniKeyName).Replace(" ", "").Split(separator);
+        string[] RefreshConsole = (Keybindings.RefreshConsole).Replace(" ", "").Split(separator);
+        ```
+
+        Add new field to table or add to an existing one
+        ```
+        table.AddRow(DrawHelpTextColouring(IniKeyName), Locale.KeyArea.IniKeyName);
+        table.AddRow(DrawHelpTextColouring(RefreshConsole), Locale.EditKeysTexts.RefreshConsole);
+        ```
+    6. Add new locale line to en.ini file in its corresponding keyarea or create a new one for it
+        ```
+        [KeyArea]
+        IniKeyName = default value
+
+        [EditKeysTexts]
+        RefreshConsole = Refresh console screen
+        ```
+    */
     public static class Keybindings{
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
