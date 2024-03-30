@@ -175,6 +175,7 @@ namespace jammer
             } 
 
             Preferences.CheckJammerFolderExists();
+            IniFileHandling.Create_KeyDataIni(2);
             StartUp();
         }
 

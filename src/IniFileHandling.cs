@@ -213,7 +213,8 @@ PlayRandomSong = R
                 File.WriteAllText(filePath, FileContent);
             }
             // Add missing keys
-            else if(hardReset == 2){
+            else if(hardReset == 2 && File.Exists(filePath)){
+            
                 var parser_local_fun = new IniParser.Parser.IniDataParser();
                 IniData iniDataFromString = parser_local_fun.Parse(FileContent);
                 // Extract keys from the string representation

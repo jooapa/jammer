@@ -588,7 +588,6 @@ static class TUI
 
     public static void EditKeyBindings(){
         IniFileHandling.Create_KeyDataIni(0);
-        IniFileHandling.Create_KeyDataIni(2);
 
 
         var table = new Table();
