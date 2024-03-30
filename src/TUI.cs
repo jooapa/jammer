@@ -132,6 +132,16 @@ static class TUI
 
         return results.ToArray();
     }
+    static string[] GetAllSongsQueue() {
+        int maximum = 10;
+        List<string> results = new();
+        for (int i = 0; i < Utils.queueSongs.Count; i++) {
+            if (results.Count != maximum) {
+                results.Add(Utils.queueSongs[i]);
+            }
+        }
+        return results.ToArray();
+    }
 
     static string GetSongWithdots(string song, int length = 80) {
         if (song.Length > length) {
@@ -417,12 +427,16 @@ static class TUI
     }
 
     static public void UIComponent_Songs(Table table) {
+        // AnsiConsole.Clear();
         if (Utils.currentPlaylist == "") {
             // Print lines
-            table.AddColumn("");
+            // TODO ADD LOCALE
+            table.AddColumn("Current playlist");
+            table.AddColumn("Current queue");
             string[] lines = GetAllSongs();
+            string[] queueLines = GetAllSongsQueue();
             for(int i = 0; i < lines.Length; i++){
-                table.AddRow($"{lines[i]}");
+                table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
             }
         } else {
             table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
