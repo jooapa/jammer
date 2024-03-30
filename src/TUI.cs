@@ -1,6 +1,6 @@
 using Spectre.Console;
 using jammer;
-using System.ComponentModel.DataAnnotations;
+/* using System.ComponentModel.DataAnnotations; */
 
 static class TUI
 {
@@ -8,7 +8,8 @@ static class TUI
 
     static public void DrawPlayer() {
         try {
-
+            var ansiConsoleSettings = new AnsiConsoleSettings();
+            var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
             if (Start.playerView == "help" || Start.playerView == "settings")
             {
                 return;
@@ -30,6 +31,7 @@ static class TUI
             if (cls) {
                 if (Start.playerView != "all") {
                     AnsiConsole.Clear();
+                    Debug.dprint("DrawPlayer - clear");
                 }
                 cls = false;
             }
@@ -62,12 +64,16 @@ static class TUI
                 }
             }
             mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth-20).Centered()).Width(Start.consoleWidth);
-            AnsiConsole.Write(mainTable);            
 
-            //var debug = new Table();
-            //debug.AddColumn("Debug");
-            //debug.AddRow("lastseconds" + Start.prevMusicTimePlayed);
-            //AnsiConsole.Write(debug);
+            //NOTE(ra) Tested Live draw routine. Left this here for now if it gets used in the future.
+
+            /* AnsiConsole.Live(mainTable) */
+            /*     .AutoClear(false) */
+            /*     .Start(async ctx => */
+            /*             { */
+            /*                 ctx.Refresh(); */
+            /*             }); */
+            AnsiConsole.Write(mainTable);            
         }
         catch (Exception e) {
             AnsiConsole.Clear();
@@ -512,7 +518,8 @@ static class TUI
     }
 
     public static void RehreshCurrentView() {
-        AnsiConsole.Clear();
+        //NOTE(ra) This Clear() caused flickering.
+        /* AnsiConsole.Clear(); */
         if (Start.playerView == "default") {
             DrawPlayer();
         }
