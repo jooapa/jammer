@@ -263,7 +263,7 @@ namespace jammer
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
-                            string forwardSecondsString = Message.Input("Enter forward seconds: ", "Enter");
+                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
@@ -271,12 +271,12 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
 
-                            string rewindSecondsString = Message.Input("Enter rewind seconds: ", "Enter");
+                            string rewindSecondsString = Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
@@ -284,11 +284,11 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
-                            string volumeChangeString = Message.Input("Enter volume change (%): ", "Enter");
+                            string volumeChangeString = Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
                             if (int.TryParse(volumeChangeString, out int volumeChange))
                             {
                                 float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
@@ -297,7 +297,7 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", "Invalid input.");
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "CommandHelpScreen":

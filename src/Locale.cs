@@ -233,6 +233,8 @@ namespace jammer{
             public static string PressToContinue = CheckValueLocale("OutsideItems", "PressToContinue", "Press any key to continue");
             public static string InvalidInput = CheckValueLocale("OutsideItems", "InvalidInput", "Invalid input");
             public static string EnterForwardSeconds = CheckValueLocale("OutsideItems", "EnterForwardSeconds", "Enter forward seconds");
+            public static string EnterBackwardSeconds = CheckValueLocale("OutsideItems", "EnterBackwardSeconds", "Enter backward seconds");
+            public static string EnterVolumeChange = CheckValueLocale("OutsideItems", "EnterVolumeChange", "Enter volume change");
             public static string NoCommand = CheckValueLocale("OutsideItems", "NoCommand", "No playlist command given");
             public static string NoSongsInPlaylist = CheckValueLocale("OutsideItems", "NoSongsInPlaylist", "No songs in playlist");
             public static string SongNotFound = CheckValueLocale("OutsideItems", "SongNotFound", "Song not found");
