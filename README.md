@@ -70,6 +70,24 @@ jammer -s, --show <name>
 jammer -l, --list
 ```
 
+### Example usage
+
+```bash
+jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
+```
+
+```bash
+jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
+```
+
+```bash
+jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
+```
+
+You can also use `-d` flag that will add logs to current folder.
+
+---
+
 ### Supported formats
 
 Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav***, ***.mp2***, ***.mp1***, ***.aiff***, ***.m2a***, ***.mpa***, ***.m1a***, ***.mpg***, ***.mpeg***, ***.aif***, ***.mp3pro***, ***.bwf***, ***.mus***, ***.mod***, ***.mo3***, ***.s3m***, ***.xm***, ***.it***, ***.mtm***, ***.umx***, ***.mdz***, ***.s3z***, ***.itz***, ***.xmz***, ***.aac***, ***.adts***, ***.mp4***, ***.m4a***, ***.m4b***.
@@ -129,22 +147,6 @@ Currently supported languages:
 - Finnish
 
 Create new translation by copying already existing .ini file from /locales and translating it.
-
-## Example usage
-
-```bash
-jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
-```
-
-```bash
-jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
-```
-
-```bash
-jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
-```
-
-You can also use `-d` flag that will add logs to current folder.
 
 ---
 
@@ -208,7 +210,12 @@ you can also use `change_version.py` to change the version of the app.
 python change_version.py [version]
 ```
 
+---
+
+
 ![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
+
+---
 
 ### Todo bug fixes
 
