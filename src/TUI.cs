@@ -73,6 +73,7 @@ static class TUI
             /*             { */
             /*                 ctx.Refresh(); */
             /*             }); */
+            AnsiConsole.Cursor.SetPosition(0,0);
             AnsiConsole.Write(mainTable);            
         }
         catch (Exception e) {
@@ -87,22 +88,49 @@ static class TUI
         cls = true;
     }
 
-    static public string GetAllSongs() {
+    static public string[] GetAllSongs() {
         if (Utils.songs.Length == 0) {
-            return $"[grey]{Locale.Player.NoSongsInPlaylist}[/]";
+            string[] returnstring = {$"[grey]{Locale.Player.NoSongsInPlaylist}[/]"};
+            return returnstring;
         }
-        string allSongs = "";
-        foreach (string song in Utils.songs) {
-            // add green color to current song, based on the index
-            if (Utils.songs[Utils.currentSongIndex] == song) {
-                allSongs += "[green]" + song + "[/]\n";
-                continue;
+        string[] allSongs = {};
+        List<string> results = new()
+        {
+            // TODO ADD LOCALE
+            $"Current playlist view. Move with {Keybindings.PlaylistViewScrollup} and {Keybindings.PlaylistViewScrolldown}",
+            $"Open song menu using 'Enter'"
+        };
+        int maximum = 10 + results.Count;
+        
+        for (int i = 0; i < Utils.songs.Length; i++) {
+            string keyValue = Utils.songs[i].ToString();
+            
+            if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
+                if (i == Utils.currentSongIndex) {
+                    results.Add($"[green]{i + 1}. {keyValue}[/]");
+                }
+                else if (i == Utils.currentPlaylistSongIndex) {
+                    results.Add($"[yellow]{i + 1}. {keyValue}[/]");
+                }
+                else if (Utils.currentPlaylistSongIndex <= 5) {
+                    results.Add($"{i + 1}. {keyValue}");
+                }
+                else if(
+                    Utils.currentPlaylistSongIndex + 5 >= Utils.songs.Length &&
+                    i > Utils.songs.Length - 10
+                ){
+                    keyValue = Utils.songs[i].ToString();
+                    results.Add($"{i + 1}. {keyValue}");
+                }
+                else if (i >= Utils.currentPlaylistSongIndex - 4 && i < Utils.currentPlaylistSongIndex + 6) {
+                    results.Add($"{i + 1}. {keyValue}");
+                }
             }
-            allSongs += song + "\n";
         }
-        // remove last newline
-        allSongs = allSongs.Substring(0, allSongs.Length - 1);
-        return allSongs;
+
+
+
+        return results.ToArray();
     }
 
     static string GetSongWithdots(string song, int length = 80) {
@@ -383,7 +411,12 @@ static class TUI
 
     static public void UIComponent_Songs(Table table) {
         if (Utils.currentPlaylist == "") {
-            table.AddColumn(GetAllSongs());
+            // Print lines
+            table.AddColumn("");
+            string[] lines = GetAllSongs();
+            for(int i = 0; i < lines.Length; i++){
+                table.AddRow($"{lines[i]}");
+            }
         } else {
             table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
             table.AddRow(GetAllSongs());
@@ -517,7 +550,7 @@ static class TUI
         DrawHelpSettingInfo();
     }
 
-    public static void RehreshCurrentView() {
+    public static void RefreshCurrentView() {
         //NOTE(ra) This Clear() caused flickering.
         /* AnsiConsole.Clear(); */
         if (Start.playerView == "default") {
@@ -588,6 +621,7 @@ static class TUI
 
     public static void EditKeyBindings(){
         IniFileHandling.Create_KeyDataIni(0);
+        AnsiConsole.Clear();
 
 
         var table = new Table();
@@ -643,7 +677,6 @@ static class TUI
         DrawHelpSettingInfo();
     }
     public static void ChangeLanguage(){
-
         var table = new Table();
         table.AddColumn(Locale.LocaleKeybind.Description);
         string[] _elements = IniFileHandling.ReadAll_Locales();

@@ -471,7 +471,7 @@ namespace jammer
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
-            TUI.RehreshCurrentView();
+            TUI.RefreshCurrentView();
         }
     }
 }

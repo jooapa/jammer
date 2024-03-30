@@ -309,6 +309,8 @@ namespace jammer{
             public static string EditKeybindings = CheckValueLocale("EditKeysTexts", "EditKeybindings", "Edit keybindings");
             public static string ChangeLanguage = CheckValueLocale("EditKeysTexts", "ChangeLanguage", "Change language");
             public static string PlayRandomSong = CheckValueLocale("EditKeysTexts", "PlayRandomSong", "Play random song");
+            public static string PlaylistViewScrollup = CheckValueLocale("EditKeysTexts", "PlaylistViewScrollup", "Scroll up in playlist view");
+            public static string PlaylistViewScrolldown = CheckValueLocale("EditKeysTexts", "PlaylistViewScrolldown", "Scroll down in playlist view");
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {

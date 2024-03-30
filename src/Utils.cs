@@ -14,6 +14,7 @@ namespace jammer
         public static double MusicTimePlayed = 0; // time played in seconds
         public static double preciseTime = 0;
         public static int currentSongIndex = 0;
+        public static int currentPlaylistSongIndex = 0;
         public static string scSongPattern = @"^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/(.*)$";
         public static string scPlaylistPattern = @"^https?:\/\/(?:www\.)?soundcloud\.com\/[^\/]+\/sets\/[^\/]+$";
         public static string ytSongPattern = @"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(.*)$";
@@ -26,6 +27,6 @@ namespace jammer
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
         public static string version = "2.0.2";
-        public static string AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
+        public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
     }
 }
