@@ -1,6 +1,7 @@
 using SoundCloudExplode;
 using YoutubeExplode;
 using Spectre.Console;
+using YoutubeExplode.Videos;
 
 namespace jammer {
     internal class Download {
@@ -8,8 +9,11 @@ namespace jammer {
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string url = "";
         static string[] playlistSongs = { "" };
+        private static string pipe = "";
 
-        public static string DownloadSong(string url2) {
+        public static (string, string) DownloadSong(string url2) {
+            songPath = "";
+            pipe = "";
             url = url2;
             Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url2.ToString());
             if (URL.IsValidSoundcloudSong(url)) {
@@ -20,7 +24,8 @@ namespace jammer {
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
                 Debug.dprint("Invalid url");
             }
-            return songPath;
+
+            return (songPath, pipe);
         }
 
         private static async Task DownloadYoutubeTrackAsync(string url)
@@ -42,6 +47,7 @@ namespace jammer {
                 var youtube = new YoutubeClient();
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
                 var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
+                var video = await youtube.Videos.GetAsync(url);
                 if (streamInfo != null)
                 {
                     var progress = new Progress<double>(data =>
@@ -49,6 +55,9 @@ namespace jammer {
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
                     });
+
+                    // metadata to pipe
+                    pipe = video.Title;
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
                 }
@@ -61,12 +70,11 @@ namespace jammer {
                     Utils.jammerPath,
                     formattedUrl
                 );
-                Console.WriteLine($"{Locale.OutsideItems.Downloaded}: " + formattedUrl + $" {Locale.OutsideItems.ToLocation} " + songPath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{Locale.OutsideItems.Error}: " + ex.Message);
-                Console.ReadLine();
+                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                songPath = "";
             }
         }
 
@@ -93,10 +101,14 @@ namespace jammer {
                         formattedUrl
                     );
 
+                    // metadata to pipe
+                    pipe = track.Title;
+
                     var progress = new Progress<double>(data => {
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {trackName}: {data:P}");
                     });
+
 
                     await soundcloud.DownloadAsync(track, songPath, progress);
                 } else {
@@ -104,7 +116,7 @@ namespace jammer {
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine($"{Locale.OutsideItems.Error}: " + ex.Message);
+                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Soundcloud Download Error");
                 songPath = "";
             }
         }
@@ -141,7 +153,7 @@ namespace jammer {
             // delete duplicate songs
             Utils.songs = Utils.songs.Distinct().ToArray();
 
-            return DownloadSong(Utils.songs[Utils.currentSongIndex]);
+            return DownloadSong(Utils.songs[Utils.currentSongIndex]).Item1;
         }
 
         public static string FormatUrlForFilename(string url)

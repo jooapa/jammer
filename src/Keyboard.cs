@@ -250,6 +250,7 @@ namespace jammer
 
                         case "Autosave": // autosave or not
                             Preferences.isAutoSave = !Preferences.isAutoSave;
+                            Preferences.SaveSettings();
                             break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
