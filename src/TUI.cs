@@ -97,8 +97,8 @@ static class TUI
         List<string> results = new()
         {
             // TODO ADD LOCALE
-            $"Current playlist view. Move with {Keybindings.PlaylistViewScrollup} and {Keybindings.PlaylistViewScrolldown}",
-            $"Open song menu using 'Enter'"
+            $"[grey]Current playlist view. Move with {Keybindings.PlaylistViewScrollup} and {Keybindings.PlaylistViewScrolldown}",
+            $"Open song menu using 'Enter'[/]"
         };
         int maximum = 10 + results.Count;
         
@@ -159,12 +159,12 @@ static class TUI
         }
         else
         {
-            currentSong = $"[green]{Locale.Player.Current}  : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength)) + "[/]";
+            currentSong = $"[green]{Locale.Player.Current}  : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength), "get") + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = $"[grey]{Locale.Player.Previos} : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength)) + "[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength), "get") + "[/]";
         }
         else
         {
@@ -174,7 +174,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = $"[grey]{Locale.Player.Next}     : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength)) + "[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength), "get") + "[/]";
         }
         else
         {
@@ -184,13 +184,6 @@ static class TUI
         return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
-    static string GetSongTitle(string song) {
-        string songTitle = song;
-        if (songTitle.Contains("|")) {
-            songTitle = songTitle.Split("|")[1];
-        }
-        return songTitle;
-    }
     public static string CalculateTime(double time) {
         int minutes = (int)time / 60;
         int seconds = (int)time % 60;
@@ -426,7 +419,6 @@ static class TUI
 
     static public void UIComponent_Songs(Table table) {
         // AnsiConsole.Clear();
-        table.AddColumn("Current queue");
         string[] queueLines = GetAllSongsQueue();
         string[] lines = GetAllSongs();
 
@@ -435,6 +427,7 @@ static class TUI
         } else {
             table.AddColumn("Current playlist:" + Utils.currentPlaylist);
         }
+        table.AddColumn("Current queue");
         
         for(int i = 0; i < lines.Length; i++){
             table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
