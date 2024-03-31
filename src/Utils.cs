@@ -28,7 +28,7 @@ namespace jammer
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
-        public static string version = "2.0.2";
+        public static string version = "2.0.3";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
     }
 }
