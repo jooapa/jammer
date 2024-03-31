@@ -466,15 +466,23 @@ namespace jammer
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
         }
 
-        public static string RemoveTitle(string title)
+        public static string Title(string title, string getOrNot)
         {
             if (title.Contains("|"))
             {
                 string[] titleSplit = title.Split("|");
-                return titleSplit[0];
+                if (getOrNot == "get")
+                {
+                    return titleSplit[1];
+                }
+                else if (getOrNot == "not")
+                {
+                    return titleSplit[0];
+                }
             }
             return title;
         }
+
         static public void StartPlaying()
         {
 

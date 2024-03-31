@@ -80,7 +80,7 @@ static class TUI
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
             AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
-            AnsiConsole.MarkupLine("[red]" + e.Message + "[/]");
+            AnsiConsole.MarkupLine("[red]" + e + "[/]");
         }
     }
 
@@ -107,28 +107,26 @@ static class TUI
             
             if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
                 if (i == Utils.currentSongIndex) {
-                    results.Add($"[green]{i + 1}. {keyValue}[/]");
+                    results.Add($"[green]{i + 1}. {Play.Title(keyValue, "get")}[/]");
                 }
                 else if (i == Utils.currentPlaylistSongIndex) {
-                    results.Add($"[yellow]{i + 1}. {keyValue}[/]");
+                    results.Add($"[yellow]{i + 1}. {Play.Title(keyValue, "get")}[/]");
                 }
                 else if (Utils.currentPlaylistSongIndex <= 3) {
-                    results.Add($"{i + 1}. {keyValue}");
+                    results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
                 }
                 else if(
                     Utils.currentPlaylistSongIndex + 5 >= Utils.songs.Length &&
                     i > Utils.songs.Length - 6
                 ){
                     keyValue = Utils.songs[i].ToString();
-                    results.Add($"{i + 1}. {keyValue}");
+                    results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
                 }
                 else if (i >= Utils.currentPlaylistSongIndex -2 && i < Utils.currentPlaylistSongIndex + 3) {
-                    results.Add($"{i + 1}. {keyValue}");
+                    results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
                 }
             }
         }
-
-
 
         return results.ToArray();
     }
@@ -161,12 +159,12 @@ static class TUI
         }
         else
         {
-            currentSong = $"[green]{Locale.Player.Current}  : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength)) + "[/]";
+            currentSong = $"[green]{Locale.Player.Current}  : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength), "get") + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = $"[grey]{Locale.Player.Previos} : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength)) + "[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength), "get") + "[/]";
         }
         else
         {
@@ -176,7 +174,7 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = $"[grey]{Locale.Player.Next}     : " + GetSongTitle(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength)) + "[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength), "get") + "[/]";
         }
         else
         {
@@ -186,13 +184,6 @@ static class TUI
         return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
-    static string GetSongTitle(string song) {
-        string songTitle = song;
-        if (songTitle.Contains("|")) {
-            songTitle = songTitle.Split("|")[1];
-        }
-        return songTitle;
-    }
     public static string CalculateTime(double time) {
         int minutes = (int)time / 60;
         int seconds = (int)time % 60;
@@ -428,6 +419,9 @@ static class TUI
 
     static public void UIComponent_Songs(Table table) {
         // AnsiConsole.Clear();
+        string[] queueLines = GetAllSongsQueue();
+        string[] lines = GetAllSongs();
+
         if (Utils.currentPlaylist == "") {
             table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
             table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -437,8 +431,7 @@ static class TUI
                 table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
             }
         } else {
-            table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
-            table.AddRow(GetAllSongs());
+            table.AddColumn("Current playlist:" + Utils.currentPlaylist);
         }
     }
 
