@@ -31,9 +31,25 @@ namespace jammer {
             return (songPath, pipe);
         }
 
+        public static (string, string) CheckExistingSong(string url) {
+            // Message.Data("Checking existing song: " + url, "Check Existing Song");
+            string formattedUrl = FormatUrlForFilename(url, true);
+            // Message.Data("FormaUIHUIHUHItdted URL: " + formattedUrl, "Check Existing Song '" + formattedUrl + "'");
+            string[] files = Directory.GetFiles(Utils.jammerPath);
+            foreach (string file in files)
+            {
+                // Message.Data("File: " + file, "Check Existing Song '" + file.Contains(formattedUrl) + "'" + formattedUrl);
+                if (file.Contains(formattedUrl))
+                {
+                    // return the path and the title of the song using the pipe
+                    string[] split = file.Split("^");
+                    return (file, split[1].Substring(0, split[1].Length - 4));
+                }
+            }
+            return ("", "");
+        }
         private static async Task DownloadYoutubeTrackAsync(string url)
         {
-            pipe = "";
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
@@ -41,16 +57,22 @@ namespace jammer {
                 formattedUrl
             );
             string construction = songPath;
-            if (File.Exists(songPath))
+            string value = "";
+            (value, pipe) = CheckExistingSong(url);
+            // Message.Data("Value: " + value, "Check Existing Song:" + formattedUrl.Substring(0, formattedUrl.Length - 4));
+            if (value != "")
             {
-                Console.WriteLine(Locale.OutsideItems.YtFileExists);
+                songPath = value;
                 return;
             }
+
+            pipe = "";
             try
             {
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
                 var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
                 var video = await youtube.Videos.GetAsync(url);
+                
                 if (streamInfo != null)
                 {
                     var progress = new Progress<double>(data =>
@@ -69,7 +91,7 @@ namespace jammer {
                 }
                 else
                 {
-                    Console.WriteLine(Locale.OutsideItems.NoAudioStream);
+                    Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                 }
                 songPath = construction;
             }
@@ -83,37 +105,38 @@ namespace jammer {
         public static async Task DownloadSoundCloudTrackAsync(string url) {
             // if already downloaded, don't download again
             string formattedUrl = FormatUrlForFilename(url);
-            string oldUrl = url;
+
             songPath = Path.Combine(
                 Utils.jammerPath,
                 formattedUrl
             );
 
+            string construction = songPath; 
             if (File.Exists(songPath))
             {
                 return;
             }
-            url = oldUrl;
+
             try {
                 var track = await soundcloud.Tracks.GetAsync(url);
-                if (track != null) {
-                    var trackName = formattedUrl;
-                    songPath = Path.Combine(
-                        Utils.jammerPath,
-                        formattedUrl
-                    );
 
-                    // metadata to pipe
+                if (track != null) {
+
                     if(track.Title != null){
-                        pipe = track.Title;
 
                         var progress = new Progress<double>(data => {
                             AnsiConsole.Clear();
-                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {trackName}: {data:P}");
+                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");    
                         });
 
+                        // metadata to pipe
+                        pipe = track.Title;
 
                         await soundcloud.DownloadAsync(track, songPath, progress);
+
+                        int pos_dot = songPath.LastIndexOf(".");
+                        construction = songPath[..pos_dot] + "^" + pipe + ".mp3";
+                        File.Move(songPath, construction);
 
                     } else {
                         Debug.dprint("track title returns null");
@@ -121,9 +144,12 @@ namespace jammer {
                 } else {
                     Debug.dprint("track returns null");
                 }
+
+                songPath = construction;
             }
-            catch (Exception ex) {
-                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Soundcloud Download Error"); // Todo aDD LOCALE
+            catch (Exception ex) { 
+                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
+                , "Soundcloud Download Error"); // Todo aDD LOCALE
                 songPath = "";
             }
         }
@@ -163,13 +189,18 @@ namespace jammer {
             playlistSongs = new string[playlist.Count()];
             int i = 0;
             foreach (var track in playlist) {
-                playlistSongs[i] = track.Url?.ToString() ?? string.Empty;
+                var _url = track.Url?.ToString() ?? string.Empty;
+                var index = _url.IndexOf('&');
+                if (index != -1) {
+                    _url = _url.Substring(0, index);
+                }
+                playlistSongs[i] = _url;
                 i++;
             }
         }
 
 
-        public static string GetSongsFromPlaylist(string url, string service) {
+        public static (string,string) GetSongsFromPlaylist(string url, string service) {
             if(service == "soundcloud"){
                 GetPlaylist(url).Wait();
             }
@@ -186,10 +217,10 @@ namespace jammer {
             // delete duplicate songs
             Utils.songs = Utils.songs.Distinct().ToArray();
 
-            return DownloadSong(Utils.songs[Utils.currentSongIndex]).Item1;
+            return DownloadSong(Utils.songs[Utils.currentSongIndex]);
         }
 
-        public static string FormatUrlForFilename(string url)
+        public static string FormatUrlForFilename(string url, bool isCheck = false)
         {
             // Console.WriteLine("Formatting url for filename: " + url);
             if (URL.isValidSoundCloudPlaylist(url)) {
@@ -209,7 +240,14 @@ namespace jammer {
                                      .Replace("/", " ")
                                      .Replace("-", " ")
                                      .Replace("?", " ");
-                return formattedSCUrl + ".mp3";
+                if (isCheck)
+                {
+                    return formattedSCUrl;
+                }
+                else
+                {
+                    return formattedSCUrl + ".mp3";
+                }
             }
             else if (URL.IsValidYoutubeSong(url))
             {
@@ -224,7 +262,14 @@ namespace jammer {
                                      .Replace("-", " ")
                                      .Replace("?", " ");
 
-            return formattedYTUrl + ".mp4";
+            if (isCheck)
+            {
+                return formattedYTUrl;
+            }
+            else
+            {
+                return formattedYTUrl + ".mp4";
+            }
         }
     }
 }

@@ -67,14 +67,45 @@ namespace jammer
             Debug.dprint("Play song");
             var path = "";
 
-            // SONG WITHOUT THE PIPE
             string song = songs[Currentindex];
+
+            // if url, loop all filesin jammerPath
+            // Message.Data("1", song);
+
             if (song.Contains("^"))
             {
-                string[] songSplit = song.Split("^");
-                song = songSplit[0];
-                returnPipe = songSplit[1];
+                song = song.Split("^")[0];
             }
+
+            if (URL.IsUrl(songs[Currentindex]))
+            {
+
+                // Message.Data("2", song);
+                string formattedUrl = Download.FormatUrlForFilename(song);
+
+                // remove last extension
+                formattedUrl = formattedUrl.Substring(0, formattedUrl.LastIndexOf('.'));
+
+                string[] files = Directory.GetFiles(Utils.jammerPath);
+                foreach (string file in files)
+                {
+                    if (file.Contains(formattedUrl))
+                    {
+                        song = file;
+                        int carrotIndex = song.IndexOf("^");
+                        if (carrotIndex != -1)
+                        {
+                            Utils.songs[Currentindex] += song.Substring(carrotIndex);
+                            Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
+                            // Message.Data("FOUNDED", song);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Message.Data("Playing", song);
+
 
             // check if file is a local
             if (File.Exists(song))
@@ -107,7 +138,7 @@ namespace jammer
             else if (URL.isValidSoundCloudPlaylist(song)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(song, "soundcloud");
+                (path, returnPipe) = Download.GetSongsFromPlaylist(song, "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(song))
             {
@@ -117,7 +148,7 @@ namespace jammer
             else if (URL.IsValidYoutubePlaylist(song))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.GetSongsFromPlaylist(song, "youtube");
+                (path, returnPipe) = Download.GetSongsFromPlaylist(song, "youtube");
             }
             else if (URL.IsValidYoutubeSong(song))
             {
@@ -130,9 +161,13 @@ namespace jammer
                 return;
             }
 
+            // Message.Data("Path", path);
+            // Message.Data("ReturnPipe", returnPipe);
+
+            // add pipe to Utils.songs current
             if (returnPipe != "")
             {
-                Utils.songs[Currentindex] = Utils.songs[Currentindex] + "^" + returnPipe;
+                Utils.songs[Currentindex] += "^" + returnPipe;
             }
 
             Start.prevMusicTimePlayed = -1;
