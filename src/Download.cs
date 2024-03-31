@@ -112,10 +112,15 @@ namespace jammer {
             );
 
             string construction = songPath; 
-            if (File.Exists(songPath))
+            string value = "";
+            (value, pipe) = CheckExistingSong(url);
+            if (value != "")
             {
+                songPath = value;
                 return;
             }
+
+            pipe = "";
 
             try {
                 var track = await soundcloud.Tracks.GetAsync(url);

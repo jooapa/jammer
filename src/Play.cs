@@ -77,14 +77,18 @@ namespace jammer
                 song = song.Split("^")[0];
             }
 
-            if (URL.IsUrl(songs[Currentindex]))
+            if (URL.IsUrl(song))
             {
 
                 // Message.Data("2", song);
                 string formattedUrl = Download.FormatUrlForFilename(song);
-
+                // Message.Data("3", formattedUrl);
                 // remove last extension
-                formattedUrl = formattedUrl.Substring(0, formattedUrl.LastIndexOf('.'));
+                try {
+                    formattedUrl = formattedUrl.Substring(0, formattedUrl.LastIndexOf('.'));
+                } catch {
+                    
+                }
 
                 string[] files = Directory.GetFiles(Utils.jammerPath);
                 foreach (string file in files)
