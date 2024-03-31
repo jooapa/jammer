@@ -2,17 +2,6 @@
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
 
-<br>
-
- - In this example I first open the PvZ playlist from SoundCloud. 
-
- - Then I delete some songs at the start, by pressing the `delete` key. 
-
-- `shift +alt + S` to save and type the name of the playlist. 
-
- - After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant
-playlist.
-
 ## Introduction
 
 Tired of opening up a browser or app to play music, and even then you can't
