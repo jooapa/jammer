@@ -246,15 +246,25 @@ namespace jammer{
             public static string ShowingPlaylist = CheckValueLocale("OutsideItems", "ShowingPlaylist", "Showing playlist");
             public static string PlaylistIsEmpty = CheckValueLocale("OutsideItems", "PlaylistIsEmpty", "Playlist is empty");
             public static string PlaylistDoesntExist = CheckValueLocale("OutsideItems", "PlaylistDoesntExist", "Playlist does not exist");
+            public static string CouldntFindLocales1 = CheckValueLocale("OutsideItems", "CouldntFindLocales1", "Could not find the 'locales' directory in:");
+            public static string CouldntFindLocales2 = CheckValueLocale("OutsideItems", "CouldntFindLocales2", "Exiting to Main View...");
+            public static string NoLocaleInDir = CheckValueLocale("OutsideItems", "NoLocaleInDir", "No .ini files found in the locales directory.");
+            public static string ErrorLoadingDescription = CheckValueLocale("OutsideItems", "ErrorLoadingDescription", "Error loading description");
+            public static string CurrentPlaylist = CheckValueLocale("OutsideItems", "CurrentPlaylist", "Current playlist");
+            public static string CurrentQueue = CheckValueLocale("OutsideItems", "CurrentQueue", "Current queue");
+            public static string CurrPlaylistView = CheckValueLocale("OutsideItems", "CurrPlaylistView", "Current playlist view. Move with");
+            public static string PlaySongWith = CheckValueLocale("OutsideItems", "PlaySongWith", "Play song with");
+            public static string DeleteSongWith = CheckValueLocale("OutsideItems", "DeleteSongWith", "Delete song with");
+            public static string AddToQueue = CheckValueLocale("OutsideItems", "AddToQueue", "Add to queue with");
         }
         public static class LocaleKeybind{
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
             public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel, Enter to save");
             public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift and their combinations");
-            public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move with arrow keys");
+            public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move up and down with:");
             public static string EditKeyBindMessage4 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage4", "Press Shift + Alt + Delete to reset keybinds");
-            public static string ChangeLanguageMessage1 = CheckValueLocale("LocaleKeybind", "ChangeLanguageMessage1", "Enter to choose the language, move with arrow keys");
+            public static string ChangeLanguageMessage1 = CheckValueLocale("LocaleKeybind", "ChangeLanguageMessage1", "Enter to choose the language, move up and down with:");
             public static string Ini_LoadNewLocaleMessage1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage1", "Language has been changed succesfully. Reset needed to load new language");
             public static string Ini_LoadNewLocaleMessage2 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleMessage2", "Language changed succesfully!");
             public static string Ini_LoadNewLocaleError1 = CheckValueLocale("LocaleKeybind", "Ini_LoadNewLocaleError1", "Error changing languages. Resorting back to English");
@@ -311,8 +321,10 @@ namespace jammer{
             public static string EditKeybindings = CheckValueLocale("EditKeysTexts", "EditKeybindings", "Edit keybindings");
             public static string ChangeLanguage = CheckValueLocale("EditKeysTexts", "ChangeLanguage", "Change language");
             public static string PlayRandomSong = CheckValueLocale("EditKeysTexts", "PlayRandomSong", "Play random song");
-            public static string PlaylistViewScrollup = CheckValueLocale("EditKeysTexts", "PlaylistViewScrollup", "Scroll up in playlist view");
-            public static string PlaylistViewScrolldown = CheckValueLocale("EditKeysTexts", "PlaylistViewScrolldown", "Scroll down in playlist view");
+            public static string PlaylistViewScrollup = CheckValueLocale("EditKeysTexts", "PlaylistViewScrollup", "Scroll up in tables");
+            public static string PlaylistViewScrolldown = CheckValueLocale("EditKeysTexts", "PlaylistViewScrolldown", "Scroll down in tables");
+            public static string Enter = CheckValueLocale("EditKeysTexts", "Enter", "Choose highlighted item in tables");
+            public static string AddSongToQueue = CheckValueLocale("EditKeysTexts", "AddSongToQueue", "Add song to queue in playlist view");
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {

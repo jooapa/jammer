@@ -413,7 +413,7 @@ namespace jammer
                 PlaySong(Utils.songs, Utils.currentSongIndex);
             }
         }
-        public static void DeleteSong(int index)
+        public static void  DeleteSong(int index)
         {
             if (Utils.songs.Length == 0)
             {
@@ -428,16 +428,29 @@ namespace jammer
             // remove song from current Utils.songs
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
             // PREV RESET
-            if (index == Utils.songs.Length)
-            {
+            Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
+            if (index == Utils.songs.Length){
                 if (Utils.songs.Length == 0) {
                     Utils.songs = new string[] { "" };
                     ResetMusic();
                     Start.state = MainStates.pause;
                 }
+                else if(index >= Utils.currentSongIndex){
+                    _ = Utils.currentSongIndex;
+                }
                 else {
                     Utils.currentSongIndex = Utils.songs.Length - 1;
                     // Start.state = MainStates.playing;
+                }
+            } else {
+                if(index < Utils.currentPlaylistSongIndex && index != Utils.currentPlaylistSongIndex){
+                    if(Utils.currentPlaylistSongIndex == Utils.songs.Length){
+                        Utils.currentPlaylistSongIndex--;
+                    } else {
+                        Utils.currentPlaylistSongIndex++;
+                    }
+                } else {
+                    Utils.currentPlaylistSongIndex++;
                 }
             }
             

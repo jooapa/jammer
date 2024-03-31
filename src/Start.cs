@@ -92,7 +92,7 @@ namespace jammer
                             if (args.Length > i+1) {
                                 Playlists.Play(args[i+1], true);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
                                 Environment.Exit(1);
                             }
                             break;
@@ -101,7 +101,7 @@ namespace jammer
                             if (args.Length > i+1) {
                                 Playlists.Create(args[i+1]);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
                             }
                             Environment.Exit(0);
                             break;
@@ -110,7 +110,7 @@ namespace jammer
                             if (args.Length > i+1) {
                                 Playlists.Delete(args[i+1]);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name or song given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 Environment.Exit(0);
                             }
                             break;
@@ -123,7 +123,7 @@ namespace jammer
                                 Console.WriteLine(secondHalf[0]);
                                 Playlists.Add(secondHalf);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name or song given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 Environment.Exit(0);
                             }
                             break;
@@ -136,7 +136,7 @@ namespace jammer
                                 Console.WriteLine(secondHalf[1]);
                                 Playlists.Remove(secondHalf);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name or song given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 Environment.Exit(0);
                             }
                             break;
@@ -145,7 +145,7 @@ namespace jammer
                             if (args.Length > i+1) {
                                 Playlists.ShowCli(args[i+1]);
                             } else {
-                                AnsiConsole.WriteLine("No playlist name or song given");
+                                AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 Environment.Exit(0);
                             }
                             return;
@@ -155,11 +155,11 @@ namespace jammer
                             return;
                         case "--version":
                         case "-v":
-                            AnsiConsole.MarkupLine("[green]Jammer version: " + Utils.version + "[/]");
+                            AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.version + "[/]");
                             return;
                         case "start":
                             // open explorer in jammer folder
-                            AnsiConsole.MarkupLine("[green]Opening Jammer folder...[/]");
+                            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
                             // if windows
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                                 System.Diagnostics.Process.Start("explorer.exe", Utils.jammerPath);
@@ -169,22 +169,22 @@ namespace jammer
                             return;
                         case "update":
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-                                AnsiConsole.MarkupLine("[red]Run the update command[/]");
+                                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.RunUpdate}[/]");
                                 return;
                             }
-                            AnsiConsole.MarkupLine("[green]Checking for updates...[/]");
+                            AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.CheckingUpdates}[/]");
                             string latestVersion = Update.CheckForUpdate(Utils.version);
                             if (latestVersion != "") {
-                                AnsiConsole.MarkupLine("[green]Update found![/]" + "\n" + "Version: [green]" + latestVersion + "[/]");
-                                AnsiConsole.MarkupLine("[green]Downloading...[/]");
+                                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpdateFound}[/]" + "\n" + $"{Locale.Miscellaneous.Version}: [green]" + latestVersion + "[/]");
+                                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Downloading}[/]");
                                 string downloadPath = Update.UpdateJammer(latestVersion);
             
-                                AnsiConsole.MarkupLine("[green]Downloaded to: " + downloadPath + "[/]");
-                                AnsiConsole.MarkupLine("[cyan]Installing...[/]");
+                                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.DownloadedTo}: " + downloadPath + "[/]");
+                                AnsiConsole.MarkupLine($"[cyan]{Locale.OutsideItems.Installing}[/]");
                                 // Run run_command.bat with argument as the path to the downloaded file
                                 System.Diagnostics.Process.Start("run_command.bat", downloadPath);
                             } else {
-                                AnsiConsole.MarkupLine("[green]Jammer is up to date![/]");
+                                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpToDate}[/]");
                             }
                             return;
                     }

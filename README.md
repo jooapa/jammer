@@ -4,26 +4,30 @@
 
 <br>
 
-*In this example I first open the PvZ playlist from SoundCloud. Then I delete
-some songs at the start, by pressing the `delete` key. ~~Then I save the
-current playlist to name `plant`~~ (**This is old, now you would press `shift +
-alt + S` and type the name of the playlist.**). After exiting i use the inline
-cli-playlist tool `jammer playlist play plant` this will play the plant
-playlist.*
+ - In this example I first open the PvZ playlist from SoundCloud. 
+
+ - Then I delete some songs at the start, by pressing the `delete` key. 
+
+- `shift +alt + S` to save and type the name of the playlist. 
+
+ - After exiting i use the inline cli-playlist tool `jammer playlist play plant` this will play the plant
+playlist.
 
 ## Introduction
 
 Tired of opening up a browser or app to play music, and even then you can't
-play local files or the songs are in multiple places. Jammer is a simple CLI
-music player that supports playing songs from **local files**, **Youtube** and
-**Soundcloud**. For **`Windows`**, *`Linux`*.
+play local files or songs from different sites? 
 
-***Jammer shines it best when using it as a playlist. That's why I created it,
+Jammer is a simple CLI music player that supports playing songs from your**local files**, **Youtube** and **Soundcloud**. 
+
+Compatible with **`Windows`**, *`Linux`*.
+
+***Jammer shines its best when using it as a playlist. That's why I created it,
 for the playlist feature across different platforms***
 
 - The player doesn't stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the
-  downloaded songs, playlists and settings.
+  downloaded songs, playlists, settings, keybinds and locales.
 - Jammer uses [Bass](https://www.un4seen.com/) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Install/Update
@@ -219,18 +223,18 @@ python change_version.py [version]
 
 ### Todo bug fixes
 
-[x] When playing song, and opening a new playlist, the song doesn't change
-[x] Pressing `0`, doesn't do anything
-[x] Download bar
-[x] Fix playlist cmd
-[ ] Fix time bar not going to new line when 0:-01
+ - [x] When playing song, and opening a new playlist, the song doesn't change
+ - [x] Pressing `0`, doesn't do anything
+ - [x] Download bar
+ - [x] Fix playlist cmd
+ - [ ] Fix time bar not going to new line when 0:-01
 
 
 ### Incoming Features
 
-[ ] Add more audio formats
-[ ] Maybe use curses for UI
-[ ] Better f mode
-[ ] pg up/down you can scroll the playlist and modify the selected song
-[ ] you can see whats downloaded from url
+- [ ] Add more audio formats
+- [ ] Maybe use curses for UI
+- [ ] Better f mode
+- [ ] pg up/down you can scroll the playlist and modify the selected song
+- [ ] you can see whats downloaded from url
 
