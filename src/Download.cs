@@ -33,13 +33,14 @@ namespace jammer {
 
         private static async Task DownloadYoutubeTrackAsync(string url)
         {
+            pipe = "";
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
                 Utils.jammerPath,
                 formattedUrl
             );
-
+            string construction = songPath;
             if (File.Exists(songPath))
             {
                 Console.WriteLine(Locale.OutsideItems.YtFileExists);
@@ -62,16 +63,15 @@ namespace jammer {
                     pipe = video.Title;
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
+                    int pos_dot = songPath.LastIndexOf(".");
+                    construction = songPath[..pos_dot] + "^" + pipe + ".mp4";
+                    File.Move(songPath, construction);
                 }
                 else
                 {
                     Console.WriteLine(Locale.OutsideItems.NoAudioStream);
                 }
-
-                songPath = Path.Combine(
-                    Utils.jammerPath,
-                    formattedUrl
-                );
+                songPath = construction;
             }
             catch (Exception ex)
             {
