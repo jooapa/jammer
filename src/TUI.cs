@@ -520,7 +520,6 @@ static class TUI
         table.AddRow(DrawHelpTextColouring(PlaylistOptions), Locale.Help.ShowPlaylistOptions);
         table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Locale.Help.ShowCmdHelp);
         table.AddRow(DrawHelpTextColouring(ToMainMenu), Locale.Help.ToMainMenu);
-        table.AddRow("ä", "åfh");
 
         AnsiConsole.Clear();
         AnsiConsole.Write(table);
