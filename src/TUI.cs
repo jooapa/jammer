@@ -676,7 +676,7 @@ static class TUI
             else if(IniFileHandling.isAlt){
                 final = "Alt + " + final;
             }
-            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1}[/]\n");
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1} {Keybindings.Choose}[/]\n");
             AnsiConsole.Markup($"{Locale.LocaleKeybind.EditKeyBindMessage2}\n");
             AnsiConsole.Markup($"[cyan]{final}[/]\n\n");
 

@@ -69,9 +69,9 @@ namespace jammer
 
             // SONG WITHOUT THE PIPE
             string song = songs[Currentindex];
-            if (song.Contains("|"))
+            if (song.Contains("^"))
             {
-                string[] songSplit = song.Split("|");
+                string[] songSplit = song.Split("^");
                 song = songSplit[0];
                 returnPipe = songSplit[1];
             }
@@ -132,7 +132,7 @@ namespace jammer
 
             if (returnPipe != "")
             {
-                Utils.songs[Currentindex] = Utils.songs[Currentindex] + "|" + returnPipe;
+                Utils.songs[Currentindex] = Utils.songs[Currentindex] + "^" + returnPipe;
             }
 
             Start.prevMusicTimePlayed = -1;
@@ -387,7 +387,7 @@ namespace jammer
         {
             string path = Utils.currentSong;
             File.Delete(path);
-            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("|")[0];
+            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("^")[0];
             PlaySong(Utils.songs, Utils.currentSongIndex);
             SeekSong(0, false);
         }
@@ -468,9 +468,9 @@ namespace jammer
 
         public static string Title(string title, string getOrNot)
         {
-            if (title.Contains("|"))
+            if (title.Contains("^"))
             {
-                string[] titleSplit = title.Split("|");
+                string[] titleSplit = title.Split("^");
                 if (getOrNot == "get")
                 {
                     return titleSplit[1];

@@ -260,7 +260,7 @@ namespace jammer{
         public static class LocaleKeybind{
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
-            public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel, Enter to save");
+            public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel. Save with");
             public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift and their combinations");
             public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move up and down with:");
             public static string EditKeyBindMessage4 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage4", "Press Shift + Alt + Delete to reset keybinds");
