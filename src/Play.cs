@@ -171,6 +171,15 @@ namespace jammer
             // Message.Data("Path", path);
             // Message.Data("ReturnPipe", returnPipe);
 
+            // add pipe to Utils.songs current
+            if (returnPipe != "")
+            {
+                if (!Utils.songs[Currentindex].Contains("^"))
+                {
+                    Utils.songs[Currentindex] += "^" + returnPipe;
+                }
+            }
+
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
             Utils.currentSong = path;
