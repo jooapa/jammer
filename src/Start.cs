@@ -46,6 +46,7 @@ namespace jammer
         public static void Run(string[] args)
         {        
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            
             Utils.songs = args;
             Debug.dprint("Run");
             if (args.Length > 0) {

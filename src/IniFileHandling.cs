@@ -83,12 +83,12 @@ AddSongToQueue = G
             Tries loading ini files
             */
             try {
-                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
+                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), System.Text.Encoding.UTF8);
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
             } catch(Exception) {
                 try {
-                    KeyData = parser.ReadFile("KeyData.ini");
+                    KeyData = parser.ReadFile("KeyData.ini", System.Text.Encoding.UTF8);
                     KeyDataFound = true;
                     KeybindAmount = KeyData["Keybinds"].Count;
                 } catch(Exception) {        
@@ -99,21 +99,21 @@ AddSongToQueue = G
             //NOTE(ra) Use AppImage locale files
             if ( Utils.AppDirMount != null ) {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {
                     LocaleData = new IniData();
                 }
             } else {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {
                     LocaleData = new IniData();
                 }
 
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {}
             }
@@ -124,12 +124,12 @@ AddSongToQueue = G
         public static void ReadNewKeybinds(){
             // Read new keybinds from file
             try {
-                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"));
+                KeyData = parser.ReadFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), System.Text.Encoding.UTF8);
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
             } catch(Exception) {
                 try {
-                    KeyData = parser.ReadFile("KeyData.ini");
+                    KeyData = parser.ReadFile("KeyData.ini", System.Text.Encoding.UTF8);
                     KeyDataFound = true;
                     KeybindAmount = KeyData["Keybinds"].Count;
                 } catch(Exception) {        
@@ -535,14 +535,14 @@ AddSongToQueue = G
                 }
             }
             try {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"));
+                LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
             } catch(Exception) {
                 try {
                     Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"));
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
                 } catch(Exception) {
