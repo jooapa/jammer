@@ -2,6 +2,7 @@
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained
 SET "sourceFolder=bin\Release\net7.0\win10-x64\publish"
 
+@REM Build with debug executable
 @REM dotnet build
 @REM SET "sourceFolder=bin\Debug\net7.0\"
 
@@ -10,7 +11,7 @@ SET "targetFolder=nsis"
 @REM COPY jammer.exe
 COPY /B /Y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
 COPY /B /Y "libs\win\x64\bass" "%targetFolder%"
-COPY /B /Y "libs\win\x64\bass_aac" "%targetFolder%"
+COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%"
 COPY /Y "libs\win\x64\bass.dll" %targetFolder%
 COPY /Y LICENSE %targetFolder%
 

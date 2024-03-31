@@ -59,7 +59,7 @@ namespace jammer
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
-                        Message.Data("Keybinds resetted","Keybinds have been resetted");
+                        Message.Data("Keybinds resetted","Keybinds have been resetted"); // TODO ADD LOCALE
                     }
 
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
@@ -79,11 +79,11 @@ namespace jammer
                             IniFileHandling.ScrollIndexKeybind -= 1;
                         }
                     } 
-                    if (key.Key == ConsoleKey.Enter && !IniFileHandling.EditingKeybind){
+                    if (Action == "Choose" && !IniFileHandling.EditingKeybind){
                         Action = "";
                         IniFileHandling.EditingKeybind = true;
                     }
-                    else if (key.Key == ConsoleKey.Enter && IniFileHandling.EditingKeybind){
+                    else if (Action == "Choose"&& IniFileHandling.EditingKeybind){
                         Action = "";
                         IniFileHandling.EditingKeybind = false;
                         IniFileHandling.WriteIni_KeyData();
@@ -115,7 +115,7 @@ namespace jammer
                 }
                 if(playerView.Equals("changelanguage")){
                     // Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
-                    if(key.Key == ConsoleKey.DownArrow){
+                    if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount){
                             IniFileHandling.ScrollIndexLanguage = 0;
@@ -123,7 +123,7 @@ namespace jammer
                             IniFileHandling.ScrollIndexLanguage += 1;
                         }
                     }
-                    if(key.Key == ConsoleKey.UpArrow){
+                    if(Action == "PlaylistViewScrollup"){
                         Action = "";
                         if(IniFileHandling.ScrollIndexLanguage - 1 < 0 ){
                             IniFileHandling.ScrollIndexLanguage = IniFileHandling.LocaleAmount - 1;
@@ -131,7 +131,7 @@ namespace jammer
                             IniFileHandling.ScrollIndexLanguage -= 1;
                         }
                     } 
-                    if(key.Key == ConsoleKey.Enter){
+                    if(Action == "Choose"){
                         IniFileHandling.Ini_LoadNewLocale();
                     }
                 }
@@ -153,15 +153,21 @@ namespace jammer
                             Utils.currentPlaylistSongIndex -= 1;
                         }
                     } 
-                    if(key.Key == ConsoleKey.Enter){
+                    if(Action == "Choose"){
                         // EDIT MENU
                         Action = "";
                         Utils.currentSongIndex = Utils.currentPlaylistSongIndex;
                         Play.PlaySong(Utils.songs, Utils.currentSongIndex);
                     } else if(Action == "DeleteCurrentSong"){
                         Action = "";
+                        int new_value = Utils.currentPlaylistSongIndex;
+                        if(Utils.currentPlaylistSongIndex <= Utils.songs.Length 
+                        && Utils.currentPlaylistSongIndex != 0){
+                            new_value--;
+                        }
                         Play.DeleteSong(Utils.currentPlaylistSongIndex);
-                    } else if(key.Key == ConsoleKey.F1){
+                        Utils.currentPlaylistSongIndex = new_value;
+                    } else if(Action == "AddSongToQueue"){
                         Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     }
                 }

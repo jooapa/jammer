@@ -52,6 +52,8 @@ ChangeLanguage = Shift + L
 PlayRandomSong = R
 PlaylistViewScrollup = PageUp
 PlaylistViewScrolldown = PageDown
+Choose = Enter
+AddSongToQueue = G
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
@@ -459,11 +461,11 @@ PlaylistViewScrolldown = PageDown
                             if(value!=null){
                                 results_locale.Add(value);
                             } else {
-                                results_locale.Add("Error loading description"); // TODO LOCALE
+                                results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
                         else{
-                            results_locale.Add("Error loading description"); // TODO LOCALE
+                            results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                         }
                     }
                     i++;
@@ -482,11 +484,11 @@ PlaylistViewScrolldown = PageDown
                             if(value!=null){
                                 results_locale.Add(value);
                             } else {
-                                results_locale.Add("Error loading description"); // TODO LOCALE
+                                results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
                         else{
-                            results_locale.Add("Error loading description"); // TODO LOCALE
+                            results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                         }
                     }
                     i++;
@@ -564,7 +566,7 @@ PlaylistViewScrolldown = PageDown
         if (!Directory.Exists(path)) {
             // Handle the situation when the directory does not exist
             // For example, you can throw an exception or return an empty array
-            Message.Data("Could not find the 'locales' directory in: '" + path + "' Exiting to Main View... ", "Error");
+            Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
             Start.playerView = "default";
             return results.ToArray();
         }
@@ -574,7 +576,7 @@ PlaylistViewScrolldown = PageDown
         LocaleAmount = files.Length;
 
         if (LocaleAmount == 0) {
-            throw new Exception("No .ini files found in the locales directory.");
+            throw new Exception(Locale.OutsideItems.NoLocaleInDir);
         }
 
             int maximum = 15;

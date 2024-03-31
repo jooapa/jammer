@@ -82,8 +82,10 @@ namespace jammer{
         public static string EditKeybindings = CheckValue("EditKeybindings", "Shift + E");
         public static string ChangeLanguage = CheckValue("ChangeLanguage", "Shift + L");
         public static string PlayRandomSong = CheckValue("PlayRandomSong", "R");
-        public static string PlaylistViewScrollup = CheckValue("PlaylistViewScrollup", "PageUp");
-        public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "PageDown");
+        public static string PlaylistViewScrollup = CheckValue("PlaylistViewScrollup", "ArrowUp");
+        public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "ArrowDown");
+        public static string Choose = CheckValue("Choose", "Enter");
+        public static string AddSongToQueue = CheckValue("AddSongToQueue", "G");
 
         public static string CheckValue(string value, string defaultValue){
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);

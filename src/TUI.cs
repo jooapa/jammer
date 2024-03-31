@@ -97,10 +97,10 @@ static class TUI
         List<string> results = new()
         {
             // TODO ADD LOCALE
-            $"Current playlist view. Move with {Keybindings.PlaylistViewScrollup} and {Keybindings.PlaylistViewScrolldown}",
-            $"Open song menu using 'Enter'"
+            $"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}",
+            $"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}"
         };
-        int maximum = 10 + results.Count;
+        int maximum = 6 + results.Count;
         
         for (int i = 0; i < Utils.songs.Length; i++) {
             string keyValue = Utils.songs[i].ToString();
@@ -112,17 +112,17 @@ static class TUI
                 else if (i == Utils.currentPlaylistSongIndex) {
                     results.Add($"[yellow]{i + 1}. {keyValue}[/]");
                 }
-                else if (Utils.currentPlaylistSongIndex <= 5) {
+                else if (Utils.currentPlaylistSongIndex <= 3) {
                     results.Add($"{i + 1}. {keyValue}");
                 }
                 else if(
                     Utils.currentPlaylistSongIndex + 5 >= Utils.songs.Length &&
-                    i > Utils.songs.Length - 10
+                    i > Utils.songs.Length - 6
                 ){
                     keyValue = Utils.songs[i].ToString();
                     results.Add($"{i + 1}. {keyValue}");
                 }
-                else if (i >= Utils.currentPlaylistSongIndex - 4 && i < Utils.currentPlaylistSongIndex + 6) {
+                else if (i >= Utils.currentPlaylistSongIndex -2 && i < Utils.currentPlaylistSongIndex + 3) {
                     results.Add($"{i + 1}. {keyValue}");
                 }
             }
@@ -429,10 +429,8 @@ static class TUI
     static public void UIComponent_Songs(Table table) {
         // AnsiConsole.Clear();
         if (Utils.currentPlaylist == "") {
-            // Print lines
-            // TODO ADD LOCALE
-            table.AddColumn("Current playlist");
-            table.AddColumn("Current queue");
+            table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
+            table.AddColumn(Locale.OutsideItems.CurrentQueue);
             string[] lines = GetAllSongs();
             string[] queueLines = GetAllSongsQueue();
             for(int i = 0; i < lines.Length; i++){
@@ -692,7 +690,7 @@ static class TUI
             AnsiConsole.Markup($"[cyan]{final}[/]\n\n");
 
         } else {
-            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}[/]\n"); // Press Enter to edit
+            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}{Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}[/]\n"); // Press Enter to edit
             AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage4}[/]\n");
         }
         DrawHelpSettingInfo();
@@ -712,7 +710,7 @@ static class TUI
         }
         AnsiConsole.Cursor.SetPosition(0, 0);
         AnsiConsole.Write(table);
-        AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1}[/]\n");
+        AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}[/]\n");
         DrawHelpSettingInfo();
     }
 
