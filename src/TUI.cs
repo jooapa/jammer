@@ -424,12 +424,12 @@ static class TUI
 
         if (Utils.currentPlaylist == "") {
             table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
-            table.AddColumn(Locale.OutsideItems.CurrentQueue);
-            for(int i = 0; i < lines.Length; i++){
-                table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
-            }
         } else {
-            table.AddColumn("Current playlist:" + Utils.currentPlaylist);
+            table.AddColumn(Locale.OutsideItems.CurrentQueue + ":" + Utils.currentPlaylist);
+        }
+        table.AddColumn(Locale.OutsideItems.CurrentQueue);
+        for(int i = 0; i < lines.Length; i++){
+            table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
         }
     }
 
