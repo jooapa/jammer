@@ -156,7 +156,7 @@ namespace jammer {
             }
             catch (Exception ex) { 
                 Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
-                , "Soundcloud Download Error"); // Todo aDD LOCALE
+                , Locale.OutsideItems.DownloadErrorSoundcloud);
                 songPath = "";
             }
         }

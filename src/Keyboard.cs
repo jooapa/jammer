@@ -59,7 +59,7 @@ namespace jammer
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
-                        Message.Data("Keybinds resetted","Keybinds have been resetted"); // TODO ADD LOCALE
+                        Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
                     }
 
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){

@@ -97,7 +97,7 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 
 - **JAMMER** Jammer playlist
 - **FOLDER** Folder/Directory (support playing all audio files within a folder)
-- **YOUTUBE** Youtube video
+- **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
 
 ### Default Player Controls
