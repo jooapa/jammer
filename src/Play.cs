@@ -98,8 +98,11 @@ namespace jammer
                         int carrotIndex = song.IndexOf("^");
                         if (carrotIndex != -1)
                         {
-                            Utils.songs[Currentindex] += song.Substring(carrotIndex);
-                            Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
+                            if (!Utils.songs[Currentindex].Contains("^"))
+                            {
+                                Utils.songs[Currentindex] += song.Substring(carrotIndex);
+                                Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
+                            }
                             // Message.Data("FOUNDED", song);
                         }
                         break;
@@ -170,7 +173,10 @@ namespace jammer
             // add pipe to Utils.songs current
             if (returnPipe != "")
             {
-                Utils.songs[Currentindex] += "^" + returnPipe;
+                if (!Utils.songs[Currentindex].Contains("^"))
+                {
+                    Utils.songs[Currentindex] += "^" + returnPipe;
+                }
             }
 
             Start.prevMusicTimePlayed = -1;

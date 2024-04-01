@@ -83,6 +83,7 @@ namespace jammer {
 
                     // metadata to pipe
                     pipe = video.Title;
+                    pipe = Start.Sanitize(pipe);
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
                     int pos_dot = songPath.LastIndexOf(".");
@@ -136,7 +137,8 @@ namespace jammer {
 
                         // metadata to pipe
                         pipe = track.Title;
-
+                        pipe = Start.Sanitize(pipe);
+                        
                         await soundcloud.DownloadAsync(track, songPath, progress);
 
                         int pos_dot = songPath.LastIndexOf(".");
