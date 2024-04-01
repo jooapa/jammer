@@ -56,6 +56,7 @@ namespace jammer
         // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
         {
+
             if (songs.Length == 0)
             {
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
@@ -63,7 +64,11 @@ namespace jammer
                 Start.Run(new string[] {});
                 return;
             }
-
+            while(Currentindex > songs.Length){
+                Currentindex--;
+            }
+            // Console.WriteLine(Currentindex.ToString());
+            // Console.ReadKey();
             Debug.dprint("Play song");
             var path = "";
 
@@ -72,7 +77,7 @@ namespace jammer
             // if url, loop all filesin jammerPath
             // Message.Data("1", song);
 
-            if (song.Contains('^'))
+            if (song.Contains('^') && URL.IsUrl(song))
             {
                 song = song.Split("^")[0];
             }
@@ -98,11 +103,8 @@ namespace jammer
                         int carrotIndex = song.IndexOf("^");
                         if (carrotIndex != -1)
                         {
-                            if (!Utils.songs[Currentindex].Contains("^"))
-                            {
-                                Utils.songs[Currentindex] += song.Substring(carrotIndex);
-                                Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
-                            }
+                            Utils.songs[Currentindex] += song.Substring(carrotIndex);
+                            Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
                             // Message.Data("FOUNDED", song);
                         }
                         break;
@@ -173,10 +175,7 @@ namespace jammer
             // add pipe to Utils.songs current
             if (returnPipe != "")
             {
-                if (!Utils.songs[Currentindex].Contains("^"))
-                {
-                    Utils.songs[Currentindex] += "^" + returnPipe;
-                }
+                Utils.songs[Currentindex] += "^" + returnPipe;
             }
 
             Start.prevMusicTimePlayed = -1;
@@ -471,6 +470,10 @@ namespace jammer
             }
             // remove song from current Utils.songs
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
+            Utils.currentSongIndex--;
+            if(Utils.currentSongIndex == -1){
+                Utils.currentSongIndex = 0;
+            }
             // PREV RESET
             Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
             if (index == Utils.songs.Length){
