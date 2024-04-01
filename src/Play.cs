@@ -475,7 +475,7 @@ namespace jammer
                 Utils.currentSongIndex = 0;
             }
             // PREV RESET
-            Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
+            // Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
             if (index == Utils.songs.Length){
                 if (Utils.songs.Length == 0) {
                     Utils.songs = new string[] { "" };
@@ -520,7 +520,15 @@ namespace jammer
                 string[] titleSplit = title.Split("^");
                 if (getOrNot == "get")
                 {
-                    return titleSplit[1];
+                    string a = titleSplit[1];
+                    int posdot = a.LastIndexOf(".");
+                    string ext = a[posdot..];
+                    if(Play.isValidAACExtension(ext) || Play.isValidExtension(ext) || Play.isValidMP4Extension(ext)){
+                        
+                        return a[..posdot];
+                    } else {
+                        return a;
+                    }
                 }
                 else if (getOrNot == "not")
                 {
