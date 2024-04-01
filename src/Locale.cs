@@ -140,6 +140,7 @@ namespace jammer{
             public static string PlaySongFromSoundcloud = CheckValueLocale("CliHelp", "PlaySongFromSoundcloud", "Play song(s) from soundcloud url(s)");
             public static string PlaySongFromSoundcloudPlaylist = CheckValueLocale("CliHelp", "PlaySongFromSoundcloudPlaylist", "Play song(s) from soundcloud playlist url(s)");
             public static string PlaySongFromYoutube = CheckValueLocale("CliHelp", "PlaySongFromYoutube", "Play song(s) from youtube url(s)");
+            public static string PlayPlaylistFromYoutube = CheckValueLocale("CliHelp", "PlayPlaylistFromYoutube", "Play playlist(s) from youtube url(s)");
             public static string ShowPlaylistCommands = CheckValueLocale("CliHelp", "ShowPlaylistCommands", "Show playlist commands");
             public static string OpenJammerFolder = CheckValueLocale("CliHelp", "OpenJammerFolder", "Open Jammer folder");
             public static string AutoUpdateJammer = CheckValueLocale("CliHelp", "AutoUpdateJammer", "Auto Update Jammer");
@@ -256,6 +257,7 @@ namespace jammer{
             public static string PlaySongWith = CheckValueLocale("OutsideItems", "PlaySongWith", "Play song with");
             public static string DeleteSongWith = CheckValueLocale("OutsideItems", "DeleteSongWith", "Delete song with");
             public static string AddToQueue = CheckValueLocale("OutsideItems", "AddToQueue", "Add to queue with");
+            public static string DownloadErrorSoundcloud = CheckValueLocale("OutsideItems", "DownloadErrorSoundcloud", "Soundcloud download error");
         }
         public static class LocaleKeybind{
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
@@ -279,7 +281,8 @@ namespace jammer{
             public static string ChangeVolume = CheckValueLocale("LocaleKeybind", "ChangeVolume", "Change volume by");
             public static string ToggleAutosave = CheckValueLocale("LocaleKeybind", "ToggleAutosave", "Toggle autosave");
             public static string CurrentState = CheckValueLocale("LocaleKeybind", "CurrentState", "Show current state");
-
+            public static string KeybindResettedMessage1 = CheckValueLocale("LocaleKeybind", "KeybindResettedMessage1", "Keybinds resetted");
+            public static string KeybindResettedMessage2 = CheckValueLocale("LocaleKeybind", "KeybindResettedMessage2", "Keybinds have been resetted");
         }
         
         

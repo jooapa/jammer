@@ -96,7 +96,6 @@ static class TUI
         string[] allSongs = {};
         List<string> results = new()
         {
-            // TODO ADD LOCALE
             $"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}",
             $"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}"
         };
@@ -602,6 +601,7 @@ static class TUI
         table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/{Locale.CliHelp.TrackName} [/] ...", Locale.CliHelp.PlaySongFromSoundcloud);
         table.AddRow($"[grey]jammer[/] [green]soundcloud.com/{Locale.CliHelp.Username}/sets/{Locale.CliHelp.PlaylistName}[/] ...", Locale.CliHelp.PlaySongFromSoundcloudPlaylist);
         table.AddRow($"[grey]jammer[/] [green]youtube.com/watch?v=video-id[/] ...", Locale.CliHelp.PlaySongFromYoutube);
+        table.AddRow($"[grey]jammer[/] [green]youtube.com/playlist?list=playlist-id[/] ...", Locale.CliHelp.PlayPlaylistFromYoutube);
         /* table.AddRow("[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands); */
         table.AddRow($"[grey]jammer[/] [green]start[/]", Locale.CliHelp.OpenJammerFolder);
         table.AddRow($"[grey]jammer[/] [green]update[/]", Locale.CliHelp.AutoUpdateJammer);

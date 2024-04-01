@@ -41,6 +41,7 @@ jammer [song] ... [folder]
 jammer https://soundcloud.com/username/track-name
 jammer https://soundcloud.com/username/sets/playlist-name
 jammer https://youtube.com/watch?v=video-id
+jammer https://www.youtube.com/playlist?list=playlist-id
 
 jammer start          opens jammer folder
 jammer update         checks for updates and installs
@@ -87,7 +88,7 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 
 - **JAMMER** Jammer playlist
 - **FOLDER** Folder/Directory (support playing all audio files within a folder)
-- **YOUTUBE** Youtube video
+- **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
 
 ### Default Player Controls
