@@ -361,6 +361,9 @@ namespace jammer
             // Remove [ ] from input
             input = input.Replace("[", "");
             input = input.Replace("]", "");
+            input = input.Replace("\"", "\'");
+            // input = input.Replace("\"", "");
+            // input = input.Replace("\'", "");
             return input;
         }
     }

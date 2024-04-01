@@ -522,7 +522,13 @@ namespace jammer
                 {
                     string a = titleSplit[1];
                     int posdot = a.LastIndexOf(".");
-                    string ext = a[posdot..];
+                    string ext = "";
+                    if(posdot != -1){
+                        ext = a[posdot..];
+                    }
+                    // Console.WriteLine(a + " " + posdot);
+                    // Console.ReadKey();
+
                     if(Play.isValidAACExtension(ext) || Play.isValidExtension(ext) || Play.isValidMP4Extension(ext)){
                         
                         return a[..posdot];
