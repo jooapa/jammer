@@ -72,11 +72,10 @@ namespace jammer
             // if url, loop all filesin jammerPath
             // Message.Data("1", song);
 
-            if (song.Contains("^"))
+            if (song.Contains("^") && URL.IsUrl(song))
             {
                 song = song.Split("^")[0];
             }
-
             if (URL.IsUrl(song))
             {
 
