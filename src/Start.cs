@@ -355,5 +355,13 @@ namespace jammer
                 Thread.Sleep(5);
             }
         }
+
+        public static string Sanitize(string input)
+        {
+            // Remove [ ] from input
+            input = input.Replace("[", "");
+            input = input.Replace("]", "");
+            return input;
+        }
     }
 }
