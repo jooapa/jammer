@@ -78,14 +78,14 @@ jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcl
 jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
-#### Example of making a playlist
+#### Example of making a playlist in cli
 
 ```bash
 jammer -c gd
 jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
 jammer -p gd
 ```
-
+*you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s" and after that `shift + a` to add the playlist by input*
 You can also use `-d` flag that will add logs to current folder.
 
 ---
