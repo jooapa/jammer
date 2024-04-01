@@ -140,7 +140,7 @@ namespace jammer{
             public static string PlaySongFromSoundcloud = CheckValueLocale("CliHelp", "PlaySongFromSoundcloud", "Play song(s) from soundcloud url(s)");
             public static string PlaySongFromSoundcloudPlaylist = CheckValueLocale("CliHelp", "PlaySongFromSoundcloudPlaylist", "Play song(s) from soundcloud playlist url(s)");
             public static string PlaySongFromYoutube = CheckValueLocale("CliHelp", "PlaySongFromYoutube", "Play song(s) from youtube url(s)");
-            public static string PlayPlaylistFromYoutube = CheckValueLocale("CliHelp", "PlayPlaylistFromYoutube", "Play playlist(s) from youtube url(s)");
+            public static string PlayPlaylistFromYoutube = CheckValueLocale("CliHelp", "PlayPlaylistFromYoutube", "Play playlist(s) from youtube url(s) ");
             public static string ShowPlaylistCommands = CheckValueLocale("CliHelp", "ShowPlaylistCommands", "Show playlist commands");
             public static string OpenJammerFolder = CheckValueLocale("CliHelp", "OpenJammerFolder", "Open Jammer folder");
             public static string AutoUpdateJammer = CheckValueLocale("CliHelp", "AutoUpdateJammer", "Auto Update Jammer");
