@@ -86,6 +86,7 @@ jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZ
 jammer -p gd
 ```
 *you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
+
 You can also use `-d` flag that will add logs to current folder.
 
 ---
