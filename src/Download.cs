@@ -85,9 +85,15 @@ namespace jammer {
                     pipe = video.Title;
                     pipe = Start.Sanitize(pipe);
 
+                    // Console.WriteLine(construction + " " + songPath + " " + pipe);
+                    // Console.ReadKey();
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
                     int pos_dot = songPath.LastIndexOf(".");
+                    // Console.WriteLine(pos_dot + " " + songPath + " " + pipe);
+                    // Console.ReadKey();
                     construction = songPath[..pos_dot] + "^" + pipe + ".mp4";
+                    // Console.WriteLine("'" + construction + "' '" + songPath + "' '" + pipe + "'" );
+                    // Console.ReadKey();
                     File.Move(songPath, construction);
                 }
                 else
