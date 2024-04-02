@@ -429,8 +429,39 @@ namespace jammer
         public static void ReDownloadSong()
         {
             string path = Utils.currentSong;
+            string fileName = Path.GetFileName(path);
+            string temporary_filename = Utils.songs[Utils.currentSongIndex].Split("^")[0];
             File.Delete(path);
-            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("^")[0];
+
+            if(fileName.Contains("www.youtube.com") && !URL.IsUrl(temporary_filename)){
+                // reconstruct url
+                int space = fileName.IndexOf(" ");
+                if(space != -1){
+                    fileName = fileName.Remove(space, 1).Insert(space, "/");
+                    space = fileName.IndexOf(" ");
+                    if(space != -1){
+                        fileName = fileName.Remove(space, 1).Insert(space, "?");
+                    }
+                }
+                string new_url = "https://" + fileName;
+                Utils.songs[Utils.currentSongIndex] = new_url;
+            } else if(fileName.Contains("soundcloud.com") && !URL.IsUrl(temporary_filename)){
+                // reconstruct url
+                int space = fileName.IndexOf(" ");
+                if(space != -1){
+                    fileName = fileName.Remove(space, 1).Insert(space, "/");
+                    space = fileName.IndexOf(" ");
+                    if(space != -1){
+                        fileName = fileName.Remove(space, 1).Insert(space, "/");
+
+                        _ = fileName.Replace(" ", "-");
+                    }
+                }
+                string new_url = "https://" + fileName;
+                Utils.songs[Utils.currentSongIndex] = new_url;
+            } else {
+                Utils.songs[Utils.currentSongIndex] = temporary_filename;
+            }
             PlaySong(Utils.songs, Utils.currentSongIndex);
             SeekSong(0, false);
         }
