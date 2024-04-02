@@ -271,7 +271,7 @@ static class TUI
     // Delete current song from playlist
     public static void DeleteCurrentSongFromPlaylist()
     {
-        Play.DeleteSong(Utils.currentSongIndex);
+        Play.DeleteSong(Utils.currentSongIndex, false);
         Playlists.AutoSave();
     }
 

@@ -3,6 +3,8 @@ using ManagedBass.Aac;
 using Spectre.Console;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using TagLib;
 
 
 namespace jammer
@@ -15,8 +17,7 @@ namespace jammer
                                                     ".mdz", ".s3z", ".itz", ".xmz"};
         public static string[] aacExtensions = { ".aac", ".m4a", ".adts", ".m4b" };
         public static string[] mp4Extensions = { ".mp4" };
-        static string returnPipe = "";
-        
+
         public static bool isValidExtension(string extension)
         {
             foreach (string ext in songExtensions)
@@ -73,50 +74,15 @@ namespace jammer
             var path = "";
 
             string song = songs[Currentindex];
-
-            // if url, loop all filesin jammerPath
-            // Message.Data("1", song);
-
-            if (song.Contains('^') && URL.IsUrl(song))
+            // if song has a title, remove it
+            if (song.Contains("½"))
             {
-                song = song.Split("^")[0];
+                song = song.Split("½")[0];
             }
-            if (URL.IsUrl(song))
-            {
-
-                // Message.Data("2", song);
-                string formattedUrl = Download.FormatUrlForFilename(song);
-                // Message.Data("3", formattedUrl);
-                // remove last extension
-                try {
-                    formattedUrl = formattedUrl.Substring(0, formattedUrl.LastIndexOf('.'));
-                } catch {
-                    
-                }
-
-                string[] files = Directory.GetFiles(Utils.jammerPath);
-                foreach (string file in files)
-                {
-                    if (file.Contains(formattedUrl))
-                    {
-                        song = file;
-                        int carrotIndex = song.IndexOf("^");
-                        if (carrotIndex != -1)
-                        {
-                            Utils.songs[Currentindex] += song.Substring(carrotIndex);
-                            Utils.songs[Currentindex] = Utils.songs[Currentindex].Substring(0, Utils.songs[Currentindex].LastIndexOf("."));
-                            // Message.Data("FOUNDED", song);
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Message.Data("Playing", song);
-
+            Utils.songs[Currentindex] = song;
 
             // check if file is a local
-            if (File.Exists(song))
+            if (System.IO.File.Exists(song))
             {
                 // id related to local file path, convert to absolute path
                 path = Path.GetFullPath(song);
@@ -146,22 +112,22 @@ namespace jammer
             else if (URL.isValidSoundCloudPlaylist(song)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                (path, returnPipe) = Download.GetSongsFromPlaylist(song, "soundcloud");
+                path = Download.GetSongsFromPlaylist(song, "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(song))
             {
                 // id related to url, download and convert to absolute path
-                (path, returnPipe) = Download.DownloadSong(song);
+                path = Download.DownloadSong(song);
             }
             else if (URL.IsValidYoutubePlaylist(song))
             {
                 // id related to url, download and convert to absolute path
-                (path, returnPipe) = Download.GetSongsFromPlaylist(song, "youtube");
+                path = Download.GetSongsFromPlaylist(song, "youtube");
             }
             else if (URL.IsValidYoutubeSong(song))
             {
                 // id related to url, download and convert to absolute path
-                (path, returnPipe) = Download.DownloadSong(song);
+                path = Download.DownloadSong(song);
             }
             else
             {
@@ -169,19 +135,44 @@ namespace jammer
                 return;
             }
 
-            // Message.Data("Path", path);
-            // Message.Data("ReturnPipe", returnPipe);
-
-            // add pipe to Utils.songs current
-            if (returnPipe != "")
-            {
-                Utils.songs[Currentindex] += "^" + returnPipe;
-            }
-
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
             Utils.currentSong = path;
             Utils.currentSongIndex = Currentindex;
+            Utils.currentPlaylistSongIndex = Currentindex;
+            Utils.songs[Currentindex] = Utils.songs[Currentindex];
+
+            // taglib get title to display
+            TagLib.File? tagFile;
+            string title = "";
+
+            try {
+                tagFile = TagLib.File.Create(path);
+                title = tagFile.Tag.Title;
+
+                if (title == null || title == "")
+                    title = "";
+                else
+                    title = "½" + title;
+
+            } catch (Exception) {
+                tagFile = null;
+            }
+            
+
+            if (title == null || title == "")
+            {
+                title = "";
+            }
+
+            if (Utils.songs[Currentindex].Contains("½"))
+            {
+                title = "";
+            }
+
+
+            Utils.songs[Currentindex] = song + title;
+
             Playlists.AutoSave();
 
             try
@@ -197,7 +188,7 @@ namespace jammer
                     Debug.dprint("Jammer");
                     // read playlist
 
-                    string[] playlist = File.ReadAllLines(path);
+                    string[] playlist = System.IO.File.ReadAllLines(path);
                     // add all songs in playlist to Utils.songs
                     foreach (string s in playlist) {
                         AddSong(s);
@@ -428,42 +419,12 @@ namespace jammer
 
         public static void ReDownloadSong()
         {
-            string path = Utils.currentSong;
-            string fileName = Path.GetFileName(path);
-            string temporary_filename = Utils.songs[Utils.currentSongIndex].Split("^")[0];
-            File.Delete(path);
-
-            if(fileName.Contains("www.youtube.com") && !URL.IsUrl(temporary_filename)){
-                // reconstruct url
-                int space = fileName.IndexOf(" ");
-                if(space != -1){
-                    fileName = fileName.Remove(space, 1).Insert(space, "/");
-                    space = fileName.IndexOf(" ");
-                    if(space != -1){
-                        fileName = fileName.Remove(space, 1).Insert(space, "?");
-                    }
-                }
-                string new_url = "https://" + fileName;
-                Utils.songs[Utils.currentSongIndex] = new_url;
-            } else if(fileName.Contains("soundcloud.com") && !URL.IsUrl(temporary_filename)){
-                // reconstruct url
-                int space = fileName.IndexOf(" ");
-                if(space != -1){
-                    fileName = fileName.Remove(space, 1).Insert(space, "/");
-                    space = fileName.IndexOf(" ");
-                    if(space != -1){
-                        fileName = fileName.Remove(space, 1).Insert(space, "/");
-
-                        _ = fileName.Replace(" ", "-");
-                    }
-                }
-                string new_url = "https://" + fileName;
-                Utils.songs[Utils.currentSongIndex] = new_url;
-            } else {
-                Utils.songs[Utils.currentSongIndex] = temporary_filename;
+            if (Utils.songs[Utils.currentSongIndex].Contains("https://") || Utils.songs[Utils.currentSongIndex].Contains("http://"))
+            {
+                System.IO.File.Delete(Utils.currentSong);
+                PlaySong(Utils.songs, Utils.currentSongIndex);
+                SeekSong(0, false);
             }
-            PlaySong(Utils.songs, Utils.currentSongIndex);
-            SeekSong(0, false);
         }
 
         public static void AddSong(string song)
@@ -487,7 +448,7 @@ namespace jammer
                 PlaySong(Utils.songs, Utils.currentSongIndex);
             }
         }
-        public static void  DeleteSong(int index)
+        public static void  DeleteSong(int index, bool isQueue)
         {
             if (Utils.songs.Length == 0)
             {
@@ -534,7 +495,17 @@ namespace jammer
             
             Playlists.AutoSave();
             // if no songs left, add "" to Utils.songs
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            if (!isQueue)
+            {
+                PlaySong(Utils.songs, Utils.currentSongIndex);
+            }
+            else
+            {
+                if (Utils.currentSongIndex == index)
+                {
+                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                }
+            }
         }
 
         public static void Shuffle()
@@ -546,9 +517,9 @@ namespace jammer
 
         public static string Title(string title, string getOrNot)
         {
-            if (title.Contains("^"))
+            if (title.Contains("½"))
             {
-                string[] titleSplit = title.Split("^");
+                string[] titleSplit = title.Split("½");
                 if (getOrNot == "get")
                 {
                     string a = titleSplit[1];
@@ -604,7 +575,7 @@ namespace jammer
             {
                 Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
-                DeleteSong(Utils.currentSongIndex);
+                DeleteSong(Utils.currentSongIndex, false);
                 
             }
 

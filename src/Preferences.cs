@@ -24,6 +24,7 @@ namespace jammer
             {
                 Directory.CreateDirectory(jammerPath);
                 Directory.CreateDirectory(Path.Combine(jammerPath, "playlists"));
+                Directory.CreateDirectory(Utils.songsPath);
             }
 
             // check if settings.json exists but the file is empty, if so, delete it

@@ -248,7 +248,7 @@ namespace jammer
                     if (Utils.songs[0] == "" && Utils.songs.Length > 1)
                     {
                         state = MainStates.play;
-                        Play.DeleteSong(0);
+                        Play.DeleteSong(0, false);
                         Play.PlaySong();
                     }
                 }

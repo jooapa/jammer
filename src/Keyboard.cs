@@ -165,7 +165,7 @@ namespace jammer
                         && Utils.currentPlaylistSongIndex != 0){
                             new_value--;
                         }
-                        Play.DeleteSong(Utils.currentPlaylistSongIndex);
+                        Play.DeleteSong(Utils.currentPlaylistSongIndex, true);
                         Utils.currentPlaylistSongIndex = new_value;
                     } else if(Action == "AddSongToQueue"){
                         Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
@@ -342,7 +342,7 @@ namespace jammer
                             Console.ReadKey(true);
                             break;
                         case "DeleteCurrentSong":
-                            Play.DeleteSong(Utils.currentSongIndex);
+                            Play.DeleteSong(Utils.currentSongIndex, false);
                             break;
                         
                         // Case For A

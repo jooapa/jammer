@@ -20,6 +20,10 @@ namespace jammer
                 // y/n prompt
                 if (Console.ReadLine() == "y")
                 {
+                    if (File.Exists(playlistPath))
+                    {
+                        File.Delete(playlistPath);
+                    }
                     Utils.currentPlaylist = playlistName;
                     File.Create(playlistPath);
                 }
@@ -251,19 +255,32 @@ namespace jammer
                         return;
                     }
                 }
-                File.Delete(playlistPath);
-                File.WriteAllLines(playlistPath, Utils.songs);
-                Utils.currentPlaylist = playlistName;
+                try
+                {
+                    if (File.Exists(playlistPath))
+                    {
+                        File.Delete(playlistPath);
+                    }
+
+                    File.WriteAllLines(playlistPath, Utils.songs);
+                    Utils.currentPlaylist = playlistName;
+                }
+                catch (Exception ex)
+                {
+                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                }
             }
             else
             {
-                if (File.Exists(playlistPath))
+                try
                 {
-                    File.Delete(playlistPath);
+                    File.WriteAllLines(playlistPath, Utils.songs);
+                    Utils.currentPlaylist = playlistName;
                 }
-                File.Create(playlistPath);
-                File.WriteAllLines(playlistPath, Utils.songs);
-                Utils.currentPlaylist = playlistName;
+                catch (Exception ex)
+                {
+                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                }
             }
         }
 
