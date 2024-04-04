@@ -424,7 +424,58 @@ namespace jammer
                 System.IO.File.Delete(Utils.currentSong);
                 PlaySong(Utils.songs, Utils.currentSongIndex);
                 SeekSong(0, false);
+                return;
             }
+
+            string path = Utils.currentSong;
+            string fileName = Path.GetFileName(path);
+            string temporary_filename = Utils.songs[Utils.currentSongIndex].Split("½")[0];
+            System.IO.File.Delete(path);
+            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("½")[0];
+
+            if(fileName.Contains("www.youtube.com") && !URL.IsUrl(temporary_filename)){
+                // reconstruct url
+                int space = fileName.IndexOf(" ");
+                if(space != -1){
+                    fileName = fileName.Remove(space, 1).Insert(space, "/");
+                    space = fileName.IndexOf(" ");
+                    if(space != -1){
+                        fileName = fileName.Remove(space, 1).Insert(space, "?");
+                    }
+                    // remove .mp4
+                    int dotPos = temporary_filename.LastIndexOf(".mp4");
+                    if(dotPos != -1){
+                        fileName = fileName.Remove(fileName.Length - 4, 4);
+                    }
+                }
+                string new_url = "https://" + fileName;
+                Utils.songs[Utils.currentSongIndex] = new_url;
+            } else if(fileName.Contains("soundcloud.com") && !URL.IsUrl(temporary_filename)){
+                // reconstruct url
+                int space = fileName.IndexOf(" ");
+                if(space != -1){
+                    fileName = fileName.Remove(space, 1).Insert(space, "/");
+                    space = fileName.IndexOf(" ");
+                    if(space != -1){
+                        fileName = fileName.Remove(space, 1).Insert(space, "/");
+                    }
+                    // remove .mp3
+                    int dotPos = temporary_filename.LastIndexOf(".mp3");
+                    if(dotPos != -1){
+                        fileName = fileName.Remove(fileName.Length - 4, 4);
+                    }
+                }
+                string new_url = "https://" + fileName;
+                
+                Utils.songs[Utils.currentSongIndex] = new_url;
+            } else {
+                Utils.songs[Utils.currentSongIndex] = temporary_filename;
+            }
+
+            
+            PlaySong(Utils.songs, Utils.currentSongIndex);
+            SeekSong(0, false);
+
         }
 
         public static void AddSong(string song)

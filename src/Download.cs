@@ -213,7 +213,6 @@ namespace jammer {
 
                 string formattedSCUrl = url.Replace("https://", "")
                                      .Replace("/", " ")
-                                     .Replace("-", " ")
                                      .Replace("?", " ");
                 if (isCheck)
                 {
@@ -234,8 +233,9 @@ namespace jammer {
             }
             string formattedYTUrl = url.Replace("https://", "")
                                      .Replace("/", " ")
-                                     .Replace("-", " ")
                                      .Replace("?", " ");
+
+                            
 
             if (isCheck)
             {
