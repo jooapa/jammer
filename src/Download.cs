@@ -34,7 +34,7 @@ namespace jammer {
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
-                Utils.songsPath,
+                Preferences.songsPath,
                 formattedUrl
             );
 
@@ -82,7 +82,7 @@ namespace jammer {
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
-                Utils.songsPath,
+                Preferences.songsPath,
                 formattedUrl
             );
 

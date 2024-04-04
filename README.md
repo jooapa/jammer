@@ -43,10 +43,8 @@ jammer https://soundcloud.com/username/sets/playlist-name
 jammer https://youtube.com/watch?v=video-id
 jammer https://youtube.com/playlist?list=playlist-id
 
-jammer start          opens jammer folder
-jammer update         checks for updates and installs
-jammer playlist       playlist controls
-jammer start          opens jammer folder
+jammer --start        opens jammer folder
+jammer --update       checks for updates and installs
 jammer --help -h      show help
 jammer -d             debug mode
 jammer --version      show version
@@ -55,13 +53,15 @@ jammer --version      show version
 *when using **soundcloud** or **youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-jammer -p, --play <name>
-jammer -c, --create <name>
-jammer -d, --delete <name>
-jammer -a, --add <name> <song> ...
-jammer -r, --remove <name> <song> ...
-jammer -s, --show <name>
-jammer -l, --list
+jammer -p, --play <name>                  play playlist
+jammer -c, --create <name>                create playlist
+jammer -d, --delete <name>                delete playlist
+jammer -a, --add <name> <song> ...        add song to playlist
+jammer -r, --remove <name> <song> ...     remove song from playlist
+jammer -s, --show <name> 
+jammer -l, --list                         list all playlists
+jammer -f, --flush                        flushes all the songs in jammer/songs folder
+jammer -sp, --set-path <path>, <default>  set path for jammer/songs folder
 ```
 
 ### Example usage
