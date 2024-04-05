@@ -6,10 +6,23 @@ namespace jammer
     {
         public static string[] Correctify(string[] args)
         {
+            string title;
             for (int i = 0; i < args.Length; i++)
             {
+                title = "";
+
+                // split title by ½
+                string[] titleSplit = args[i].Split("½");
+    
+                if (titleSplit.Length > 1)
+                {
+                    title = titleSplit[1];
+                    args[i] = titleSplit[0];
+                }
+
                 string item = args[i];
                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
+
                 if (URL.IsUrl(item))
                 {
                     // if url doesnt have http:// or https://
@@ -70,7 +83,13 @@ namespace jammer
                     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                     i--;
                 }
+
+                if (title != "")
+                {
+                    args[i] = args[i] + "½" + title;
+                }
             }
+
             return args;
         }
 

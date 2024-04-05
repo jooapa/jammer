@@ -159,7 +159,34 @@ namespace jammer
                         case "-v":
                             AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.version + "[/]");
                             return;
-                        case "start":
+                        case "--flush":
+                        case "-f":
+                            Songs.Flush();
+                            return;
+                        case "--set-path":
+                        case "-sp":
+                            if (args.Length > i+1) {
+                                if (Directory.Exists(args[i+1])) {
+                                    Preferences.songsPath = Path.GetFullPath(Path.Combine(args[i+1], "songs"));
+                                    AnsiConsole.MarkupLine("[green]Songs path set to: " + Preferences.songsPath + "[/]");
+                                }
+                                else if (args[i+1] == "") {
+                                    AnsiConsole.MarkupLine("No path given.");
+                                    return;
+                                }
+                                else if (args[i+1] == "default") {
+                                    Preferences.songsPath = Path.Combine(Utils.jammerPath, "songs");
+                                    AnsiConsole.MarkupLine("[green]Songs path set to default.[/]");
+                                } else {
+                                    AnsiConsole.MarkupLine($"[red]Path [grey]'[/][white]{args[i+1]}[/][grey]'[/] does not exist.[/]");
+                                }
+
+                                Preferences.SaveSettings();
+                            } else {
+                                AnsiConsole.MarkupLine("[red]No songs path given.[/]");
+                            }
+                            return;
+                        case "--start":
                             // open explorer in jammer folder
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
                             // if windows
@@ -169,7 +196,7 @@ namespace jammer
                                 System.Diagnostics.Process.Start("xdg-open", Utils.jammerPath);
                             }
                             return;
-                        case "update":
+                        case "--update":
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.RunUpdate}[/]");
                                 return;
@@ -248,7 +275,7 @@ namespace jammer
                     if (Utils.songs[0] == "" && Utils.songs.Length > 1)
                     {
                         state = MainStates.play;
-                        Play.DeleteSong(0);
+                        Play.DeleteSong(0, false);
                         Play.PlaySong();
                     }
                 }

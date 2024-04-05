@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Runtime.InteropServices;
 
+
 namespace jammer
 {
     public class Preferences
@@ -15,6 +16,7 @@ namespace jammer
         public static bool isShuffle = GetIsShuffle();
         public static bool isAutoSave = GetIsAutoSave();
         public static string? localeLanguage = getLocaleLanguage();
+        public static string songsPath = GetSongsPath();
 
         static public void CheckJammerFolderExists()
         {
@@ -26,14 +28,17 @@ namespace jammer
                 Directory.CreateDirectory(Path.Combine(jammerPath, "playlists"));
             }
 
-            // check if settings.json exists but the file is empty, if so, delete it
-            if (File.Exists(jammerPath + "/settings.json"))
+            // check if settings.json has every data
+            string settingsPath = Path.Combine(Utils.jammerPath, "settings.json");
+            if (!File.Exists(settingsPath))
             {
-                string jsonString = File.ReadAllText(jammerPath + "/settings.json");
-                if (jsonString == "")
-                {
-                    File.Delete(jammerPath + "/settings.json");
-                }
+                SaveSettings();
+            }
+            
+
+            if (!Directory.Exists(songsPath))
+            {
+                Directory.CreateDirectory(songsPath);
             }
         }
 
@@ -52,6 +57,7 @@ namespace jammer
             settings.isShuffle = isShuffle;
             settings.isAutoSave = isAutoSave;
             settings.localeLanguage = localeLanguage;
+            settings.songsPath = songsPath;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -62,6 +68,20 @@ namespace jammer
             File.WriteAllText(jammerPath, jsonString);
         }
 
+        static public string GetSongsPath()
+        {
+            string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
+            if (File.Exists(jammerPath))
+            {
+                string jsonString = File.ReadAllText(jammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.songsPath ?? Path.Combine(Utils.jammerPath, "songs");
+            }
+            else
+            {
+                return Path.Combine(Utils.jammerPath, "songs");
+            }
+        }
         static public bool GetIsLoop()
         {
             string jammerPath = Path.Combine(Utils.jammerPath, "settings.json");
@@ -269,6 +289,7 @@ namespace jammer
             public bool isShuffle { get; set; }
             public bool isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
+            public string? songsPath { get; set; }
         }
     }
 }
