@@ -15,7 +15,7 @@ class Program
 {
 #if WINDOWS
     //! USE FOR WINDOWS BUILD
-    private static Task? formTask;
+    private static Task? formTask = null;
     private static CancellationTokenSource formCancellationTokenSource = new();
     public static readonly KeyboardHook hook = new();
     static void OnProcessExit(object? sender, EventArgs e) {
@@ -43,8 +43,7 @@ class Program
     }
 
     [STAThread]
-    static void Main(string[] args)
-    {
+    static void Main(string[] args){
         // Register the event handler for process exit
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
@@ -62,9 +61,8 @@ class Program
         System.Diagnostics.Debug.WriteLine("CONTINUING..");
 
     #else
-    static void Main(string[] args)
-    {
-#endif
+    static void Main(string[] args){
+    #endif
         string mutexName = "jammer";
 
         using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
