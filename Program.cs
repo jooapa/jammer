@@ -1,7 +1,7 @@
 ﻿using jammer;
+#if WINDOWS
 using Spectre.Console;
 using System.Diagnostics;
-#if WINDOWS
 using System;
 using System.Collections.Generic;
 using System.Drawing;
