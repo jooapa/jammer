@@ -71,7 +71,7 @@ namespace jammer
                                 Debug.dprint(APPDIRlen.Length.ToString());
                             }
 
-                            long size = Preferences.DirSize(new DirectoryInfo(Utils.jammerPath));
+                            long size = Preferences.DirSize(new System.IO.DirectoryInfo(Utils.jammerPath));
                             Debug.dprint($"JammerDirSize: {size}");
                             Debug.dprint($"JammerDirSize: {Preferences.ToKilobytes(size)}");
                             Debug.dprint($"JammerDirSize: {Preferences.ToMegabytes(size)}");

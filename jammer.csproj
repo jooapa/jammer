@@ -1,19 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!--! USE FOR WINDOWS BUILD !-->
+    <!-- Common properties for both Windows and Linux builds -->
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
-    <!-- ! USE FOR WINDOWS BUILD -->
-
-    
-
-    <!--! USE FOR LINUX BUILD !-->
-    <!-- <TargetFramework>net7.0</TargetFramework> -->
-    <!-- <OutputType>Exe</OutputType> -->
-    <!--! USE FOR LINUX BUILD !-->
-
     <Version>2.0.4</Version>
     <RootNamespace>jammer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -21,6 +9,21 @@
     <ApplicationIcon>jammer_HQ.ico</ApplicationIcon>
     <StartupObject>Program</StartupObject>
   </PropertyGroup>
+
+  <!-- Properties for Windows build -->
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <!-- Properties for Linux build -->
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>net7.0</TargetFramework>
+    <!-- Uncomment these lines for Linux build if needed -->
+    <!-- <OutputType>Exe</OutputType> -->
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>

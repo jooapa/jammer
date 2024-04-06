@@ -267,7 +267,7 @@ namespace jammer
 	        size += fi.Length;
 	    }
 	    // Add subdirectory sizes.
-	    DirectoryInfo[] dis = d.GetDirectories();
+	    System.IO.DirectoryInfo[] dis = d.GetDirectories();
 	    foreach (DirectoryInfo di in dis) {
 	        size += DirSize(di);
 	    }

@@ -160,12 +160,12 @@ static class TUI
         }
         else
         {
-            currentSong = $"[green]{Locale.Player.Current}  : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex], songLength), "get") + "[/]";
+            currentSong = $"[green]{Locale.Player.Current}  : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex]), songLength), "get") + "[/]";
         }
 
         if (Utils.currentSongIndex > 0)
         {
-            prevSong = $"[grey]{Locale.Player.Previos} : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex - 1], songLength), "get") + "[/]";
+            prevSong = $"[grey]{Locale.Player.Previos} : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex - 1]), songLength), "get") + "[/]";
         }
         else
         {
@@ -175,16 +175,12 @@ static class TUI
 
         if (Utils.currentSongIndex < Utils.songs.Length - 1)
         {
-            nextSong = $"[grey]{Locale.Player.Next}     : " + Play.Title(GetSongWithdots(Utils.songs[Utils.currentSongIndex + 1], songLength), "get") + "[/]";
+            nextSong = $"[grey]{Locale.Player.Next}     : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex + 1]), songLength), "get") + "[/]";
         }
         else
         {
             nextSong = $"[grey]{Locale.Player.Next}     : -[/]";
-        }
-
-        prevSong = Start.Sanitize(prevSong);
-        currentSong = Start.Sanitize(currentSong);
-        nextSong = Start.Sanitize(nextSong);        
+        }      
         
         return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
