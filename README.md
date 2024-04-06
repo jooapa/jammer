@@ -189,8 +189,6 @@ dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
 
-In ```jammer.csproj``` enable Linux build options
-
 ```bash
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 ```
