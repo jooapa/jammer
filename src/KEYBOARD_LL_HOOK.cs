@@ -64,50 +64,51 @@ public sealed class KeyboardHook : IDisposable
     }
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-{
-    if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
     {
-        int vkCode = Marshal.ReadInt32(lParam);
-
-        // Check if the pressed key is a media key
-        if ((Keys)vkCode == Keys.MediaNextTrack || (Keys)vkCode == Keys.MediaPreviousTrack || 
-        (Keys)vkCode == Keys.MediaPlayPause || (Keys)vkCode == Keys.MediaStop)
+        if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
         {
-            /*
-            // Get a handle to the foreground window
-            IntPtr foregroundWindow = GetForegroundWindow();
+            int vkCode = Marshal.ReadInt32(lParam);
+            // System.Diagnostics.Debug.WriteLine((Keys)vkCode);
 
-            // Get the title of the foreground window
-            int length = GetWindowTextLength(foregroundWindow);
-            System.Text.StringBuilder foregroundWindowText = new(length + 1);
-                _ = GetWindowText(foregroundWindow, foregroundWindowText, foregroundWindowText.Capacity);
-
-            // Get the title of the console window
-            string consoleWindowText = Console.Title;
-            Console.WriteLine(consoleWindowText);
-            Console.WriteLine(foregroundWindowText.ToString());
-
-            // If the foreground window is the console window, handle the key press
-            if (foregroundWindowText.ToString() == consoleWindowText)
+            // Check if the pressed key is a media key
+            /* 
+            if ((Keys)vkCode == Keys.MediaNextTrack || (Keys)vkCode == Keys.MediaPreviousTrack || 
+            (Keys)vkCode == Keys.MediaPlayPause || (Keys)vkCode == Keys.MediaStop)
             {
-                */
-                // Do something with the key press here
-                switch((Keys)vkCode)
+                // Get a handle to the foreground window
+                IntPtr foregroundWindow = GetForegroundWindow();
+
+                // Get the title of the foreground window
+                int length = GetWindowTextLength(foregroundWindow);
+                System.Text.StringBuilder foregroundWindowText = new(length + 1);
+                    _ = GetWindowText(foregroundWindow, foregroundWindowText, foregroundWindowText.Capacity);
+
+                // Get the title of the console window
+                string consoleWindowText = Console.Title;
+                Console.WriteLine(consoleWindowText);
+                Console.WriteLine(foregroundWindowText.ToString());
+
+                // If the foreground window is the console window, handle the key press
+                if (foregroundWindowText.ToString() == consoleWindowText)
                 {
-                    case Keys.MediaNextTrack:
-                        Start.state = MainStates.next; // next song
-                        break;
-                    case Keys.MediaPreviousTrack:
-                        Start.state = MainStates.previous; // previous song
-                        break;
-                    case Keys.MediaPlayPause:
-                    case Keys.Pause:
-                        Start.PauseSong();
-                        Play.PlayDrawReset();
-                        break;
-                }
+            */
+                    // Do something with the key press here
+                    switch((Keys)vkCode)
+                    {
+                        case Keys.MediaNextTrack:
+                            Start.state = MainStates.next; // next song
+                            break;
+                        case Keys.MediaPreviousTrack:
+                            Start.state = MainStates.previous; // previous song
+                            break;
+                        case Keys.MediaPlayPause:
+                        case Keys.Pause:
+                            Start.PauseSong();
+                            Play.PlayDrawReset();
+                            break;
+                    }
+                // }
             // }
-        }
     }
 
     return CallNextHookEx(_hookID, nCode, wParam, lParam);
