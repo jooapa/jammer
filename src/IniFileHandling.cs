@@ -195,11 +195,11 @@ AddSongToQueue = G
                 try {
                     parser.WriteFile(Path.Combine(Utils.jammerPath, "KeyData.ini"), KeyData);
                 } catch(Exception) {
-                    Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
+                    jammer.Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
                     return;
                 }
             } else {
-                Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
+                jammer.Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
             }
 
         }
@@ -536,17 +536,17 @@ AddSongToQueue = G
             }
             try {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
-                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+                jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
             } catch(Exception) {
                 try {
-                    Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+                    jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                     LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
                 } catch(Exception) {
-                    Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+                    jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                     return;
                 }
             }
@@ -566,7 +566,7 @@ AddSongToQueue = G
         if (!Directory.Exists(path)) {
             // Handle the situation when the directory does not exist
             // For example, you can throw an exception or return an empty array
-            Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
+            jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
             Start.playerView = "default";
             return results.ToArray();
         }

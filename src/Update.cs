@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Spectre.Console;
-
+using System.IO;
 namespace jammer { 
     public class Update {
         public static string UpdateJammer(string version)

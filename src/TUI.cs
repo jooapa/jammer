@@ -1,4 +1,5 @@
 using Spectre.Console;
+using System.IO;
 using jammer;
 /* using System.ComponentModel.DataAnnotations; */
 
@@ -252,15 +253,15 @@ static class TUI
 
     public static void AddSongToPlaylist()
     {
-        string songToAdd = Message.Input(Locale.Player.AddSongToPlaylistMessage1, Locale.Player.AddSongToPlaylistMessage2);
+        string songToAdd = jammer.Message.Input(Locale.Player.AddSongToPlaylistMessage1, Locale.Player.AddSongToPlaylistMessage2);
         if (songToAdd == "" || songToAdd == null) {
-            Message.Data(Locale.Player.AddSongToPlaylistError1, Locale.Player.AddSongToPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.AddSongToPlaylistError1, Locale.Player.AddSongToPlaylistError2, true);
             return;
         }
         // remove quotes from songToAdd
         songToAdd = songToAdd.Replace("\"", "");
         if (!IsValidSong(songToAdd)) {
-            Message.Data( Locale.Player.AddSongToPlaylistError3+ " " + songToAdd, Locale.Player.AddSongToPlaylistError4, true);
+            jammer.Message.Data( Locale.Player.AddSongToPlaylistError3+ " " + songToAdd, Locale.Player.AddSongToPlaylistError4, true);
             return;
         }
         songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
@@ -278,28 +279,28 @@ static class TUI
     // Show songs in playlist
     public static void ShowSongsInPlaylist()
     {
-        string? playlistNameToShow = Message.Input(Locale.Player.ShowSongsInPlaylistMessage1, Locale.Player.ShowSongsInPlaylistMessage2);
+        string? playlistNameToShow = jammer.Message.Input(Locale.Player.ShowSongsInPlaylistMessage1, Locale.Player.ShowSongsInPlaylistMessage2);
         if (playlistNameToShow == "" || playlistNameToShow == null) { 
-            Message.Data(Locale.Player.ShowSongsInPlaylistError1, Locale.Player.ShowSongsInPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.ShowSongsInPlaylistError1, Locale.Player.ShowSongsInPlaylistError2, true);
             return;
         }
         AnsiConsole.Clear();
         // show songs in playlist
-        Message.Data(Playlists.GetShow(playlistNameToShow), Locale.Player.SongsInPlaylist +" "+ playlistNameToShow);
+        jammer.Message.Data(Playlists.GetShow(playlistNameToShow), Locale.Player.SongsInPlaylist +" "+ playlistNameToShow);
     }
 
     // List all playlists
     public static void ListAllPlaylists()
     {
-        Message.Data(Playlists.GetList(), Locale.Player.AllPlaylists);
+        jammer.Message.Data(Playlists.GetList(), Locale.Player.AllPlaylists);
     }
 
     // Play other playlist
     public static void PlayOtherPlaylist()
     {
-        string? playlistNameToPlay = Message.Input(Locale.Player.PlayOtherPlaylistMessage1,Locale.Player.PlayOtherPlaylistMessage2);
+        string? playlistNameToPlay = jammer.Message.Input(Locale.Player.PlayOtherPlaylistMessage1,Locale.Player.PlayOtherPlaylistMessage2);
         if (playlistNameToPlay == "" || playlistNameToPlay == null) { 
-            Message.Data(Locale.Player.PlayOtherPlaylistError1, Locale.Player.PlayOtherPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.PlayOtherPlaylistError1, Locale.Player.PlayOtherPlaylistError2, true);
             return;
         }
 
@@ -310,9 +311,9 @@ static class TUI
     // Save/replace playlist
     public static void SaveReplacePlaylist()
     {
-        string playlistNameToSave = Message.Input(Locale.Player.SaveReplacePlaylistMessage1, Locale.Player.SaveReplacePlaylistMessage2);
+        string playlistNameToSave = jammer.Message.Input(Locale.Player.SaveReplacePlaylistMessage1, Locale.Player.SaveReplacePlaylistMessage2);
         if (playlistNameToSave == "" || playlistNameToSave == null) {
-            Message.Data(Locale.Player.SaveReplacePlaylistError1, Locale.Player.SaveReplacePlaylistError2, true);
+            jammer.Message.Data(Locale.Player.SaveReplacePlaylistError1, Locale.Player.SaveReplacePlaylistError2, true);
             return;
         }
         // save playlist
@@ -322,7 +323,7 @@ static class TUI
     public static void SaveCurrentPlaylist()
     {
         if (Utils.currentPlaylist == "") {
-            Message.Data(Locale.Player.SaveCurrentPlaylistError1,Locale.Player.SaveCurrentPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.SaveCurrentPlaylistError1,Locale.Player.SaveCurrentPlaylistError2, true);
             return;
         }
         // save playlist
@@ -331,9 +332,9 @@ static class TUI
 
     public static void SaveAsPlaylist()
     {
-        string playlistNameToSave = Message.Input(Locale.Player.SaveAsPlaylistMessage1, Locale.Player.SaveAsPlaylistMessage2);
+        string playlistNameToSave = jammer.Message.Input(Locale.Player.SaveAsPlaylistMessage1, Locale.Player.SaveAsPlaylistMessage2);
         if (playlistNameToSave == "" || playlistNameToSave == null) {
-            Message.Data(Locale.Player.SaveAsPlaylistError1, Locale.Player.SaveAsPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.SaveAsPlaylistError1, Locale.Player.SaveAsPlaylistError2, true);
             return;
         }
         // save playlist
@@ -343,9 +344,9 @@ static class TUI
     // Goto song in playlist
     public static void GotoSongInPlaylist()
     {
-        string songToGoto = Message.Input(Locale.Player.GotoSongInPlaylistMessage1, Locale.Player.GotoSongInPlaylistMessage2);
+        string songToGoto = jammer.Message.Input(Locale.Player.GotoSongInPlaylistMessage1, Locale.Player.GotoSongInPlaylistMessage2);
         if (songToGoto == "" || songToGoto == null) {
-            Message.Data(Locale.Player.GotoSongInPlaylistError1, Locale.Player.GotoSongInPlaylistError2, true);
+            jammer.Message.Data(Locale.Player.GotoSongInPlaylistError1, Locale.Player.GotoSongInPlaylistError2, true);
             return;
         }
         // songToGoto = GotoSong(songToGoto);
@@ -370,10 +371,10 @@ static class TUI
     // Play single song
     public static void PlaySingleSong()
     {
-        string[]? songsToPlay = Message.Input(Locale.Player.PlaySingleSongMessage1, Locale.Player.PlaySingleSongMessage2).Split(" ");
+        string[]? songsToPlay = jammer.Message.Input(Locale.Player.PlaySingleSongMessage1, Locale.Player.PlaySingleSongMessage2).Split(" ");
         
         if (songsToPlay == null || songsToPlay.Length == 0) {
-            Message.Data(Locale.Player.PlaySingleSongError1, Locale.Player.PlaySingleSongError2, true);
+            jammer.Message.Data(Locale.Player.PlaySingleSongError1, Locale.Player.PlaySingleSongError2, true);
             return;
         }
 
@@ -610,7 +611,6 @@ static class TUI
 
         PlaylistHelp();
     }
-
     static public void PlaylistHelp() {
         var table = new Table();
         table.AddColumn(Locale.CliHelp.PlaylistCommands);
@@ -623,8 +623,8 @@ static class TUI
         table.AddRow($"[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
         table.AddRow($"[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
         table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
-        table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "Flush all songs from the jammer/songs folder"); // TODO: Add to locale
-        table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO: Add to locale
+        table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "Flush all songs from the jammer/songs folder"); // TODO Add to locale
+        table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO Add to locale
         AnsiConsole.Write(table);
     }
     public static void Version() {

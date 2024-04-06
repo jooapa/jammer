@@ -1,5 +1,7 @@
 using ManagedBass;
 using Spectre.Console;
+using System.IO;
+using System.Text;
 /* using System; */
 using System.Runtime.InteropServices;
 
@@ -9,7 +11,7 @@ namespace jammer
 
     // idle - the program wait for user input. Song is not played
     // play - Start playing - Play.PlaySong
-    // playing - The music is playing. Update screen once a second or if a
+    // playing - The music is playing. Update screen once a second or if a -
     // button is pressed
     // pause - Pause song, returns to idle state
 
@@ -45,7 +47,11 @@ namespace jammer
         //
         public static void Run(string[] args)
         {        
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            try{
+                Console.OutputEncoding = System.Text.Encoding.UTF8;
+            } catch (System.Exception e) {
+                Console.WriteLine(e.Message);
+            }
             
             Utils.songs = args;
             Debug.dprint("Run");
@@ -229,10 +235,10 @@ namespace jammer
 
             if (!Bass.Init())
             {
-                Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
+                jammer.Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
                 return;
             }
-            
+
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.songs.Length != 0)

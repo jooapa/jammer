@@ -161,7 +161,7 @@ You can also stack multiple jammer playlists inside another jammer playlists.
 
 ## Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website. Add the **BASS** and **BASS_AAC** libraries to the folder and add it to $LD_LIBRARY_PATH.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website.
 
 ```bash
 export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
@@ -176,11 +176,28 @@ dotnet run -- "path/to/song.mp3" ..
 
 ##### Windows
 
+Add **BASS** and **BASS_AAC** libraries to the executable folder
+
+Add **Windows.Foundation.UniversalApiContract.winmd** and **Windows.Foundation.FoundationContract.winmd** to project references
+
+They can be found somewhere around here
+```bash
+C:\Program Files (x86)\Windows Kits\10\References\10.0.22621.0\Windows.Foundation.FoundationContract\4.0.0.0\Windows.Foundation.FoundationContract.winmd
+
+C:\Program Files (x86)\Windows Kits\10\References\10.0.22621.0\Windows.Foundation.UniversalApiContract\15.0.0.0\Windows.Foundation.UniversalApiContract.winmd
+```
+
+In ```jammer.csproj``` enable Windows build options
+
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```
 
 ##### Linux
+
+Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
+
+In ```jammer.csproj``` enable Linux build options
 
 ```bash
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true

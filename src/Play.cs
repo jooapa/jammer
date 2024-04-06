@@ -624,7 +624,7 @@ namespace jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
+                jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
                 DeleteSong(Utils.currentSongIndex, false);
                 

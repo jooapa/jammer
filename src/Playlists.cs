@@ -1,4 +1,5 @@
 using Spectre.Console;
+using System.IO;
 
 namespace jammer
 {
@@ -76,7 +77,7 @@ namespace jammer
             {
                 if (!fromCli)
                 {
-                    Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
+                    jammer.Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
                 }
                 else
                 {
@@ -248,7 +249,7 @@ namespace jammer
             if (File.Exists(playlistPath))
             {
                 if (!force) {
-                    string input = Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
+                    string input = jammer.Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
                     // y/n prompt
                     if (input != "y")
                     {
@@ -267,7 +268,7 @@ namespace jammer
                 }
                 catch (Exception ex)
                 {
-                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                    jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
                 }
             }
             else
@@ -279,7 +280,7 @@ namespace jammer
                 }
                 catch (Exception ex)
                 {
-                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                    jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
                 }
             }
         }
