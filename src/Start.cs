@@ -170,7 +170,7 @@ namespace jammer
                             Songs.Flush();
                             return;
                         case "--set-path":
-                        case "-sp": // TODO locale :)) https://www.youtube.com/watch?v=thPv_v7890g
+                        case "-sp": // TODO ADD LOCALE :)) https://www.youtube.com/watch?v=thPv_v7890g
                             if (args.Length > i+1) {
                                 if (Directory.Exists(args[i+1])) {
                                     Preferences.songsPath = Path.GetFullPath(Path.Combine(args[i+1], "songs"));

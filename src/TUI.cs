@@ -626,8 +626,8 @@ static class TUI
         table.AddRow($"[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
         table.AddRow($"[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
         table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
-        table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "Flush all songs from the jammer/songs folder"); // TODO Add to locale
-        table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO Add to locale
+        table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "Flush all songs from the jammer/songs folder"); // TODO ADD LOCALE
+        table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO ADD LOCALE
         AnsiConsole.Write(table);
     }
     public static void Version() {
