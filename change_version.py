@@ -39,3 +39,14 @@ with open(os.path.join('jammer.csproj'), 'w') as new_jammer_file:
             new_jammer_file.write('      <Version>' + sys.argv[1] + '</Version>\n')
         else:
             new_jammer_file.write(line)
+
+
+with open(os.path.join('build.bat'), 'r') as jammer_file:
+    lines = jammer_file.readlines()
+    
+with open(os.path.join('build.bat'), 'w') as new_jammer_file:
+    for line in lines:
+        if line.startswith('SET "start_name=jammer-Setup_'):
+            new_jammer_file.write('SET "start_name=jammer-Setup_V' + sys.argv[1] + '.exe\"\n')
+        else:
+            new_jammer_file.write(line)

@@ -2,6 +2,7 @@ using SoundCloudExplode;
 using YoutubeExplode;
 using YoutubeExplode.Common;
 using Spectre.Console;
+using System.IO;
 using TagLib;
 
 namespace jammer {
@@ -67,12 +68,12 @@ namespace jammer {
                 }
                 else
                 {
-                    Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
+                    jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                 }
             }
             catch (Exception ex)
             {
-                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
                 songPath = "";
             }
         }
@@ -123,7 +124,7 @@ namespace jammer {
 
             }
             catch (Exception ex) { 
-                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
+                jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
                 songPath = "";
             }

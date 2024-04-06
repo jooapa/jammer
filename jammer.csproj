@@ -1,15 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
+    <!--! USE FOR WINDOWS BUILD !-->
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-      <Version>2.0.4</Version>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <!-- ! USE FOR WINDOWS BUILD -->
+
+    
+
+    <!--! USE FOR LINUX BUILD !-->
+    <!-- <TargetFramework>net7.0</TargetFramework> -->
+    <!-- <OutputType>Exe</OutputType> -->
+    <!--! USE FOR LINUX BUILD !-->
+
+    <Version>2.0.4</Version>
     <RootNamespace>jammer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>jammer_HQ.ico</ApplicationIcon>
+    <StartupObject>Program</StartupObject>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
@@ -27,5 +38,4 @@
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.13" />
   </ItemGroup>
-
 </Project>

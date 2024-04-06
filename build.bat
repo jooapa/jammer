@@ -1,6 +1,6 @@
 @ECHO off
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained
-SET "sourceFolder=bin\Release\net7.0\win10-x64\publish"
+SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
 
 @REM Build with debug executable
 @REM dotnet build
@@ -10,6 +10,7 @@ SET "targetFolder=nsis"
 
 @REM COPY jammer.exe
 COPY /B /Y "%sourceFolder%\jammer.exe" "%targetFolder%\jammer.exe"
+
 COPY /B /Y "libs\win\x64\bass" "%targetFolder%"
 COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%"
 COPY /Y "libs\win\x64\bass.dll" %targetFolder%
@@ -17,11 +18,7 @@ COPY /Y LICENSE %targetFolder%
 
 mkdir "%targetFolder%\locales"
 XCOPY /S /Y locales "%targetFolder%\locales"
-SET "start_name=jammer-Setup"  REM Set the start name of the files you want to run
-
-for %%F in ("%start_name%*.exe") do (
-    DEL "" "%%F"
-)
+SET "start_name=jammer-Setup_V2.0.3.exe"
 
 makensis %targetFolder%\setup.nsi  
 
@@ -31,12 +28,5 @@ IF ErrorLevel 1 (
 )
 
 cd nsis
-REM Loop through files in the current directory with the specified start name
 
-
-
-REM Loop through files in the current directory with the specified start name
-for %%F in ("%start_name%*.exe") do (
-    ECHO Running %%F
-    START "" "%%F"
-)
+START "" "%start_name%"

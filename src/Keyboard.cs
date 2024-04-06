@@ -1,15 +1,28 @@
 using ManagedBass;
 using Spectre.Console;
 using System.IO;
+#if WINDOWS
+using System;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Windows.Forms;
+// using Windows.Media.Playback;
+
+#endif
 
 namespace jammer
 {
     public partial class Start
     {
+        public static string Action = "";
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
         public static void CheckKeyboard()
         {
-            if (Console.KeyAvailable)
+            if (Console.KeyAvailable || Action != "")
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 bool isAlt = IfHoldingDownALT(key);
@@ -22,7 +35,7 @@ namespace jammer
 
                 var pressed_key = key.Key;
                 
-                string Action = IniFileHandling.FindMatch_KeyData(
+                Action = IniFileHandling.FindMatch_KeyData(
                     pressed_key,
                     isAlt,
                     isCtrl,
@@ -32,34 +45,11 @@ namespace jammer
                     isCtrlAlt,
                     isShiftCtrlAlt
                     );
-                // Media key presses
-                /*
-                switch(pressed_key){
-                    case ConsoleKey.MediaPlay:
-                        PauseSong();
-                        Play.PlayDrawReset();
-                        break;
-                    case ConsoleKey.MediaStop:
-                        PauseSong(true);
-                        Play.PlayDrawReset();
-                        break;
-                    case ConsoleKey.MediaNext:
-                        state = MainStates.next; // next song
-                        break;
-                    case ConsoleKey.MediaPrevious:
-                        if (IfHoldingDownSHIFT(key))
-                        {
-                            TUI.PlaySingleSong();
-                            break;
-                        }
-                        state = MainStates.previous; // previous song
-                        break;
-                }
-                */
+
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
-                        Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
+                        jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
                     }
 
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
@@ -113,8 +103,8 @@ namespace jammer
                         Action = "";
                     }
                 }
-                if(playerView.Equals("changelanguage")){
-                    // Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
+                else if(playerView.Equals("changelanguage")){
+                    // jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount){
@@ -136,7 +126,7 @@ namespace jammer
                     }
                 }
 
-                if(playerView.Equals("all")){
+                else if(playerView.Equals("all")){
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){
@@ -186,6 +176,7 @@ namespace jammer
                             break;
                         case "Quit":
                             Console.WriteLine("Quit");
+                            Program.hook.UnhookKeyboard();
                             AnsiConsole.Clear();
                             Environment.Exit(0);
                             break;
@@ -298,7 +289,7 @@ namespace jammer
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
-                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
+                            string forwardSecondsString = jammer.Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
@@ -306,12 +297,12 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
 
-                            string rewindSecondsString = Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
+                            string rewindSecondsString = jammer.Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
@@ -319,11 +310,11 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
-                            string volumeChangeString = Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
+                            string volumeChangeString = jammer.Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
                             if (int.TryParse(volumeChangeString, out int volumeChange))
                             {
                                 float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
@@ -332,7 +323,7 @@ namespace jammer
                             }
                             else
                             {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             break;
                         case "CommandHelpScreen":
@@ -387,16 +378,17 @@ namespace jammer
                             // TODO: Play random song
                             break;
                         // case ConsoleKey.J:
-                        //     Message.Input();
+                        //     jammer.Message.Input();
                         //     break;
                         // case ConsoleKey.K:
-                        //     Message.Data(Playlists.GetList());
+                        //     jammer.Message.Data(Playlists.GetList());
                         //     break;
                     }
             
-                
                 TUI.RefreshCurrentView();
+                Action = "";
             }
+
         }
 
         public static void PauseSong(bool onlyPause = false)
@@ -479,4 +471,43 @@ namespace jammer
         }
     }
 
+    #if WINDOWS
+    public partial class Form1 : Form
+    {
+        
+
+        public Form1()
+        {
+            InitializeComponent();
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.ShowInTaskbar = false;
+            this.Load += new EventHandler(Form1_Load);
+            this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            this.Opacity = 0;
+            this.Hide();
+
+            //MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
+            //props.Type = Windows.Media.MediaPlaybackType.Video;
+            //props.VideoProperties.Title = "Video title";
+            //props.VideoProperties.Subtitle = "Video subtitle";
+            //props.VideoProperties.Genres.Add("Documentary");
+            //mediaPlaybackItem.ApplyDisplayProperties(props);
+            // Hook the keyboard
+            Program.hook.HookKeyboard();
+        }
+
+        void Form1_Load(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(0, 0);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Unhook the keyboard when the form is closing
+            Program.hook.UnhookKeyboard();
+
+            base.OnFormClosing(e);
+        }
+    }
+    #endif
 }

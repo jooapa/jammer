@@ -162,7 +162,7 @@ You can also stack multiple jammer playlists inside another jammer playlists.
 
 ## Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website. Add the **BASS** and **BASS_AAC** libraries to the folder and add it to $LD_LIBRARY_PATH.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website.
 
 ```bash
 export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
@@ -177,11 +177,19 @@ dotnet run -- "path/to/song.mp3" ..
 
 ##### Windows
 
+Add **BASS** and **BASS_AAC** libraries to the executable folder
+
+In ```jammer.csproj``` enable Windows build options
+
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 ```
 
 ##### Linux
+
+Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
+
+In ```jammer.csproj``` enable Linux build options
 
 ```bash
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true

@@ -2,7 +2,7 @@
 /* using System; */
 /* using System.IO; */
 /* using System.Text.RegularExpressions; */
-
+using System.IO;
 namespace jammer
 {
     public struct Utils
@@ -28,7 +28,7 @@ namespace jammer
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
-        public static string version = "2.0.4";
+        public static string version = "2.0.3";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
     }
 }

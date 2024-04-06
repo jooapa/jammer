@@ -12,8 +12,8 @@ namespace jammer{
 
         3. Call the variable to display the text
         ```
-        Message.data(Locale.OutsideItems.KeyName, "Error title here");
-        Message.data(Locale.OutsideItems.RefreshScreenErrorMessage1, "Error title here");
+        jammer.Message.Data(Locale.OutsideItems.KeyName, "Error title here");
+        jammer.Message.Data(Locale.OutsideItems.RefreshScreenErrorMessage1, "Error title here");
         ```
 
         4. Add new locale line to en.ini file in its corresponding keyarea or create a new one for it

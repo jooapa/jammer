@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.IO;
 using System.Runtime.InteropServices;
 
 
@@ -256,7 +257,7 @@ namespace jammer
             }
         }
 
-	public static long DirSize(DirectoryInfo d)
+	public static long DirSize(System.IO.DirectoryInfo d)
 	{
 
 	    long size = 0;
