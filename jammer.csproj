@@ -4,9 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <!-- ! USE FOR WINDOWS BUILD -->
 
-    <!-- TEMP <UseWPF>True</UseWPF> -->
     
 
     <!--! USE FOR LINUX BUILD !-->
@@ -38,7 +38,4 @@
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.13" />
   </ItemGroup>
-
-
-
 </Project>

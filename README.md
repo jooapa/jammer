@@ -178,15 +178,6 @@ dotnet run -- "path/to/song.mp3" ..
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder
 
-Add **Windows.Foundation.UniversalApiContract.winmd** and **Windows.Foundation.FoundationContract.winmd** to project references
-
-They can be found somewhere around here
-```bash
-C:\Program Files (x86)\Windows Kits\10\References\10.0.22621.0\Windows.Foundation.FoundationContract\4.0.0.0\Windows.Foundation.FoundationContract.winmd
-
-C:\Program Files (x86)\Windows Kits\10\References\10.0.22621.0\Windows.Foundation.UniversalApiContract\15.0.0.0\Windows.Foundation.UniversalApiContract.winmd
-```
-
 In ```jammer.csproj``` enable Windows build options
 
 ```bash

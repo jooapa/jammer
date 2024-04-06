@@ -1,9 +1,4 @@
 #if WINDOWS
-// Use windows media player
-using System.Windows;
-// using WMPLib;
-
-// using System.Windows.Media;
 using System.Windows;
 
 namespace jammer;
