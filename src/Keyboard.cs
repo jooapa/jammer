@@ -494,7 +494,7 @@ namespace jammer
             Program.hook.HookKeyboard();
         }
 
-        void Form1_Load(object sender, EventArgs e)
+        void Form1_Load(object? sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(0, 0);
         }
