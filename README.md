@@ -1,11 +1,11 @@
-# Jammer — Play songs in cli with youtube and soundcloud support
+# Jammer — Play songs in cli with Youtube and Soundcloud support
 
 ![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
 
 ## Introduction
 
 Tired of opening up a browser or app to play music, and even then you can't
-play local files or songs from different sites? 
+play local files or songs from different sites?
 
 Jammer is a simple CLI music player that supports playing songs from your**local files**, **Youtube** and **Soundcloud**. 
 
@@ -50,7 +50,7 @@ jammer -d             debug mode
 jammer --version      show version
 ```
 
-*when using **soundcloud** or **youtube** **links** dont forget to use **`https://`** at the start.*
+*when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
 jammer -p, --play <name>                  play playlist
@@ -60,8 +60,8 @@ jammer -a, --add <name> <song> ...        add song to playlist
 jammer -r, --remove <name> <song> ...     remove song from playlist
 jammer -s, --show <name> 
 jammer -l, --list                         list all playlists
-jammer -f, --flush                        flushes all the songs in jammer/songs folder
-jammer -sp, --set-path <path>, <default>  set path for jammer/songs folder
+jammer -f, --flush                        flushes all the songs in songs folder
+jammer -sp, --set-path <path>, <default>  set path for songs folder
 ```
 
 ### Example usage
@@ -85,6 +85,7 @@ jammer -c gd
 jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
 jammer -p gd
 ```
+
 *you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
 
 You can also use `-d` flag that will add logs to current folder.
@@ -189,12 +190,14 @@ dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 ##### Linux AppImage release
 
 AppImage requires fuse. To install fuse
-```
+
+```bash
 sudo apt install libfuse2
 ```
 
 To install appimagetool
-```
+
+```bash
 wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 chmod 700 appimagetool-x86_64.AppImage
 ```
@@ -215,25 +218,20 @@ python change_version.py [version]
 
 ---
 
-
 ![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
 
 ---
 
 ### Todo bug fixes
 
- - [x] When playing song, and opening a new playlist, the song doesn't change
- - [x] Pressing `0`, doesn't do anything
- - [x] Download bar
- - [x] Fix playlist cmd
- - [ ] Fix time bar not going to new line when 0:-01
-
+- [x] When playing song, and opening a new playlist, the song doesn't change
+- [x] Pressing `0`, doesn't do anything
+- [x] Download bar
+- [x] Fix playlist cmd
+- [ ] Fix time bar not going to new line when 0:-01
 
 ### Incoming Features
 
 - [ ] Add more audio formats
-- [ ] Maybe use curses for UI
-- [ ] Better f mode
-- [ ] pg up/down you can scroll the playlist and modify the selected song
-- [ ] you can see whats downloaded from url
-
+- [x] Better f mode
+- [x] pg up/down you can scroll the playlist and modify the selected song

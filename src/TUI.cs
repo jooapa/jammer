@@ -40,7 +40,7 @@ static class TUI
             }
 
             // render maintable with tables in it
-            mainTable.AddColumns(GetSongWithdots(Utils.currentSong, Start.consoleWidth - 8)).Width(Start.consoleWidth);
+            mainTable.AddColumns(GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
             mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
             songsTable.Border = TableBorder.Rounded;
             mainTable.AddRow(controlsTable.Centered());
@@ -137,7 +137,8 @@ static class TUI
                 results.Add(Utils.queueSongs[i]);
             }
         }
-        return results.ToArray();
+
+        return Start.Sanitize(results.ToArray());
     }
 
     static string GetSongWithdots(string song, int length = 80) {
@@ -180,6 +181,10 @@ static class TUI
             nextSong = $"[grey]{Locale.Player.Next}     : -[/]";
         }
 
+        prevSong = Start.Sanitize(prevSong);
+        currentSong = Start.Sanitize(currentSong);
+        nextSong = Start.Sanitize(nextSong);        
+        
         return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
     }
 
@@ -403,6 +408,7 @@ static class TUI
 
     // "Components" of the TUI
     static public void UIComponent_Controls(Table table) {
+        table.Border = TableBorder.Rounded;
         table.AddColumn(Locale.Player.State);
         table.AddColumn(Locale.Player.Looping);
         table.AddColumn(Locale.Player.Shuffle);
@@ -442,6 +448,7 @@ static class TUI
     }
 
     public static Table UIComponent_Time(Table table, int? length = 100) {
+        table.Border = TableBorder.Rounded;
         table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, length));
         return table;
     }

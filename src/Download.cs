@@ -61,7 +61,7 @@ namespace jammer {
 
                     // TagLib
                     var file = TagLib.File.Create(songPath);
-                    file.Tag.Title = video.Title;
+                    file.Tag.Title = Start.Sanitize(video.Title);
                     file.Tag.Performers = new string[] { video.Author.ChannelTitle };
                     file.Save();
                 }
@@ -106,7 +106,7 @@ namespace jammer {
 
                         // TagLib
                         var file = TagLib.File.Create(songPath);
-                        file.Tag.Title = track.Title;
+                        file.Tag.Title = Start.Sanitize(track.Title);
                         file.Tag.Description = track.Description;
                         if (track.User != null && track.User.Username != null) {
                             file.Tag.Performers = new string[] { track.User.Username };

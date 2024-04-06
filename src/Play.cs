@@ -271,9 +271,12 @@ namespace jammer
                 Utils.currentSongIndex = index;
                 Utils.queueSongs.RemoveAt(0);
             } else {
-                Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
-                PlayDrawReset();
-                PlaySong(Utils.songs, Utils.currentSongIndex);
+                if (Utils.songs.Length >= 1) // no next song if only one song or less
+                {
+                    Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+                    PlayDrawReset();
+                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                }
             }
         }
 

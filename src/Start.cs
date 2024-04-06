@@ -164,7 +164,7 @@ namespace jammer
                             Songs.Flush();
                             return;
                         case "--set-path":
-                        case "-sp":
+                        case "-sp": // TODO locale :)) https://www.youtube.com/watch?v=thPv_v7890g
                             if (args.Length > i+1) {
                                 if (Directory.Exists(args[i+1])) {
                                     Preferences.songsPath = Path.GetFullPath(Path.Combine(args[i+1], "songs"));
@@ -383,6 +383,19 @@ namespace jammer
             }
         }
 
+        /// <summary>
+        /// Removes "[" and "]" from a string to prevent Spectre.Console from blowing up.
+        /// </summary>
+        /// <param name="input">The string to sanitize</param>
+        /// <returns>The sanitized string</returns>
+        /// <remarks>
+        /// This is a workaround for a bug in Spectre.Console that causes it to crash when it encounters "[" or "]" in a string.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// string sanitized = Sanitize("Hello world [lol]");
+        /// Output: "Hello world lol"
+        /// </code>        
         public static string Sanitize(string input)
         {
             // Remove [ ] from input
@@ -391,6 +404,20 @@ namespace jammer
             input = input.Replace("\"", "\'");
             // input = input.Replace("\"", "");
             // input = input.Replace("\'", "");
+            return input;
+        }
+
+        /// <summary>
+        /// Sanitizes an array of strings by calling the Sanitize method on each element.
+        /// </summary>
+        /// <param name="input">The array of strings to be sanitized.</param>
+        /// <returns>The sanitized array of strings.</returns>
+        public static string[] Sanitize(string[] input)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                input[i] = Sanitize(input[i]);
+            }
             return input;
         }
     }
