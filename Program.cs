@@ -1,5 +1,6 @@
 ﻿using jammer;
 using Spectre.Console;
+using System.Diagnostics;
 #if WINDOWS
 using System;
 using System.Collections.Generic;
@@ -15,24 +16,30 @@ class Program
 #if WINDOWS
     //! USE FOR WINDOWS BUILD
     private static Task? formTask;
-    private static CancellationTokenSource formCancellationTokenSource = new CancellationTokenSource();
+    private static CancellationTokenSource formCancellationTokenSource = new();
     public static readonly KeyboardHook hook = new();
     static void OnProcessExit(object? sender, EventArgs e) {
-        Start.state = MainStates.stop;
+        Start.state = MainStates.pause;
         System.Diagnostics.Debug.WriteLine("EXITING..");
         Console.WriteLine("Exiting Jammer..."); // TODO ADD LOCALE
-
-        Console.WriteLine("Canceling thread token..."); // TODO ADD LOCALE
-        formCancellationTokenSource.Cancel();
 
         Console.WriteLine("Unhooking keyboard..."); // TODO ADD LOCALE
         hook.UnhookKeyboard(); // Unhook the keyboard
 
+        Console.WriteLine("Canceling thread token..."); // TODO ADD LOCALE
+        formCancellationTokenSource.Cancel();
+
+        //Environment.FailFast("Threads closed..."); // TODO ADD LOCALE
+        System.Diagnostics.Debug.WriteLine("Closing threads...");
+        System.Diagnostics.Debug.WriteLine("Killing process...");
+        Process.GetCurrentProcess().Kill();
+        /*
         Console.WriteLine("Waiting for thread to complete..."); // TODO ADD LOCALE
         formTask?.Wait();
 
         Console.WriteLine("Disposing thread..."); // TODO ADD LOCALE
         formTask?.Dispose();
+        */
     }
 
     [STAThread]

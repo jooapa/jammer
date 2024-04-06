@@ -175,9 +175,7 @@ namespace jammer
                             Console.WriteLine("CurrentState: " + state);
                             break;
                         case "Quit":
-                            Console.WriteLine("Quit");
-                            Program.hook.UnhookKeyboard();
-                            AnsiConsole.Clear();
+                            Start.state = MainStates.pause;
                             Environment.Exit(0);
                             break;
                         case "NextSong":
