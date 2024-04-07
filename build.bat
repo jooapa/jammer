@@ -12,10 +12,21 @@ if "%1"=="CLI" (
     GOTO :HELP
     EXIT /B 1
 )
+@REM Add if else to check if %2 is ELECTRON or CLI
+if "%2"=="ELECTRON" (
+    cd JAMMER.ELECTRON
+) else if "%2"=="CLI" (
+    cd JAMMER.CLI
+) else (
+    ECHO Invalid type: %2
+    GOTO :HELP
+    EXIT /B 1
+)
 
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained -p:UseForms=%boolean%
+cd..
 SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
-    EXIT /B 1
+
 @REM Build with debug executable
 @REM dotnet build
 @REM SET "sourceFolder=bin\Debug\net7.0\"
@@ -44,8 +55,13 @@ IF ErrorLevel 1 (
 cd nsis
 
 START "" "%start_name%"
+EXIT /B 0
 
 :HELP
-ECHO Usage: build.bat { CLI ^| FORMS }
-ECHO FORMS - Includes global key listeners for windows
+ECHO Usage: build.bat { CLI ^| FORMS } { ELECTRON ^| CLI }
+
 ECHO CLI - Only barebone CLI version
+ECHO FORMS - Includes global key listeners for windows
+ECHO ========================
+ECHO CLI - CLI version
+ECHO ELECTRON - UI-Electron version

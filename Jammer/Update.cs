@@ -14,7 +14,13 @@ namespace jammer {
                 using (var webClient = new WebClient()) {
                     webClient.DownloadProgressChanged += (sender, e) =>
                     {
+                        #if CLI_UI
                         Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
+                        #endif
+                        #if ELECTRON_UI
+                        //TODO: Add download progress bar
+                        #endif
+                        
                     };
 
                     webClient.DownloadFile(downloadUrl, downloadPath);
@@ -22,7 +28,12 @@ namespace jammer {
             }
             catch (Exception ex)
             {
+                #if CLI_UI
                 Console.WriteLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message);
+                #endif
+                #if ELECTRON_UI
+                // TODO Add error message
+                #endif
             }
 
             return Path.GetFullPath(downloadPath);
@@ -34,7 +45,12 @@ namespace jammer {
             using (HttpClient client = new HttpClient()) {
                 latestVersion = client.GetStringAsync(url).Result;
             }
+            #if CLI_UI
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.LatestVersion}: [green]" + latestVersion + "[/]");
+            #endif
+            #if ELECTRON_UI
+            // TODO Add latest version message
+            #endif
             if (latestVersion != version) {
                 return latestVersion;
             }

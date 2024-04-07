@@ -23,7 +23,12 @@ namespace jammer {
             } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
             } else {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 Debug.dprint("Invalid url");
             }
 
@@ -54,8 +59,13 @@ namespace jammer {
                 {
                     var progress = new Progress<double>(data =>
                     {
+                        #if CLI_UI
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
+                        #endif
+                        #if ELECTRON_UI
+                        // TODO ELECTRON_UI
+                        #endif
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
@@ -68,12 +78,22 @@ namespace jammer {
                 }
                 else
                 {
+                    #if CLI_UI
                     jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
+                    #endif
+                    #if ELECTRON_UI
+                    // TODO ELECTRON_UI
+                    #endif
                 }
             }
             catch (Exception ex)
             {
+                #if CLI_UI
                 jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 songPath = "";
             }
         }
@@ -99,8 +119,13 @@ namespace jammer {
                     if(track.Title != null){
 
                         var progress = new Progress<double>(data => {
+                            #if CLI_UI
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}");  
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                         });
                         
                         await soundcloud.DownloadAsync(track, songPath, progress);
@@ -124,8 +149,13 @@ namespace jammer {
 
             }
             catch (Exception ex) { 
+                #if CLI_UI
                 jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 songPath = "";
             }
         }
@@ -138,8 +168,13 @@ namespace jammer {
             var playlist = await soundcloud.Playlists.GetAsync(url, true);
 
             if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 return;
             }
 
@@ -154,10 +189,20 @@ namespace jammer {
         public static async Task GetPlaylistYoutube(string url) {
             // Get all playlist tracks
             var playlist = await youtube.Playlists.GetVideosAsync(url);
+            #if CLI_UI
             Console.WriteLine(playlist[0]);
+            #endif
+            #if ELECTRON_UI
+            // TODO ELECTRON_UI
+            #endif
             if (playlist.Count() == 0 || playlist == null) {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 return;
             }
 
@@ -198,13 +243,11 @@ namespace jammer {
 
         public static string FormatUrlForFilename(string url, bool isCheck = false)
         {
-            // Console.WriteLine("Formatting url for filename: " + url);
             if (URL.isValidSoundCloudPlaylist(url)) {
                 return "Soundcloud Playlist";
             }
             else if (URL.IsValidSoundcloudSong(url))
             {
-                // Console.WriteLine("Soundcloud song");
                 // remove ? and everything after
                 int index = url.IndexOf("?");
                 if (index > 0)

@@ -185,7 +185,12 @@ namespace jammer
                 }
                 catch (Exception e)
                 {
+                    #if CLI_UI
                     Console.WriteLine(e);
+                    #endif
+                    #if ELECTRON_UI
+                    // TODO Add error message
+                    #endif
                     return 0.05f;
                 }   
             }
