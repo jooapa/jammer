@@ -13,8 +13,8 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[green]Jammer songs flushed.[/]");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
             }
             else
@@ -22,8 +22,8 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]Jammer songs folder not found.[/]");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
             }
         }

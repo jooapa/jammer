@@ -63,7 +63,7 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add no songs in playlist message
                 #endif
                 Currentindex = 0;
@@ -103,7 +103,7 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add folder message
                 #endif
 
@@ -141,7 +141,7 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add song not found message
                 #endif
                 return;
@@ -219,7 +219,7 @@ namespace jammer
                     #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
                     #endif
-                    #if ELECTRON_UI
+                    #if AVALONIA_UI
                     // TODO Add unsupported file format message
                     #endif
                     Debug.dprint("Unsupported file format");
@@ -238,7 +238,7 @@ namespace jammer
                 #if CLI_UI
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add error message
                 #endif
                 Debug.dprint("Error: " + e);
@@ -513,7 +513,7 @@ namespace jammer
                     #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
                     #endif
-                    #if ELECTRON_UI
+                    #if AVALONIA_UI
                     // TODO Add song in playlist message
                     #endif
                     return;
@@ -541,7 +541,7 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add index out of range message
                 #endif
                 return;
@@ -662,7 +662,7 @@ namespace jammer
                 #if CLI_UI
                 jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add start playing message
                 #endif
 

@@ -185,6 +185,11 @@ cd JAMMER.CLI or JAMMER.ELECTRON
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:UseForms={true|false}
 ```
 
+
+Electron UI
+
+Requires installation of [Electron.net](https://github.com/ElectronNET/Electron.NET)
+
 ##### Linux
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
@@ -223,6 +228,8 @@ CLI - CLI version
 ELECTRON - UI-Electron version
 
 ```
+
+
 
 you can also use `change_version.py` to change the version of the app.
 

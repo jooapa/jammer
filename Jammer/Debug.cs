@@ -12,8 +12,8 @@ namespace jammer {
                     #if CLI_UI
                     writer.WriteLine(time + ";" + _class + ";" + _method + ": " + txt.ToString());
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
                 }
             }

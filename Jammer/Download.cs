@@ -26,8 +26,8 @@ namespace jammer {
                 #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 Debug.dprint("Invalid url");
             }
@@ -63,8 +63,8 @@ namespace jammer {
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                     });
 
@@ -81,8 +81,8 @@ namespace jammer {
                     #if CLI_UI
                     jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
                 }
             }
@@ -91,8 +91,8 @@ namespace jammer {
                 #if CLI_UI
                 jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 songPath = "";
             }
@@ -123,8 +123,8 @@ namespace jammer {
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}");  
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                         });
                         
@@ -153,8 +153,8 @@ namespace jammer {
                 jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 songPath = "";
             }
@@ -172,8 +172,8 @@ namespace jammer {
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 return;
             }
@@ -192,16 +192,16 @@ namespace jammer {
             #if CLI_UI
             Console.WriteLine(playlist[0]);
             #endif
-            #if ELECTRON_UI
-            // TODO ELECTRON_UI
+            #if AVALONIA_UI
+            // TODO AVALONIA_UI
             #endif
             if (playlist.Count() == 0 || playlist == null) {
                 #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 return;
             }

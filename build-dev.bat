@@ -13,10 +13,10 @@ if "%1"=="CLI" (
     EXIT /B 1
 )
 
-if "%2"=="ELECTRON" (
-    cd JAMMER.ELECTRON
+if "%2"=="AVALONIA" (
+    cd Jammer.Avalonia
 ) else if "%2"=="CLI" (
-    cd JAMMER.CLI
+    cd Jammer.CLI
 ) else (
     ECHO Invalid type: %2
     GOTO :HELP
@@ -35,4 +35,4 @@ ECHO CLI - Only barebone CLI version
 ECHO FORMS - Includes global key listeners for windows
 ECHO ========================
 ECHO CLI - CLI version
-ECHO ELECTRON - UI-Electron version
+ECHO Avalonia - Avalonia version

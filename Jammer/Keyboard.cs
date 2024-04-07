@@ -41,8 +41,8 @@ namespace jammer
                         #if CLI_UI
                         jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                     }
 
@@ -211,24 +211,24 @@ namespace jammer
                             #if CLI_UI
                             TUI.SaveAsPlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "SaveCurrentPlaylist":
                             #if CLI_UI
                             TUI.SaveCurrentPlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "ShufflePlaylist":
                             #if CLI_UI
                             TUI.ShufflePlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "Loop": // loop
@@ -251,8 +251,8 @@ namespace jammer
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             else
@@ -264,8 +264,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.ListAllPlaylists();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "Help": // show help
@@ -276,8 +276,8 @@ namespace jammer
                                 #if CLI_UI
                                 TUI.DrawPlayer();
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 break;
                             }
@@ -285,8 +285,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.DrawHelp();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "Settings": // show settings
@@ -297,8 +297,8 @@ namespace jammer
                                 #if CLI_UI
                                 TUI.DrawPlayer();
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 break;
                             }
@@ -306,8 +306,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.DrawSettings();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
 
@@ -325,8 +325,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.PlaylistInput();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
@@ -342,8 +342,8 @@ namespace jammer
                                 #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             break;
@@ -360,8 +360,8 @@ namespace jammer
                                 #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             break;
@@ -378,8 +378,8 @@ namespace jammer
                                 #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             break;
@@ -389,8 +389,8 @@ namespace jammer
 
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             Console.ReadKey(true);
                             break;
@@ -403,8 +403,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.AddSongToPlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         // Case For ?
@@ -412,16 +412,16 @@ namespace jammer
                             #if CLI_UI
                             TUI.ShowSongsInPlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "PlayOtherPlaylist":
                             #if CLI_UI
                             TUI.PlayOtherPlaylist();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             break;
                         case "RedownloadCurrentSong":
@@ -432,8 +432,8 @@ namespace jammer
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexKeybind = 0;
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             if (playerView == "default")
                             {
@@ -449,8 +449,8 @@ namespace jammer
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexLanguage = 0;
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             if (playerView == "default")
                             {
@@ -475,8 +475,8 @@ namespace jammer
                 #if CLI_UI
                 TUI.RefreshCurrentView();
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 Action = "";
             }

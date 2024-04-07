@@ -25,8 +25,8 @@ namespace jammer
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
 
                 if (URL.IsUrl(item))
@@ -59,8 +59,8 @@ namespace jammer
                     {
                         #if CLI_UI
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                         AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
                     }
@@ -68,8 +68,8 @@ namespace jammer
                         #if CLI_UI
                         AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                         // delete item from args
                         args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
@@ -97,8 +97,8 @@ namespace jammer
                     #if CLI_UI
                     AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} {item} {Locale.OutsideItems.DoesntExist}[/]");
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
                     // delete item from args
                     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
