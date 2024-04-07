@@ -104,8 +104,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Environment.Exit(1);
                             }
@@ -118,8 +118,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             Environment.Exit(0);
@@ -132,8 +132,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Environment.Exit(0);
                             }
@@ -147,16 +147,16 @@ namespace jammer
                                 #if CLI_UI
                                 Console.WriteLine(secondHalf[0]);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Playlists.Add(secondHalf);
                             } else {
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Environment.Exit(0);
                             }
@@ -170,16 +170,16 @@ namespace jammer
                                 #if CLI_UI
                                 Console.WriteLine(secondHalf[1]);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Playlists.Remove(secondHalf);
                             } else {
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Environment.Exit(0);
                             }
@@ -192,8 +192,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 Environment.Exit(0);
                             }
@@ -207,8 +207,8 @@ namespace jammer
                             #if CLI_UI
                             AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.version + "[/]");
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             return;
                         case "--flush":
@@ -223,16 +223,16 @@ namespace jammer
                                     #if CLI_UI
                                     AnsiConsole.MarkupLine("[green]Songs path set to: " + Preferences.songsPath + "[/]");
                                     #endif
-                                    #if ELECTRON_UI
-                                    // TODO ELECTRON_UI
+                                    #if AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                     #endif
                                 }
                                 else if (args[i+1] == "") {
                                     #if CLI_UI
                                     AnsiConsole.MarkupLine("No path given.");
                                     #endif
-                                    #if ELECTRON_UI
-                                    // TODO ELECTRON_UI
+                                    #if AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                     #endif
                                     return;
                                 }
@@ -241,15 +241,15 @@ namespace jammer
                                     #if CLI_UI
                                     AnsiConsole.MarkupLine("[green]Songs path set to default.[/]"); // TODO ADD LOCALE
                                     #endif
-                                    #if ELECTRON_UI
-                                    // TODO ELECTRON_UI
+                                    #if AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                     #endif
                                 } else {
                                     #if CLI_UI
                                     AnsiConsole.MarkupLine($"[red]Path [grey]'[/][white]{args[i+1]}[/][grey]'[/] does not exist.[/]"); // TODO ADD LOCALE
                                     #endif
-                                    #if ELECTRON_UI
-                                    // TODO ELECTRON_UI
+                                    #if AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                     #endif
                                 }
 
@@ -258,8 +258,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine("[red]No songs path given.[/]"); // TODO ADD LOCALE
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             return;
@@ -268,8 +268,8 @@ namespace jammer
                             #if CLI_UI
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             // if windows
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -283,16 +283,16 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.RunUpdate}[/]");
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 return;
                             }
                             #if CLI_UI
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.CheckingUpdates}[/]");
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             string latestVersion = Update.CheckForUpdate(Utils.version);
                             if (latestVersion != "") {
@@ -305,8 +305,8 @@ namespace jammer
                                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.DownloadedTo}: " + downloadPath + "[/]");
                                 AnsiConsole.MarkupLine($"[cyan]{Locale.OutsideItems.Installing}[/]");
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                                 // Run run_command.bat with argument as the path to the downloaded file
                                 System.Diagnostics.Process.Start("run_command.bat", downloadPath);
@@ -314,8 +314,8 @@ namespace jammer
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpToDate}[/]");
                                 #endif
-                                #if ELECTRON_UI
-                                // TODO ELECTRON_UI
+                                #if AVALONIA_UI
+                                // TODO AVALONIA_UI
                                 #endif
                             }
                             return;
@@ -335,8 +335,8 @@ namespace jammer
                 #if CLI_UI
                 jammer.Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 return;
             }
@@ -397,8 +397,8 @@ namespace jammer
                         TUI.RefreshCurrentView();
                     }
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
 
                 switch (state)
@@ -417,8 +417,8 @@ namespace jammer
                         }
                         #endif
 
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                         break;
 
@@ -433,8 +433,8 @@ namespace jammer
                             TUI.DrawPlayer();
                             drawOnce = true;
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             Utils.MusicTimePlayed = 0;
                             state = MainStates.playing;
@@ -465,8 +465,8 @@ namespace jammer
                             drawOnce = false;
                         }
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
@@ -475,8 +475,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.RefreshCurrentView();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
@@ -489,8 +489,8 @@ namespace jammer
                             #if CLI_UI
                             TUI.RefreshCurrentView();
                             #endif
-                            #if ELECTRON_UI
-                            // TODO ELECTRON_UI
+                            #if AVALONIA_UI
+                            // TODO AVALONIA_UI
                             #endif
                         }
                         CheckKeyboard();
@@ -513,8 +513,8 @@ namespace jammer
                         #if CLI_UI
                         TUI.ClearScreen();
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                         break;
 
@@ -523,8 +523,8 @@ namespace jammer
                         #if CLI_UI
                         TUI.ClearScreen();
                         #endif
-                        #if ELECTRON_UI
-                        // TODO ELECTRON_UI
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
                         #endif
                         break;
                 }

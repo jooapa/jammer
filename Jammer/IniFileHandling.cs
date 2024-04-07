@@ -198,7 +198,7 @@ AddSongToQueue = G
                     #if CLI_UI
                     jammer.Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
                     #endif
-                    #if ELECTRON_UI
+                    #if AVALONIA_UI
                     // TODO 
                     #endif
                     return;
@@ -207,8 +207,8 @@ AddSongToQueue = G
                 #if CLI_UI
                 jammer.Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
             }
 
@@ -549,8 +549,8 @@ AddSongToQueue = G
                 #if CLI_UI
                 jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 #endif
-                #if ELECTRON_UI
-                // TODO ELECTRON_UI
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
                 #endif
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
@@ -559,8 +559,8 @@ AddSongToQueue = G
                     #if CLI_UI
                     jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
                     LocaleData = parser.ReadFile(Path.Combine(Utils.jammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                     Preferences.localeLanguage = country_code;
@@ -569,8 +569,8 @@ AddSongToQueue = G
                     #if CLI_UI
                     jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                     #endif
-                    #if ELECTRON_UI
-                    // TODO ELECTRON_UI
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
                     #endif
                     return;
                 }
@@ -594,7 +594,7 @@ AddSongToQueue = G
             #if CLI_UI
             jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
             #endif
-            #if ELECTRON_UI
+            #if AVALONIA_UI
             // TODO 
             #endif
             Start.playerView = "default";

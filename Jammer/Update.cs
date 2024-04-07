@@ -17,7 +17,7 @@ namespace jammer {
                         #if CLI_UI
                         Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
                         #endif
-                        #if ELECTRON_UI
+                        #if AVALONIA_UI
                         //TODO: Add download progress bar
                         #endif
                         
@@ -31,7 +31,7 @@ namespace jammer {
                 #if CLI_UI
                 Console.WriteLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message);
                 #endif
-                #if ELECTRON_UI
+                #if AVALONIA_UI
                 // TODO Add error message
                 #endif
             }
@@ -48,7 +48,7 @@ namespace jammer {
             #if CLI_UI
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.LatestVersion}: [green]" + latestVersion + "[/]");
             #endif
-            #if ELECTRON_UI
+            #if AVALONIA_UI
             // TODO Add latest version message
             #endif
             if (latestVersion != version) {

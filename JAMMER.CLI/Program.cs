@@ -65,20 +65,18 @@ class Program
     #endif
         string mutexName = "jammer";
 
-        using (Mutex mutex = new Mutex(true, mutexName, out bool createdNew))
+        using Mutex mutex = new Mutex(true, mutexName, out bool createdNew);
+        // If the mutex was successfully created, it means this is the first instance
+        if (createdNew)
         {
-            // If the mutex was successfully created, it means this is the first instance
-            if (createdNew)
-            {
-                Console.WriteLine("Launching Jammer...");
-                Start.Run(args);
-                // The program run after this point to the end, continuing inside with a new thread
-            }
+            Console.WriteLine("Launching Jammer...");
+            Start.Run(args);
+            // The program run after this point to the end, continuing inside with a new thread
         }
 
-        #if WINDOWS && USE_FORMS
+#if WINDOWS && USE_FORMS
         // Wait for the form task to exit gracefully
         formTask?.Wait();
-        #endif
+#endif
     }
 }

@@ -3,12 +3,13 @@
     <!-- Common properties for both Windows and Linux builds -->
     <OutputType>Exe</OutputType>
     <Version>2.0.4</Version>
-    <RootNamespace>jammer</RootNamespace>
+    <RootNamespace>jammer_cli</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
     <StartupObject>Program</StartupObject>
     <DefineConstants>CLI_UI</DefineConstants>
+    <TargetName>jammer_cli</TargetName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(UseForms)'=='true'">
