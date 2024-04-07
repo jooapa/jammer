@@ -1,18 +1,6 @@
 using ManagedBass;
 using Spectre.Console;
 using System.IO;
-#if WINDOWS
-using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Windows.Forms;
-// using Windows.Media.Playback;
-
-#endif
 
 namespace jammer
 {
@@ -468,44 +456,4 @@ namespace jammer
             return true;
         }
     }
-
-    #if WINDOWS
-    public partial class Form1 : Form
-    {
-        
-
-        public Form1()
-        {
-            InitializeComponent();
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.ShowInTaskbar = false;
-            this.Load += new EventHandler(Form1_Load);
-            this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            this.Opacity = 0;
-            this.Hide();
-
-            //MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
-            //props.Type = Windows.Media.MediaPlaybackType.Video;
-            //props.VideoProperties.Title = "Video title";
-            //props.VideoProperties.Subtitle = "Video subtitle";
-            //props.VideoProperties.Genres.Add("Documentary");
-            //mediaPlaybackItem.ApplyDisplayProperties(props);
-            // Hook the keyboard
-            Program.hook.HookKeyboard();
-        }
-
-        void Form1_Load(object? sender, EventArgs e)
-        {
-            this.Size = new System.Drawing.Size(0, 0);
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            // Unhook the keyboard when the form is closing
-            Program.hook.UnhookKeyboard();
-
-            base.OnFormClosing(e);
-        }
-    }
-    #endif
 }
