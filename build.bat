@@ -1,7 +1,6 @@
 @ECHO off
 if "%1"=="" (
-    ECHO Usage: build.bat [type]
-    ECHO type: CLI ^| FORMS
+    GOTO: HELP
     EXIT /B 1
 )
 if "%1"=="CLI" (
@@ -10,8 +9,7 @@ if "%1"=="CLI" (
     SET "boolean=true"
 ) else (
     ECHO Invalid type: %1
-    ECHO Usage: build.bat [type]
-    ECHO type: CLI ^| FORMS
+    GOTO :HELP
     EXIT /B 1
 )
 
@@ -46,3 +44,8 @@ IF ErrorLevel 1 (
 cd nsis
 
 START "" "%start_name%"
+
+:HELP
+ECHO Usage: build.bat { CLI ^| FORMS }
+ECHO FORMS - Includes global key listeners for windows
+ECHO CLI - Only barebone CLI version

@@ -213,7 +213,9 @@ To create AppImage run `build.sh`
 ##### Build script for NSIS installer
 
 ```bash
-build.bat
+build.bat { CLI | FORMS }
+FORMS - Includes global key listeners for windows
+CLI - Only barebone CLI version
 ```
 
 you can also use `change_version.py` to change the version of the app.
