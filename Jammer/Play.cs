@@ -60,7 +60,12 @@ namespace jammer
 
             if (songs.Length == 0)
             {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
+                #endif
+                #if ELECTRON_UI
+                // TODO Add no songs in playlist message
+                #endif
                 Currentindex = 0;
                 Start.Run(new string[] {});
                 return;
@@ -68,8 +73,6 @@ namespace jammer
             while(Currentindex > songs.Length){
                 Currentindex--;
             }
-            // Console.WriteLine(Currentindex.ToString());
-            // Console.ReadKey();
             Debug.dprint("Play song");
             var path = "";
 
@@ -97,8 +100,12 @@ namespace jammer
                 {
                     AddSong(file);
                 }
-                
+                #if CLI_UI
                 AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
+                #endif
+                #if ELECTRON_UI
+                // TODO Add folder message
+                #endif
 
                 if (Utils.songs.Length == originalLengthMinusFolder) {
                     path = Utils.songs[originalLengthMinusFolder - 1];
@@ -131,7 +138,12 @@ namespace jammer
             }
             else
             {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
+                #endif
+                #if ELECTRON_UI
+                // TODO Add song not found message
+                #endif
                 return;
             }
 
@@ -204,7 +216,12 @@ namespace jammer
                 }
                 else
                 {
+                    #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
+                    #endif
+                    #if ELECTRON_UI
+                    // TODO Add unsupported file format message
+                    #endif
                     Debug.dprint("Unsupported file format");
                     // remove song from current Utils.songs
                     Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
@@ -218,7 +235,12 @@ namespace jammer
             }
             catch (Exception e)
             {
+                #if CLI_UI
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
+                #endif
+                #if ELECTRON_UI
+                // TODO Add error message
+                #endif
                 Debug.dprint("Error: " + e);
                 return;
             }
@@ -488,7 +510,12 @@ namespace jammer
             {
                 if (s == song)
                 {
+                    #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
+                    #endif
+                    #if ELECTRON_UI
+                    // TODO Add song in playlist message
+                    #endif
                     return;
                 }
             }
@@ -511,7 +538,12 @@ namespace jammer
             // check if index is in range
             if (index < 0 || index > Utils.songs.Length)
             {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
+                #endif
+                #if ELECTRON_UI
+                // TODO Add index out of range message
+                #endif
                 return;
             }
             // remove song from current Utils.songs
@@ -627,7 +659,12 @@ namespace jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
+                #if CLI_UI
                 jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
+                #endif
+                #if ELECTRON_UI
+                // TODO Add start playing message
+                #endif
 
                 DeleteSong(Utils.currentSongIndex, false);
                 

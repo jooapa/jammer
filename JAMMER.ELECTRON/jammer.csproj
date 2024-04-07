@@ -8,6 +8,7 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
     <StartupObject>Program</StartupObject>
+    <DefineConstants>ELECTRON_UI</DefineConstants>
   </PropertyGroup>
 
   
@@ -46,5 +47,9 @@
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Jammer\*.cs"/>
   </ItemGroup>
 </Project>

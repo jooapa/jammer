@@ -9,7 +9,12 @@ namespace jammer {
                     var _method = new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.Name;
                     var _class = new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.DeclaringType?.Name;
                     var time = DateTime.Now.ToString("HH:mm:ss"); // case sensitive
+                    #if CLI_UI
                     writer.WriteLine(time + ";" + _class + ";" + _method + ": " + txt.ToString());
+                    #endif
+                    #if ELECTRON_UI
+                    // TODO ELECTRON_UI
+                    #endif
                 }
             }
         }

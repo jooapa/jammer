@@ -24,6 +24,7 @@ if "%2"=="ELECTRON" (
 )
 
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained -p:UseForms=%boolean%
+cd..
 SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
 
 @REM Build with debug executable

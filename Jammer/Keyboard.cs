@@ -38,7 +38,12 @@ namespace jammer
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
+                        #if CLI_UI
                         jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
+                        #endif
+                        #if ELECTRON_UI
+                        // TODO ELECTRON_UI
+                        #endif
                     }
 
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
@@ -203,13 +208,28 @@ namespace jammer
                             Preferences.SaveSettings();
                             break;
                         case "SaveAsPlaylist":
+                            #if CLI_UI
                             TUI.SaveAsPlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "SaveCurrentPlaylist":
+                            #if CLI_UI
                             TUI.SaveCurrentPlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "ShufflePlaylist":
+                            #if CLI_UI
                             TUI.ShufflePlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "Loop": // loop
                             Preferences.isLoop = !Preferences.isLoop;
@@ -224,11 +244,16 @@ namespace jammer
                             if (playerView == "default")
                             {   
                                 playerView = "all";
+                                #if CLI_UI
                                 var table = new Table();
                                 AnsiConsole.Write(table);
                                 AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                             }
                             else
                             {
@@ -236,29 +261,54 @@ namespace jammer
                             }
                             break;
                         case "ListAllPlaylists":
+                            #if CLI_UI
                             TUI.ListAllPlaylists();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "Help": // show help
                             AnsiConsole.Clear();
                             if (playerView == "help")
                             {
                                 playerView = "default";
+                                #if CLI_UI
                                 TUI.DrawPlayer();
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                                 break;
                             }
                             playerView = "help";
+                            #if CLI_UI
                             TUI.DrawHelp();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "Settings": // show settings
                             AnsiConsole.Clear();
                             if (playerView == "settings")
                             {
                                 playerView = "default";
+                                #if CLI_UI
                                 TUI.DrawPlayer();
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                                 break;
                             }
                             playerView = "settings";
+                            #if CLI_UI
                             TUI.DrawSettings();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
 
                         case "Autosave": // autosave or not
@@ -272,7 +322,12 @@ namespace jammer
                             Play.MaybeNextSong();
                             break;
                         case "PlaylistOptions": // playlist options
+                            #if CLI_UI
                             TUI.PlaylistInput();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
@@ -284,7 +339,12 @@ namespace jammer
                             }
                             else
                             {
+                                #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                             }
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
@@ -297,7 +357,12 @@ namespace jammer
                             }
                             else
                             {
+                                #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                             }
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
@@ -310,13 +375,23 @@ namespace jammer
                             }
                             else
                             {
+                                #if CLI_UI
                                 jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                #endif
+                                #if ELECTRON_UI
+                                // TODO ELECTRON_UI
+                                #endif
                             }
                             break;
                         case "CommandHelpScreen":
+                            #if CLI_UI
                             TUI.CliHelp();
 
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             Console.ReadKey(true);
                             break;
                         case "DeleteCurrentSong":
@@ -325,21 +400,41 @@ namespace jammer
                         
                         // Case For A
                         case "AddSongToPlaylist":
+                            #if CLI_UI
                             TUI.AddSongToPlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         // Case For ?
                         case "ShowSongsInPlaylists":
+                            #if CLI_UI
                             TUI.ShowSongsInPlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "PlayOtherPlaylist":
+                            #if CLI_UI
                             TUI.PlayOtherPlaylist();
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             break;
                         case "RedownloadCurrentSong":
                             Play.ReDownloadSong();
                             break;
                         case "EditKeybindings":
+                            #if CLI_UI
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexKeybind = 0;
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             if (playerView == "default")
                             {
                                 playerView = "editkeybindings";
@@ -350,8 +445,13 @@ namespace jammer
                             }
                             break;
                         case "ChangeLanguage":
+                            #if CLI_UI
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexLanguage = 0;
+                            #endif
+                            #if ELECTRON_UI
+                            // TODO ELECTRON_UI
+                            #endif
                             if (playerView == "default")
                             {
                                 playerView = "changelanguage";
@@ -372,7 +472,12 @@ namespace jammer
                         //     break;
                     }
             
+                #if CLI_UI
                 TUI.RefreshCurrentView();
+                #endif
+                #if ELECTRON_UI
+                // TODO ELECTRON_UI
+                #endif
                 Action = "";
             }
 
