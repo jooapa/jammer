@@ -1,5 +1,6 @@
 #if WINDOWS
-using System.Windows;
+// using System.Windows;
+// using System.Windows.Media;
 
 namespace jammer;
 public static class MediaTray{
