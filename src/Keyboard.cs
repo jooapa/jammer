@@ -175,9 +175,7 @@ namespace jammer
                             Console.WriteLine("CurrentState: " + state);
                             break;
                         case "Quit":
-                            Console.WriteLine("Quit");
-                            Program.hook.UnhookKeyboard();
-                            AnsiConsole.Clear();
+                            Start.state = MainStates.pause;
                             Environment.Exit(0);
                             break;
                         case "NextSong":
@@ -496,7 +494,7 @@ namespace jammer
             Program.hook.HookKeyboard();
         }
 
-        void Form1_Load(object sender, EventArgs e)
+        void Form1_Load(object? sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(0, 0);
         }
