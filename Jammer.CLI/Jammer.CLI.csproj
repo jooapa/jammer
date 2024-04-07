@@ -1,20 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!-- Common properties for both Windows and Linux builds -->
+    <OutputType>Exe</OutputType>
     <Version>2.0.4</Version>
-    <RootNamespace>jammer_avalonia</RootNamespace>
+    <RootNamespace>Jammer.CLI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
-    <!-- <StartupObject>./Program</StartupObject> -->
-    <DefineConstants>AVALONIA_UI</DefineConstants>
-    <TargetName>jammer_avalonia</TargetName>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <StartupObject>Program</StartupObject>
+    <DefineConstants>CLI_UI</DefineConstants>
+    <TargetName>Jammer.CLI</TargetName>
   </PropertyGroup>
 
-  
   <PropertyGroup Condition="'$(UseForms)'=='true'">
     <DefineConstants>USE_FORMS</DefineConstants>
     <UseWindowsForms>true</UseWindowsForms>
@@ -23,16 +20,13 @@
 
   <!-- Properties for Windows build -->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
   </PropertyGroup>
 
   <!-- Properties for Linux build -->
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <!-- Uncomment these lines for Linux build if needed -->
-    <!-- <OutputType>Exe</OutputType> -->
+    <TargetFramework>net7.0</TargetFramework>
+    
   </PropertyGroup>
 
   
@@ -57,20 +51,4 @@
   <ItemGroup>
     <Compile Include="..\Jammer\*.cs" />
   </ItemGroup>
-
-    <ItemGroup>
-    <Folder Include="Models\" />
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-  </ItemGroup>
-
 </Project>

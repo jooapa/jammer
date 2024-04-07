@@ -185,7 +185,6 @@ cd JAMMER.CLI or JAMMER.ELECTRON
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:UseForms={true|false}
 ```
 
-
 Electron UI
 
 Requires installation of [Electron.net](https://github.com/ElectronNET/Electron.NET)
@@ -228,8 +227,6 @@ CLI - CLI version
 ELECTRON - UI-Electron version
 
 ```
-
-
 
 you can also use `change_version.py` to change the version of the app.
 
