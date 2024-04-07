@@ -8,8 +8,20 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>jammer_HQ.ico</ApplicationIcon>
     <StartupObject>Program</StartupObject>
+  </PropertyGroup>
+
+  <!-- Properties for Windows build -->
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <!-- Properties for Linux build -->
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <TargetFramework>net7.0</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <!-- Uncomment these lines for Linux build if needed -->
+    <!-- <OutputType>Exe</OutputType> -->
   </PropertyGroup>
   
   <ItemGroup>
