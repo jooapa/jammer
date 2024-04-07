@@ -179,10 +179,10 @@ dotnet run -- "path/to/song.mp3" ..
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder
 
-In ```jammer.csproj``` enable Windows build options
-
 ```bash
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
+-p:UseForms -- When true, uses forms to add global key listener
+cd JAMMER.CLI or JAMMER.ELECTRON
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:UseForms={true|false}
 ```
 
 ##### Linux
@@ -190,7 +190,8 @@ dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true
 Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
 
 ```bash
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
+cd JAMMER.CLI or JAMMER.ELECTRON
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false
 ```
 
 ##### Linux AppImage release
@@ -213,9 +214,14 @@ To create AppImage run `build.sh`
 ##### Build script for NSIS installer
 
 ```bash
-build.bat { CLI | FORMS }
-FORMS - Includes global key listeners for windows
+build.bat     { CLI | FORMS } { CLI | ELECTRON }
+
 CLI - Only barebone CLI version
+FORMS - Includes global key listeners for windows
+========================
+CLI - CLI version
+ELECTRON - UI-Electron version
+
 ```
 
 you can also use `change_version.py` to change the version of the app.

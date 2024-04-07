@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Common properties for both Windows and Linux builds -->
+    <OutputType>Exe</OutputType>
+    <Version>2.0.4</Version>
+    <RootNamespace>jammer</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
+    <StartupObject>Program</StartupObject>
+  </PropertyGroup>
+
+  
+  <PropertyGroup Condition="'$(UseForms)'=='true'">
+    <DefineConstants>USE_FORMS</DefineConstants>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>false</UseWPF>
+  </PropertyGroup>
+
+  <!-- Properties for Windows build -->
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFramework>net7.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <!-- Properties for Linux build -->
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>net7.0</TargetFramework>
+    <!-- Uncomment these lines for Linux build if needed -->
+    <!-- <OutputType>Exe</OutputType> -->
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="5.7.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Fody" Version="6.8.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="ManagedBass" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
+    <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
+    <PackageReference Include="Spectre.Console" Version="0.48.0" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    <PackageReference Include="YoutubeExplode" Version="6.3.13" />
+  </ItemGroup>
+</Project>
