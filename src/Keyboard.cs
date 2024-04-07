@@ -1,7 +1,7 @@
 using ManagedBass;
 using Spectre.Console;
 using System.IO;
-#if WINDOWS
+#if WINDOWS && USE_FORMS
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -469,7 +469,7 @@ namespace jammer
         }
     }
 
-    #if WINDOWS
+    #if WINDOWS && USE_FORMS
     public partial class Form1 : Form
     {
         

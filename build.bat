@@ -1,7 +1,23 @@
 @ECHO off
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained
-SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
+if "%1"=="" (
+    ECHO Usage: build.bat [type]
+    ECHO type: CLI ^| FORMS
+    EXIT /B 1
+)
+if "%1"=="CLI" (
+    SET "boolean=false"
+) else if "%1"=="FORMS" (
+    SET "boolean=true"
+) else (
+    ECHO Invalid type: %1
+    ECHO Usage: build.bat [type]
+    ECHO type: CLI ^| FORMS
+    EXIT /B 1
+)
 
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained -p:UseForms=%boolean%
+SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
+    EXIT /B 1
 @REM Build with debug executable
 @REM dotnet build
 @REM SET "sourceFolder=bin\Debug\net7.0\"

@@ -1,4 +1,4 @@
-#if WINDOWS
+#if WINDOWS && USE_FORMS
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
