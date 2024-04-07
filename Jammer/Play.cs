@@ -678,7 +678,10 @@ namespace jammer
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
+            #if CLI_UI
             TUI.RefreshCurrentView();
+            #endif
+            // TODO AVALONIA_UI
         }
     }
 }

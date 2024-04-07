@@ -24,7 +24,7 @@
   <!-- Properties for Windows build -->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
   </PropertyGroup>
 
   <!-- Properties for Linux build -->

@@ -93,8 +93,11 @@ namespace jammer
                     switch (arg) {
                         case "-h":
                         case "--help":
+                            #if CLI_UI
                             TUI.ClearScreen();
                             TUI.CliHelp();
+                            #endif
+                            // TODO AVALONIA_UI
                             return;
                         case "--play":
                         case "-p":
@@ -372,9 +375,12 @@ namespace jammer
 
             Utils.isInitialized = true;
 
+            #if CLI_UI
             TUI.ClearScreen();
             drawOnce = true;
             TUI.RefreshCurrentView();
+            #endif
+            // TODO AVALONIA_UI
             while (true)
             {
                 if (Utils.songs.Length != 0)
