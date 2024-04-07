@@ -1,4 +1,4 @@
-#if WINDOWS
+#if WINDOWS && USE_FORMS
 // using System.Windows;
 // using System.Windows.Media;
 

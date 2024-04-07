@@ -10,11 +10,16 @@
     <StartupObject>Program</StartupObject>
   </PropertyGroup>
 
+  
+  <PropertyGroup Condition="'$(UseForms)'=='true'">
+    <DefineConstants>USE_FORMS</DefineConstants>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>false</UseWPF>
+  </PropertyGroup>
+
   <!-- Properties for Windows build -->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <!-- Properties for Linux build -->
@@ -23,6 +28,7 @@
     <!-- Uncomment these lines for Linux build if needed -->
     <!-- <OutputType>Exe</OutputType> -->
   </PropertyGroup>
+
   
   <ItemGroup>
     <PackageReference Include="Costura.Fody" Version="5.7.0">

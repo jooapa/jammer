@@ -1,3 +1,4 @@
+#if WINDOWS && USE_FORMS
 namespace jammer;
 public partial class Form1 {
     /// <summary>
@@ -32,3 +33,4 @@ public partial class Form1 {
 
     #endregion
 }
+#endif

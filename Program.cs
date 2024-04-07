@@ -1,5 +1,5 @@
 ﻿using jammer;
-#if WINDOWS
+#if WINDOWS && USE_FORMS
 using Spectre.Console;
 using System.Diagnostics;
 using System;
@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 class Program
 {
-#if WINDOWS
+#if WINDOWS && USE_FORMS
     //! USE FOR WINDOWS BUILD
     private static Task? formTask = null;
     private static CancellationTokenSource formCancellationTokenSource = new();
@@ -76,7 +76,9 @@ class Program
             }
         }
 
+        #if WINDOWS && USE_FORMS
         // Wait for the form task to exit gracefully
         formTask?.Wait();
+        #endif
     }
 }
