@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Jammer {
 
-    public static class Funcs {
+    public static partial class TUI {
         
         static public string[] GetAllSongs() {
             if (Utils.songs.Length == 0) {

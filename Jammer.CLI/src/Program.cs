@@ -4,8 +4,6 @@ using System;
 class Program
 {
     static void Main(string[] args) {
-        Start.Run(args);
-
-        Console.WriteLine(":(");
+        Start.Run(args, true);
     }
 }

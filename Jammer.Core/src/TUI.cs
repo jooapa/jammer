@@ -1,7 +1,7 @@
 using Spectre.Console;
 
 namespace Jammer {
-    public static class TUI {
+    public static partial class TUI {
 
         static bool cls = false;
         
@@ -39,7 +39,7 @@ namespace Jammer {
                 }
 
                 // render maintable with tables in it
-                mainTable.AddColumns(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
+                mainTable.AddColumns(GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
                 songsTable.Border = TableBorder.Rounded;
                 mainTable.AddRow(controlsTable.Centered());
@@ -86,7 +86,7 @@ namespace Jammer {
         static public void ClearScreen() {
             cls = true;
         }
-            // "Components" of the Funcs
+            // "Components" of the TUI
         static public void UIComponent_Controls(Table table) {
             table.Border = TableBorder.Rounded;
             table.AddColumn(Locale.Player.State);
@@ -104,8 +104,8 @@ namespace Jammer {
 
         static public void UIComponent_Songs(Table table) {
             // AnsiConsole.Clear();
-            string[] queueLines = Funcs.GetAllSongsQueue();
-            string[] lines = Funcs.GetAllSongs();
+            string[] queueLines = GetAllSongsQueue();
+            string[] lines = GetAllSongs();
 
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
@@ -120,10 +120,10 @@ namespace Jammer {
 
         static public void UIComponent_Normal(Table table) {
             if (Utils.currentPlaylist == "") {
-                table.AddColumn(Funcs.GetPrevCurrentNextSong());
+                table.AddColumn(GetPrevCurrentNextSong());
             } else {
                 table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
-                table.AddRow(Funcs.GetPrevCurrentNextSong());
+                table.AddRow(GetPrevCurrentNextSong());
             }
         }
 
@@ -138,7 +138,7 @@ namespace Jammer {
                 length = 100;
             }
             int progress = (int)(value / max * length);
-            string progressBar = Funcs.CalculateTime(value) + " |";
+            string progressBar = CalculateTime(value) + " |";
             for (int i = 0; i < length; i++) {
                 if (i < progress) {
                     progressBar += "█";
@@ -147,7 +147,7 @@ namespace Jammer {
                     progressBar += " ";
                 }
             }
-            progressBar += "| " + Funcs.CalculateTime(max);
+            progressBar += "| " + CalculateTime(max);
             return progressBar;
         }
 

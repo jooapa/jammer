@@ -14,12 +14,12 @@ namespace Jammer {
                 using (var webClient = new WebClient()) {
                     webClient.DownloadProgressChanged += (sender, e) =>
                     {
-                        #if CLI_UI
+                        if (Start.CLI) {
                         Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
-                        #endif
-                        #if AVALONIA_UI
+                        } else {
+                        
                         //TODO: Add download progress bar
-                        #endif
+                        }
                         
                     };
 
@@ -28,12 +28,12 @@ namespace Jammer {
             }
             catch (Exception ex)
             {
-                #if CLI_UI
+                if (Start.CLI) {
                 Console.WriteLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message);
-                #endif
-                #if AVALONIA_UI
+                } else {
+                
                 // TODO Add error message
-                #endif
+                }
             }
 
             return Path.GetFullPath(downloadPath);
@@ -45,12 +45,12 @@ namespace Jammer {
             using (HttpClient client = new HttpClient()) {
                 latestVersion = client.GetStringAsync(url).Result;
             }
-            #if CLI_UI
+            if (Start.CLI) {
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.LatestVersion}: [green]" + latestVersion + "[/]");
-            #endif
-            #if AVALONIA_UI
+            } else {
+            
             // TODO Add latest version message
-            #endif
+            }
             if (latestVersion != version) {
                 return latestVersion;
             }
