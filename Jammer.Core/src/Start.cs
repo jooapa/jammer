@@ -416,7 +416,7 @@ namespace Jammer
             #if CLI_UI
             TUI.ClearScreen();
             drawOnce = true;
-            Funcs.RefreshCurrentView();
+            TUI.RefreshCurrentView();
             #endif
 
             while (true)
@@ -438,7 +438,7 @@ namespace Jammer
                         consoleHeight = Console.WindowHeight;
                         consoleWidth = Console.WindowWidth;
                         AnsiConsole.Clear();
-                        Funcs.RefreshCurrentView();
+                        TUI.RefreshCurrentView();
                     }
                     } else {
                     
@@ -453,7 +453,7 @@ namespace Jammer
                 {
                     case MainStates.idle:
                         #if CLI_UI
-                        Funcs.ClearScreen();
+                        TUI.ClearScreen();
                         CheckKeyboard();
                         } else {
                         if (Start.CLI) {
@@ -472,7 +472,7 @@ namespace Jammer
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            Funcs.DrawPlayer();
+                            TUI.DrawPlayer();
                             drawOnce = false;
                         }
                         #endif
@@ -489,8 +489,8 @@ namespace Jammer
                             Debug.dprint("Play - len");
                             Play.PlaySong();
                             #if CLI_UI
-                            Funcs.ClearScreen();
-                            Funcs.DrawPlayer();
+                            TUI.ClearScreen();
+                            TUI.DrawPlayer();
                             drawOnce = true;
                             } else {
                             
@@ -525,7 +525,7 @@ namespace Jammer
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            Funcs.DrawPlayer();
+                            TUI.DrawPlayer();
                             drawOnce = false;
                         }
                         #endif
