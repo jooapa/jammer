@@ -63,10 +63,10 @@ namespace Jammer {
                         #if CLI_UI
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
-                        } else {
-                        
+                        #endif
+                        #if AVALONIA_UI
                         // TODO AVALONIA_UI
-                        }
+                        #endif
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
@@ -82,20 +82,20 @@ namespace Jammer {
                 {
                     #if CLI_UI
                     Jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
-                    } else {
-                    
+                    #endif
+                    #if AVALONIA_UI
                     // TODO AVALONIA_UI
-                    }
+                    #endif
                 }
             }
             catch (Exception ex)
             {
                 #if CLI_UI
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO AVALONIA_UI
-                }
+                #endif
                 songPath = "";
             }
         }
@@ -124,10 +124,10 @@ namespace Jammer {
                             #if CLI_UI
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
-                            } else {
-                            
+                            #endif
+                            #if AVALONIA_UI
                             // TODO AVALONIA_UI
-                            }
+                            #endif
                         });
                         
                         await soundcloud.DownloadAsync(track, songPath, progress);
@@ -153,10 +153,10 @@ namespace Jammer {
                 #if CLI_UI
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO AVALONIA_UI
-                }
+                #endif
                 songPath = "";
             }
         }
@@ -183,10 +183,10 @@ namespace Jammer {
                 #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO AVALONIA_UI
-                }
+                #endif
                 return;
             }
 
@@ -203,18 +203,18 @@ namespace Jammer {
             var playlist = await youtube.Playlists.GetVideosAsync(url);
             #if CLI_UI
             Console.WriteLine(playlist[0]);
-            } else {
-            
+            #endif
+            #if AVALONIA_UI
             // TODO AVALONIA_UI
-            }
+            #endif
             if (playlist.Count() == 0 || playlist == null) {
                 #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO AVALONIA_UI
-                }
+                #endif
                 return;
             }
 
