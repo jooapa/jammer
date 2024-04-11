@@ -1,1 +1,1 @@
-jammer %1
+Jammer %1

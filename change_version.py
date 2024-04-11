@@ -20,33 +20,33 @@ with open(os.path.join('nsis', 'setup.nsi'), 'w') as new_nsis_file:
         else:
             new_nsis_file.write(line)
             
-with open(os.path.join('src', "jammer", 'Utils.cs'), 'r') as utils_file:
+with open(os.path.join('src', "Jammer", 'Utils.cs'), 'r') as utils_file:
     lines = utils_file.readlines()
     
-with open(os.path.join('src', "jammer", 'Utils.cs'), 'w') as new_utils_file:
+with open(os.path.join('src', "Jammer", 'Utils.cs'), 'w') as new_utils_file:
     for line in lines:
         if line.startswith('        public static string version = "'):
             new_utils_file.write('        public static string version = "' + sys.argv[1] + '";\n')
         else:
             new_utils_file.write(line)
 
-with open(os.path.join('jammer.csproj'), 'r') as jammer_file:
-    lines = jammer_file.readlines()
+with open(os.path.join('Jammer.csproj'), 'r') as Jammer_file:
+    lines = Jammer_file.readlines()
     
-with open(os.path.join('jammer.csproj'), 'w') as new_jammer_file:
+with open(os.path.join('Jammer.csproj'), 'w') as new_Jammer_file:
     for line in lines:
         if line.startswith('      <Version>'):
-            new_jammer_file.write('      <Version>' + sys.argv[1] + '</Version>\n')
+            new_Jammer_file.write('      <Version>' + sys.argv[1] + '</Version>\n')
         else:
-            new_jammer_file.write(line)
+            new_Jammer_file.write(line)
 
 
-with open(os.path.join('build.bat'), 'r') as jammer_file:
-    lines = jammer_file.readlines()
+with open(os.path.join('build.bat'), 'r') as Jammer_file:
+    lines = Jammer_file.readlines()
     
-with open(os.path.join('build.bat'), 'w') as new_jammer_file:
+with open(os.path.join('build.bat'), 'w') as new_Jammer_file:
     for line in lines:
-        if line.startswith('SET "start_name=jammer-Setup_'):
-            new_jammer_file.write('SET "start_name=jammer-Setup_V' + sys.argv[1] + '.exe\"\n')
+        if line.startswith('SET "start_name=Jammer-Setup_'):
+            new_Jammer_file.write('SET "start_name=Jammer-Setup_V' + sys.argv[1] + '.exe\"\n')
         else:
-            new_jammer_file.write(line)
+            new_Jammer_file.write(line)

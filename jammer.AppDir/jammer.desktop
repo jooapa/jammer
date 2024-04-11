@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=jammer
-Exec=jammer
-Icon=jammer-icon
+Name=Jammer
+Exec=Jammer
+Icon=Jammer-icon
 Type=Application
 Categories=Music
 Terminal=true

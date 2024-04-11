@@ -10,11 +10,11 @@ if (-not $isAdmin) {
 }
 
 # Define the path to the Jammer folder
-$jammerFolderPath = "$PSScriptRoot"
+$JammerFolderPath = "$PSScriptRoot"
 
 # Remove the Jammer folder from the system's PATH environment variable
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
-$newPath = $currentPath.Replace(";" + $jammerFolderPath, "")
+$newPath = $currentPath.Replace(";" + $JammerFolderPath, "")
 [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
 
 Write-Host "Jammer folder removed from the system PATH."

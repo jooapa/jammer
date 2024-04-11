@@ -1,6 +1,6 @@
 # Jammer — Play songs in cli with Youtube and Soundcloud support
 
-![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/jammer-banner.gif)
+![banner](https://raw.githubusercontent.com/jooapa/Jammer/main/.github/img/Jammer-banner.gif)
 
 ## Introduction
 
@@ -23,70 +23,70 @@ for the playlist feature across different platforms***
 
 ### Install
 
-Github latest [Release](https://github.com/jooapa/signal-jammer/releases/latest)
-Linux version of jammer requires fuse2. Ubuntu 22.02 or newer install `apt
+Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
+Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt
 install libfuse2`.
 
 ### Update existing
 
 ```bash
-jammer update
+Jammer update
 ```
 
 ## Usage
 
 ```bash
-jammer
-jammer [song] ... [folder]
-jammer https://soundcloud.com/username/track-name
-jammer https://soundcloud.com/username/sets/playlist-name
-jammer https://youtube.com/watch?v=video-id
-jammer https://youtube.com/playlist?list=playlist-id
+Jammer
+Jammer [song] ... [folder]
+Jammer https://soundcloud.com/username/track-name
+Jammer https://soundcloud.com/username/sets/playlist-name
+Jammer https://youtube.com/watch?v=video-id
+Jammer https://youtube.com/playlist?list=playlist-id
 
-jammer --start        opens jammer folder
-jammer --update       checks for updates and installs
-jammer --help -h      show help
-jammer -d             debug mode
-jammer --version      show version
+Jammer --start        opens Jammer folder
+Jammer --update       checks for updates and installs
+Jammer --help -h      show help
+Jammer -d             debug mode
+Jammer --version      show version
 ```
 
 *when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-jammer -p, --play <name>                  play playlist
-jammer -c, --create <name>                create playlist
-jammer -d, --delete <name>                delete playlist
-jammer -a, --add <name> <song> ...        add song to playlist
-jammer -r, --remove <name> <song> ...     remove song from playlist
-jammer -s, --show <name> 
-jammer -l, --list                         list all playlists
-jammer -f, --flush                        flushes all the songs in songs folder
-jammer -sp, --set-path <path>, <default>  set path for songs folder
+Jammer -p, --play <name>                  play playlist
+Jammer -c, --create <name>                create playlist
+Jammer -d, --delete <name>                delete playlist
+Jammer -a, --add <name> <song> ...        add song to playlist
+Jammer -r, --remove <name> <song> ...     remove song from playlist
+Jammer -s, --show <name> 
+Jammer -l, --list                         list all playlists
+Jammer -f, --flush                        flushes all the songs in songs folder
+Jammer -sp, --set-path <path>, <default>  set path for songs folder
 ```
 
 ### Example usage
 
 ```bash
-jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
+Jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\Jammer\playlists\playlist.Jammer
 ```
 
 ```bash
-jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
+Jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
 ```
 
 ```bash
-jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
+Jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
 #### Example of making a playlist in cli
 
 ```bash
-jammer -c gd
-jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
-jammer -p gd
+Jammer -c gd
+Jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
+Jammer -p gd
 ```
 
-*you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
+*you can do same opening the `Jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
 
 You can also use `-d` flag that will add logs to current folder.
 
@@ -156,7 +156,7 @@ Create new translation by copying already existing .ini file from /locales and t
 
 #### Random info
 
-You can also stack multiple jammer playlists inside another jammer playlists.
+You can also stack multiple Jammer playlists inside another Jammer playlists.
 
 ---
 
@@ -236,7 +236,7 @@ python change_version.py [version]
 
 ---
 
-![image](https://raw.githubusercontent.com/jooapa/jammer/main/jammer_HQ.png)
+![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.png)
 
 ---
 

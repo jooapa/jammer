@@ -7,7 +7,7 @@ unicode True
 
 !define VERSION "2.0.5"
 
-Outfile "jammer-Setup_V${VERSION}.exe" ; Use the version number here
+Outfile "Jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
 Name "Jammer Setup V${VERSION}"
 RequestExecutionLevel admin
@@ -32,7 +32,7 @@ PageExEnd
 
 Function .onVerifyInstDir
     Var /GLOBAL ext
-    StrCpy $ext "jammer"
+    StrCpy $ext "Jammer"
     StrCpy $INSTALL_DIR "$INSTALL_DIR$ext"
     ; Checks if folder already exists
     Call CheckFolder
@@ -60,7 +60,7 @@ PageExEnd
 ; Set the default installation directory
 Function .onInit
     InitPluginsDir
-    StrCpy $INSTALL_DIR $PROGRAMFILES\jammer
+    StrCpy $INSTALL_DIR $PROGRAMFILES\Jammer
 FunctionEnd
 
 ############################## START ##############################
@@ -78,19 +78,19 @@ SetOutPath $INSTALL_DIR
 CreateDirectory $INSTALL_DIR
 
 ; Files to install
-File "jammer.exe"
-File "jammer_1024px.ico"
-File "jammer.ico"
+File "Jammer.exe"
+File "Jammer_1024px.ico"
+File "Jammer.ico"
 File "setup.ps1"
 File "uninstall.ps1"
 File "run_command.bat"
-File "open_with_jammer.cmd"
+File "open_with_Jammer.cmd"
 File "LICENSE"
 File "bass.dll"
 File "bass_aac.dll"
 
-CreateDirectory $PROFILE\jammer\locales
-SetOutPath $PROFILE\jammer\locales
+CreateDirectory $PROFILE\Jammer\locales
+SetOutPath $PROFILE\Jammer\locales
 File /r "locales\*.*"
 SetOutPath $INSTALL_DIR
 
@@ -142,8 +142,8 @@ Delete "setup.ps1"
 File "uninstall.ps1"
 
 # Create shortcut on DESKTOP
-CreateShortcut "$DESKTOP\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico"
-CreateShortCut "$SENDTO\jammer.lnk" "$INSTALL_DIR\jammer.exe" "" "$INSTALL_DIR\jammer_1024px.ico" 0
+CreateShortcut "$DESKTOP\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer_1024px.ico"
+CreateShortCut "$SENDTO\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer_1024px.ico" 0
 
 ; Create an uninstaller in the same directory as the installer
 WriteUninstaller "$INSTALL_DIR\Uninstall.exe"
@@ -163,16 +163,16 @@ nsExec::ExecToLog 'Powershell.exe -ExecutionPolicy Bypass -File "$INSTDIR\uninst
 ########################### DELETE FILES ###########################
 ; Remove installed files during uninstallation
 
-Delete "$INSTDIR\jammer.exe"
-Delete "$INSTDIR\jammer.ico"
-Delete "$INSTDIR\jammer_1024px.ico"
+Delete "$INSTDIR\Jammer.exe"
+Delete "$INSTDIR\Jammer.ico"
+Delete "$INSTDIR\Jammer_1024px.ico"
 Delete "$INSTDIR\LICENSE"
 Delete "$INSTDIR\uninstall.exe"
 Delete "$INSTDIR\setup.ps1"
 Delete "$INSTDIR\run_command.bat"
-Delete "$INSTDIR\open_with_jammer.cmd"
-Delete "$DESKTOP\jammer.lnk"
-Delete "$SENDTO\jammer.lnk"
+Delete "$INSTDIR\open_with_Jammer.cmd"
+Delete "$DESKTOP\Jammer.lnk"
+Delete "$SENDTO\Jammer.lnk"
 Delete "$INSTDIR\bass.dll"
 Delete "$INSTDIR\bass_aac.dll"
 

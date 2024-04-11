@@ -10,26 +10,26 @@ if (-not $isAdmin) {
 }
 
 # Define the path to the Jammer folder
-$jammerFolderPath = "$PSScriptRoot"
+$JammerFolderPath = "$PSScriptRoot"
 
 # Check if Jammer folder path is already in the system's PATH environment variable
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
-if ($currentPath -split ";" -notcontains $jammerFolderPath) {
+if ($currentPath -split ";" -notcontains $JammerFolderPath) {
     # Add the Jammer folder to the system's PATH environment variable
-    $newPath = $currentPath + ";" + $jammerFolderPath
+    $newPath = $currentPath + ";" + $JammerFolderPath
     [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
     Write-Host "Jammer folder added to the system PATH."
 } else {
     Write-Host "Jammer folder is already present in the system PATH."
 }
 
-# # Add a "jammer" as context menu item that will run jammer.exe with the selected file(s) as argument. and it will not open multiple cmd windows
-# $jammerCommand = "cmd /c start /b jammer.exe `"%1`""
-# $jammerCommandKey = "Software\Classes\*\shell\jammer\command"
-# $jammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($jammerCommandKey, $true)
-# if (-not $jammerCommandValue) {
-#     $jammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey($jammerCommandKey)
-#     $jammerCommandValue.SetValue("", $jammerCommand)
+# # Add a "Jammer" as context menu item that will run Jammer.exe with the selected file(s) as argument. and it will not open multiple cmd windows
+# $JammerCommand = "cmd /c start /b Jammer.exe `"%1`""
+# $JammerCommandKey = "Software\Classes\*\shell\Jammer\command"
+# $JammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($JammerCommandKey, $true)
+# if (-not $JammerCommandValue) {
+#     $JammerCommandValue = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey($JammerCommandKey)
+#     $JammerCommandValue.SetValue("", $JammerCommand)
 #     Write-Host "Jammer context menu item added."
 # } else {
 #     Write-Host "Jammer context menu item is already present."
