@@ -49,7 +49,14 @@ namespace Jammer
         //
         public static void Run(string[] args)
         {        
-            System.Diagnostics.Debug.WriteLine(drawOnce);
+            
+            #if CLI_UI
+            #elif AVALONIA_UI
+            #else
+                Console.WriteLine("No UI defined. Exiting.");
+                Environment.Exit(1);
+            #endif
+
             #if CLI_UI
             try{
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -256,10 +263,6 @@ namespace Jammer
                                 } else {
                                     #if CLI_UI
                                     AnsiConsole.MarkupLine($"[red]Path [grey]'[/][white]{args[i+1]}[/][grey]'[/] does not exist.[/]"); // TODO ADD LOCALE
-                                    } else {
-                                    
-                                        // TODO AVALONIA_UI
-                                    }
                                     #endif
                                     #if AVALONIA_UI
                                     // TODO AVALONIA_UI
@@ -270,10 +273,7 @@ namespace Jammer
                             } else {
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine("[red]No songs path given.[/]"); // TODO ADD LOCALE
-                                } else {
                                 
-                                    // TODO AVALONIA_UI
-                                }
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -284,10 +284,6 @@ namespace Jammer
                             // open explorer in Jammer folder
                             #if CLI_UI
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
-                            } else {
-                            
-                                // TODO AVALONIA_UI
-                            }
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -303,10 +299,7 @@ namespace Jammer
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.RunUpdate}[/]");
-                                } else {
                                 
-                                    // TODO AVALONIA_UI
-                                }
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -315,10 +308,6 @@ namespace Jammer
                             }
                             #if CLI_UI
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.CheckingUpdates}[/]");
-                            } else {
-                            
-                                // TODO AVALONIA_UI
-                            }
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -333,10 +322,7 @@ namespace Jammer
             
                                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.DownloadedTo}: " + downloadPath + "[/]");
                                 AnsiConsole.MarkupLine($"[cyan]{Locale.OutsideItems.Installing}[/]");
-                                } else {
                                 
-                                    // TODO AVALONIA_UI
-                                }
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -346,10 +332,6 @@ namespace Jammer
                             } else {
                                 #if CLI_UI
                                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpToDate}[/]");
-                                } else {
-                                
-                                    // TODO AVALONIA_UI
-                                }
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -371,10 +353,6 @@ namespace Jammer
             {
                 #if CLI_UI
                 Jammer.Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
-                } else {
-                
-                    // TODO AVALONIA_UI
-                }
                 #endif
                 #if AVALONIA_UI
                 // TODO AVALONIA_UI
@@ -416,7 +394,7 @@ namespace Jammer
             #if CLI_UI
             TUI.ClearScreen();
             drawOnce = true;
-            Funcs.RefreshCurrentView();
+            TUI.RefreshCurrentView();
             #endif
 
             while (true)
@@ -438,41 +416,24 @@ namespace Jammer
                         consoleHeight = Console.WindowHeight;
                         consoleWidth = Console.WindowWidth;
                         AnsiConsole.Clear();
-                        Funcs.RefreshCurrentView();
+                        TUI.RefreshCurrentView();
                     }
-                    } else {
+                    #else
                     
-                        // TODO AVALONIA_UI
-                    }
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO AVALONIA_UI
                     #endif
 
                 switch (state)
                 {
                     case MainStates.idle:
                         #if CLI_UI
-                        Funcs.ClearScreen();
+                        TUI.ClearScreen();
                         CheckKeyboard();
-                        } else {
-                        if (Start.CLI) {
-                            //FIXME(ra) This is a workaround for screen to update once when entering the state.
-                            if (drawOnce)
-                            {
-                                TUI.DrawPlayer();
-                                drawOnce = false;
-                            }
-                        } else {
-                                // TODO AVALONIA_UI
-                        }
-                        }
                         #endif
                         #if CLI_UI
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            Funcs.DrawPlayer();
+                            TUI.DrawPlayer();
                             drawOnce = false;
                         }
                         #endif
@@ -489,13 +450,9 @@ namespace Jammer
                             Debug.dprint("Play - len");
                             Play.PlaySong();
                             #if CLI_UI
-                            Funcs.ClearScreen();
-                            Funcs.DrawPlayer();
+                            TUI.ClearScreen();
+                            TUI.DrawPlayer();
                             drawOnce = true;
-                            } else {
-                            
-                                // TODO AVALONIA_UI
-                            }
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -525,7 +482,7 @@ namespace Jammer
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            Funcs.DrawPlayer();
+                            TUI.DrawPlayer();
                             drawOnce = false;
                         }
                         #endif
@@ -551,7 +508,6 @@ namespace Jammer
                             Play.MaybeNextSong();
                             prevMusicTimePlayed = 0;
                             #if CLI_UI
-                            if (Start.CLI) {
                             TUI.RefreshCurrentView();
                             #endif
                             #if AVALONIA_UI
@@ -593,7 +549,7 @@ namespace Jammer
                         #endif
                         break;
                 }
-                
+
                 Thread.Sleep(5);
             }
         }
@@ -637,3 +593,4 @@ namespace Jammer
         }
     }
 }
+        

@@ -274,7 +274,7 @@ namespace Jammer
                             {
                                 playerView = "default";
                                 #if CLI_UI
-                                Funcs.DrawPlayer();
+                                TUI.DrawPlayer();
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -283,7 +283,7 @@ namespace Jammer
                             }
                             playerView = "help";
                             #if CLI_UI
-                            Funcs.DrawHelp();
+                            TUI.DrawHelp();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -295,7 +295,7 @@ namespace Jammer
                             {
                                 playerView = "default";
                                 #if CLI_UI
-                                Funcs.DrawPlayer();
+                                TUI.DrawPlayer();
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -304,7 +304,7 @@ namespace Jammer
                             }
                             playerView = "settings";
                             #if CLI_UI
-                            Funcs.DrawSettings();
+                            TUI.DrawSettings();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -385,7 +385,7 @@ namespace Jammer
                             break;
                         case "CommandHelpScreen":
                             #if CLI_UI
-                            Funcs.CliHelp();
+                            TUI.CliHelp();
 
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
                             #endif
@@ -473,7 +473,7 @@ namespace Jammer
                     }
             
                 #if CLI_UI
-                Funcs.RefreshCurrentView();
+                TUI.RefreshCurrentView();
                 #endif
                 #if AVALONIA_UI
                 // TODO AVALONIA_UI

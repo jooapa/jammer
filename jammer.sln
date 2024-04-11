@@ -9,11 +9,24 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jammer.Avalonia", "Jammer.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jammer.Core", "Jammer.Core\Jammer.Core.csproj", "{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}"
 EndProject
-
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12AE68F3-49AD-4352-88DF-3461BF93972F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12AE68F3-49AD-4352-88DF-3461BF93972F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12AE68F3-49AD-4352-88DF-3461BF93972F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12AE68F3-49AD-4352-88DF-3461BF93972F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C438EE-B7A0-4D52-826F-B48D4D552472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C438EE-B7A0-4D52-826F-B48D4D552472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C438EE-B7A0-4D52-826F-B48D4D552472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C438EE-B7A0-4D52-826F-B48D4D552472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -22,4 +35,3 @@ Global
 		SolutionGuid = {4238CBB0-85B8-45F0-9F6B-969E2DE3B234}
 	EndGlobalSection
 EndGlobal
-
