@@ -10,21 +10,21 @@ namespace Jammer
             if (Directory.Exists(Preferences.songsPath))
             {
                 Directory.Delete(Preferences.songsPath, true);
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[green]Jammer songs flushed.[/]");
-                } else {
-                
-                    // TODO AVALONIA_UI
-                }
+                #endif
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
+                #endif
             }
             else
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]Jammer songs folder not found.[/]");
-                } else {
-                
-                    // TODO AVALONIA_UI
-                }
+                #endif
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
+                #endif
             }
         }
     }

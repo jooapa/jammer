@@ -22,12 +22,12 @@ namespace Jammer
                 }
 
                 string item = args[i];
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
-                } else {
-                
-                    // TODO AVALONIA_UI
-                }
+                #endif
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
+                #endif
 
                 if (URL.IsUrl(item))
                 {
@@ -57,20 +57,20 @@ namespace Jammer
                     }
                     else if (URL.IsUrl(item))
                     {
-                        if (Start.CLI) {
-                        } else {
-                        
-                            // TODO AVALONIA_UI
-                        }
+                        #if CLI_UI
+                        #endif
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
+                        #endif
                         AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
                     }
                     else {
-                        if (Start.CLI) {
+                        #if CLI_UI
                         AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
-                        } else {
-                        
-                            // TODO AVALONIA_UI
-                        }
+                        #endif
+                        #if AVALONIA_UI
+                        // TODO AVALONIA_UI
+                        #endif
                         // delete item from args
                         args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                         i--;
@@ -94,12 +94,12 @@ namespace Jammer
                 }
                 else if (!File.Exists(item))
                 {
-                    if (Start.CLI) {
+                    #if CLI_UI
                     AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} {item} {Locale.OutsideItems.DoesntExist}[/]");
-                    } else {
-                    
-                        // TODO AVALONIA_UI
-                    }
+                    #endif
+                    #if AVALONIA_UI
+                    // TODO AVALONIA_UI
+                    #endif
                     // delete item from args
                     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                     i--;

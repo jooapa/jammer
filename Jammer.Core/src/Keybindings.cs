@@ -24,7 +24,7 @@ namespace Jammer{
         ```
     
     5. Adding keybind to help screen (Optional)
-        In TUI.cs DrawHelp() create a new variable:
+        In Funcs.cs DrawHelp() create a new variable:
         ```
         string[] IniKeyName = (Keybindings.IniKeyName).Replace(" ", "").Split(separator);
         string[] RefreshConsole = (Keybindings.RefreshConsole).Replace(" ", "").Split(separator);

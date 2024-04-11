@@ -24,12 +24,12 @@ namespace Jammer {
             } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
             } else {
-                if (Start.CLI) {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
-                } else {
-                
-                    // TODO AVALONIA_UI
-                }
+                #endif
+                #if AVALONIA_UI
+                // TODO AVALONIA_UI
+                #endif
                 Debug.dprint("Invalid url");
             }
 
@@ -60,12 +60,12 @@ namespace Jammer {
                 {
                     var progress = new Progress<double>(data =>
                     {
-                        if (Start.CLI) {
+                        #if CLI_UI
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
                         } else {
                         
-                            // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                         }
                     });
 
@@ -80,21 +80,21 @@ namespace Jammer {
                 }
                 else
                 {
-                    if (Start.CLI) {
+                    #if CLI_UI
                     Jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                     } else {
                     
-                        // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
                 } else {
                 
-                    // TODO AVALONIA_UI
+                // TODO AVALONIA_UI
                 }
                 songPath = "";
             }
@@ -121,12 +121,12 @@ namespace Jammer {
                     if(track.Title != null){
 
                         var progress = new Progress<double>(data => {
-                            if (Start.CLI) {
+                            #if CLI_UI
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
                             } else {
                             
-                                // TODO AVALONIA_UI
+                            // TODO AVALONIA_UI
                             }
                         });
                         
@@ -150,12 +150,12 @@ namespace Jammer {
 
             }
             catch (Exception ex) { 
-                if (Start.CLI) {
+                #if CLI_UI
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
                 } else {
                 
-                    // TODO AVALONIA_UI
+                // TODO AVALONIA_UI
                 }
                 songPath = "";
             }
@@ -180,12 +180,12 @@ namespace Jammer {
             var playlist = await soundcloud.Playlists.GetAsync(url, true);
 
             if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
-                if (Start.CLI) {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 } else {
                 
-                    // TODO AVALONIA_UI
+                // TODO AVALONIA_UI
                 }
                 return;
             }
@@ -201,19 +201,19 @@ namespace Jammer {
         public static async Task GetPlaylistYoutube(string url) {
             // Get all playlist tracks
             var playlist = await youtube.Playlists.GetVideosAsync(url);
-            if (Start.CLI) {
+            #if CLI_UI
             Console.WriteLine(playlist[0]);
             } else {
             
-                // TODO AVALONIA_UI
+            // TODO AVALONIA_UI
             }
             if (playlist.Count() == 0 || playlist == null) {
-                if (Start.CLI) {
+                #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 } else {
                 
-                    // TODO AVALONIA_UI
+                // TODO AVALONIA_UI
                 }
                 return;
             }

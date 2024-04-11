@@ -185,12 +185,12 @@ namespace Jammer
                 }
                 catch (Exception e)
                 {
-                    if (Start.CLI) {
+                    #if CLI_UI
                     Console.WriteLine(e);
-                    } else {
-                    
+                    #endif
+                    #if AVALONIA_UI
                     // TODO Add error message
-                    }
+                    #endif
                     return 0.05f;
                 }   
             }

@@ -60,12 +60,12 @@ namespace Jammer
 
             if (songs.Length == 0)
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add no songs in playlist message
-                }
+                #endif
                 Currentindex = 0;
                 Start.Run(new string[] {});
                 return;
@@ -100,12 +100,12 @@ namespace Jammer
                 {
                     AddSong(file);
                 }
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add folder message
-                }
+                #endif
 
                 if (Utils.songs.Length == originalLengthMinusFolder) {
                     path = Utils.songs[originalLengthMinusFolder - 1];
@@ -138,12 +138,12 @@ namespace Jammer
             }
             else
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add song not found message
-                }
+                #endif
                 return;
             }
 
@@ -216,12 +216,12 @@ namespace Jammer
                 }
                 else
                 {
-                    if (Start.CLI) {
+                    #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
-                    } else {
-                    
+                    #endif
+                    #if AVALONIA_UI
                     // TODO Add unsupported file format message
-                    }
+                    #endif
                     Debug.dprint("Unsupported file format");
                     // remove song from current Utils.songs
                     Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
@@ -235,12 +235,12 @@ namespace Jammer
             }
             catch (Exception e)
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add error message
-                }
+                #endif
                 Debug.dprint("Error: " + e);
                 return;
             }
@@ -510,12 +510,12 @@ namespace Jammer
             {
                 if (s == song)
                 {
-                    if (Start.CLI) {
+                    #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
-                    } else {
-                    
+                    #endif
+                    #if AVALONIA_UI
                     // TODO Add song in playlist message
-                    }
+                    #endif
                     return;
                 }
             }
@@ -538,12 +538,12 @@ namespace Jammer
             // check if index is in range
             if (index < 0 || index > Utils.songs.Length)
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add index out of range message
-                }
+                #endif
                 return;
             }
             // remove song from current Utils.songs
@@ -659,12 +659,12 @@ namespace Jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                if (Start.CLI) {
+                #if CLI_UI
                 Jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
-                } else {
-                
+                #endif
+                #if AVALONIA_UI
                 // TODO Add start playing message
-                }
+                #endif
 
                 DeleteSong(Utils.currentSongIndex, false);
                 
@@ -678,11 +678,10 @@ namespace Jammer
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
-            if (Start.CLI) {
-                TUI.RefreshCurrentView();
-            } else {
-                    // TODO AVALONIA_UI
-            }
+            #if CLI_UI
+            TUI.RefreshCurrentView();
+            #endif
+            // TODO AVALONIA_UI
         }
     }
 }
