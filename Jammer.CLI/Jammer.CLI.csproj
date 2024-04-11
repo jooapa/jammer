@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>2.0.4</Version>
+    <Version>2.0.6</Version>
     <RootNamespace>Jammer.CLI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>..\Jammer_HQ.ico</ApplicationIcon>
-    <StartupObject>Program</StartupObject>
     <DefineConstants>CLI_UI</DefineConstants>
     <TargetName>Jammer.CLI</TargetName>
     <TargetFramework>net7.0</TargetFramework>

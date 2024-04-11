@@ -27,12 +27,12 @@ def change_version(version):
                     f'        public static string version = "{version}";\n')
     
     replace_in_file(os.path.join('Jammer.CLI', 'Jammer.CLI.csproj'), 
-                    '      <Version>', 
-                    f'      <Version>{version}</Version>\n')
+                    '    <Version>', 
+                    f'    <Version>{version}</Version>\n')
     
     replace_in_file(os.path.join('Jammer.Avalonia', 'Jammer.Avalonia.csproj'), 
-                    '      <Version>', 
-                    f'      <Version>{version}</Version>\n')
+                    '    <Version>', 
+                    f'    <Version>{version}</Version>\n')
     
     replace_in_file(os.path.join('Jammer.CLI', 'buildcli.bat'),
                     'SET "start_name=Jammer-Setup_', 
