@@ -1,25 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <!-- Common properties for both Windows and Linux builds -->
-    <Version>2.0.4</Version>
-    <RootNamespace>Jammer.Avalonia</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
-    <!-- <StartupObject>./Program</StartupObject> -->
-    <DefineConstants>AVALONIA_UI</DefineConstants>
-    <TargetName>Jammer.Avalonia</TargetName>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-  </PropertyGroup>
-
-  
-  <PropertyGroup Condition="'$(UseForms)'=='true'">
-    <DefineConstants>USE_FORMS</DefineConstants>
-    <UseWindowsForms>true</UseWindowsForms>
-    <UseWPF>false</UseWPF>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Properties for Windows build -->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
@@ -27,24 +6,35 @@
     <TargetFramework>net7.0-windows</TargetFramework>
   </PropertyGroup>
 
-  <!-- Properties for Linux build -->
+    <!-- Properties for Linux build -->
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
-    <!-- Uncomment these lines for Linux build if needed -->
-    <!-- <OutputType>Exe</OutputType> -->
   </PropertyGroup>
 
-  
+  <PropertyGroup>
+    <Version>2.0.4</Version>
+    <RootNamespace>Jammer.Avalonia</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>..\jammer_HQ.ico</ApplicationIcon>
+    <DefineConstants>AVALONIA_UI</DefineConstants>
+    <TargetName>Jammer.Avalonia</TargetName>
+
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="5.7.0">
+    <!-- <PackageReference Include="Costura.Fody" Version="5.7.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Fody" Version="6.8.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    </PackageReference> -->
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
@@ -52,13 +42,10 @@
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.3.13" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\Jammer\*.cs" />
   </ItemGroup>
 
-    <ItemGroup>
+  <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
@@ -72,5 +59,4 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
   </ItemGroup>
-
 </Project>

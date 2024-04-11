@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using GetStartedApp.ViewModels;
+using Jammer.Avalonia.ViewModels;
 
-namespace GetStartedApp;
+namespace Jammer.Avalonia;
 
 public class ViewLocator : IDataTemplate
 {

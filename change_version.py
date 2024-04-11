@@ -20,10 +20,10 @@ with open(os.path.join('nsis', 'setup.nsi'), 'w') as new_nsis_file:
         else:
             new_nsis_file.write(line)
             
-with open(os.path.join('src', 'Utils.cs'), 'r') as utils_file:
+with open(os.path.join('src', "jammer", 'Utils.cs'), 'r') as utils_file:
     lines = utils_file.readlines()
     
-with open(os.path.join('src', 'Utils.cs'), 'w') as new_utils_file:
+with open(os.path.join('src', "jammer", 'Utils.cs'), 'w') as new_utils_file:
     for line in lines:
         if line.startswith('        public static string version = "'):
             new_utils_file.write('        public static string version = "' + sys.argv[1] + '";\n')

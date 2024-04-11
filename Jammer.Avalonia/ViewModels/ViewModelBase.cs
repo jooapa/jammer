@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace GetStartedApp.ViewModels;
+namespace Jammer.Avalonia.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {
