@@ -13,7 +13,7 @@ namespace Jammer {
                     writer.WriteLine(time + ";" + _class + ";" + _method + ": " + txt.ToString());
                     } else {
                     
-                    // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                     }
                 }
             }

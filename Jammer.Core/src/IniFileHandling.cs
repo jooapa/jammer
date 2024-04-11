@@ -208,7 +208,7 @@ AddSongToQueue = G
                 Jammer.Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
             }
 
@@ -549,7 +549,7 @@ AddSongToQueue = G
                 Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
@@ -559,7 +559,7 @@ AddSongToQueue = G
                     Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                     } else {
                     
-                    // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                     }
                     LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                     Preferences.localeLanguage = country_code;
@@ -569,7 +569,7 @@ AddSongToQueue = G
                     Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                     } else {
                     
-                    // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                     }
                     return;
                 }

@@ -28,7 +28,7 @@ namespace Jammer {
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 Debug.dprint("Invalid url");
             }
@@ -65,7 +65,7 @@ namespace Jammer {
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
                         } else {
                         
-                        // TODO AVALONIA_UI
+                            // TODO AVALONIA_UI
                         }
                     });
 
@@ -84,7 +84,7 @@ namespace Jammer {
                     Jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                     } else {
                     
-                    // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                     }
                 }
             }
@@ -94,7 +94,7 @@ namespace Jammer {
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 songPath = "";
             }
@@ -126,7 +126,7 @@ namespace Jammer {
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                         });
                         
@@ -155,7 +155,7 @@ namespace Jammer {
                 , Locale.OutsideItems.DownloadErrorSoundcloud);
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 songPath = "";
             }
@@ -185,7 +185,7 @@ namespace Jammer {
                 Console.ReadLine();
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 return;
             }
@@ -205,7 +205,7 @@ namespace Jammer {
             Console.WriteLine(playlist[0]);
             } else {
             
-            // TODO AVALONIA_UI
+                // TODO AVALONIA_UI
             }
             if (playlist.Count() == 0 || playlist == null) {
                 if (Start.CLI) {
@@ -213,7 +213,7 @@ namespace Jammer {
                 Console.ReadLine();
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 return;
             }

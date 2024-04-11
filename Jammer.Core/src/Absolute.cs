@@ -26,7 +26,7 @@ namespace Jammer
                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
 
                 if (URL.IsUrl(item))
@@ -60,7 +60,7 @@ namespace Jammer
                         if (Start.CLI) {
                         } else {
                         
-                        // TODO AVALONIA_UI
+                            // TODO AVALONIA_UI
                         }
                         AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
                     }
@@ -69,7 +69,7 @@ namespace Jammer
                         AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
                         } else {
                         
-                        // TODO AVALONIA_UI
+                            // TODO AVALONIA_UI
                         }
                         // delete item from args
                         args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
@@ -98,7 +98,7 @@ namespace Jammer
                     AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} {item} {Locale.OutsideItems.DoesntExist}[/]");
                     } else {
                     
-                    // TODO AVALONIA_UI
+                        // TODO AVALONIA_UI
                     }
                     // delete item from args
                     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();

@@ -1,6 +1,7 @@
 @ECHO OFF
+cd Jammer.CLI
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true --self-contained -p:UseForms=false
-SET "sourceFolder=bin\Release\net7.0-windows\win10-x64\publish"
+SET "sourceFolder=bin\Release\net7.0\win10-x64\publish"
 
 @REM Build with debug executable
 @REM dotnet build
@@ -18,7 +19,7 @@ COPY /Y LICENSE %targetFolder%
 
 mkdir "%targetFolder%\locales"
 XCOPY /S /Y ..\locales "%targetFolder%\locales"
-SET "start_name=Jammer-Setup_V2.0.5.exe"
+SET "start_name=Jammer-Setup_V2.0.6.exe"
 
 makensis %targetFolder%\setup.nsi  
 

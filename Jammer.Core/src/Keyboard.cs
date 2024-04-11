@@ -42,7 +42,7 @@ namespace Jammer
                         Jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
                         } else {
                         
-                        // TODO AVALONIA_UI
+                            // TODO AVALONIA_UI
                         }
                     }
 
@@ -212,7 +212,7 @@ namespace Jammer
                             TUI.SaveAsPlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "SaveCurrentPlaylist":
@@ -220,7 +220,7 @@ namespace Jammer
                             TUI.SaveCurrentPlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "ShufflePlaylist":
@@ -228,7 +228,7 @@ namespace Jammer
                             TUI.ShufflePlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "Loop": // loop
@@ -252,7 +252,7 @@ namespace Jammer
                                 AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                             }
                             else
@@ -265,7 +265,7 @@ namespace Jammer
                             TUI.ListAllPlaylists();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "Help": // show help
@@ -277,7 +277,7 @@ namespace Jammer
                                 TUI.DrawPlayer();
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                                 break;
                             }
@@ -285,7 +285,7 @@ namespace Jammer
                             if (Start.CLI) {
                             TUI.DrawHelp();
                             } else {
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "Settings": // show settings
@@ -297,7 +297,7 @@ namespace Jammer
                                 TUI.DrawPlayer();
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                                 break;
                             }
@@ -306,7 +306,7 @@ namespace Jammer
                             TUI.DrawSettings();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "Autosave": // autosave or not
@@ -324,7 +324,7 @@ namespace Jammer
                             TUI.PlaylistInput();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
@@ -341,7 +341,7 @@ namespace Jammer
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                             }
                             break;
@@ -359,7 +359,7 @@ namespace Jammer
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                             }
                             break;
@@ -377,7 +377,7 @@ namespace Jammer
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 } else {
                                 
-                                // TODO AVALONIA_UI
+                                    // TODO AVALONIA_UI
                                 }
                             }
                             break;
@@ -388,7 +388,7 @@ namespace Jammer
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             Console.ReadKey(true);
                             break;
@@ -402,7 +402,7 @@ namespace Jammer
                             TUI.AddSongToPlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         // Case For ?
@@ -411,7 +411,7 @@ namespace Jammer
                             TUI.ShowSongsInPlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "PlayOtherPlaylist":
@@ -419,7 +419,7 @@ namespace Jammer
                             TUI.PlayOtherPlaylist();
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             break;
                         case "RedownloadCurrentSong":
@@ -431,7 +431,7 @@ namespace Jammer
                             IniFileHandling.ScrollIndexKeybind = 0;
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             if (playerView == "default")
                             {
@@ -448,7 +448,7 @@ namespace Jammer
                             IniFileHandling.ScrollIndexLanguage = 0;
                             } else {
                             
-                            // TODO AVALONIA_UI
+                                // TODO AVALONIA_UI
                             }
                             if (playerView == "default")
                             {
@@ -474,7 +474,7 @@ namespace Jammer
                 TUI.RefreshCurrentView();
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
                 Action = "";
             }

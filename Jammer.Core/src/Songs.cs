@@ -14,7 +14,7 @@ namespace Jammer
                 AnsiConsole.MarkupLine($"[green]Jammer songs flushed.[/]");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
             }
             else
@@ -23,7 +23,7 @@ namespace Jammer
                 AnsiConsole.MarkupLine($"[red]Jammer songs folder not found.[/]");
                 } else {
                 
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
                 }
             }
         }

@@ -681,7 +681,7 @@ namespace Jammer
             if (Start.CLI) {
                 TUI.RefreshCurrentView();
             } else {
-                // TODO AVALONIA_UI
+                    // TODO AVALONIA_UI
             }
         }
     }
