@@ -179,7 +179,7 @@ namespace Jammer
                             state = MainStates.previous; // previous song
                             break;
                         case "PlaySongs":
-                                TUI.PlaySingleSong();
+                                Funcs.PlaySingleSong();
                                 break;
                         case "Forward5s": // move forward 5 seconds
                             Play.SeekSong(Preferences.forwardSeconds, true);
@@ -209,7 +209,7 @@ namespace Jammer
                             break;
                         case "SaveAsPlaylist":
                             #if CLI_UI
-                            TUI.SaveAsPlaylist();
+                            Funcs.SaveAsPlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -217,7 +217,7 @@ namespace Jammer
                             break;
                         case "SaveCurrentPlaylist":
                             #if CLI_UI
-                            TUI.SaveCurrentPlaylist();
+                            Funcs.SaveCurrentPlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -225,7 +225,7 @@ namespace Jammer
                             break;
                         case "ShufflePlaylist":
                             #if CLI_UI
-                            TUI.ShufflePlaylist();
+                            Funcs.ShufflePlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -262,7 +262,7 @@ namespace Jammer
                             break;
                         case "ListAllPlaylists":
                             #if CLI_UI
-                            TUI.ListAllPlaylists();
+                            Funcs.ListAllPlaylists();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -274,7 +274,7 @@ namespace Jammer
                             {
                                 playerView = "default";
                                 #if CLI_UI
-                                TUI.DrawPlayer();
+                                Funcs.DrawPlayer();
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -283,7 +283,7 @@ namespace Jammer
                             }
                             playerView = "help";
                             #if CLI_UI
-                            TUI.DrawHelp();
+                            Funcs.DrawHelp();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -295,7 +295,7 @@ namespace Jammer
                             {
                                 playerView = "default";
                                 #if CLI_UI
-                                TUI.DrawPlayer();
+                                Funcs.DrawPlayer();
                                 #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
@@ -304,7 +304,7 @@ namespace Jammer
                             }
                             playerView = "settings";
                             #if CLI_UI
-                            TUI.DrawSettings();
+                            Funcs.DrawSettings();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -323,7 +323,7 @@ namespace Jammer
                             break;
                         case "PlaylistOptions": // playlist options
                             #if CLI_UI
-                            TUI.PlaylistInput();
+                            Funcs.PlaylistInput();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -385,7 +385,7 @@ namespace Jammer
                             break;
                         case "CommandHelpScreen":
                             #if CLI_UI
-                            TUI.CliHelp();
+                            Funcs.CliHelp();
 
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
                             #endif
@@ -401,7 +401,7 @@ namespace Jammer
                         // Case For A
                         case "AddSongToPlaylist":
                             #if CLI_UI
-                            TUI.AddSongToPlaylist();
+                            Funcs.AddSongToPlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -410,7 +410,7 @@ namespace Jammer
                         // Case For ?
                         case "ShowSongsInPlaylists":
                             #if CLI_UI
-                            TUI.ShowSongsInPlaylist();
+                            Funcs.ShowSongsInPlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -418,7 +418,7 @@ namespace Jammer
                             break;
                         case "PlayOtherPlaylist":
                             #if CLI_UI
-                            TUI.PlayOtherPlaylist();
+                            Funcs.PlayOtherPlaylist();
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -473,7 +473,7 @@ namespace Jammer
                     }
             
                 #if CLI_UI
-                TUI.RefreshCurrentView();
+                Funcs.RefreshCurrentView();
                 #endif
                 #if AVALONIA_UI
                 // TODO AVALONIA_UI
