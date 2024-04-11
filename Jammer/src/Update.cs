@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Spectre.Console;
 using System.IO;
-namespace jammer { 
-    public class Update {
+namespace Jammer { 
+    internal class Update {
         public static string UpdateJammer(string version)
         {
             string downloadUrl = "https://github.com/jooapa/jammer/releases/download/" + version + "/jammer-Setup_V" + version + ".exe";

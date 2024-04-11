@@ -1,10 +1,10 @@
-using jammer;
+using Jammer;
 using Spectre.Console;
 
 
-namespace jammer
+namespace Jammer
 {
-    public static class Message
+    internal static class Message
     {
         public static string Input(string inputSaying, string title)
         {

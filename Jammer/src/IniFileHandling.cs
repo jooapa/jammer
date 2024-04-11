@@ -3,9 +3,9 @@ using IniParser.Model;
 using System.Reflection;
 using System.IO;
 
-namespace jammer
+namespace Jammer
 {
-    static class IniFileHandling {
+    internal class IniFileHandling {
     private static readonly string FileContent = @"
 ;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
 ;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.

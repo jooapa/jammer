@@ -6,7 +6,7 @@ using System.IO;
 using TagLib;
 using System.Net;
 
-namespace jammer {
+namespace Jammer {
     internal class Download {
         public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();

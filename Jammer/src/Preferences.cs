@@ -3,9 +3,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 
-namespace jammer
+namespace Jammer
 {
-    public class Preferences
+    internal class Preferences
     {
         public static int rewindSeconds = GetRewindSeconds();
         public static int forwardSeconds = GetForwardSeconds();

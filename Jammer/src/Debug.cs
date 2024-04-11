@@ -1,7 +1,7 @@
 using System.IO;
 
-namespace jammer {
-    public class Debug {
+namespace Jammer {
+    internal class Debug {
         public static void dprint(string txt) {
             if (Utils.isDebug) {
                 using (StreamWriter writer = new("debug.log", true))

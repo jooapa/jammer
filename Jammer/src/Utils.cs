@@ -3,9 +3,9 @@
 /* using System.IO; */
 /* using System.Text.RegularExpressions; */
 using System.IO;
-namespace jammer
+namespace Jammer
 {
-    public struct Utils
+    internal struct Utils
     {
         public static int currentMusic { get; set; }
         public static string[] songs = { "" };

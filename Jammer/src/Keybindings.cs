@@ -1,4 +1,4 @@
-namespace jammer{
+namespace Jammer{
     /*
     Adding new keybind:
 
@@ -44,7 +44,7 @@ namespace jammer{
         RefreshConsole = Refresh console screen
         ```
     */
-    public static class Keybindings{
+    internal static class Keybindings{
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
         public static string CurrentState = CheckValue("CurrentState", "F12");

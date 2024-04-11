@@ -1,9 +1,9 @@
 using Spectre.Console;
 using System.IO;
 
-namespace jammer
+namespace Jammer
 {
-    public class Absolute
+    internal class Absolute
     {
         public static string[] Correctify(string[] args)
         {

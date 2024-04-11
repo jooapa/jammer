@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace jammer
+namespace Jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState
 
@@ -43,7 +43,6 @@ namespace jammer
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
-        private static bool initWMP = false;
         public static double prevMusicTimePlayed = 0;
 
         //

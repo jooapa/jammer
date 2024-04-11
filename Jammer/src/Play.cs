@@ -7,9 +7,9 @@ using System.Linq;
 using TagLib;
 
 
-namespace jammer
+namespace Jammer
 {
-    public class Play
+    internal class Play
     {
         public static string[] songExtensions = {   ".mp3", ".ogg", ".wav", ".mp2", ".mp1", ".aiff", ".m2a", 
                                                     ".mpa", ".m1a", ".mpg", ".mpeg", ".aif", ".mp3pro", ".bwf", 

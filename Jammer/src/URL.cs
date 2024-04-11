@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 
-namespace jammer
+namespace Jammer
 {
-    public class URL
+    internal class URL
     {
         public static bool IsValidSoundcloudSong(string uri)
         {

@@ -1,9 +1,9 @@
 using Spectre.Console;
 using System.IO;
 
-namespace jammer
+namespace Jammer
 {
-    public class Playlists
+    internal class Playlists
     {
         static public void Create(string playlist)
         {

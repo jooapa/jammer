@@ -1,6 +1,8 @@
 using Spectre.Console;
 using System.IO;
-using jammer;
+using Jammer;
+
+
 public static partial class TUI {
     static public void DrawPlayer() {
         try {
@@ -389,7 +391,7 @@ public static partial class TUI {
         else if (Start.playerView == "editkeybindings") {
             EditKeyBindings();
         }
-        else if (Start.playerView == "changelanguage") {
+        else if (jammer.Start.playerView == "changelanguage") {
             ChangeLanguage();
         }
         

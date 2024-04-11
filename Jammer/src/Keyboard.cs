@@ -3,7 +3,7 @@ using Spectre.Console;
 using System.IO;
 
 
-namespace jammer
+namespace Jammer
 {
     public partial class Start
     {

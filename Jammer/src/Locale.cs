@@ -1,5 +1,5 @@
-namespace jammer{
-    public static class Locale{
+namespace Jammer{
+    internal static class Locale{
         /*
         Adding new Locale line:
         1. Create a new class or add to an existing class. Classname is the name for the keyarea

@@ -6,7 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia;
-using jammer;
+using Jammer;
 
 namespace Jammer.Avalonia.Views;
 
