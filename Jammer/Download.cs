@@ -4,6 +4,7 @@ using YoutubeExplode.Common;
 using Spectre.Console;
 using System.IO;
 using TagLib;
+using System.Net;
 
 namespace jammer {
     internal class Download {
@@ -74,6 +75,7 @@ namespace jammer {
                     var file = TagLib.File.Create(songPath);
                     file.Tag.Title = Start.Sanitize(video.Title);
                     file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                    file.Tag.Album = video.Author.ChannelTitle;
                     file.Save();
                 }
                 else
@@ -121,7 +123,7 @@ namespace jammer {
                         var progress = new Progress<double>(data => {
                             #if CLI_UI
                             AnsiConsole.Clear();
-                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}");  
+                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -130,16 +132,15 @@ namespace jammer {
                         
                         await soundcloud.DownloadAsync(track, songPath, progress);
 
-                        // TagLib
                         var file = TagLib.File.Create(songPath);
                         file.Tag.Title = Start.Sanitize(track.Title);
                         file.Tag.Description = track.Description;
                         if (track.User != null && track.User.Username != null) {
                             file.Tag.Performers = new string[] { track.User.Username };
-                        }
-
+                        }           
                         file.Save();
 
+                        await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
                     } else {
                         Debug.dprint("track title returns null");
                     }
@@ -158,6 +159,17 @@ namespace jammer {
                 #endif
                 songPath = "";
             }
+        }
+
+        static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
+        {
+            var file = TagLib.File.Create(songPath);
+            WebClient webClient = new WebClient();
+            byte[] imageBytes = webClient.DownloadData(imageUrl);            
+            Picture picture = new Picture(imageBytes);  
+            file.Tag.Pictures = Array.Empty<IPicture>();
+            file.Tag.Pictures = new IPicture[] { picture };
+            file.Save();
         }
 
         public static async Task GetPlaylist(string url) {

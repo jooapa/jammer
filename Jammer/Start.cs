@@ -25,7 +25,7 @@ namespace jammer
         previous
     }
 
-    public partial class Start
+    public static partial class Start
     {
         //NOTE(ra) Starting state to playing.
         // public static MainStates state = MainStates.idle;
@@ -33,8 +33,13 @@ namespace jammer
         public static MainStates state = MainStates.playing;
         public static bool drawOnce = false;
         private static Thread loopThread = new Thread(() => { });
+        #if CLI_UI
         public static int consoleWidth = Console.WindowWidth;
         public static int consoleHeight = Console.WindowHeight;
+        #else
+        public static int consoleWidth = 0;
+        public static int consoleHeight = 0;
+        #endif
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
@@ -46,6 +51,7 @@ namespace jammer
         //
         public static void Run(string[] args)
         {        
+            System.Diagnostics.Debug.WriteLine(drawOnce);
             #if CLI_UI
             try{
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -412,8 +418,8 @@ namespace jammer
                     case MainStates.idle:
                         #if CLI_UI
                         TUI.ClearScreen();
-                        #endif
                         CheckKeyboard();
+                        #endif
                         #if CLI_UI
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
