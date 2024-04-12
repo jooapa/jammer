@@ -8,18 +8,18 @@
     <LangVersion>10</LangVersion>
     <AssemblyName>Jammer.Core</AssemblyName>
     <!-- <DefineConstants>CLI_UI</DefineConstants> -->
-    <!-- <DefineConstants>AVALONIA_UI</DefineConstants> -->
+    <DefineConstants>AVALONIA_UI</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="5.7.0">
+    <!-- <PackageReference Include="Costura.Fody" Version="5.7.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Fody" Version="6.8.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    </PackageReference> -->
     
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />

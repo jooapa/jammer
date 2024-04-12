@@ -3,13 +3,29 @@
              x:Class="Jammer.Avalonia.App"
              xmlns:local="using:Jammer.Avalonia"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+	<!-- Application setup -->
+
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
+
+	<Application.Styles>
+		<FluentTheme />
+	</Application.Styles>
+
+	<!-- Tray icon setup -->
+
+	<TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/avalonia-logo.ico"
+                      ToolTipText="Avalonia Tray Icon ToolTip">
+				<TrayIcon.Menu>
+					<NativeMenu>
+						<NativeMenuItem Header="Exit"/>
+					</NativeMenu>
+				</TrayIcon.Menu>
+			</TrayIcon>
+		</TrayIcons>
+	</TrayIcon.Icons>
 </Application>

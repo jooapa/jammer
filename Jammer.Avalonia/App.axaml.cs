@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Jammer.Avalonia.ViewModels;
 using Jammer.Avalonia.Views;
+using System.Diagnostics;
 
 namespace Jammer.Avalonia;
 

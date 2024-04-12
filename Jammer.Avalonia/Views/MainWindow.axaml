@@ -9,7 +9,7 @@
 	x:Class="Jammer.Avalonia.Views.MainWindow"
 	x:DataType="vm:MainWindowViewModel"
 	Icon="/Assets/avalonia-logo.ico"
-	Title="Jammer.Avalonia">
+	Title="Jammer">
 
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
@@ -17,10 +17,7 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 	<Grid ColumnDefinitions="100, 1, *">
-		<StackPanel 
-			Grid.Column="0" 
-			Background="#313131"
-		>
+		<StackPanel Grid.Column="0" Background="#313131">
 			<!--Playlist area-->
 			<Grid>
 				<!--TODO FIX SCROLL AREA-->
@@ -33,9 +30,9 @@
 					</ScrollViewer>
 				</Border>
 			</Grid>
-
-
 		</StackPanel>
+		
+		
 		<!--Playlist and main area divider-->
 		<GridSplitter PointerMoved="PlaylistDividerMovement" Grid.Column="1" Background="#c83f49" ResizeDirection="Columns"/>
 
@@ -45,9 +42,9 @@
 				<!--Top area; search, settings(containts toggles and help menu)?-->
 				<!--Middle area; all songs in playlist-->
 				<!--Bottom area; next, prev, play/pause, volume/mute, skip music-->
-				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/> <!--If value gets changed, modify it in `MainWindow.axaml.cs -> MainWindow_Resized`-->
 				<RowDefinition Height="*"/>
-				<RowDefinition Height="100"/>
+				<RowDefinition Height="100"/> <!--If value gets changed, modify it in `MainWindow.axaml.cs -> MainWindow_Resized`-->
 			</Grid.RowDefinitions>
 			<Grid Grid.Row="0">
 				<Grid.ColumnDefinitions>
@@ -56,15 +53,23 @@
 					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
-				
-				<TextBlock Grid.Column="0" Text="Search" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+				<TextBlock Grid.Column="0" Text="Search from current view" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 				<TextBlock Grid.Column="1" Text="Current playlist" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 				<TextBlock Grid.Column="2" Text="Song folder" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 				<TextBlock Grid.Column="3" Text="Settings" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-				
 			</Grid>			
 			
-			<Rectangle Grid.Row="1" Fill="Green"/>
+			<!--Main area-->
+			<Grid Grid.Row="1" x:Name="MainArea" Height="100">
+				<Border>
+					<ScrollViewer>
+						<StackPanel x:Name="MainAreaStackPanel">
+							<TextBlock Grid.Row="0" Margin="5" Text="array position+1. Song name" Foreground="White"/>
+							<TextBlock Grid.Row="1" Margin="5" Text="array position+1. Song name" Foreground="White"/>
+						</StackPanel>
+					</ScrollViewer>
+				</Border>
+			</Grid>
 			
 			<Grid Grid.Row="2" Background="White">
 				<Grid.ColumnDefinitions>
@@ -109,7 +114,13 @@
 							HorizontalAlignment="Center" 
 							VerticalAlignment="Center" 
 							Grid.Column="3"/>
-							<Slider VerticalAlignment="Center"  x:Name="SongVolumeSlider" Grid.Column="4"/>
+							<Slider 
+							VerticalAlignment="Center"  
+							x:Name="SongVolumeSlider" 
+							Grid.Column="4"
+							PointerMoved=""
+							PropertyChanged="ChangeVolume"
+							/>
 						</Grid>
 					</Border>
 					

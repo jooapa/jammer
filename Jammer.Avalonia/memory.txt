@@ -3,7 +3,7 @@ Toggle settings: https://docs.avaloniaui.net/docs/reference/controls/checkbox
 Pages? https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/tabcontrol || https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/tabstrip
 Enter values: https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/textbox ||https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/textblock
 Tooltip: https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/tooltip
-Trayicon: https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/tray-icon && https://docs.avaloniaui.net/docs/reference/controls/nativemenu
+Trayicon: https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/tray-icon && https://docs.avaloniaui.net/docs/reference/c  ontrols/nativemenu
 Flexbox: https://docs.avaloniaui.net/docs/reference/controls/detailed-reference/wrappanel && https://docs.avaloniaui.net/docs/reference/controls/dockpanel
 Sidepanel: https://docs.avaloniaui.net/docs/reference/controls/gridsplitter && https://docs.avaloniaui.net/docs/reference/controls/splitview
 Menu onn top: https://docs.avaloniaui.net/docs/reference/controls/menu
