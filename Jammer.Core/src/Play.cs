@@ -2,7 +2,6 @@ using ManagedBass;
 using ManagedBass.Aac;
 using Spectre.Console;
 using System.ComponentModel;
-using System.Formats.Tar;
 using System.IO;
 using System.Linq;
 using TagLib;

@@ -28,7 +28,7 @@ public partial class MainWindow : Window
 
     public MainWindow() {
         /// TEMPORARY
-        Start.Run(new string[] { "-p a.Jammer" });
+        Start.Run(new string[] { "-p a" });
 
         InitializeComponent();
 
