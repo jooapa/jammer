@@ -26,8 +26,11 @@ namespace Jammer
             if (!Directory.Exists(JammerPath))
             {
                 Directory.CreateDirectory(JammerPath);
+            }
+            if (!Directory.Exists(Path.Combine(JammerPath, "playlists"))){
                 Directory.CreateDirectory(Path.Combine(JammerPath, "playlists"));
             }
+
 
             // check if settings.json has every data
             string settingsPath = Path.Combine(Utils.JammerPath, "settings.json");

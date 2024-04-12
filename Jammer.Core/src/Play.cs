@@ -2,6 +2,7 @@ using ManagedBass;
 using ManagedBass.Aac;
 using Spectre.Console;
 using System.ComponentModel;
+using System.Formats.Tar;
 using System.IO;
 using System.Linq;
 using TagLib;
@@ -601,9 +602,31 @@ namespace Jammer
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="getOrNot">get | not | getMeta</param>
+        /// <returns></returns>
         public static string Title(string title, string getOrNot)
         {
-            if (title.Contains("½"))
+            if(getOrNot == "getMeta") {
+                TagLib.File? tagFile;
+                try {
+                    string title_new = "";
+                    tagFile = TagLib.File.Create(title);
+                    title_new = tagFile.Tag.Title;
+
+                    if (title_new == null || title_new == "")
+                        title_new = "";
+
+                    return title_new;
+                } catch (Exception) {
+                    tagFile = null;
+                }
+                return title;
+            }
+            else if (title.Contains("½"))
             {
                 string[] titleSplit = title.Split("½");
                 if (getOrNot == "get")
@@ -631,7 +654,22 @@ namespace Jammer
             }
             return title;
         }
+        public static string Author(string path) {
+            TagLib.File? tagFile;
+            try {
+                string title_new = "";
+                tagFile = TagLib.File.Create(path);
+                title_new = tagFile.Tag.Performers[0];
 
+                if (title_new == null || title_new == "")
+                    title_new = "";
+
+                return title_new;
+            } catch (Exception) {
+                tagFile = null;
+            }
+            return "Unknown";
+        }
         static public void StartPlaying()
         {
 

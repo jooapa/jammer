@@ -27,22 +27,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="ManagedBass" Version="3.1.1" />
-    <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
-    <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
-    <PackageReference Include="Spectre.Console" Version="0.48.0" />
-    <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.3.13" />
+    <ProjectReference Include="..\Jammer.Core\Jammer.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Jammer.Core\Jammer.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
