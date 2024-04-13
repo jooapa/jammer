@@ -1,5 +1,6 @@
 using ManagedBass;
 using ManagedBass.Aac;
+// using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
 using System.IO;
@@ -673,24 +674,30 @@ namespace Jammer
         {
 
             ResetMusic();
-            // if extension is aac, use aac decoder
+
+            // flags
+            BassFlags flags = BassFlags.Default;
+            
+
             if (isValidAACExtension(Path.GetExtension(Utils.currentSong)))
             {
                 BassAac.PlayAudioFromMp4 = false;
                 BassAac.AacSupportMp4 = false;
-                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+
+                // custom flags
+                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
             }
             else if (isValidMP4Extension(Path.GetExtension(Utils.currentSong)))
             {
                 // flags
                 BassAac.PlayAudioFromMp4 = true;
                 BassAac.AacSupportMp4 = true;
-                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, BassFlags.Default);
+                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
             }
             else
             {
                 // create stream
-                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
             }
 
             // create stream
@@ -710,11 +717,27 @@ namespace Jammer
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
+            // set tempo
+            // BassFlags effectFlags = BassFlags.Default;
+
+            // int lol = BassFx.TempoCreate(Utils.currentMusic, effectFlags);
+
+            // // set pitch
+            // BassFx.BPMBeatSetParameters(Utils.currentMusic, -1.0f, -1.0f, -1.0f);
+
+            // set sync
+            Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
+                MaybeNextSong();
+            }, IntPtr.Zero);
+
+
             Start.state = MainStates.playing;
             // play stream
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
+
+
             #if CLI_UI
             TUI.RefreshCurrentView();
             #endif
