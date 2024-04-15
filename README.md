@@ -30,63 +30,63 @@ install libfuse2`.
 ### Update existing
 
 ```bash
-Jammer update
+jammer update
 ```
 
 ## Usage
 
 ```bash
-Jammer
-Jammer [song] ... [folder]
-Jammer https://soundcloud.com/username/track-name
-Jammer https://soundcloud.com/username/sets/playlist-name
-Jammer https://youtube.com/watch?v=video-id
-Jammer https://youtube.com/playlist?list=playlist-id
+jammer
+jammer [song] ... [folder]
+jammer https://soundcloud.com/username/track-name
+jammer https://soundcloud.com/username/sets/playlist-name
+jammer https://youtube.com/watch?v=video-id
+jammer https://youtube.com/playlist?list=playlist-id
 
-Jammer --start        opens Jammer folder
-Jammer --update       checks for updates and installs
-Jammer --help -h      show help
-Jammer -d             debug mode
-Jammer --version      show version
+jammer --start        opens jammer folder
+jammer --update       checks for updates and installs
+jammer --help -h      show help
+jammer -d             debug mode
+jammer --version      show version
 ```
 
 *when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-Jammer -p, --play <name>                  play playlist
-Jammer -c, --create <name>                create playlist
-Jammer -d, --delete <name>                delete playlist
-Jammer -a, --add <name> <song> ...        add song to playlist
-Jammer -r, --remove <name> <song> ...     remove song from playlist
-Jammer -s, --show <name> 
-Jammer -l, --list                         list all playlists
-Jammer -f, --flush                        flushes all the songs in songs folder
-Jammer -sp, --set-path <path>, <default>  set path for songs folder
+jammer -p, --play <name>                  play playlist
+jammer -c, --create <name>                create playlist
+jammer -d, --delete <name>                delete playlist
+jammer -a, --add <name> <song> ...        add song to playlist
+jammer -r, --remove <name> <song> ...     remove song from playlist
+jammer -s, --show <name> 
+jammer -l, --list                         list all playlists
+jammer -f, --flush                        flushes all the songs in songs folder
+jammer -sp, --set-path <path>, <default>  set path for songs folder
 ```
 
 ### Example usage
 
 ```bash
-Jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\Jammer\playlists\playlist.Jammer
+jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
 ```
 
 ```bash
-Jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
+jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
 ```
 
 ```bash
-Jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
+jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
 #### Example of making a playlist in cli
 
 ```bash
-Jammer -c gd
-Jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
-Jammer -p gd
+jammer -c gd
+jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
+jammer -p gd
 ```
 
-*you can do same opening the `Jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
+*you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
 
 You can also use `-d` flag that will add logs to current folder.
 
