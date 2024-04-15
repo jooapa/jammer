@@ -110,7 +110,7 @@ namespace Jammer {
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
             } else {
-                table.AddColumn(Locale.OutsideItems.CurrentQueue + ":" + Utils.currentPlaylist);
+                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + ":" + Utils.currentPlaylist);
             }
             table.AddColumn(Locale.OutsideItems.CurrentQueue);
             for(int i = 0; i < lines.Length; i++){

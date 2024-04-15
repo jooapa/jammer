@@ -720,16 +720,8 @@ namespace Jammer
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
-            // MARK: - EFFECT FX
-            // DXReverbParameters reverb = new()
-            // {
-            //     fInGain = 3.0f,
-            //     fReverbMix = 3.0f,
-            //     fReverbTime = 500.0f
-            // };
-
-            // int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
-            // Bass.FXSetParameters(reverbHandle, reverb);
+            // set FXs
+            SetFXs();
 
 
             // set sync
@@ -749,6 +741,124 @@ namespace Jammer
             TUI.RefreshCurrentView();
             #endif
             // TODO AVALONIA_UI
+        }
+
+        public static void SetFXs() {
+            // MARK: - EFFECT FX EXAMPLES
+            // DXReverbParameters reverb = new()
+            // {
+            //     fInGain = 3.0f,
+            //     fReverbMix = 3.0f,
+            //     fReverbTime = 500.0f
+            // };
+
+            // int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+            // Bass.FXSetParameters(reverbHandle, reverb);
+
+            if (Effects.isChorus) {
+                DXChorusParameters chorus = new()
+                {
+                    fWetDryMix = Effects.chorusWetDryMix,
+                    fDepth = Effects.chorusDepth,
+                    fFeedback = Effects.chorusFeedback,
+                    fFrequency = Effects.chorusFrequency,
+                    fDelay = Effects.chorusDelay
+                };
+
+                int chorusHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Chorus, 1);
+                Bass.FXSetParameters(chorusHandle, chorus);
+            }
+
+            if (Effects.isCompressor) {
+                DXCompressorParameters compressor = new()
+                {
+                    fGain = Effects.compressorGain,
+                    fAttack = Effects.compressorAttack,
+                    fRelease = Effects.compressorRelease,
+                    fThreshold = Effects.compressorThreshold,
+                    fRatio = Effects.compressorRatio,
+                    fPredelay = Effects.compressorPredelay
+                };
+
+                int compressorHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Compressor, 1);
+                Bass.FXSetParameters(compressorHandle, compressor);
+            }
+
+            if (Effects.isDistortion) {
+                DXDistortionParameters distortion = new()
+                {
+                    fGain = Effects.distortionGain,
+                    fEdge = Effects.distortionEdge,
+                    fPostEQCenterFrequency = Effects.distortionPostEQCenterFrequency
+                };
+
+                int distortionHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Distortion, 1);
+                Bass.FXSetParameters(distortionHandle, distortion);
+            }
+
+            if (Effects.isEcho) {
+                DXEchoParameters echo = new()
+                {
+                    fWetDryMix = Effects.echoWetDryMix,
+                    fFeedback = Effects.echoFeedback,
+                    fLeftDelay = Effects.echoLeftDelay,
+                    fRightDelay = Effects.echoRightDelay,
+                    lPanDelay = Effects.echoPanDelay
+                };
+
+                int echoHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Echo, 1);
+                Bass.FXSetParameters(echoHandle, echo);
+            }
+
+            if (Effects.isFlanger) {
+                DXFlangerParameters flanger = new()
+                {
+                    fWetDryMix = Effects.flangerWetDryMix,
+                    fDepth = Effects.flangerDepth,
+                    fFeedback = Effects.flangerFeedback,
+                    fFrequency = Effects.flangerFrequency,
+                    fDelay = Effects.flangerDelay,
+                };
+
+                int flangerHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXFlanger, 1);
+                Bass.FXSetParameters(flangerHandle, flanger);
+            }
+
+            if (Effects.isGargle) {
+                DXGargleParameters gargle = new()
+                {
+                    dwRateHz = Effects.gargleRate,
+                };
+
+                int gargleHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXGargle, 1);
+                Bass.FXSetParameters(gargleHandle, gargle);
+            }
+
+            if (Effects.isParamEQ) {
+                DXParamEQParameters paramEq = new()
+                {
+                    fCenter = Effects.paramEQCenter,
+                    fBandwidth = Effects.paramEQBandwidth,
+                    fGain = Effects.paramEQGain
+                };
+
+                int paramEqHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXParamEQ, 1);
+                Bass.FXSetParameters(paramEqHandle, paramEq);
+            }
+
+            if (Effects.isReverb) {
+                DXReverbParameters reverb = new()
+                {
+                    fInGain = Effects.reverbInGain,
+                    fReverbMix = Effects.reverbReverbMix,
+                    fReverbTime = Effects.reverbReverbTime,
+                    fHighFreqRTRatio = Effects.reverbHighFreqRTRatio
+                };
+
+                int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+                Bass.FXSetParameters(reverbHandle, reverb);
+            }
+
         }
     }
 }

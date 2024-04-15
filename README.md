@@ -101,6 +101,19 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
 
+### Effects
+
+- Reverb
+- Echo
+- Flanger
+- Chorus
+- Distortion
+- Compressor
+- Gargle
+- Parametric Equalizer
+
+Can be changed in the Effects.ini file in the Jammer folder.
+
 ### Default Player Controls
 
 | Key | Action |

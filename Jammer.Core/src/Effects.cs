@@ -4,6 +4,8 @@ using System.Reflection;
 using System.IO;
 using ManagedBass;
 using ManagedBass.DirectX8;
+using System.Globalization;
+using Spectre.Console;
 
 namespace Jammer {
     public static class Effects {
@@ -43,7 +45,7 @@ namespace Jammer {
         public static float flangerDelay = 2;
 
         public static bool isGargle = false;
-        public static float gargleRate = 0;
+        public static int gargleRate = 0;
         public static float gargleWaveShape = 0;
 
         public static bool isParamEQ = false;
@@ -59,59 +61,90 @@ namespace Jammer {
         private static readonly string FileContent = @"
 [Chorus]
 Active = false
+; Frequency of the LFO, in the range from 0 to 10.
 Frequency = 1.1
-WetDryMix = 50
+; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the range from 0 through 100 (all wet).
+WetDryMix = 0
+; Percentage by which the delay time is modulated by the low-frequency oscillator, in hundredths of a percentage point. Must be in the range from 0 through 100.
 Depth = 10
+; Percentage of output signal to feed back into the effect's input, in the range from -99 to 99.
 Feedback = 25
+; Number of milliseconds the input is delayed before it is played back, in the range from 0 to 20.
 Delay = 16
 
 [Compressor]
 Active = false
+; Output gain of signal in dB after compression, in the range from -60 to 60..
 Gain = 1.0
+; Time in ms before compression reaches its full value, in the range from 0.01 to 500.
 Attack = 0.1
+; Time (speed) in ms at which compression is stopped after input drops below DXCompressorParameters. fThreshold, in the range from 50 to 3000.
 Release = 0.1
+; Point at which compression begins, in dB, in the range from -60 to 0.
 Threshold = -20.0
+; Compression ratio, in the range from 1 to 100. The default value is 3, which means 3:1 compression.
 Ratio = 3.0
+; Time in ms after DXCompressorParameters. fThreshold is reached before attack phase is started, in milliseconds, in the range from 0 to 4.
 Predelay = 4.0
 
 [Distortion]
 Active = false
+; Amount of signal change after distortion, in the range from -60 through 0.
 Gain = 0.5
+; Percentage of distortion intensity, in the range in the range from 0 through 100.
 Edge = 15.0
+; Center frequency of harmonic content addition, in the range from 100 through 8000.
 PostEQCenterFrequency = 100.0
 
 [Echo]
 Active = false
-WetDryMix = 50
+; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the range from 0 through 100 (all wet).
+WetDryMix = 0
+; Percentage of output fed back into input, in the range from 0 through 100.
 Feedback = 50
+; Delay for left channel, in milliseconds, in the range from 1 through 2000.
 LeftDelay = 500
+; Delay for right channel, in milliseconds, in the range from 1 through 2000.
 RightDelay = 500
+; Value that specifies whether to swap left and right delays with each successive echo. The default value is false, meaning no swap.
 PanDelay = false
 
 [Flanger]
 Active = false
-WetDryMix = 50
+; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the range from 0 through 100 (all wet).
+WetDryMix = 0
+; Percentage by which the delay time is modulated by the low-frequency oscillator (LFO), in hundredths of a percentage point. Must be in the range from 0 through 100.
 Depth = 100
+; Percentage of output signal to feed back into the effect's input, in the range from -99 to 99.
 Feedback = -50
+; Frequency of the LFO, in the range from 0 to 10.
 Frequency = 0.25
+; Number of milliseconds the input is delayed before it is played back, in the range from 0 to 4.
 Delay = 2
 
 [Gargle]
 Active = false
+; Rate of modulation, in Hertz. Must be in the range from 1 through 1000.
 Rate = 0
-WaveShape = 0
 
 [ParamEQ]
 Active = false
+; Center frequency, in hertz, in the range from 80 to 16000. This value cannot exceed one-third of the frequency of the channel.
 Center = 8000.0
+; Bandwidth, in semitones, in the range from 1 to 36.
 Bandwidth = 12.0
+; Gain, in the range from -15 to 15.
 Gain = 0.0
 
 [Reverb]
 Active = false
+; Input gain of signal, in decibels (dB), in the range from -96 through 0.
 InGain = 0.0
+; Reverb mix, in dB, in the range from -96 through 0.
 ReverbMix = 0.0
+; Reverb time, in milliseconds, in the range from 0.001 through 3000.
 ReverbTime = 1000.0
+; In the range from 0.001 through 0.999.
 HighFreqRTRatio = 0.001
 ";
 
@@ -149,109 +182,55 @@ HighFreqRTRatio = 0.001
         }
 
        public static void ReadEffects() {
-
-            // DXChorusEffect chorus = new();
-            // chorus.Frequency = 1.1f;
-            // chorus.WetDryMix = 50;
-            // chorus.Depth = 10;
-            // chorus.Feedback = 25;
-            // chorus.Delay = 16;
-
-            // DXCompressorEffect compressor = new();
-            // compressor.Gain = 1.0f;
-            // compressor.Attack = 0.1f;
-            // compressor.Release = 0.1f;
-            // compressor.Threshold = -20.0f;
-            // compressor.Ratio = 3.0f;
-            // compressor.Predelay = 4.0f;
-
-            // DXDistortionEffect distortion = new();
-            // distortion.Gain = 0.5f;
-            // distortion.Edge = 15.0f;
-            // distortion.PostEQCenterFrequency = 100.0f;
-
-            // DXEchoEffect echo = new();
-            // echo.WetDryMix = 50;
-            // echo.Feedback = 50;
-            // echo.LeftDelay = 500;
-            // echo.RightDelay = 500;
-            // echo.PanDelay = false;
-
-            // DXFlangerEffect flanger = new();
-            // flanger.WetDryMix = 50;
-            // flanger.Depth = 100;
-            // flanger.Feedback = -50;
-            // flanger.Frequency = 0.25f;
-            // flanger.Delay = 2;
-
-            // DXGargleEffect gargle = new();
-            // gargle.Rate = 0;
-            // gargle.WaveShape = 0;
-
-            // DXParamEQEffect paramEQ = new();
-            // paramEQ.Center = 8000.0f;
-            // paramEQ.Bandwidth = 12.0f;
-            // paramEQ.Gain = 0.0f;
-
-            // DXReverbEffect reverb = new();
-            // reverb.InGain = 0.0f;
-            // reverb.ReverbMix = 0.0f;
-            // reverb.ReverbTime = 1000.0f;
-            // reverb.HighFreqRTRatio = 0.001f;
-
-
             var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(Utils.JammerPath + "Effects.ini");
+            IniData data = parser.ReadFile(Path.Combine(Utils.JammerPath, "Effects.ini"));
 
-            isChorus = bool.Parse(data["Chorus"]["Active"]);
-            chorusFrequency = float.Parse(data["Chorus"]["Frequency"]);
-            chorusWetDryMix = float.Parse(data["Chorus"]["WetDryMix"]);
-            chorusDepth = float.Parse(data["Chorus"]["Depth"]);
-            chorusFeedback = float.Parse(data["Chorus"]["Feedback"]);
-            chorusDelay = float.Parse(data["Chorus"]["Delay"]);
+            chorusFrequency = float.Parse(data["Chorus"]["Frequency"], CultureInfo.InvariantCulture);
+            chorusWetDryMix = float.Parse(data["Chorus"]["WetDryMix"], CultureInfo.InvariantCulture);
+            chorusDepth = float.Parse(data["Chorus"]["Depth"], CultureInfo.InvariantCulture);
+            chorusFeedback = float.Parse(data["Chorus"]["Feedback"], CultureInfo.InvariantCulture);
+            chorusDelay = float.Parse(data["Chorus"]["Delay"], CultureInfo.InvariantCulture);
 
             isCompressor = bool.Parse(data["Compressor"]["Active"]);
-            compressorGain = float.Parse(data["Compressor"]["Gain"]);
-            compressorAttack = float.Parse(data["Compressor"]["Attack"]);
-            compressorRelease = float.Parse(data["Compressor"]["Release"]);
-            compressorThreshold = float.Parse(data["Compressor"]["Threshold"]);
-            compressorRatio = float.Parse(data["Compressor"]["Ratio"]);
-            compressorPredelay = float.Parse(data["Compressor"]["Predelay"]);
+            compressorGain = float.Parse(data["Compressor"]["Gain"], CultureInfo.InvariantCulture);
+            compressorAttack = float.Parse(data["Compressor"]["Attack"], CultureInfo.InvariantCulture);
+            compressorRelease = float.Parse(data["Compressor"]["Release"], CultureInfo.InvariantCulture);
+            compressorThreshold = float.Parse(data["Compressor"]["Threshold"], CultureInfo.InvariantCulture);
+            compressorRatio = float.Parse(data["Compressor"]["Ratio"], CultureInfo.InvariantCulture);
+            compressorPredelay = float.Parse(data["Compressor"]["Predelay"], CultureInfo.InvariantCulture);
 
             isDistortion = bool.Parse(data["Distortion"]["Active"]);
-            distortionGain = float.Parse(data["Distortion"]["Gain"]);
-            distortionEdge = float.Parse(data["Distortion"]["Edge"]);
-            distortionPostEQCenterFrequency = float.Parse(data["Distortion"]["PostEQCenterFrequency"]);
+            distortionGain = float.Parse(data["Distortion"]["Gain"], CultureInfo.InvariantCulture);
+            distortionEdge = float.Parse(data["Distortion"]["Edge"], CultureInfo.InvariantCulture);
+            distortionPostEQCenterFrequency = float.Parse(data["Distortion"]["PostEQCenterFrequency"], CultureInfo.InvariantCulture);
 
             isEcho = bool.Parse(data["Echo"]["Active"]);
-            echoWetDryMix = float.Parse(data["Echo"]["WetDryMix"]);
-            echoFeedback = float.Parse(data["Echo"]["Feedback"]);
-            echoLeftDelay = float.Parse(data["Echo"]["LeftDelay"]);
-            echoRightDelay = float.Parse(data["Echo"]["RightDelay"]);
+            echoWetDryMix = float.Parse(data["Echo"]["WetDryMix"], CultureInfo.InvariantCulture);
+            echoFeedback = float.Parse(data["Echo"]["Feedback"], CultureInfo.InvariantCulture);
+            echoLeftDelay = float.Parse(data["Echo"]["LeftDelay"], CultureInfo.InvariantCulture);
+            echoRightDelay = float.Parse(data["Echo"]["RightDelay"], CultureInfo.InvariantCulture);
             echoPanDelay = bool.Parse(data["Echo"]["PanDelay"]);
 
             isFlanger = bool.Parse(data["Flanger"]["Active"]);
-            flangerWetDryMix = float.Parse(data["Flanger"]["WetDryMix"]);
-            flangerDepth = float.Parse(data["Flanger"]["Depth"]);
-            flangerFeedback = float.Parse(data["Flanger"]["Feedback"]);
-            flangerFrequency = float.Parse(data["Flanger"]["Frequency"]);
-            flangerDelay = float.Parse(data["Flanger"]["Delay"]);
+            flangerWetDryMix = float.Parse(data["Flanger"]["WetDryMix"], CultureInfo.InvariantCulture);
+            flangerDepth = float.Parse(data["Flanger"]["Depth"], CultureInfo.InvariantCulture);
+            flangerFeedback = float.Parse(data["Flanger"]["Feedback"], CultureInfo.InvariantCulture);
+            flangerFrequency = float.Parse(data["Flanger"]["Frequency"], CultureInfo.InvariantCulture);
+            flangerDelay = float.Parse(data["Flanger"]["Delay"], CultureInfo.InvariantCulture);
 
             isGargle = bool.Parse(data["Gargle"]["Active"]);
-            gargleRate = float.Parse(data["Gargle"]["Rate"]);
-            gargleWaveShape = float.Parse(data["Gargle"]["WaveShape"]);
+            gargleRate = int.Parse(data["Gargle"]["Rate"], CultureInfo.InvariantCulture);
 
             isParamEQ = bool.Parse(data["ParamEQ"]["Active"]);
-            paramEQCenter = float.Parse(data["ParamEQ"]["Center"]);
-            paramEQBandwidth = float.Parse(data["ParamEQ"]["Bandwidth"]);
-            paramEQGain = float.Parse(data["ParamEQ"]["Gain"]);
+            paramEQCenter = float.Parse(data["ParamEQ"]["Center"], CultureInfo.InvariantCulture);
+            paramEQBandwidth = float.Parse(data["ParamEQ"]["Bandwidth"], CultureInfo.InvariantCulture);
+            paramEQGain = float.Parse(data["ParamEQ"]["Gain"], CultureInfo.InvariantCulture);
 
             isReverb = bool.Parse(data["Reverb"]["Active"]);
-            reverbInGain = float.Parse(data["Reverb"]["InGain"]);
-            reverbReverbMix = float.Parse(data["Reverb"]["ReverbMix"]);
-            reverbReverbTime = float.Parse(data["Reverb"]["ReverbTime"]);
-            reverbHighFreqRTRatio = float.Parse(data["Reverb"]["HighFreqRTRatio"]);
+            reverbInGain = float.Parse(data["Reverb"]["InGain"], CultureInfo.InvariantCulture);
+            reverbReverbMix = float.Parse(data["Reverb"]["ReverbMix"], CultureInfo.InvariantCulture);
+            reverbReverbTime = float.Parse(data["Reverb"]["ReverbTime"], CultureInfo.InvariantCulture);
+            reverbHighFreqRTRatio = float.Parse(data["Reverb"]["HighFreqRTRatio"], CultureInfo.InvariantCulture);
         }
-        
     }
 }
