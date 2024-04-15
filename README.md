@@ -152,50 +152,58 @@ Currently supported languages:
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
----
-
-#### Random info
-
-You can also stack multiple Jammer playlists inside another Jammer playlists.
-
----
-
 ## Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website or the libaries are included in the libs folder.
+
+On **Linux**, you need to add the libraries to the $LD_LIBRARY_PATH.
 
 ```bash
 export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
 ```
 
-```bash
+On **Windows**, you need to add the libraries to the executable folder.
 
-dotnet run -- "path/to/song.mp3" ..
+### Run
+
+#### CLI
+
+```bash
+dotnet run --project Jammer.CLI -p:DefineConstants="CLI_UI" -- [args]
+```
+
+#### AVALONIA
+
+```bash
+dotnet run --project Jammer.Avalonia -p:DefineConstants="AVALONIA_UI" -- [args]
 ```
 
 ### Build
 
-##### Windows
+#### Windows
 
-Add **BASS** and **BASS_AAC** libraries to the executable folder
+##### _CLI
 
 ```bash
--p:UseForms -- When true, uses forms to add global key listener
-cd JAMMER.CLI or JAMMER.ELECTRON
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:UseForms={true|false}
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
 ```
 
-Electron UI
+##### _AVALONIA
 
-Requires installation of [Electron.net](https://github.com/ElectronNET/Electron.NET)
+```bash
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="AVALONIA_UI" --self-contained
+```
 
 ##### Linux
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
 
 ```bash
-cd JAMMER.CLI or JAMMER.ELECTRON
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false -p:DefineConstants="CLI_UI" --self-contained
+```
+
+```bash
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=true -p:DefineConstants="AVALONIA_UI"
 ```
 
 ##### Linux AppImage release
@@ -217,28 +225,13 @@ To create AppImage run `build.sh`
 
 ##### Build script for NSIS installer
 
-```bash
-build.bat     { CLI | FORMS } { CLI | ELECTRON }
-
-CLI - Only barebone CLI version
-FORMS - Includes global key listeners for windows
-========================
-CLI - CLI version
-ELECTRON - UI-Electron version
-
-```
-
 you can also use `change_version.py` to change the version of the app.
 
 ```bash
 python change_version.py [version]
 ```
 
----
-
 ![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.png)
-
----
 
 ### Todo bug fixes
 

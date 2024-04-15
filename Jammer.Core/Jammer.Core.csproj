@@ -24,7 +24,7 @@
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
-    <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
+    <!-- <PackageReference Include="ManagedBass.Fx" Version="3.1.1" /> -->
     <PackageReference Include="SoundCloudExplode" Version="1.5.3" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />

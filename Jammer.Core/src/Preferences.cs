@@ -11,6 +11,7 @@ namespace Jammer
         public static int forwardSeconds = GetForwardSeconds();
         public static float volume = GetVolume();
         public static float changeVolumeBy = GetChangeVolumeBy();
+        public static bool isReverb = GetIsReverb();
         public static float oldVolume = GetOldVolume();
         public static bool isLoop = GetIsLoop();
         public static bool isMuted = GetIsMuted();
@@ -38,6 +39,8 @@ namespace Jammer
             {
                 SaveSettings();
             }
+
+            Effects.WriteEffects();
             
 
             if (!Directory.Exists(songsPath))
@@ -54,6 +57,7 @@ namespace Jammer
             settings.IsLoop = isLoop;
             settings.Volume = volume;
             settings.isMuted = isMuted;
+            settings.isReverb = isReverb;
             settings.OldVolume = oldVolume;
             settings.forwardSeconds = forwardSeconds;
             settings.rewindSeconds = rewindSeconds;
@@ -124,6 +128,21 @@ namespace Jammer
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
                 return settings?.isMuted ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static public bool GetIsReverb()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.isReverb ?? false;
             }
             else
             {
@@ -290,6 +309,7 @@ namespace Jammer
         {
             public bool IsLoop { get; set; }
             public float Volume { get; set; }
+            public bool isReverb { get; set; }
             public float OldVolume { get; set; }
             public bool isMuted { get; set; }
             public int forwardSeconds { get; set; }

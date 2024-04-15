@@ -353,7 +353,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     }
                 }
             } 
-
+            
             Preferences.CheckJammerFolderExists();
             IniFileHandling.Create_KeyDataIni(0);
             IniFileHandling.Create_KeyDataIni(2);

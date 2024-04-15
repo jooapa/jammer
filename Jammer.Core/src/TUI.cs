@@ -207,7 +207,7 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Locale.Help.ShowCmdHelp);
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Locale.Help.ToMainMenu);
 
-            AnsiConsole.Clear();
+            AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
             DrawHelpSettingInfo();
         }
@@ -241,7 +241,9 @@ namespace Jammer {
             table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
-            AnsiConsole.Clear();
+            table.AddRow("Toggle Reverb", Preferences.isReverb ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleReverb}[/] {Locale.Settings.ToToggle}");
+            
+            AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
             DrawHelpSettingInfo();
         }
@@ -293,8 +295,6 @@ namespace Jammer {
 
         public static void EditKeyBindings(){
             IniFileHandling.Create_KeyDataIni(0);
-            AnsiConsole.Clear();
-
 
             var table = new Table();
             table.AddColumn(Locale.Help.Description);

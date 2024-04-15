@@ -1,10 +1,13 @@
 using ManagedBass;
 using ManagedBass.Aac;
+using ManagedBass.DirectX8;
+
 // using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TagLib;
 
 
@@ -717,13 +720,17 @@ namespace Jammer
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
-            // set tempo
-            // BassFlags effectFlags = BassFlags.Default;
+            // MARK: - EFFECT FX
+            // DXReverbParameters reverb = new()
+            // {
+            //     fInGain = 3.0f,
+            //     fReverbMix = 3.0f,
+            //     fReverbTime = 500.0f
+            // };
 
-            // int lol = BassFx.TempoCreate(Utils.currentMusic, effectFlags);
+            // int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+            // Bass.FXSetParameters(reverbHandle, reverb);
 
-            // // set pitch
-            // BassFx.BPMBeatSetParameters(Utils.currentMusic, -1.0f, -1.0f, -1.0f);
 
             // set sync
             Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {

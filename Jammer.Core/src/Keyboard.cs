@@ -244,13 +244,6 @@ namespace Jammer
                             if (playerView == "default")
                             {   
                                 playerView = "all";
-                                #if CLI_UI
-                                var table = new Table();
-                                AnsiConsole.Write(table);
-                                AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
-                                AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
-                                AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
-                                #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
                                 #endif
@@ -383,6 +376,11 @@ namespace Jammer
                                 #endif
                             }
                             break;
+                        case "ToggleReverb": // toggle reverb
+                            Preferences.isReverb = !Preferences.isReverb;
+                            Preferences.SaveSettings();   
+                            break;
+
                         case "CommandHelpScreen":
                             #if CLI_UI
                             TUI.CliHelp();
@@ -462,7 +460,7 @@ namespace Jammer
                             }
                             break;
                         case "PlayRandomSong":
-                            // TODO: Play random song
+                            Play.RandomSong();
                             break;
                         // case ConsoleKey.J:
                         //     Jammer.Message.Input();
