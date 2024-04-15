@@ -1,6 +1,6 @@
 # Jammer — Play songs in cli with Youtube and Soundcloud support
 
-![banner](![Jammer Banner](.github/img/banner2.png))
+![banner](.github/img/banner2.png)
 
 ## Introduction
 
