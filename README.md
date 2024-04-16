@@ -16,7 +16,7 @@ for the playlist feature across different platforms***
 
 - The player doesn't stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the
-  downloaded songs, playlists, settings, keybinds and locales.
+  downloaded songs, playlists, settings, keybinds, locales and effects modification.
 - Jammer uses [Bass](https://www.un4seen.com/) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Install/Update
