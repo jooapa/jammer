@@ -128,6 +128,7 @@ PanDelay = false
 
 [Flanger] 
 Active = false
+
 ; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the
 ; range from 0 through 100 (all wet).
 WetDryMix = 0
@@ -143,6 +144,7 @@ Frequency = 0.25
 ; Number of milliseconds the input is delayed before it is played back, in the
 ; range from 0 to 4.
 Delay = 2
+
 [Gargle] 
 Active = false
 
@@ -159,9 +161,10 @@ Center = 8000.0
 Bandwidth = 12.0
 ; Gain, in the range from -15 to 15.
 Gain = 0.0
-[Reverb] 
 
+[Reverb] 
 Active = false
+
 ; Input gain of signal, in decibels (dB), in the range from -96 through 0.
 InGain = 0.0
 ; Reverb mix, in dB, in the range from -96 through 0.
