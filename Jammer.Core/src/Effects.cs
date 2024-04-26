@@ -58,10 +58,8 @@ namespace Jammer {
         public static float reverbReverbMix = 0.0f;
         public static float reverbReverbTime = 1000.0f;
         public static float reverbHighFreqRTRatio = 0.001f;
-        private static readonly string FileContent = @"
-[Chorus] 
+        private static readonly string FileContent = @"[Chorus] 
 Active = false
-
 ; Frequency of the LFO, in the range from 0 to 10.
 Frequency = 1.1
 ; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the
@@ -80,7 +78,6 @@ Delay = 16
 
 [Compressor] 
 Active = false
-
 ; Output gain of signal in dB after compression, in the range from -60 to 60..
 Gain = 1.0
 ; Time in ms before compression reaches its full value, in the range from 0.01
@@ -100,7 +97,6 @@ Predelay = 4.0
 
 [Distortion] 
 Active = false
-
 ; Amount of signal change after distortion, in the range from -60 through 0.
 Gain = 0.5
 ; Percentage of distortion intensity, in the range in the range from 0 through
@@ -112,7 +108,6 @@ PostEQCenterFrequency = 100.0
 
 [Echo] 
 Active = false
-
 ; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the
 ; range from 0 through 100 (all wet).
 WetDryMix = 0
@@ -128,7 +123,6 @@ PanDelay = false
 
 [Flanger] 
 Active = false
-
 ; Ratio of wet (processed) signal to dry (unprocessed) signal. Must be in the
 ; range from 0 through 100 (all wet).
 WetDryMix = 0
@@ -147,13 +141,11 @@ Delay = 2
 
 [Gargle] 
 Active = false
-
 ; Rate of modulation, in Hertz. Must be in the range from 1 through 1000.
 Rate = 0
 
 [ParamEQ] 
 Active = false
-
 ; Center frequency, in hertz, in the range from 80 to 16000. This value cannot
 ; exceed one-third of the frequency of the channel.
 Center = 8000.0
@@ -164,7 +156,6 @@ Gain = 0.0
 
 [Reverb] 
 Active = false
-
 ; Input gain of signal, in decibels (dB), in the range from -96 through 0.
 InGain = 0.0
 ; Reverb mix, in dB, in the range from -96 through 0.
