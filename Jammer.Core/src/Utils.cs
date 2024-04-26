@@ -24,7 +24,7 @@ namespace Jammer
         public static string urlPatternHTTPS = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
         public static string urlPatternHTTP = @"http?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
         public static bool mainLoop = true;
-        public static string JammerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Jammer");
+        public static string JammerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "jammer");
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;

@@ -597,7 +597,12 @@ namespace Jammer
                 }
             }
         }
-
+        public static void SetEffectsToChannel() {
+            // Start playing from the same position
+            long pos = Bass.ChannelGetPosition(Utils.currentMusic);
+            StartPlaying();
+            Bass.ChannelSetPosition(Utils.currentMusic, pos);
+        }
         public static void Shuffle()
         {
             // suffle songs
@@ -673,6 +678,7 @@ namespace Jammer
             }
             return "Unknown";
         }
+
         static public void StartPlaying()
         {
 
@@ -858,7 +864,6 @@ namespace Jammer
                 int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
                 Bass.FXSetParameters(reverbHandle, reverb);
             }
-
         }
     }
 }

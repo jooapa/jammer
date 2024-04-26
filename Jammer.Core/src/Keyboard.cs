@@ -308,6 +308,10 @@ namespace Jammer
                             Preferences.isAutoSave = !Preferences.isAutoSave;
                             Preferences.SaveSettings();
                             break;
+                        case "LoadEffects": // reset effects
+                            Effects.ReadEffects();
+                            Play.SetEffectsToChannel();
+                            break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
                             break;
@@ -376,11 +380,6 @@ namespace Jammer
                                 #endif
                             }
                             break;
-                        case "ToggleReverb": // toggle reverb
-                            Preferences.isReverb = !Preferences.isReverb;
-                            Preferences.SaveSettings();   
-                            break;
-
                         case "CommandHelpScreen":
                             #if CLI_UI
                             TUI.CliHelp();

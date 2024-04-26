@@ -40,7 +40,6 @@ ForwardSecondAmount = 1
 BackwardSecondAmount = 2
 ChangeVolumeAmount = 3
 Autosave = 4
-ToggleReverb = 5
 CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete

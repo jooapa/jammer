@@ -16,36 +16,34 @@ namespace Jammer {
                 $"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}",
                 $"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}"
             };
-            int maximum = 6 + results.Count;
+
+            int maximum = 7;
             
             for (int i = 0; i < Utils.songs.Length; i++) {
                 string keyValue = Utils.songs[i].ToString();
-                
+                            
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
                     if (i == Utils.currentSongIndex) {
-                        results.Add($"[green]{i + 1}. {Play.Title(keyValue, "get")}[/]");
+                        results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
                     }
                     else if (i == Utils.currentPlaylistSongIndex) {
-                        results.Add($"[yellow]{i + 1}. {Play.Title(keyValue, "get")}[/]");
+                        results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
                     }
                     else if (Utils.currentPlaylistSongIndex <= 3) {
-                        results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
+                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                     }
-                    else if(
-                        Utils.currentPlaylistSongIndex + 5 >= Utils.songs.Length &&
-                        i > Utils.songs.Length - 6
-                    ){
-                        keyValue = Utils.songs[i].ToString();
-                        results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
+                    else if (i >= Utils.currentPlaylistSongIndex - 2 && i < Utils.currentPlaylistSongIndex + 3) {
+                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                     }
-                    else if (i >= Utils.currentPlaylistSongIndex -2 && i < Utils.currentPlaylistSongIndex + 3) {
-                        results.Add($"{i + 1}. {Play.Title(keyValue, "get")}");
+                    else if (i >= Utils.songs.Length - (maximum - results.Count)) {
+                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                     }
                 }
             }
 
             return results.ToArray();
         }
+
         public static string[] GetAllSongsQueue() {
             int maximum = 10;
             List<string> results = new();

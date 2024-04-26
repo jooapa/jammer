@@ -51,16 +51,31 @@ namespace Jammer {
                 mainTable.Border = TableBorder.Rounded;
                 mainTable.AddRow(helpTable.Centered());
 
+                // add \n to the end of the maintable until the end of the console by height
+                int tableRowCount;
                 if (Start.playerView != "all") {
-                    // add \n to the end of the maintable until the end of the console by height
-                    int tableRowCount = Start.consoleHeight - 25;
-                    if (tableRowCount < 0) {
-                        tableRowCount = 0;
-                    }
+                    tableRowCount = Start.consoleHeight - 23;
+                }
+                else {
+                    tableRowCount = Start.consoleHeight - 28;
+                }
 
-                    for (int i = 0; i < tableRowCount; i++) {
-                        mainTable.AddRow("").Width(Start.consoleWidth);
-                    }
+                // conside the height time and the border
+                // tableRowCount += 4;
+                // add empty rows to the end of the table
+                //
+                // tableRowCount = Start.consoleHeight - tableRowCount;
+                // Console.WriteLine(Start.consoleHeight);
+                // Console.WriteLine(tableRowCount);
+                // Console.ReadLine();
+
+
+                if (tableRowCount < 0) {
+                    tableRowCount = 0;
+                }
+
+                for (int i = 0; i < tableRowCount; i++) {
+                    mainTable.AddRow("").Width(Start.consoleWidth);
                 }
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth-20).Centered()).Width(Start.consoleWidth);
 
@@ -110,8 +125,9 @@ namespace Jammer {
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
             } else {
-                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + ":" + Utils.currentPlaylist);
+                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + ": " + Utils.currentPlaylist);
             }
+
             table.AddColumn(Locale.OutsideItems.CurrentQueue);
             for(int i = 0; i < lines.Length; i++){
                 table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
@@ -241,8 +257,7 @@ namespace Jammer {
             table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
-            table.AddRow("Toggle Reverb", Preferences.isReverb ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleReverb}[/] {Locale.Settings.ToToggle}");
-            
+            table.AddRow("Load Effects", "", $"[green]{Keybindings.LoadEffects}[/] {"To Load Effects (again)"}");
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
             DrawHelpSettingInfo();
