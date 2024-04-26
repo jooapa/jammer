@@ -153,8 +153,12 @@ namespace Jammer {
             if (length == null) {
                 length = 100;
             }
+
             int progress = (int)(value / max * length);
             string progressBar = Funcs.CalculateTime(value) + " |";
+            // length is modified also by the time string
+            length -= Funcs.CalculateTime(value).Length;
+
             for (int i = 0; i < length; i++) {
                 if (i < progress) {
                     progressBar += "█";
@@ -164,6 +168,9 @@ namespace Jammer {
                 }
             }
             progressBar += "| " + Funcs.CalculateTime(max);
+
+            length -= Funcs.CalculateTime(max).Length;
+
             return progressBar;
         }
 

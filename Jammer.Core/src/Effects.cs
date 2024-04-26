@@ -169,7 +169,7 @@ Active = false
 InGain = 0.0
 ; Reverb mix, in dB, in the range from -96 through 0.
 ReverbMix = 0.0
-; Reverb time, in milliseconds, in the range from 0.001 through 3000.
+; Reverb time, in milliseconds
 ReverbTime = 1000.0
 ; In the range from 0.001 through 0.999.
 HighFreqRTRatio = 0.001
