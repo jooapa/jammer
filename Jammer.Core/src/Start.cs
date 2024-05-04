@@ -372,7 +372,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 #endif
                 return;
             }
-
+            InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.songs.Length != 0)
