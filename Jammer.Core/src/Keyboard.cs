@@ -36,6 +36,7 @@ namespace Jammer
                     );
 
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
+                    Console.Clear();
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
                         #if CLI_UI
@@ -98,6 +99,7 @@ namespace Jammer
                     }
                 }
                 else if(playerView.Equals("changelanguage")){
+                    Console.Clear();
                     // Jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
@@ -121,6 +123,7 @@ namespace Jammer
                 }
 
                 else if(playerView.Equals("all")){
+                    Console.Clear();
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){

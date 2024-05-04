@@ -105,7 +105,7 @@ namespace Jammer{
             public static string ShowPlaylistOptions = CheckValueLocale("Help", "ShowPlaylistOptions", "Show playlist options");
             public static string ShowCmdHelp = CheckValueLocale("Help", "ShowCmdHelp", "Show cmd Help");
             public static string Press = CheckValueLocale("Help", "Press", "Press");
-            public static string ToHideHelp = CheckValueLocale("Help", "ToHideHelp", "to hide help");
+            public static string ToHideHelp = CheckValueLocale("Help", "ToHideHelp", "to hide/show help");
             public static string ForSettings = CheckValueLocale("Help", "ForSettings", "for settings");
             public static string ToShowPlaylist = CheckValueLocale("Help", "ToShowPlaylist", "to show playlist");
             public static string AddsongToPlaylist = CheckValueLocale("Help", "AddsongToPlaylist", "Add song to playlist");
