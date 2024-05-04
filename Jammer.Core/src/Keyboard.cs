@@ -244,13 +244,6 @@ namespace Jammer
                             if (playerView == "default")
                             {   
                                 playerView = "all";
-                                #if CLI_UI
-                                var table = new Table();
-                                AnsiConsole.Write(table);
-                                AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
-                                AnsiConsole.Markup($"\n{Locale.Help.Press} [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings}");
-                                AnsiConsole.Markup($"\n{Locale.Help.Press} [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Help.ToShowPlaylist}");
-                                #endif
                                 #if AVALONIA_UI
                                 // TODO AVALONIA_UI
                                 #endif
@@ -314,6 +307,10 @@ namespace Jammer
                         case "Autosave": // autosave or not
                             Preferences.isAutoSave = !Preferences.isAutoSave;
                             Preferences.SaveSettings();
+                            break;
+                        case "LoadEffects": // reset effects
+                            Effects.ReadEffects();
+                            Play.SetEffectsToChannel();
                             break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
@@ -462,7 +459,7 @@ namespace Jammer
                             }
                             break;
                         case "PlayRandomSong":
-                            // TODO: Play random song
+                            Play.RandomSong();
                             break;
                         // case ConsoleKey.J:
                         //     Jammer.Message.Input();

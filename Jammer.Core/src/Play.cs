@@ -1,9 +1,13 @@
 using ManagedBass;
 using ManagedBass.Aac;
+using ManagedBass.DirectX8;
+
+// using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TagLib;
 
 
@@ -605,7 +609,12 @@ namespace Jammer
                 }
             }
         }
-
+        public static void SetEffectsToChannel() {
+            // Start playing from the same position
+            long pos = Bass.ChannelGetPosition(Utils.currentMusic);
+            StartPlaying();
+            Bass.ChannelSetPosition(Utils.currentMusic, pos);
+        }
         public static void Shuffle()
         {
             // suffle songs
@@ -681,28 +690,35 @@ namespace Jammer
             }
             return "Unknown";
         }
+
         static public void StartPlaying()
         {
 
             ResetMusic();
-            // if extension is aac, use aac decoder
+
+            // flags
+            BassFlags flags = BassFlags.Default;
+            
+
             if (isValidAACExtension(Path.GetExtension(Utils.currentSong)))
             {
                 BassAac.PlayAudioFromMp4 = false;
                 BassAac.AacSupportMp4 = false;
-                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+
+                // custom flags
+                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
             }
             else if (isValidMP4Extension(Path.GetExtension(Utils.currentSong)))
             {
                 // flags
                 BassAac.PlayAudioFromMp4 = true;
                 BassAac.AacSupportMp4 = true;
-                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, BassFlags.Default);
+                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
             }
             else
             {
                 // create stream
-                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, BassFlags.Default);
+                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
             }
 
             // create stream
@@ -722,15 +738,144 @@ namespace Jammer
             // set volume
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
+            // set FXs
+            SetFXs();
+
+
+            // set sync
+            Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
+                MaybeNextSong();
+            }, IntPtr.Zero);
+
+
             Start.state = MainStates.playing;
             // play stream
             Start.prevMusicTimePlayed = 0;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
+
+
             #if CLI_UI
             TUI.RefreshCurrentView();
             #endif
             // TODO AVALONIA_UI
+        }
+
+        public static void SetFXs() {
+            // MARK: - EFFECT FX EXAMPLES
+            // DXReverbParameters reverb = new()
+            // {
+            //     fInGain = 3.0f,
+            //     fReverbMix = 3.0f,
+            //     fReverbTime = 500.0f
+            // };
+
+            // int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+            // Bass.FXSetParameters(reverbHandle, reverb);
+
+            if (Effects.isChorus) {
+                DXChorusParameters chorus = new()
+                {
+                    fWetDryMix = Effects.chorusWetDryMix,
+                    fDepth = Effects.chorusDepth,
+                    fFeedback = Effects.chorusFeedback,
+                    fFrequency = Effects.chorusFrequency,
+                    fDelay = Effects.chorusDelay
+                };
+
+                int chorusHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Chorus, 1);
+                Bass.FXSetParameters(chorusHandle, chorus);
+            }
+
+            if (Effects.isCompressor) {
+                DXCompressorParameters compressor = new()
+                {
+                    fGain = Effects.compressorGain,
+                    fAttack = Effects.compressorAttack,
+                    fRelease = Effects.compressorRelease,
+                    fThreshold = Effects.compressorThreshold,
+                    fRatio = Effects.compressorRatio,
+                    fPredelay = Effects.compressorPredelay
+                };
+
+                int compressorHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Compressor, 1);
+                Bass.FXSetParameters(compressorHandle, compressor);
+            }
+
+            if (Effects.isDistortion) {
+                DXDistortionParameters distortion = new()
+                {
+                    fGain = Effects.distortionGain,
+                    fEdge = Effects.distortionEdge,
+                    fPostEQCenterFrequency = Effects.distortionPostEQCenterFrequency
+                };
+
+                int distortionHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Distortion, 1);
+                Bass.FXSetParameters(distortionHandle, distortion);
+            }
+
+            if (Effects.isEcho) {
+                DXEchoParameters echo = new()
+                {
+                    fWetDryMix = Effects.echoWetDryMix,
+                    fFeedback = Effects.echoFeedback,
+                    fLeftDelay = Effects.echoLeftDelay,
+                    fRightDelay = Effects.echoRightDelay,
+                    lPanDelay = Effects.echoPanDelay
+                };
+
+                int echoHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Echo, 1);
+                Bass.FXSetParameters(echoHandle, echo);
+            }
+
+            if (Effects.isFlanger) {
+                DXFlangerParameters flanger = new()
+                {
+                    fWetDryMix = Effects.flangerWetDryMix,
+                    fDepth = Effects.flangerDepth,
+                    fFeedback = Effects.flangerFeedback,
+                    fFrequency = Effects.flangerFrequency,
+                    fDelay = Effects.flangerDelay,
+                };
+
+                int flangerHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXFlanger, 1);
+                Bass.FXSetParameters(flangerHandle, flanger);
+            }
+
+            if (Effects.isGargle) {
+                DXGargleParameters gargle = new()
+                {
+                    dwRateHz = Effects.gargleRate,
+                };
+
+                int gargleHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXGargle, 1);
+                Bass.FXSetParameters(gargleHandle, gargle);
+            }
+
+            if (Effects.isParamEQ) {
+                DXParamEQParameters paramEq = new()
+                {
+                    fCenter = Effects.paramEQCenter,
+                    fBandwidth = Effects.paramEQBandwidth,
+                    fGain = Effects.paramEQGain
+                };
+
+                int paramEqHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXParamEQ, 1);
+                Bass.FXSetParameters(paramEqHandle, paramEq);
+            }
+
+            if (Effects.isReverb) {
+                DXReverbParameters reverb = new()
+                {
+                    fInGain = Effects.reverbInGain,
+                    fReverbMix = Effects.reverbReverbMix,
+                    fReverbTime = Effects.reverbReverbTime,
+                    fHighFreqRTRatio = Effects.reverbHighFreqRTRatio
+                };
+
+                int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+                Bass.FXSetParameters(reverbHandle, reverb);
+            }
         }
     }
 }

@@ -1,13 +1,13 @@
 # Jammer — Play songs in cli with Youtube and Soundcloud support
 
-![banner](https://raw.githubusercontent.com/jooapa/jammer/main/.github/img/Jammer-banner.gif)
+![banner](.github/img/banner2.png)
 
 ## Introduction
 
 Tired of opening up a browser or app to play music, and even then you can't
 play local files or songs from different sites?
 
-Jammer is a simple CLI music player that supports playing songs from your**local files**, **Youtube** and **Soundcloud**.
+Jammer is a simple CLI music player that supports playing songs from your **local files**, **Youtube** and **Soundcloud**.
 
 Compatible with **`Windows`**, *`Linux`*.
 
@@ -16,7 +16,7 @@ for the playlist feature across different platforms***
 
 - The player doesn't stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the
-  downloaded songs, playlists, settings, keybinds and locales.
+  downloaded songs, playlists, settings, keybinds, locales and effects modification.
 - Jammer uses [Bass](https://www.un4seen.com/) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Install/Update
@@ -30,63 +30,63 @@ install libfuse2`.
 ### Update existing
 
 ```bash
-Jammer update
+jammer update
 ```
 
 ## Usage
 
 ```bash
-Jammer
-Jammer [song] ... [folder]
-Jammer https://soundcloud.com/username/track-name
-Jammer https://soundcloud.com/username/sets/playlist-name
-Jammer https://youtube.com/watch?v=video-id
-Jammer https://youtube.com/playlist?list=playlist-id
+jammer
+jammer [song] ... [folder]
+jammer https://soundcloud.com/username/track-name
+jammer https://soundcloud.com/username/sets/playlist-name
+jammer https://youtube.com/watch?v=video-id
+jammer https://youtube.com/playlist?list=playlist-id
 
-Jammer --start        opens Jammer folder
-Jammer --update       checks for updates and installs
-Jammer --help -h      show help
-Jammer -d             debug mode
-Jammer --version      show version
+jammer --start        opens jammer folder
+jammer --update       checks for updates and installs
+jammer --help -h      show help
+jammer -d             debug mode
+jammer --version      show version
 ```
 
 *when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
-Jammer -p, --play <name>                  play playlist
-Jammer -c, --create <name>                create playlist
-Jammer -d, --delete <name>                delete playlist
-Jammer -a, --add <name> <song> ...        add song to playlist
-Jammer -r, --remove <name> <song> ...     remove song from playlist
-Jammer -s, --show <name> 
-Jammer -l, --list                         list all playlists
-Jammer -f, --flush                        flushes all the songs in songs folder
-Jammer -sp, --set-path <path>, <default>  set path for songs folder
+jammer -p, --play <name>                  play playlist
+jammer -c, --create <name>                create playlist
+jammer -d, --delete <name>                delete playlist
+jammer -a, --add <name> <song> ...        add song to playlist
+jammer -r, --remove <name> <song> ...     remove song from playlist
+jammer -s, --show <name> 
+jammer -l, --list                         list all playlists
+jammer -f, --flush                        flushes all the songs in songs folder
+jammer -sp, --set-path <path>, <default>  set path for songs folder
 ```
 
 ### Example usage
 
 ```bash
-Jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\Jammer\playlists\playlist.Jammer
+jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
 ```
 
 ```bash
-Jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
+jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
 ```
 
 ```bash
-Jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
+jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 ```
 
 #### Example of making a playlist in cli
 
 ```bash
-Jammer -c gd
-Jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
-Jammer -p gd
+jammer -c gd
+jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
+jammer -p gd
 ```
 
-*you can do same opening the `Jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
+*you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
 
 You can also use `-d` flag that will add logs to current folder.
 
@@ -100,6 +100,19 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **FOLDER** Folder/Directory (support playing all audio files within a folder)
 - **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
+
+### Effects
+
+- Reverb
+- Echo
+- Flanger
+- Chorus
+- Distortion
+- Compressor
+- Gargle
+- Parametric Equalizer
+
+Can be changed in the Effects.ini file in the Jammer folder.
 
 ### Default Player Controls
 
@@ -152,50 +165,58 @@ Currently supported languages:
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
----
-
-#### Random info
-
-You can also stack multiple Jammer playlists inside another Jammer playlists.
-
----
-
 ## Build / Run yourself
 
-Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website.
+Download the **BASS** and **BASS_AAC** libraries from the [un4seen](http://www.un4seen.com/bass.html) website or the libaries are included in the libs folder.
+
+On **Linux**, you need to add the libraries to the $LD_LIBRARY_PATH.
 
 ```bash
 export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
 ```
 
-```bash
+On **Windows**, you need to add the libraries to the executable folder.
 
-dotnet run -- "path/to/song.mp3" ..
+### Run
+
+#### CLI
+
+```bash
+dotnet run --project Jammer.CLI -p:DefineConstants="CLI_UI" -- [args]
+```
+
+#### AVALONIA
+
+```bash
+dotnet run --project Jammer.Avalonia -p:DefineConstants="AVALONIA_UI" -- [args]
 ```
 
 ### Build
 
-##### Windows
+#### Windows
 
-Add **BASS** and **BASS_AAC** libraries to the executable folder
+##### _CLI
 
 ```bash
--p:UseForms -- When true, uses forms to add global key listener
-cd JAMMER.CLI or JAMMER.ELECTRON
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:UseForms={true|false}
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
 ```
 
-Electron UI
+##### _AVALONIA
 
-Requires installation of [Electron.net](https://github.com/ElectronNET/Electron.NET)
+```bash
+dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="AVALONIA_UI" --self-contained
+```
 
 ##### Linux
 
 Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
 
 ```bash
-cd JAMMER.CLI or JAMMER.ELECTRON
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false -p:DefineConstants="CLI_UI" --self-contained
+```
+
+```bash
+dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=true -p:DefineConstants="AVALONIA_UI"
 ```
 
 ##### Linux AppImage release
@@ -217,28 +238,13 @@ To create AppImage run `build.sh`
 
 ##### Build script for NSIS installer
 
-```bash
-build.bat     { CLI | FORMS } { CLI | ELECTRON }
-
-CLI - Only barebone CLI version
-FORMS - Includes global key listeners for windows
-========================
-CLI - CLI version
-ELECTRON - UI-Electron version
-
-```
-
 you can also use `change_version.py` to change the version of the app.
 
 ```bash
 python change_version.py [version]
 ```
 
----
-
 ![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.png)
-
----
 
 ### Todo bug fixes
 

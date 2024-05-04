@@ -38,6 +38,10 @@ namespace Jammer
             {
                 SaveSettings();
             }
+
+            // Effects.ini
+            Effects.WriteEffects();
+            Effects.ReadEffects();
             
 
             if (!Directory.Exists(songsPath))

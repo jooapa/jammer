@@ -149,4 +149,4 @@ nsis/Jammer.exe
 
 appimagetool-x86_64.AppImage
 *.AppImage
-Jammer.AppDir/usr/
+jammer.AppDir/usr/

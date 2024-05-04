@@ -353,7 +353,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     }
                 }
             } 
-
+            
             Preferences.CheckJammerFolderExists();
             IniFileHandling.Create_KeyDataIni(0);
             IniFileHandling.Create_KeyDataIni(2);
@@ -518,7 +518,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         // If the song is finished, play next song
                         if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
-                            Play.MaybeNextSong();
+                            // Play.MaybeNextSong();
                             prevMusicTimePlayed = 0;
 #if CLI_UI
                             TUI.RefreshCurrentView();
