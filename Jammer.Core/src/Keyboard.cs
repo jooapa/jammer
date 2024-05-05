@@ -564,7 +564,6 @@ namespace Jammer
         }
 
         public static void OnKeyReleased(object sender, KeyboardHookEventArgs e){
-            Console.WriteLine(e.Data.KeyCode);
             switch(e.Data.KeyCode){
                 case SharpHook.Native.KeyCode.VcMediaNext:
                     state = MainStates.next; // next song
