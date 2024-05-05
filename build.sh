@@ -8,6 +8,7 @@ cd ..
 
 mkdir -p jammer.AppDir/usr/{bin,lib,locales}
 cp -v Jammer.CLI/bin/Release/net7.0/linux-x64/publish/Jammer.CLI jammer.AppDir/usr/bin/Jammer
+cp -v Jammer.CLI/bin/Release/net7.0/linux-x64/publish/libuiohook.so jammer.AppDir/usr/lib/libuiohook.so
 cp -v libs/linux/x86_64/libbass* jammer.AppDir/usr/lib
 cp -v locales/* jammer.AppDir/usr/locales
 if [ ! -f ./appimagetool-x86_64.AppImage ]; then
