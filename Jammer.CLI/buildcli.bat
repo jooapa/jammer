@@ -11,6 +11,7 @@ SET "targetFolder=..\nsis"
 
 @REM COPY Jammer.exe
 COPY /B /Y "%sourceFolder%\Jammer.CLI.exe" "%targetFolder%\Jammer.exe"
+COPY /B /Y "%sourceFolder%\uiohook.dll" "%targetFolder%\uiohook.dll"
 
 COPY /B /Y "libs\win\x64\bass" "%targetFolder%"
 COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%"

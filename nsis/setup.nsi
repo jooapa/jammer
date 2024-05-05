@@ -88,6 +88,7 @@ File "open_with_Jammer.cmd"
 File "LICENSE"
 File "bass.dll"
 File "bass_aac.dll"
+File "uiohook.dll"
 
 CreateDirectory $PROFILE\Jammer\locales
 SetOutPath $PROFILE\Jammer\locales
@@ -175,6 +176,7 @@ Delete "$DESKTOP\Jammer.lnk"
 Delete "$SENDTO\Jammer.lnk"
 Delete "$INSTDIR\bass.dll"
 Delete "$INSTDIR\bass_aac.dll"
+Delete "$INSTDIR\uiohook.dll"
 
 
 ; Remove the installation directory if it still exists
