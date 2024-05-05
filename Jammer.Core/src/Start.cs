@@ -372,7 +372,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 #endif
                 return;
             }
-
+            InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.songs.Length != 0)
@@ -490,7 +490,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         //Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
                         Utils.currentMusicLength = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
 
-
+                        Utils.MusicTimePercentage = (float)(Utils.MusicTimePlayed / Utils.currentMusicLength * 100);
 #if CLI_UI
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)

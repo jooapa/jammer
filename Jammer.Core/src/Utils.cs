@@ -7,12 +7,25 @@ namespace Jammer
 {
     public struct Utils
     {
+        /// <summary>
+        /// for avalonia
+        /// </summary>
+        public static List<string> oldPlaylist = new ();
         public static int currentMusic { get; set; }
         public static string[] songs = { "" };
         public static List<string> queueSongs = new List<string>();
-        public static string currentSong = ""; // current path to song
-        public static double currentMusicLength = 0; // length in seconds
-        public static double MusicTimePlayed = 0; // time played in seconds
+        /// <summary>
+        /// current path to song
+        /// </summary>
+        public static string currentSong = ""; // 
+        /// <summary>
+        /// // length in seconds
+        /// </summary>
+        public static double currentMusicLength = 0;
+        /// <summary>
+        ///  time played in seconds
+        /// </summary>
+        public static double MusicTimePlayed = 0; //
         public static double preciseTime = 0;
         public static int currentSongIndex = 0;
         public static int previousSongIndex = 0;
@@ -30,5 +43,6 @@ namespace Jammer
         public static bool isInitialized = false;
         public static string version = "2.1.0";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
+        public static float MusicTimePercentage = 0;
     }
 }

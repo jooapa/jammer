@@ -385,7 +385,19 @@ namespace Jammer
             PlayDrawReset();
             return;
         }
+        public static void SetVolume(float volume) {
+            Preferences.volume = volume;
+            if (Preferences.volume > 1) {
+                Preferences.volume = 1;
+            } else if (Preferences.volume < 0) {
+                Preferences.volume = 0;
+            }
+            if(volume > 0) {
+                Preferences.isMuted = false;
+            }
+            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
 
+        }
         public static void ModifyVolume(float volume)
         {
             Preferences.volume += volume;

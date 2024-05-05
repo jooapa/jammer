@@ -1,7 +1,7 @@
 using ManagedBass;
 using Spectre.Console;
 using System.IO;
-
+using SharpHook;
 
 namespace Jammer
 {
@@ -36,6 +36,7 @@ namespace Jammer
                     );
 
                 if(playerView.Equals("editkeybindings") || IniFileHandling.EditingKeybind){
+                    Console.Clear();
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
                         #if CLI_UI
@@ -98,6 +99,7 @@ namespace Jammer
                     }
                 }
                 else if(playerView.Equals("changelanguage")){
+                    Console.Clear();
                     // Jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
@@ -121,6 +123,7 @@ namespace Jammer
                 }
 
                 else if(playerView.Equals("all")){
+                    Console.Clear();
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){
@@ -484,6 +487,7 @@ namespace Jammer
         {
             if(onlyPause){
                 Bass.ChannelPause(Utils.currentMusic);
+                state = MainStates.pause;
                 return;
             }
             if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Playing)
@@ -558,6 +562,30 @@ namespace Jammer
             }
             return true;
         }
-    }
 
+        public static void OnKeyReleased(object sender, KeyboardHookEventArgs e){
+            switch(e.Data.KeyCode){
+                case SharpHook.Native.KeyCode.VcMediaNext:
+                    state = MainStates.next; // next song
+                    break;
+                case SharpHook.Native.KeyCode.VcMediaPrevious:
+                    state = MainStates.previous; // previous song
+                    break;
+                case SharpHook.Native.KeyCode.VcMediaPlay:
+                    PauseSong();
+                    Play.PlayDrawReset();
+                    break;
+                case SharpHook.Native.KeyCode.VcMediaStop:
+                    PauseSong(true);
+                    Play.PlayDrawReset();
+                    break;
+            }
+        }
+        public static async void InitializeSharpHook(){
+            var hook = new TaskPoolGlobalHook();
+            hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
+            await hook.RunAsync();
+        }   
+
+    }
 }

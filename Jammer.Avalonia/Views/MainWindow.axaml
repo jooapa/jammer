@@ -10,12 +10,12 @@
 	x:DataType="vm:MainWindowViewModel"
 	Icon="/Assets/avalonia-logo.ico"
 	Title="Jammer">
-
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
+	
 	<Grid ColumnDefinitions="100, 1, *">
 		<StackPanel Grid.Column="0" Background="#313131">
 			<!--Playlist area-->
@@ -54,9 +54,9 @@
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<TextBlock Grid.Column="0" Text="Search from current view" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-				<TextBlock Grid.Column="1" Text="Current playlist" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-				<TextBlock Grid.Column="2" Text="Song folder" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-				<TextBlock Grid.Column="3" Text="Settings" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+				<Button Grid.Column="1" HorizontalAlignment="Left" Background="Red" Click="ShowCurrentPlaylist">Current playlist</Button>
+				<Button Grid.Column="2" HorizontalAlignment="Left" Background="Red" Click="ShowSongFolder">Song folder</Button>
+				<Button Grid.Column="3" HorizontalAlignment="Left" Background="Red" Click="ShowSettings">Settings</Button>
 			</Grid>			
 			
 			<!--Main area-->
@@ -64,8 +64,6 @@
 				<Border>
 					<ScrollViewer>
 						<StackPanel x:Name="MainAreaStackPanel">
-							<TextBlock Grid.Row="0" Margin="5" Text="array position+1. Song name" Foreground="White"/>
-							<TextBlock Grid.Row="1" Margin="5" Text="array position+1. Song name" Foreground="White"/>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>
@@ -95,25 +93,33 @@
 								<ColumnDefinition Width="40"/>
 								<ColumnDefinition Width="100"/>
 							</Grid.ColumnDefinitions>
-							<!--TODO ADD TIME HERE-->
 							<TextBlock Text="0.00" 
 							Foreground="Black"
 							HorizontalAlignment="Center" 
 							VerticalAlignment="Center" 
-							Grid.Column="0"/>
-							<Slider x:Name="SongTimeSlider" Grid.Column="1" />
-							<!--TODO ADD TIME HERE-->
+							Grid.Column="0"
+							x:Name="CurrentSongTime"
+							/>
+							<Slider 
+							x:Name="SongTimeSlider" 
+							Grid.Column="1"
+							PropertyChanged="ChangeSongTimeSlider"
+							/>
 							<TextBlock Text="3.40" 
 							Foreground="Black"
 							HorizontalAlignment="Center" 
-							VerticalAlignment="Center" 
-							Grid.Column="2"/>
+							VerticalAlignment="Center"
+							Grid.Column="2"
+							x:Name="FullSongTime"
+						   />
 							<!--Volume slider-->
-							<TextBlock Text=".ico"
-							Foreground="Black"
-							HorizontalAlignment="Center" 
-							VerticalAlignment="Center" 
-							Grid.Column="3"/>
+							<Button
+							Grid.Column="3"
+							Click="MuteUnmute"
+							Background="Red"
+							x:Name="MuteButton"
+							>.ico
+							</Button>
 							<Slider 
 							VerticalAlignment="Center"  
 							x:Name="SongVolumeSlider" 

@@ -15,7 +15,5 @@
     <ProjectReference Include="..\Jammer.Core\Jammer.Core.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <PackageReference Include="SharpHook" Version="5.3.2" />
-  </ItemGroup>
+
 </Project>
