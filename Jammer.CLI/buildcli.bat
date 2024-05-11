@@ -20,7 +20,7 @@ COPY /Y LICENSE %targetFolder%
 
 mkdir "%targetFolder%\locales"
 XCOPY /S /Y ..\locales "%targetFolder%\locales"
-SET "start_name=Jammer-Setup_V2.1.2.3.exe"
+SET "start_name=Jammer-Setup_V2.2.3.4.exe"
 
 makensis %targetFolder%\setup.nsi  
 
