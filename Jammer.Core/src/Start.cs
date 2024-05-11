@@ -3,6 +3,8 @@ using Jammer;
 using System.Runtime.InteropServices;
 using Spectre.Console;
 using System.Diagnostics;
+
+
 namespace Jammer
 {
     //NOTES(ra) A way to fix the drawonce - prevState

@@ -265,6 +265,7 @@ namespace Jammer {
             table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
             table.AddRow("Load Effects", "", $"[green]{Keybindings.LoadEffects}[/] {"To Load Effects (again)"}");
+            table.AddRow("Toggle Media Buttons", Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleMediaButtons}[/] {"To Toggle Media Buttons"}");
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
             DrawHelpSettingInfo();

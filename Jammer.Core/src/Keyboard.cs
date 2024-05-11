@@ -315,6 +315,10 @@ namespace Jammer
                             Effects.ReadEffects();
                             Play.SetEffectsToChannel();
                             break;
+                        case "ToggleMediaButtons": // toggle media buttons
+                            Preferences.isMediaButtons = !Preferences.isMediaButtons;
+                            Preferences.SaveSettings();
+                            break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
                             break;
@@ -563,28 +567,30 @@ namespace Jammer
             return true;
         }
 
-        public static void OnKeyReleased(object sender, KeyboardHookEventArgs e){
-            switch(e.Data.KeyCode){
-                case SharpHook.Native.KeyCode.VcMediaNext:
-                    state = MainStates.next; // next song
-                    break;
-                case SharpHook.Native.KeyCode.VcMediaPrevious:
-                    state = MainStates.previous; // previous song
-                    break;
-                case SharpHook.Native.KeyCode.VcMediaPlay:
-                    PauseSong();
-                    Play.PlayDrawReset();
-                    break;
-                case SharpHook.Native.KeyCode.VcMediaStop:
-                    PauseSong(true);
-                    Play.PlayDrawReset();
-                    break;
+        public static void OnKeyReleased(object sender, KeyboardHookEventArgs e) {
+            if (Preferences.isMediaButtons) {
+                switch(e.Data.KeyCode) {
+                    case SharpHook.Native.KeyCode.VcMediaNext:
+                        state = MainStates.next; // next song
+                        break;
+                    case SharpHook.Native.KeyCode.VcMediaPrevious:
+                        state = MainStates.previous; // previous song
+                        break;
+                    case SharpHook.Native.KeyCode.VcMediaPlay:
+                        PauseSong();
+                        Play.PlayDrawReset();
+                        break;
+                    case SharpHook.Native.KeyCode.VcMediaStop:
+                        PauseSong(true);
+                        Play.PlayDrawReset();
+                        break;
+                }
             }
         }
-        public static async void InitializeSharpHook(){
-            var hook = new TaskPoolGlobalHook();
-            hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
-            await hook.RunAsync();
+        public static async void InitializeSharpHook() {
+                var hook = new TaskPoolGlobalHook();
+                hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
+                await hook.RunAsync();
         }   
 
     }

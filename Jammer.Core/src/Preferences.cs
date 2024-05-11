@@ -18,6 +18,8 @@ namespace Jammer
         public static bool isAutoSave = GetIsAutoSave();
         public static string? localeLanguage = getLocaleLanguage();
         public static string songsPath = GetSongsPath();
+        public static bool isMediaButtons = GetIsMediaButtons();
+
 
         static public void CheckJammerFolderExists()
         {
@@ -63,6 +65,7 @@ namespace Jammer
             settings.rewindSeconds = rewindSeconds;
             settings.changeVolumeBy = changeVolumeBy;
             settings.isShuffle = isShuffle;
+            settings.isMediaButtons = isMediaButtons;
             settings.isAutoSave = isAutoSave;
             settings.localeLanguage = localeLanguage;
             settings.songsPath = songsPath;
@@ -207,6 +210,21 @@ namespace Jammer
             }
         }
 
+        static public bool GetIsMediaButtons()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.isMediaButtons ?? false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         static public bool GetIsShuffle()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
@@ -300,6 +318,7 @@ namespace Jammer
             public int rewindSeconds { get; set; }
             public float changeVolumeBy { get; set; }
             public bool isShuffle { get; set; }
+            public bool? isMediaButtons { get; set; }
             public bool isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
             public string? songsPath { get; set; }

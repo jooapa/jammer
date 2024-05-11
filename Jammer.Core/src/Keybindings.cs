@@ -74,6 +74,7 @@ namespace Jammer{
         public static string ChangeVolumeAmount = CheckValue("ChangeVolumeAmount", "3");
         public static string Autosave = CheckValue("Autosave", "4");
         public static string LoadEffects = CheckValue("LoadEffects", "5");
+        public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");

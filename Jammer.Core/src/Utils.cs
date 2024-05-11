@@ -19,13 +19,13 @@ namespace Jammer
         /// </summary>
         public static string currentSong = ""; // 
         /// <summary>
-        /// // length in seconds
+        /// length in seconds
         /// </summary>
         public static double currentMusicLength = 0;
         /// <summary>
         ///  time played in seconds
         /// </summary>
-        public static double MusicTimePlayed = 0; //
+        public static double MusicTimePlayed = 0;
         public static double preciseTime = 0;
         public static int currentSongIndex = 0;
         public static int previousSongIndex = 0;
