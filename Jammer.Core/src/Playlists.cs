@@ -38,7 +38,18 @@ namespace Jammer
 
         static public void Play(string playlist, bool fromCli)
         {
-            AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist + ".ammer");
+            if (URL.IsUrl(playlist))
+            {
+                Utils.songs = new string[] { playlist };
+                if (fromCli) {
+                    return;
+                } else {
+                    Jammer.Play.PlaySong(Utils.songs, 0);
+                    return;
+                }
+            }
+            
+            AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
             string playlistPath = Path.Combine(
                 Utils.JammerPath,
@@ -46,7 +57,7 @@ namespace Jammer
                 playlistName + ".jammer"
             );
 
-            if (File.Exists(playlistPath))
+            if (File.Exists(playlistPath) || URL.IsUrl(playlist))
             {
                 string[] songs = File.ReadAllLines(playlistPath);
 
@@ -77,7 +88,7 @@ namespace Jammer
             {
                 if (!fromCli)
                 {
-                    Jammer.Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist + ".jammer", $"{Locale.OutsideItems.ErrorPlaying}", true);
+                    Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist, $"{Locale.OutsideItems.ErrorPlaying}", true);
                 }
                 else
                 {
@@ -90,7 +101,7 @@ namespace Jammer
 
         static public void Delete(string playlist)
         {
-            Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist + ".jammer");
+            Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist);
             string playlistName = playlist;
             string playlistPath = Path.Combine(
                 Utils.JammerPath,

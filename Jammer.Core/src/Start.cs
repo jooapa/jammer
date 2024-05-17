@@ -382,8 +382,10 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 Utils.songs = Absolute.Correctify(Utils.songs);
                 //NOTE(ra) Correctify removes filenames from Utils.Songs. 
                 //If there is one file that doesn't exist this is a fix
-                if (Utils.songs.Length == 0) { 
-                    return;
+                if (Utils.songs.Length == 0) {
+                    Debug.dprint("No songs found");
+                    AnsiConsole.WriteLine("No songs found. Exiting..."); 
+                    Environment.Exit(1);
                 }
                 Utils.currentSong = Utils.songs[0];
                 Utils.currentSongIndex = 0;

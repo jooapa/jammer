@@ -14,7 +14,6 @@ namespace Jammer {
         static string[] playlistSongs = { "" };
         static readonly YoutubeClient youtube = new();
 
-
         public static string DownloadSong(string url2) {
             songPath = "";
             url = url2;
@@ -23,6 +22,13 @@ namespace Jammer {
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
+            } else if (URL.IsUrl(url)) {
+                if (url.EndsWith(".jammer")) {
+                    DownloadJammerFile(url).Wait();
+                }
+                else {
+                    songPath = url;
+                }
             } else {
                 #if CLI_UI
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
@@ -34,6 +40,62 @@ namespace Jammer {
             }
 
             return songPath;
+        }
+
+        private static string GetDownloadedJammerFileName(string url) {
+            string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", url);
+            return downloadedPath.LastIndexOf("/") > 0 ? downloadedPath.Substring(downloadedPath.LastIndexOf("/") + 1) : downloadedPath;
+        }
+        private static async Task DownloadJammerFile(string url) {
+            string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
+
+            if (System.IO.File.Exists(downloadedPath)) {
+                string input = Message.Input($"Playlist of same name already exists. Overwrite? (y/n)", "Warning");
+                if (input != "y") {
+                    if (Utils.songs.Length == 0 || Utils.songs[0] == url) 
+                        Utils.currentPlaylist = GetDownloadedJammerFileName(url).Replace(".jammer", "");
+
+                    songPath = downloadedPath;
+                    return;
+                }
+            }
+
+            try {
+                using (var httpClient = new HttpClient()) {
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                    httpClient.Timeout = TimeSpan.FromMinutes(10);
+
+                    var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
+
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    using (var fileStream = new FileStream(downloadedPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    {
+                        var buffer = new byte[8192];
+                        int bytesRead;
+                        long totalBytesRead = 0;
+                        long totalBytes = response.Content.Headers.ContentLength ?? -1;
+
+                        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await fileStream.WriteAsync(buffer, 0, bytesRead);
+                            totalBytesRead += bytesRead;
+
+                            if (totalBytes > 0)
+                            {
+                                double progressPercentage = (double)totalBytesRead / totalBytes * 100;
+                                Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error");
+            }
+
+            if (Utils.songs.Length == 0 || Utils.songs[0] == url)
+                Utils.currentPlaylist = GetDownloadedJammerFileName(url).Replace(".jammer", "");
+            songPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
         }
 
         private static async Task DownloadYoutubeTrackAsync(string url)

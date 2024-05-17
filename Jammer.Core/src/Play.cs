@@ -140,6 +140,11 @@ namespace Jammer
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(song);
             }
+            else if (URL.IsUrl(song))
+            {
+                path = Download.DownloadSong(song);
+                // Message.Data(path, song);
+            }
             else
             {
                 #if CLI_UI
@@ -200,11 +205,19 @@ namespace Jammer
                     Debug.dprint("Audiofile");
                     StartPlaying();
                 }
-                else if (extension == ".Jammer") {
-                    Debug.dprint("Jammer");
+                else if (extension == ".jammer") {
+                    Debug.dprint("jammer");
+                    // Message.Data(path,"dsdsadsads");
                     // read playlist
 
+                    
                     string[] playlist = System.IO.File.ReadAllLines(path);
+                    
+                    // foreach (string s in playlist) {
+                    //     Console.WriteLine(s);
+                    // }
+                    // Console.ReadKey();
+
                     // add all songs in playlist to Utils.songs
                     foreach (string s in playlist) {
                         AddSong(s);

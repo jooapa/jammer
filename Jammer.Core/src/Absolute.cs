@@ -95,7 +95,7 @@ namespace Jammer
                 else if (!File.Exists(item))
                 {
                     #if CLI_UI
-                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} {item} {Locale.OutsideItems.DoesntExist}[/]");
+                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} '{item}'{Locale.OutsideItems.DoesntExist}[/]");
                     #endif
                     #if AVALONIA_UI
                     // TODO AVALONIA_UI
