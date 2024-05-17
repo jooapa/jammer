@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>2.2.3.4</Version>
+    <Version>2.3.4.5</Version>
     <RootNamespace>Jammer.Avalonia</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>..\Jammer_HQ.ico</ApplicationIcon>
