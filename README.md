@@ -1,4 +1,4 @@
-# Jammer — CLI/TUI music player
+# Jammer — light-weight TUI music player
 
 ![banner](.github/img/banner2.png)
 
