@@ -1,4 +1,4 @@
-# Jammer — Play songs in cli with Youtube and Soundcloud support
+# Jammer — CLI/TUI music player
 
 ![banner](.github/img/banner2.png)
 
