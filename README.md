@@ -246,7 +246,7 @@ you can also use `change_version.py` to change the version of the app.
 python change_version.py [version]
 ```
 
-![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.png)
+![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.ico)
 
 ### Todo bug fixes
 
