@@ -1,4 +1,4 @@
-# <img src="icons/fill_icon512x512.ico" alt="Jammer Icon" width="35px"> Jammer — light-weight TUI music player
+# <img src="https://raw.githubusercontent.com/jooapa/jammer/main/icons/fill_icon512x512.png" alt="Jammer Icon" width="35px"> Jammer — light-weight TUI music player
 
 ![banner](.github/img/banner2.png)
 
