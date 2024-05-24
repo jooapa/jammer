@@ -246,10 +246,6 @@ you can also use `change_version.py` to change the version of the app.
 python change_version.py [version]
 ```
 
-![image](https://raw.githubusercontent.com/jooapa/Jammer/main/Jammer_HQ.ico)
-
-[icon credits](https://zh.lovepik.com/image-611648077/cartoon-jam-vector-download.html)
-
 ### Todo bug fixes
 
 - [x] When playing song, and opening a new playlist, the song doesn't change

@@ -79,7 +79,6 @@ CreateDirectory $INSTALL_DIR
 
 ; Files to install
 File "Jammer.exe"
-File "Jammer_1024px.ico"
 File "Jammer.ico"
 File "setup.ps1"
 File "uninstall.ps1"
@@ -143,8 +142,8 @@ Delete "setup.ps1"
 File "uninstall.ps1"
 
 # Create shortcut on DESKTOP
-CreateShortcut "$DESKTOP\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer_1024px.ico"
-CreateShortCut "$SENDTO\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer_1024px.ico" 0
+CreateShortcut "$DESKTOP\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer.ico"
+CreateShortCut "$SENDTO\Jammer.lnk" "$INSTALL_DIR\Jammer.exe" "" "$INSTALL_DIR\Jammer.ico" 0
 
 ; Create an uninstaller in the same directory as the installer
 WriteUninstaller "$INSTALL_DIR\Uninstall.exe"

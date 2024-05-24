@@ -5,7 +5,7 @@
     <RootNamespace>Jammer.CLI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ApplicationIcon>..\Jammer_HQ.ico</ApplicationIcon>
+    <ApplicationIcon>..\icons\fill_icon512x512.ico</ApplicationIcon>
     <DefineConstants>CLI_UI</DefineConstants>
     <TargetName>Jammer.CLI</TargetName>
     <TargetFramework>net7.0</TargetFramework>

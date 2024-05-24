@@ -16,7 +16,7 @@
     <Version>2.3.4.5</Version>
     <RootNamespace>Jammer.Avalonia</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>..\Jammer_HQ.ico</ApplicationIcon>
+    <ApplicationIcon>..\icons\fill_icon512x512.ico</ApplicationIcon>
     <DefineConstants>AVALONIA_UI</DefineConstants>
     <TargetName>Jammer.Avalonia</TargetName>
 
