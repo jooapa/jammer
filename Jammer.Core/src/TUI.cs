@@ -42,53 +42,40 @@ namespace Jammer {
                 mainTable.AddColumns(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
                 songsTable.Border = TableBorder.Rounded;
-                mainTable.AddRow(controlsTable.Centered());
-                // mainTable.Width(100);
-                var helpTable = new Table();
-                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
-                helpTable.Border = TableBorder.Rounded;
                 
                 mainTable.Border = TableBorder.Rounded;
-                mainTable.AddRow(helpTable.Centered());
 
                 // add \n to the end of the maintable until the end of the console by height
                 int tableRowCount;
                 if (Start.playerView != "all") {
-                    tableRowCount = Start.consoleHeight - 23;
+                    if (Utils.currentPlaylist == "")
+                        tableRowCount = Start.consoleHeight - 17;
+                    else
+                        tableRowCount = Start.consoleHeight - 18;
                 }
                 else {
-                    tableRowCount = Start.consoleHeight - 28;
+                    if (Utils.currentPlaylist == "")
+                        tableRowCount = Start.consoleHeight - 21;
+                    else
+                        tableRowCount = Start.consoleHeight - 22;
                 }
-
-                // conside the height time and the border
-                // tableRowCount += 4;
-                // add empty rows to the end of the table
-                //
-                // tableRowCount = Start.consoleHeight - tableRowCount;
-                // Console.WriteLine(Start.consoleHeight);
-                // Console.WriteLine(tableRowCount);
-                // Console.ReadLine();
-
 
                 if (tableRowCount < 0) {
                     tableRowCount = 0;
                 }
 
                 for (int i = 0; i < tableRowCount; i++) {
-                    mainTable.AddRow("").Width(Start.consoleWidth);
+                    mainTable.AddEmptyRow();
                 }
-                mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth-20).Centered()).Width(Start.consoleWidth);
 
-                //NOTE(ra) Tested Live draw routine. Left this here for now if it gets used in the future.
-
-                /* AnsiConsole.Live(mainTable) */
-                /*     .AutoClear(false) */
-                /*     .Start(async ctx => */
-                /*             { */
-                /*                 ctx.Refresh(); */
-                /*             }); */
-                AnsiConsole.Cursor.SetPosition(0,0);
-                AnsiConsole.Write(mainTable);            
+                var helpTable = new Table();
+                helpTable.Border = TableBorder.Rounded;
+                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
+                mainTable.AddRow(helpTable);
+                mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20).Centered());
+                // render the main table
+                AnsiConsole.Cursor.SetPosition(0, 0);
+                AnsiConsole.Write(mainTable);
             }
             catch (Exception e) {
                 AnsiConsole.Clear();
@@ -104,19 +91,40 @@ namespace Jammer {
             // "Components" of the Funcs
         static public void UIComponent_Controls(Table table) {
             table.Border = TableBorder.Rounded;
-            table.AddColumn(Locale.Player.State);
+            table.Border = TableBorder.Simple;
+            table.Alignment(Justify.Left);
             table.AddColumn(Locale.Player.Looping);
             table.AddColumn(Locale.Player.Shuffle);
             table.AddColumn(Locale.Player.Volume);
             string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
+            
             // TODO ADD STATE TO LOCALE
-            table.AddRow(Start.state.ToString(), 
-            Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : 
-                                $"[red]{Locale.Miscellaneous.Off}[/]", 
-            Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : 
-                                $"[red]{Locale.Miscellaneous.Off}[/]", volume);
+            table.AddRow(new Markup(Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(), 
+                        new Markup(Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(), 
+                        new Markup(volume).Centered());
         }
 
+        static public string GetStateLogo() {
+            string state = Start.state.ToString();
+            if (Start.state == MainStates.playing || Start.state == MainStates.play) {
+                state = "❚❚";
+            }
+            else if (Start.state == MainStates.idle || Start.state == MainStates.pause) {
+                state = "▶ ";
+            }
+            else if (Start.state == MainStates.stop) {
+                state = "■";
+            }
+            else if (Start.state == MainStates.next) {
+                state = "▶▶";
+            }
+            else if (Start.state == MainStates.previous) {
+                state = "◀◀";
+            }
+
+            return state;
+        }
+        
         static public void UIComponent_Songs(Table table) {
             // AnsiConsole.Clear();
             string[] queueLines = Funcs.GetAllSongsQueue();
@@ -125,7 +133,7 @@ namespace Jammer {
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
             } else {
-                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + ": " + Utils.currentPlaylist);
+                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + " [cyan]" + Utils.currentPlaylist + "[/]");
             }
 
             table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -154,10 +162,30 @@ namespace Jammer {
                 length = 100;
             }
 
+            string volumeMark = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
+            string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%" : Math.Round(Preferences.volume * 100) + "%";
+
+            string shuffleMark = Preferences.isShuffle ? "[green]" + "⇌" + "[/]" : "[red]" + "⇌" + "[/]";
+            string loopMark = Preferences.isLoop ? "[green]" + "⟳" + "[/]" : "[red]" + "↻" + "[/]";
+
             int progress = (int)(value / max * length);
-            string progressBar = Funcs.CalculateTime(value) + " |";
+            string progressBar = GetStateLogo() + " " + shuffleMark + "  " + loopMark + "   " +
+                Funcs.CalculateTime(value) + " |";
             // length is modified also by the time string
             length -= Funcs.CalculateTime(value).Length;
+            length -= GetStateLogo().Length;
+            length -= 4;
+
+            string extraVolume;
+            if (volumeString.Length >= 4) {
+                extraVolume = " " + volumeMark;
+            } else if (volumeString.Length == 3) {
+                extraVolume = "  " + volumeMark;
+            } else {
+                extraVolume = "   " + volumeMark;
+            }
+
+            length -= extraVolume.Length;
 
             for (int i = 0; i < length; i++) {
                 if (i < progress) {
@@ -167,9 +195,9 @@ namespace Jammer {
                     progressBar += " ";
                 }
             }
-            progressBar += "| " + Funcs.CalculateTime(max);
 
-            length -= Funcs.CalculateTime(max).Length;
+
+            progressBar += "| " + Funcs.CalculateTime(max) + extraVolume;
 
             return progressBar;
         }
