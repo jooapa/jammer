@@ -238,24 +238,23 @@ chmod 700 appimagetool-x86_64.AppImage
 
 To create AppImage run `build.sh`
 
-##### Build script for NSIS installer
-
-you can also use `change_version.py` to change the version of the app.
+or if you want to build it from usb
 
 ```bash
-python change_version.py [version]
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/jooapa/jammer/main/usb-appimage.sh)"
 ```
 
-### Todo bug fixes
+##### Build script for NSIS installer
 
-- [x] When playing song, and opening a new playlist, the song doesn't change
-- [x] Pressing `0`, doesn't do anything
-- [x] Download bar
-- [x] Fix playlist cmd
-- [ ] Fix time bar not going to new line when 0:-01
+you can also use `update.py` to change the version of the app.
+
+```bash
+                 |-Major
+                 ||--Minor
+                 |||---Patch
+python update.py 101
+```
 
 ### Incoming Features
 
 - [ ] Add more audio formats
-- [x] Better f mode
-- [x] pg up/down you can scroll the playlist and modify the selected song
