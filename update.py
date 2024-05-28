@@ -17,9 +17,7 @@ if args[0][2:3] == "1":
     is_patch = True
 elif args[0][2:3] == "0":
     is_patch = False
-
-print(is_major, is_minor, is_patch)
-
+    
 
 with open('VERSION', 'r') as version_file:
     version = version_file.read()
@@ -37,6 +35,7 @@ with open('VERSION', 'r') as version_file:
     build = int(build) + 1
 
     new_version = f'{major}.{minor}.{patch}.{build}'
-    print(new_version)
 
     os.system(f'python change_version.py "{new_version}')
+    
+    print(f'Version updated to {new_version}')
