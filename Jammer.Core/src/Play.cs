@@ -758,6 +758,7 @@ namespace Jammer
             // set sync
             Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
                 MaybeNextSong();
+                Start.prevMusicTimePlayed = 0;
             }, IntPtr.Zero);
 
 

@@ -13,7 +13,7 @@ SET "targetFolder=..\nsis"
 COPY /B /Y "%sourceFolder%\Jammer.CLI.exe" "%targetFolder%\Jammer.exe"
 COPY /B /Y "%sourceFolder%\uiohook.dll" "%targetFolder%\uiohook.dll"
 
-COPY /B /Y "..\icons\fill_icon512x512.ico" "%targetFolder%\Jammer.ico"
+COPY /B /Y "..\icons\trans_icon512x512.ico" "%targetFolder%\Jammer.ico"
 COPY /B /Y "libs\win\x64\bass" "%targetFolder%"
 COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%"
 COPY /Y "libs\win\x64\bass.dll" %targetFolder%

@@ -366,12 +366,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 
             if (!Bass.Init())
             {
-#if CLI_UI
-                Jammer.Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
-#endif
-#if AVALONIA_UI
-                // TODO AVALONIA_UI
-#endif
+                Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
                 return;
             }
             InitializeSharpHook();
@@ -408,11 +403,9 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 
             Utils.isInitialized = true;
 
-#if CLI_UI
             TUI.ClearScreen();
             drawOnce = true;
             TUI.RefreshCurrentView();
-#endif
 
             while (Start.LoopRunning)
             {
@@ -427,7 +420,6 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     }
                 }
 
-#if CLI_UI
                     if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
                     {
                         consoleHeight = Console.WindowHeight;
@@ -435,29 +427,20 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         AnsiConsole.Clear();
                         TUI.RefreshCurrentView();
                     }
-#else
                     
-#endif
 
                 switch (state)
                 {
                     case MainStates.idle:
-#if CLI_UI
                         TUI.ClearScreen();
                         CheckKeyboard();
-#endif
-#if CLI_UI
+
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
-#endif
-
-#if AVALONIA_UI
-                        // TODO AVALONIA_UI
-#endif
                         break;
 
                     case MainStates.play:
@@ -466,14 +449,10 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         {
                             Debug.dprint("Play - len");
                             Play.PlaySong();
-#if CLI_UI
                             TUI.ClearScreen();
                             TUI.DrawPlayer();
                             drawOnce = true;
-#endif
-#if AVALONIA_UI
-                            // TODO AVALONIA_UI
-#endif
+
                             Utils.MusicTimePlayed = 0;
                             state = MainStates.playing;
                         }
@@ -495,49 +474,28 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         Utils.currentMusicLength = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
 
                         Utils.MusicTimePercentage = (float)(Utils.MusicTimePlayed / Utils.currentMusicLength * 100);
-#if CLI_UI
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
-#endif
-#if AVALONIA_UI
-                        // TODO AVALONIA_UI
-#endif
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
                         {
-#if CLI_UI
                             TUI.RefreshCurrentView();
-#endif
-#if AVALONIA_UI
-                            // TODO AVALONIA_UI
-#endif
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
                         // If the song is finished, play next song
                         if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
-                            // Play.MaybeNextSong();
                             prevMusicTimePlayed = 0;
-#if CLI_UI
                             TUI.RefreshCurrentView();
-#endif
-#if AVALONIA_UI
-                            // TODO AVALONIA_UI
-#endif
                         }
 
-#if CLI_UI
-                            CheckKeyboard();
-#endif
-#if AVALONIA_UI
-                            // TODO AVALONIA_UI
-#endif
+                        CheckKeyboard();
                         break;
 
                     case MainStates.pause:
@@ -553,22 +511,12 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     case MainStates.next:
                         Debug.dprint("next");
                         Play.NextSong();
-#if CLI_UI
                         TUI.ClearScreen();
-#endif
-#if AVALONIA_UI
-                        // TODO AVALONIA_UI
-#endif
                         break;
 
                     case MainStates.previous:
                         Play.PrevSong();
-#if CLI_UI
                         TUI.ClearScreen();
-#endif
-#if AVALONIA_UI
-                        // TODO AVALONIA_UI
-#endif
                         break;
                 }
 
