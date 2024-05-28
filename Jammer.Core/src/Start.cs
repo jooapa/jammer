@@ -496,6 +496,8 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         }
 
                         CheckKeyboard();
+
+                        TUI.RefreshCurrentView();
                         break;
 
                     case MainStates.pause:

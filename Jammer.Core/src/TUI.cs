@@ -46,33 +46,40 @@ namespace Jammer {
                 mainTable.Border = TableBorder.Rounded;
 
                 // add \n to the end of the maintable until the end of the console by height
-                int tableRowCount;
-                if (Start.playerView != "all") {
-                    if (Utils.currentPlaylist == "")
-                        tableRowCount = Start.consoleHeight - 17;
-                    else
-                        tableRowCount = Start.consoleHeight - 18;
-                }
-                else {
-                    if (Utils.currentPlaylist == "")
-                        tableRowCount = Start.consoleHeight - 21;
-                    else
-                        tableRowCount = Start.consoleHeight - 22;
-                }
+                // int tableRowCount;
+                // if (Start.playerView != "all") {
+                //     if (Utils.currentPlaylist == "")
+                //         tableRowCount = Start.consoleHeight - 17;
+                //     else
+                //         tableRowCount = Start.consoleHeight - 18;
+                // }
+                // else {
+                //     if (Utils.currentPlaylist == "")
+                //         tableRowCount = Start.consoleHeight - 21;
+                //     else
+                //         tableRowCount = Start.consoleHeight - 22;
+                // }
 
-                if (tableRowCount < 0) {
-                    tableRowCount = 0;
-                }
+                // if (tableRowCount < 0) {
+                //     tableRowCount = 0;
+                // }
 
-                for (int i = 0; i < tableRowCount; i++) {
-                    mainTable.AddEmptyRow();
-                }
+                // for (int i = 0; i < tableRowCount; i++) {
+                //     mainTable.AddEmptyRow();
+                // }
 
                 var helpTable = new Table();
                 helpTable.Border = TableBorder.Rounded;
                 helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
                 mainTable.AddRow(helpTable);
+
+                var displayTable = new Table();
+                displayTable.Border = TableBorder.None;
+                displayTable.AddColumn(Play.SongFrequency()).Centered();
+                
+                mainTable.AddRow(displayTable);
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20).Centered());
+
                 // render the main table
                 AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.Write(mainTable);
@@ -421,6 +428,7 @@ namespace Jammer {
         public static void RefreshCurrentView() {
             //NOTE(ra) This Clear() caused flickering.
             /* AnsiConsole.Clear(); */
+            AnsiConsole.Cursor.Hide();
             if (Start.playerView == "default") {
                 DrawPlayer();
             }
@@ -442,7 +450,7 @@ namespace Jammer {
             else if (Start.playerView == "changelanguage") {
                 ChangeLanguage();
             }
-            
+            AnsiConsole.Cursor.Show();
         }
     }
 }
