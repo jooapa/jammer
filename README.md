@@ -241,7 +241,7 @@ To create AppImage run `build.sh`
 or if you want to build it from usb
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/jooapa/jammer/main/usb-appimage.sh)"
+sh -c "$(wget -O- https://raw.githubusercontent.com/jooapa/jammer/main/usb-appimage.sh)"
 ```
 
 ##### Build script for NSIS installer
