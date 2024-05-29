@@ -124,7 +124,7 @@ namespace Jammer
             }
             else
             {
-                return false;
+                return true;
             }
         }
 
