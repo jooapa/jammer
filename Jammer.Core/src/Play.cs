@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using TagLib;
 
 
@@ -774,61 +773,6 @@ namespace Jammer
             TUI.RefreshCurrentView();
             #endif
             // TODO AVALONIA_UI
-        }
-
-        public static string SongFrequency()
-        {
-            const int bufferSize = 4096; // FFT data buffer size
-            var fftData = new float[bufferSize]; // FFT data buffer
-
-            // Retrieve FFT data from current music channel
-            int bytesRead = Bass.ChannelGetData(Utils.currentMusic, fftData, (int)DataFlags.FFT4096);
-            if (bytesRead <= 0)
-            {
-                // Handle error if data retrieval fails
-                return "Error: Unable to retrieve FFT data.";
-            }
-
-            // Map FFT values to ASCII characters
-            string[] unicodeMap = new string[] { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" };
-            StringBuilder frequencyBuilder = new StringBuilder();
-
-            // Calculate the number of frequencies to display based on the console width
-            int frequencyCount = fftData.Length / Start.consoleWidth * 111;
-
-            // Iterate through the FFT data and map values to ASCII characters
-            for (int i = 0; i < frequencyCount; i++)
-            {
-                // If the length of the frequency string equals the console width, break the loop
-                if (frequencyBuilder.Length == Start.consoleWidth - 6 )
-                {
-                    break;
-                }
-
-                float sum = 0;
-                for (int j = 0; j < fftData.Length / frequencyCount; j++)
-                {
-                    sum += fftData[i * (fftData.Length / frequencyCount) + j];
-                }
-
-                // Calculate the average value for the current frequency band
-                float average = sum / (fftData.Length / frequencyCount);
-
-                // Apply logarithmic scale to the average value
-                average = (float)Math.Log10(1 + average * 90);
-
-                // Map the average value to an ASCII character
-                int index = (int)(average * (unicodeMap.Length - 1));
-
-                // Ensure index is within bounds of the array
-                index = Math.Min(index, unicodeMap.Length - 1);
-
-                // Append the mapped character to the frequency string
-                frequencyBuilder.Append(unicodeMap[index]);
-            }
-
-            // Return the frequency string
-            return frequencyBuilder.ToString();
         }
 
         public static void SetFXs() {

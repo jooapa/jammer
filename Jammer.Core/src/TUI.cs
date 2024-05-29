@@ -75,7 +75,7 @@ namespace Jammer {
 
                 var displayTable = new Table();
                 displayTable.Border = TableBorder.None;
-                displayTable.AddColumn(Play.SongFrequency()).Centered();
+                displayTable.AddColumn(Visual.GetSongVisual()).Centered();
                 
                 mainTable.AddRow(displayTable);
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20).Centered());
@@ -85,7 +85,7 @@ namespace Jammer {
                 AnsiConsole.Write(mainTable);
             }
             catch (Exception e) {
-                AnsiConsole.Clear();
+                AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
                 AnsiConsole.MarkupLine("[red]" + e + "[/]");
