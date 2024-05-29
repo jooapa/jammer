@@ -65,6 +65,10 @@ namespace Jammer {
                     if (Preferences.isVisualizer) {
                         magicIndex++;
                     }
+                    // there is not 5 songs in the playlist
+                    if (songsTable.Rows.Count <= 5) {
+                        magicIndex += songsTable.Rows.Count - 7;
+                    }
                 }
 
                 tableRowCount = Start.consoleHeight - magicIndex;

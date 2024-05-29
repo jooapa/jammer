@@ -11,8 +11,7 @@ namespace Jammer {
 RefreshTime = 10
 ; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
 UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
-; UnicodeMap = ,◌, ◔, ◑, ◕, ●
-; UnicodeMap =  ,□,▢,▣,▤,▥,▦,▧,▨,▩,▪,▫,▬,▭,▮,▯,█
+; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
 ; UnicodeMap =  ,⠁,⠁,⠃,⠇,⠏,⠛,⠿,⡿,⣿
 ; UnicodeMap =  ⣿,⡿,⡏,⠛,⠏,⠇,⠃,⠁
 ; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
