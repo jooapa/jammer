@@ -2,11 +2,21 @@ using ManagedBass;
 using System.Text;
 using IniParser;
 using IniParser.Model;
+using Spectre.Console;
 
 namespace Jammer {
     public class Visual {
         public static string FileContent = @"[Audio Visualizer]
-Enabled = true
+; Refresh time in milliseconds
+RefreshTime = 10
+; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
+UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
+; UnicodeMap = ,◌, ◔, ◑, ◕, ●
+; UnicodeMap =  ,□,▢,▣,▤,▥,▦,▧,▨,▩,▪,▫,▬,▭,▮,▯,█
+; UnicodeMap =  ,⠁,⠁,⠃,⠇,⠏,⠛,⠿,⡿,⣿
+; UnicodeMap =  ⣿,⡿,⡏,⠛,⠏,⠇,⠃,⠁
+; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
+; Buffer size for FFT data
 BufferSize = 41000
 ; FFT32768 FFT16384           (Recommended)     detect 20Hz - 20kHz
 ; FFT8192  FFT4098  FFT2048                    detect 1kHz - 20kHz
@@ -15,14 +25,17 @@ BufferSize = 41000
 DataFlags = FFT16384
 MinFrequency = 50
 MaxFrequency = 17000
-FrequencyMultiplier = 1
+FrequencyMultiplier = 6000
 ";
-        public static bool enabled = true; // Visualizer enabled flag
+
+
+        public static int refreshTime = 10; // Visualizer enabled flag
         public static int bufferSize = 41000; // FFT data buffer size
-        public static string dataFlags = "Best"; // FFT data flags
+        public static string dataFlags = "FFT16384"; // FFT data flags
         public static int minFrequency = 50; // Minimum frequency
         public static int maxFrequency = 17000; // Maximum frequency
         public static int frequencyMultiplier = 6000; // Frequency multiplier
+        public static string unicodeMap = " ,▁,▂,▃,▄,▅,▆,▇,█";
 
 
         private static float scaleFactor = 1.0f;
@@ -42,7 +55,7 @@ FrequencyMultiplier = 1
             var fftData = new float[_bufferSize]; // FFT data buffer
 
             // Retrieve FFT data from current music channel
-            int bytesRead = Bass.ChannelGetData(Utils.currentMusic, fftData, (int)DataFlags.FFT16384);
+            int bytesRead = Bass.ChannelGetData(Utils.currentMusic, fftData, (int)GetFFTDataFlags());
             if (bytesRead <= 0)
             {
                 // Handle error if data retrieval fails
@@ -50,8 +63,8 @@ FrequencyMultiplier = 1
             }
 
             // Map FFT values to ASCII characters
-            string[] unicodeMap = new string[] { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" };
-            StringBuilder frequencyBuilder = new StringBuilder();
+            string[] unicodeMap = GetUnicodeMap();
+            StringBuilder frequencyBuilder = new();
 
             // Calculate the number of frequencies to display based on the console width
             int frequencyCount = Math.Max(1, length);
@@ -100,13 +113,104 @@ FrequencyMultiplier = 1
             return frequencyBuilder.ToString();
         }
 
+        public static string[] GetUnicodeMap()
+        {
+            string[] map = unicodeMap.Split(',');
+
+            if (map[0].Length == 0)
+            {
+                map[0] = " ";
+            }
+
+            return map; 
+        }
+
+        public static DataFlags GetFFTDataFlags()
+        {
+            switch (dataFlags)
+            {
+                case "FFT32768":
+                    return DataFlags.FFT32768;
+                case "FFT16384":
+                    return DataFlags.FFT16384;
+                case "FFT8192":
+                    return DataFlags.FFT8192;
+                case "FFT4096":
+                    return DataFlags.FFT4096;
+                case "FFT2048":
+                    return DataFlags.FFT2048;
+                case "FFT1024":
+                    return DataFlags.FFT1024;
+                case "FFT512":
+                    return DataFlags.FFT512;
+                case "FFT256":
+                    return DataFlags.FFT256;
+                default:
+                    return DataFlags.FFT16384;
+            }
+        }
+
         public static void Write() {
-            string path = Path.Combine(Utils.JammerPath, "Effects.ini");
+            string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
             
             // Create the file if it doesn't exist
             if (!File.Exists(path)) {
-                File.WriteAllText(path, FileContent);
+                File.WriteAllText(path, FileContent, Encoding.UTF8);
             } 
+        }
+
+        public static void Read() {
+            string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
+            var parser = new FileIniDataParser();
+            IniData data;
+
+            if (!File.Exists(path)) {
+                Write();
+                data = parser.ReadFile(path);
+            } else {
+                data = parser.ReadFile(path);
+
+                // Check if the desired entries exist, and add them if they don't
+                if (!data["Audio Visualizer"].ContainsKey("RefreshTime"))
+                {
+                    data["Audio Visualizer"]["RefreshTime"] = "10";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("BufferSize"))
+                {
+                    data["Audio Visualizer"]["BufferSize"] = "41000";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("DataFlags"))
+                {
+                    data["Audio Visualizer"]["DataFlags"] = "FFT16384";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("MinFrequency"))
+                {
+                    data["Audio Visualizer"]["MinFrequency"] = "50";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("MaxFrequency"))
+                {
+                    data["Audio Visualizer"]["MaxFrequency"] = "17000";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("FrequencyMultiplier"))
+                {
+                    data["Audio Visualizer"]["FrequencyMultiplier"] = "6000";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("UnicodeMap"))
+                {
+                    data["Audio Visualizer"]["UnicodeMap"] = " ,▁,▂,▃,▄,▅,▆,▇,█";
+                }
+
+                // Write the data back to the file
+                parser.WriteFile(path, data);
+            }
+
+            refreshTime = int.Parse(data["Audio Visualizer"]["RefreshTime"]);   
+            bufferSize = int.Parse(data["Audio Visualizer"]["BufferSize"]);
+            dataFlags = data["Audio Visualizer"]["DataFlags"];
+            minFrequency = int.Parse(data["Audio Visualizer"]["MinFrequency"]);
+            maxFrequency = int.Parse(data["Audio Visualizer"]["MaxFrequency"]);
+            frequencyMultiplier = int.Parse(data["Audio Visualizer"]["FrequencyMultiplier"]);
+            unicodeMap = data["Audio Visualizer"]["UnicodeMap"];
         }
     }
 }

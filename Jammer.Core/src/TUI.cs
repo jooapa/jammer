@@ -46,27 +46,36 @@ namespace Jammer {
                 mainTable.Border = TableBorder.Rounded;
 
                 // add \n to the end of the maintable until the end of the console by height
-                // int tableRowCount;
-                // if (Start.playerView != "all") {
-                //     if (Utils.currentPlaylist == "")
-                //         tableRowCount = Start.consoleHeight - 17;
-                //     else
-                //         tableRowCount = Start.consoleHeight - 18;
-                // }
-                // else {
-                //     if (Utils.currentPlaylist == "")
-                //         tableRowCount = Start.consoleHeight - 21;
-                //     else
-                //         tableRowCount = Start.consoleHeight - 22;
-                // }
+                int tableRowCount=0;
+                int magicIndex;
 
-                // if (tableRowCount < 0) {
-                //     tableRowCount = 0;
-                // }
+                if (Start.playerView != "all") {
+                    magicIndex = 17;
+                    if (Utils.currentPlaylist != "") {
+                        magicIndex++;
+                    }
+                    if (Preferences.isVisualizer) {
+                        magicIndex++;
+                    }
+                }
+                else {
+                    magicIndex = 21;
+                    if (Utils.currentPlaylist != "")
+                        magicIndex++;
+                    if (Preferences.isVisualizer) {
+                        magicIndex++;
+                    }
+                }
 
-                // for (int i = 0; i < tableRowCount; i++) {
-                //     mainTable.AddEmptyRow();
-                // }
+                tableRowCount = Start.consoleHeight - magicIndex;
+
+                if (tableRowCount < 0) {
+                    tableRowCount = 0;
+                }
+
+                for (int i = 0; i < tableRowCount; i++) {
+                    mainTable.AddEmptyRow();
+                }
 
                 var helpTable = new Table();
                 helpTable.Border = TableBorder.Rounded;
@@ -75,19 +84,23 @@ namespace Jammer {
 
                 var displayTable = new Table();
                 displayTable.Border = TableBorder.None;
-                if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35)).Centered();
-                }
-                else {
-                displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35, false)).Centered();
+                if (Preferences.isVisualizer) {
+                    if (Start.state == MainStates.playing || Start.state == MainStates.play) {
+                        displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35)).Centered();
+                    }
+                    else {
+                        displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35, false)).Centered();
+                    }
+                    mainTable.AddRow(displayTable);
                 }
                 
-                mainTable.AddRow(displayTable);
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
 
                 // render the main table
                 AnsiConsole.Cursor.SetPosition(0, 0);
+                AnsiConsole.Cursor.Hide();
                 AnsiConsole.Write(mainTable);
+                AnsiConsole.Cursor.Show();
             }
             catch (Exception e) {
                 AnsiConsole.Cursor.SetPosition(0, 0);
@@ -199,13 +212,14 @@ namespace Jammer {
 
             length -= extraVolume.Length;
 
+            // length is modified also by the volume string
             for (int i = 0; i < length; i++) {
                 if (i < progress) {
                     progressBar += "█";
-                }
-                else {
+                } else {
                     progressBar += " ";
                 }
+
             }
 
 
@@ -271,7 +285,9 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Locale.Help.ToMainMenu);
 
             AnsiConsole.Cursor.SetPosition(0, 0);
+            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
+            AnsiConsole.Cursor.Show();
             DrawHelpSettingInfo();
         }
         
@@ -304,10 +320,14 @@ namespace Jammer {
             table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
             table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
-            table.AddRow("Load Effects", "", $"[green]{Keybindings.LoadEffects}[/] {"To Load Effects (again)"}");
+            table.AddRow("Load Effects", "", $"[green]{Keybindings.LoadEffects}[/] {"To Load Effects settings"}");
             table.AddRow("Toggle Media Buttons", Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleMediaButtons}[/] {"To Toggle Media Buttons"}");
+            table.AddRow("Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleVisualizer}[/] {"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}");
+            table.AddRow("Load Visualizer", "", $"[green]{Keybindings.LoadVisualizer}[/] {"To Load Visualizer settings"}");
             AnsiConsole.Cursor.SetPosition(0, 0);
+            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
+            AnsiConsole.Cursor.Show();
             DrawHelpSettingInfo();
         }
         
@@ -376,8 +396,12 @@ namespace Jammer {
                     table.AddRow(_description[i], _elements[i]);
                 }
             }
+
             AnsiConsole.Cursor.SetPosition(0, 0);
+            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
+            AnsiConsole.Cursor.Show();
+
             if(IniFileHandling.EditingKeybind){
                 string final = IniFileHandling.previousClick.ToString();
                 if(IniFileHandling.isShiftCtrlAlt){
@@ -424,8 +448,12 @@ namespace Jammer {
                     table.AddRow(_elements[i]);
                 }
             }
+
             AnsiConsole.Cursor.SetPosition(0, 0);
+            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
+            AnsiConsole.Cursor.Show();
+
             AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}[/]\n");
             DrawHelpSettingInfo();
         }

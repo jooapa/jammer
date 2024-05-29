@@ -442,7 +442,9 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             drawOnce = false;
                         }
 
-                        TUI.RefreshCurrentView(); // TODO if vidsual
+                        if (Preferences.isVisualizer)
+                            if (playerView != "settings" || playerView != "help")
+                                TUI.RefreshCurrentView();
                         break;
 
                     case MainStates.play:
@@ -490,14 +492,17 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
-                        // If the song is finished, play next song
+                        // If the song is finished
                         if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
                             prevMusicTimePlayed = 0;
                             TUI.RefreshCurrentView();
                         }
 
-                        TUI.RefreshCurrentView();
+                        if (Preferences.isVisualizer)
+                            if (playerView != "settings" || playerView != "help")
+                                TUI.RefreshCurrentView();
+
                         CheckKeyboard();
                         break;
 
@@ -522,6 +527,11 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         TUI.ClearScreen();
                         break;
                 }
+
+                if (playerView != "settings" || playerView != "help")
+                    Thread.Sleep(Visual.refreshTime);
+                else
+                    Thread.Sleep(5);
             }
         }
 

@@ -19,6 +19,7 @@ namespace Jammer
         public static string? localeLanguage = getLocaleLanguage();
         public static string songsPath = GetSongsPath();
         public static bool isMediaButtons = GetIsMediaButtons();
+        public static bool isVisualizer = GetIsVisualizer();
 
 
         static public void CheckJammerFolderExists()
@@ -45,6 +46,9 @@ namespace Jammer
             Effects.WriteEffects();
             Effects.ReadEffects();
             
+            // Visualizer.ini
+            Visual.Write();
+            Visual.Read();
 
             if (!Directory.Exists(songsPath))
             {
@@ -69,6 +73,7 @@ namespace Jammer
             settings.isAutoSave = isAutoSave;
             settings.localeLanguage = localeLanguage;
             settings.songsPath = songsPath;
+            settings.isVisualizer = isVisualizer;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -101,6 +106,21 @@ namespace Jammer
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
                 return settings?.IsLoop ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static public bool GetIsVisualizer()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.isVisualizer ?? false;
             }
             else
             {
@@ -239,6 +259,8 @@ namespace Jammer
                 return false;
             }
         }
+
+
         static public string? getLocaleLanguage()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
@@ -322,6 +344,7 @@ namespace Jammer
             public bool isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
             public string? songsPath { get; set; }
+            public bool isVisualizer { get; set; }
         }
     }
 }

@@ -319,6 +319,13 @@ namespace Jammer
                             Preferences.isMediaButtons = !Preferences.isMediaButtons;
                             Preferences.SaveSettings();
                             break;
+                        case "ToggleVisualizer": // toggle visualizer
+                            Preferences.isVisualizer = !Preferences.isVisualizer;
+                            Preferences.SaveSettings();
+                            break;
+                        case "LoadVisualizer":
+                            Visual.Read();
+                            break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
                             break;
