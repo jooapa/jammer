@@ -75,10 +75,15 @@ namespace Jammer {
 
                 var displayTable = new Table();
                 displayTable.Border = TableBorder.None;
-                displayTable.AddColumn(Visual.GetSongVisual()).Centered();
+                if (Start.state == MainStates.playing || Start.state == MainStates.play) {
+                displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35)).Centered();
+                }
+                else {
+                displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35, false)).Centered();
+                }
                 
                 mainTable.AddRow(displayTable);
-                mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20).Centered());
+                mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
 
                 // render the main table
                 AnsiConsole.Cursor.SetPosition(0, 0);
@@ -180,7 +185,7 @@ namespace Jammer {
                 Funcs.CalculateTime(value) + " |";
             // length is modified also by the time string
             length -= Funcs.CalculateTime(value).Length;
-            length -= GetStateLogo().Length;
+            length -= 2;
             length -= 4;
 
             string extraVolume;
@@ -428,6 +433,7 @@ namespace Jammer {
         public static void RefreshCurrentView() {
             //NOTE(ra) This Clear() caused flickering.
             /* AnsiConsole.Clear(); */
+            AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Hide();
             if (Start.playerView == "default") {
                 DrawPlayer();

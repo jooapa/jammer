@@ -432,7 +432,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 switch (state)
                 {
                     case MainStates.idle:
-                        TUI.ClearScreen();
+                        // TUI.ClearScreen();
                         CheckKeyboard();
 
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
@@ -441,6 +441,8 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             TUI.DrawPlayer();
                             drawOnce = false;
                         }
+
+                        TUI.RefreshCurrentView(); // TODO if vidsual
                         break;
 
                     case MainStates.play:
@@ -495,9 +497,8 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             TUI.RefreshCurrentView();
                         }
 
-                        CheckKeyboard();
-
                         TUI.RefreshCurrentView();
+                        CheckKeyboard();
                         break;
 
                     case MainStates.pause:
@@ -521,8 +522,6 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         TUI.ClearScreen();
                         break;
                 }
-
-                Thread.Sleep(5);
             }
         }
 
