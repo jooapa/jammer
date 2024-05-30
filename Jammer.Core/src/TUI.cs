@@ -83,10 +83,12 @@ namespace Jammer {
                     mainTable.AddEmptyRow();
                 }
 
-                var helpTable = new Table();
-                helpTable.Border = TableBorder.Rounded;
+                var helpTable = new Table
+                {
+                    Border = TableBorder.Rounded,
+                };
                 lol++;
-                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist} {lol}");
+                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
                 mainTable.AddRow(helpTable);
 
 
@@ -98,9 +100,7 @@ namespace Jammer {
 
                 // render the main table
                 AnsiConsole.Cursor.SetPosition(0, 0);
-                AnsiConsole.Cursor.Hide();
                 AnsiConsole.Write(mainTable);
-                AnsiConsole.Cursor.Show();
             }
             catch (Exception e) {
                 AnsiConsole.Cursor.SetPosition(0, 0);
@@ -114,7 +114,6 @@ namespace Jammer {
 
             if (Preferences.isVisualizer) {
                 AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
-                AnsiConsole.Cursor.Hide();
                 if (Start.state == MainStates.playing || Start.state == MainStates.play) {
                     AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
                 }
@@ -298,7 +297,6 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Locale.Help.ToMainMenu);
 
             AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
             AnsiConsole.Cursor.Show();
             DrawHelpSettingInfo();
@@ -338,9 +336,7 @@ namespace Jammer {
             table.AddRow("Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleVisualizer}[/] {"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}");
             table.AddRow("Load Visualizer", "", $"[green]{Keybindings.LoadVisualizer}[/] {"To Load Visualizer settings"}");
             AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Cursor.Hide();
             AnsiConsole.Write(table);
-            AnsiConsole.Cursor.Show();
             DrawHelpSettingInfo();
         }
         
@@ -475,7 +471,6 @@ namespace Jammer {
             //NOTE(ra) This Clear() caused flickering.
             /* AnsiConsole.Clear(); */
             AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Cursor.Hide();
             if (Start.playerView == "default") {
                 DrawPlayer();
             }

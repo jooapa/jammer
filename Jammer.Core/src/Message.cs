@@ -14,6 +14,7 @@ namespace Jammer
             messageTable.AddColumn(new TableColumn(inputSaying)).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0,0);
+            AnsiConsole.Cursor.Show();
             AnsiConsole.Write(mainTable);
             AnsiConsole.Cursor.SetPosition(inputSaying.Length + 6, 5);
             string input = Console.ReadLine() ?? string.Empty;
@@ -34,6 +35,7 @@ namespace Jammer
                 messageTable.AddColumn(new TableColumn(data)).Centered().Width(Start.consoleWidth);
             }
             mainTable.AddRow(messageTable);
+            AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0,0);
             AnsiConsole.Write(mainTable);
             if (readKey)

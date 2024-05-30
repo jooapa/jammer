@@ -428,7 +428,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         TUI.RefreshCurrentView();
                     }
                     
-
+                AnsiConsole.Cursor.Hide();
                 switch (state)
                 {
                     case MainStates.idle:
