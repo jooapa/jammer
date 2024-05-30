@@ -1,7 +1,7 @@
 import sys, os
 args = sys.argv[1:]
 if(len(args) == 0):
-    print('Usage: update.py 000-111')
+    print('Usage: update.py <major0,1><minor0,1><patch 0,1>')
     sys.exit(1)
 if args[0][0:1] == "1":
     is_major = True
@@ -27,15 +27,15 @@ with open('VERSION', 'r') as version_file:
     build = version.split('.')[3]
 
     if is_major:
-        major = int(major) + 1
+        major = hex(int(major) + 1)[2:]  # Convert to hex and remove '0x' prefix
     if is_minor:
-        minor = int(minor) + 1
+        minor = hex(int(minor) + 1)[2:]  # Convert to hex and remove '0x' prefix
     if is_patch:
-        patch = int(patch) + 1   
-    build = int(build) + 1
+        patch = hex(int(patch) + 1)[2:]  # Convert to hex and remove '0x' prefix
+    build = hex(int(build) + 1)[2:]  # Convert to hex and remove '0x' prefix
 
     new_version = f'{major}.{minor}.{patch}.{build}'
 
-    os.system(f'python change_version.py "{new_version}')
+    os.system(f'python change_version.py "{new_version}"')
     
     print(f'Version updated to {new_version}')
