@@ -43,7 +43,7 @@ FrequencyMultiplier = 6000
             // If the song is not playing, gradually decrease the scale factor
             if (!isPlaying)
             {
-                scaleFactor *= 0.99f; // Adjust this value to control the speed of the decrease
+                scaleFactor *= 0.95f; // Adjust this value to control the speed of the decrease
             }
             else
             {

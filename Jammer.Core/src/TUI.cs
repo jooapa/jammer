@@ -1,3 +1,4 @@
+using SharpHook.Native;
 using Spectre.Console;
 
 namespace Jammer {
@@ -5,6 +6,7 @@ namespace Jammer {
 
         static bool cls = false;
         
+        static int lol = 0;
         static public void DrawPlayer() {
             try {
                 var ansiConsoleSettings = new AnsiConsoleSettings();
@@ -29,7 +31,7 @@ namespace Jammer {
 
                 if (cls) {
                     if (Start.playerView != "all") {
-                        AnsiConsole.Clear();
+                        // AnsiConsole.Clear();
                         Debug.dprint("DrawPlayer - clear");
                     }
                     cls = false;
@@ -66,8 +68,8 @@ namespace Jammer {
                         magicIndex++;
                     }
                     // there is not 5 songs in the playlist
-                    if (songsTable.Rows.Count <= 5) {
-                        magicIndex += songsTable.Rows.Count - 7;
+                    if (Utils.songs.Length < 5) {
+                        magicIndex += 3 - Utils.songs.Length;
                     }
                 }
 
@@ -83,19 +85,13 @@ namespace Jammer {
 
                 var helpTable = new Table();
                 helpTable.Border = TableBorder.Rounded;
-                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
+                lol++;
+                helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist} {lol}");
                 mainTable.AddRow(helpTable);
 
-                var displayTable = new Table();
-                displayTable.Border = TableBorder.None;
+
                 if (Preferences.isVisualizer) {
-                    if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                        displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35)).Centered();
-                    }
-                    else {
-                        displayTable.AddColumn(Visual.GetSongVisual(Start.consoleWidth+35, false)).Centered();
-                    }
-                    mainTable.AddRow(displayTable);
+                    mainTable.AddEmptyRow();
                 }
                 
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
@@ -114,6 +110,19 @@ namespace Jammer {
             }
         }
 
+        public static void DrawVisualizer() {
+
+            if (Preferences.isVisualizer) {
+                AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
+                AnsiConsole.Cursor.Hide();
+                if (Start.state == MainStates.playing || Start.state == MainStates.play) {
+                    AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
+                }
+                else {
+                    AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35, false));
+                }
+            }
+        }
         static public void ClearScreen() {
             cls = true;
         }

@@ -243,7 +243,6 @@ namespace Jammer
                             Preferences.SaveSettings();
                             break;
                         case "ShowHidePlaylist": // show all view
-                            AnsiConsole.Clear();
                             if (playerView == "default")
                             {   
                                 playerView = "all";

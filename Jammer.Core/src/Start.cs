@@ -443,8 +443,8 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         }
 
                         if (Preferences.isVisualizer)
-                            if (playerView != "settings" || playerView != "help")
-                                TUI.RefreshCurrentView();
+                            if (playerView == "default" || playerView == "all")
+                                TUI.DrawVisualizer();
                         break;
 
                     case MainStates.play:
@@ -500,8 +500,8 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         }
 
                         if (Preferences.isVisualizer)
-                            if (playerView != "settings" || playerView != "help")
-                                TUI.RefreshCurrentView();
+                            if (playerView == "default" || playerView == "all")
+                                TUI.DrawVisualizer();
 
                         CheckKeyboard();
                         break;
@@ -519,12 +519,12 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     case MainStates.next:
                         Debug.dprint("next");
                         Play.NextSong();
-                        TUI.ClearScreen();
+                        // AnsiConsole.Clear();
                         break;
 
                     case MainStates.previous:
                         Play.PrevSong();
-                        TUI.ClearScreen();
+                        // AnsiConsole.Clear();
                         break;
                 }
 
