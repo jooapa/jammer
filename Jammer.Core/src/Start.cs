@@ -403,7 +403,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 
             Utils.isInitialized = true;
 
-            TUI.ClearScreen();
+            AnsiConsole.Clear();
             drawOnce = true;
             TUI.RefreshCurrentView();
 
@@ -524,7 +524,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 }
 
                 if (playerView != "settings" || playerView != "help")
-                    Thread.Sleep(Visual.refreshTime);
+                    Thread.Sleep(Visual.refreshTime + Visual.offset);
                 else
                     Thread.Sleep(5);
             }

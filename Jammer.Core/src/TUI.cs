@@ -51,25 +51,23 @@ namespace Jammer {
                 int tableRowCount=0;
                 int magicIndex;
 
-                if (Start.playerView != "all") {
-                    magicIndex = 17;
-                    if (Utils.currentPlaylist != "") {
-                        magicIndex++;
+                if (Start.playerView == "default") {
+                    magicIndex = 18;
+                    if (Utils.currentPlaylist == "") {
+                        magicIndex -= 2;
                     }
                     if (Preferences.isVisualizer) {
                         magicIndex++;
                     }
                 }
                 else {
-                    magicIndex = 21;
-                    if (Utils.currentPlaylist != "")
-                        magicIndex++;
+                    magicIndex = 22;
                     if (Preferences.isVisualizer) {
                         magicIndex++;
                     }
                     // there is not 5 songs in the playlist
                     if (Utils.songs.Length < 5) {
-                        magicIndex += 3 - Utils.songs.Length;
+                        magicIndex += 1 - Utils.songs.Length;
                     }
                 }
 
