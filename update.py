@@ -27,15 +27,15 @@ with open('VERSION', 'r') as version_file:
     build = version.split('.')[3]
 
     if is_major:
-        major = hex(int(major) + 1)[2:]  # Convert to hex and remove '0x' prefix
+        major = int(major) + 1
     if is_minor:
-        minor = hex(int(minor) + 1)[2:]  # Convert to hex and remove '0x' prefix
+        minor = int(minor) + 1
     if is_patch:
-        patch = hex(int(patch) + 1)[2:]  # Convert to hex and remove '0x' prefix
-    build = hex(int(build) + 1)[2:]  # Convert to hex and remove '0x' prefix
+        patch = int(patch) + 1   
+    build = int(build) + 1
 
     new_version = f'{major}.{minor}.{patch}.{build}'
 
-    os.system(f'python change_version.py "{new_version}"')
+    os.system(f'python change_version.py "{new_version}')
     
     print(f'Version updated to {new_version}')
