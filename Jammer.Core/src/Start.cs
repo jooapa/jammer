@@ -34,6 +34,7 @@ namespace Jammer
         public static MainStates state = MainStates.playing;
         public static bool drawOnce = false;
         private static Thread loopThread = new(() => { });
+        private static Thread visualizerThread = new(() => { });
 #if CLI_UI
         public static int consoleWidth = Console.WindowWidth;
         public static int consoleHeight = Console.WindowHeight;        
@@ -390,7 +391,9 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 
             Debug.dprint("Start Loop");
             loopThread = new Thread(Loop);
+            visualizerThread = new Thread(EqualizerLoop);
             loopThread.Start();
+            visualizerThread.Start();
         }
 
         //
@@ -407,7 +410,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
             drawOnce = true;
             TUI.RefreshCurrentView();
 
-            while (Start.LoopRunning)
+            while (LoopRunning)
             {
                 if (Utils.songs.Length != 0)
                 {
@@ -442,7 +445,6 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             drawOnce = false;
                         }
 
-                        StartDrawingVisualizer();
                         break;
 
                     case MainStates.play:
@@ -479,14 +481,14 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            TUI.DrawPlayer();
+                            TUI.DrawPlayer(true);
                             drawOnce = false;
                         }
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
                         {
-                            TUI.RefreshCurrentView();
+                            TUI.RefreshCurrentView(true);
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
@@ -494,10 +496,9 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
                             prevMusicTimePlayed = 0;
-                            TUI.RefreshCurrentView();
+                            TUI.RefreshCurrentView(true);
                         }
 
-                        StartDrawingVisualizer();
                         CheckKeyboard();
                         break;
 
@@ -523,18 +524,20 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         break;
                 }
 
-                if (playerView != "settings" || playerView != "help")
-                    Thread.Sleep(Visual.refreshTime);
-                else
-                    Thread.Sleep(5);
+                Thread.Sleep(5);
             }
         }
 
-        private static void StartDrawingVisualizer()
-        {
-            if (Preferences.isVisualizer)
-                if (playerView == "default" || playerView == "all")
-                    TUI.DrawVisualizer();
+        private static void EqualizerLoop() {
+            while (true)
+            {
+                if (Preferences.isVisualizer) {
+                    if (playerView == "default" || playerView == "all") {
+                        TUI.DrawVisualizer();
+                    }
+                }
+                Thread.Sleep(Visual.refreshTime);
+            }
         }
 
         /// <summary>

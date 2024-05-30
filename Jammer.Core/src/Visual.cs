@@ -12,46 +12,51 @@ namespace Jammer {
 RefreshTime = 10
 ; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
 UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
-; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
+; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
 ; UnicodeMap =  ,⠁,⠁,⠃,⠇,⠏,⠛,⠿,⡿,⣿
 ; UnicodeMap =  ⣿,⡿,⡏,⠛,⠏,⠇,⠃,⠁
-; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
+; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
 ; Buffer size for FFT data
+; meaning higher values will detect more frequencies,
 BufferSize = 41000
-; higher values will detect more frequencies, 
+; Better FFT will be more accurate and smooth
 ; but can be out of sync with the audio
 ; Best:    FFT32768 FFT16384        (Recommended)
-; Fast:    FFT4098  FFT2048 FFT8192 (Recommended)
+; Fast:    FFT8192  FFT4098 FFT2048  (Recommended)
 ; Fastest: FFT1024  FFT512  FFT256  (Not Recommended)
 ; if nothing shows up, try changing the 'FrequencyMultiplier'
-DataFlags = FFT16384
+DataFlags = FFT4098
 MinFrequency = 50
 MaxFrequency = 17000
-FrequencyMultiplier = 6000
+FrequencyMultiplier = 900000000
 ; Logarithmic multiplier for FFT values, meaning
 ; higher values will be more sensitive
-; combine with the 'FrequencyMultiplier' to adjust
-LogarithmicMultiplier = 2.0
+; combo with the 'FrequencyMultiplier' to adjust
+; Note: the change in the Log value, 
+; can be very sensitive with the 'FrequencyMultiplier'
+LogarithmicMultiplier = 4
+; When the song is paused, the visualizer will gradually decrease in scale
+PausingEffect = true
 ";
 
 
         public static int refreshTime = 10; // Visualizer enabled flag
         public static int bufferSize = 41000; // FFT data buffer size
-        public static string dataFlags = "FFT16384"; // FFT data flags
+        public static string dataFlags = "FFT4098"; // FFT data flags
         public static int minFrequency = 50; // Minimum frequency
         public static int maxFrequency = 17000; // Maximum frequency
-        public static int frequencyMultiplier = 6000; // Frequency multiplier
-        public static float logarithmicMultiplier = 1.0f; // Logarithmic multiplier
+        public static int frequencyMultiplier = 900000000; // Frequency multiplier
+        public static float logarithmicMultiplier = 4f; // Logarithmic multiplier
         public static string unicodeMap = " ,▁,▂,▃,▄,▅,▆,▇,█";
-
+        public static bool pausingEffect = true; // Pausing effect flag
 
         private static float scaleFactor = 1.0f;
         public static string GetSongVisual(int length, bool isPlaying = true)
         {
             // If the song is not playing, gradually decrease the scale factor
-            if (!isPlaying)
+            if (!isPlaying && pausingEffect)
             {
-                scaleFactor *= 0.95f; // Adjust this value to control the speed of the decrease
+                scaleFactor *= (float)Math.Pow(0.95, Math.Max(1, refreshTime) / 6.0f);
             }
             else
             {
@@ -222,6 +227,11 @@ LogarithmicMultiplier = 2.0
                     data["Audio Visualizer"]["UnicodeMap"] = " ,▁,▂,▃,▄,▅,▆,▇,█";
                     changed = true;
                 }
+                if (!data["Audio Visualizer"].ContainsKey("PausingEffect"))
+                {
+                    data["Audio Visualizer"]["PausingEffect"] = "true";
+                    changed = true;
+                }
 
                 if (changed)
                 {
@@ -237,6 +247,7 @@ LogarithmicMultiplier = 2.0
             frequencyMultiplier = int.Parse(data["Audio Visualizer"]["FrequencyMultiplier"], CultureInfo.InvariantCulture);
             logarithmicMultiplier = float.Parse(data["Audio Visualizer"]["LogarithmicMultiplier"], CultureInfo.InvariantCulture);
             unicodeMap = data["Audio Visualizer"]["UnicodeMap"];
+            pausingEffect = bool.Parse(data["Audio Visualizer"]["PausingEffect"]);
         }
     }
 }

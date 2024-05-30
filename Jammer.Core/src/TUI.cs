@@ -6,9 +6,14 @@ namespace Jammer {
 
         static bool cls = false;
         
-        static int lol = 0;
-        static public void DrawPlayer() {
+        public static bool DrawingMain = false;
+        static public void DrawPlayer(bool DrawOnlyTime = false) {
             try {
+                if (DrawingMain) {
+                    return;
+                }
+                DrawingMain = true;
+                
                 var ansiConsoleSettings = new AnsiConsoleSettings();
                 var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
                 if (Start.playerView == "help" || Start.playerView == "settings")
@@ -85,7 +90,6 @@ namespace Jammer {
                 {
                     Border = TableBorder.Rounded,
                 };
-                lol++;
                 helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
                 mainTable.AddRow(helpTable);
 
@@ -97,8 +101,16 @@ namespace Jammer {
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
 
                 // render the main table
-                AnsiConsole.Cursor.SetPosition(0, 0);
-                AnsiConsole.Write(mainTable);
+                if (DrawOnlyTime) {
+                    AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
+                    AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, Start.consoleWidth - 20));
+                }else {
+                    AnsiConsole.Cursor.SetPosition(0, 0);
+                    AnsiConsole.Write(mainTable);
+                    AnsiConsole.Cursor.SetPosition(0, Start.consoleHeight);
+                    // emptyness for the whole line
+                    AnsiConsole.Write(new string(' ', Start.consoleWidth));
+                }
             }
             catch (Exception e) {
                 AnsiConsole.Cursor.SetPosition(0, 0);
@@ -106,9 +118,15 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
                 AnsiConsole.MarkupLine("[red]" + e + "[/]");
             }
+
+            DrawingMain = false;
         }
 
         public static void DrawVisualizer() {
+
+            if (DrawingMain) {
+                return;
+            }
 
             if (Preferences.isVisualizer) {
                 AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
@@ -116,10 +134,11 @@ namespace Jammer {
                     AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
                 }
                 else {
-                    AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35, false));
+                    AnsiConsole.MarkupLine("[red]"+Visual.GetSongVisual(Start.consoleWidth+35, false) + "[/]");
                 }
             }
         }
+
         static public void ClearScreen() {
             cls = true;
         }
@@ -465,12 +484,11 @@ namespace Jammer {
             DrawHelpSettingInfo();
         }
 
-        public static void RefreshCurrentView() {
+        public static void RefreshCurrentView(bool timeOnly = false) {
             //NOTE(ra) This Clear() caused flickering.
             /* AnsiConsole.Clear(); */
-            AnsiConsole.Cursor.SetPosition(0, 0);
             if (Start.playerView == "default") {
-                DrawPlayer();
+                DrawPlayer(timeOnly);
             }
             else if (Start.playerView == "help") {
                 DrawHelp();
@@ -479,7 +497,7 @@ namespace Jammer {
                 DrawSettings();
             }
             else if (Start.playerView == "all") {
-                DrawPlayer();
+                DrawPlayer(timeOnly);
             }
             else if (Start.playerView == "fake") {
                 DrawPlayer();
