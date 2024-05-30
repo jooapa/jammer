@@ -186,9 +186,11 @@ namespace Jammer
                                 break;
                         case "Forward5s": // move forward 5 seconds
                             Play.SeekSong(Preferences.forwardSeconds, true);
+                            drawTime = true;
                             break;
                         case "Backwards5s": // move backward 5 seconds
                             Play.SeekSong(-Preferences.rewindSeconds, true);
+                            drawTime = true;
                             break;
                         case "VolumeUp": // volume up
                             if (Preferences.isMuted)
@@ -197,6 +199,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
+                            drawTime = true;
                             break;
                         case "VolumeDown": // volume down
                             if (Preferences.isMuted)
@@ -205,6 +208,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
+                            drawTime = true;
                             break;
                         case "Shuffle": // suffle or save
                             Preferences.isShuffle = !Preferences.isShuffle;
@@ -268,42 +272,18 @@ namespace Jammer
                             if (playerView == "help")
                             {
                                 playerView = "default";
-                                #if CLI_UI
-                                TUI.DrawPlayer();
-                                #endif
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                                 break;
                             }
                             playerView = "help";
-                            #if CLI_UI
-                            TUI.DrawHelp();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "Settings": // show settings
                             AnsiConsole.Clear();
                             if (playerView == "settings")
                             {
                                 playerView = "default";
-                                #if CLI_UI
-                                TUI.DrawPlayer();
-                                #endif
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                                 break;
                             }
                             playerView = "settings";
-                            #if CLI_UI
-                            TUI.DrawSettings();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
 
                         case "Autosave": // autosave or not
@@ -483,7 +463,7 @@ namespace Jammer
                     }
             
                 #if CLI_UI
-                TUI.RefreshCurrentView();
+                // TUI.RefreshCurrentView();
                 #endif
                 #if AVALONIA_UI
                 // TODO AVALONIA_UI

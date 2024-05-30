@@ -399,6 +399,11 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
         //
         // Main loop
         //
+        public static bool drawTime = false;
+        public static bool drawVisualizer = false;
+        public static bool drawWhole = false;
+
+        public static string previousView = "default";
         public static void Loop()
         {
             lastSeconds = -1;
@@ -409,9 +414,11 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
             AnsiConsole.Clear();
             drawOnce = true;
             TUI.RefreshCurrentView();
+            AnsiConsole.Cursor.Hide();
 
             while (LoopRunning)
             {
+                // AnsiConsole.Cursor.Hide();
                 if (Utils.songs.Length != 0)
                 {
                     // if the first song is "" then there are more songs
@@ -423,15 +430,14 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                     }
                 }
 
-                    if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
-                    {
-                        consoleHeight = Console.WindowHeight;
-                        consoleWidth = Console.WindowWidth;
-                        AnsiConsole.Clear();
-                        TUI.RefreshCurrentView();
-                    }
-                    
-                AnsiConsole.Cursor.Hide();
+                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
+                {
+                    consoleHeight = Console.WindowHeight;
+                    consoleWidth = Console.WindowWidth;
+                    AnsiConsole.Clear();
+                    drawWhole = true;
+                }
+
                 switch (state)
                 {
                     case MainStates.idle:
@@ -441,7 +447,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            TUI.DrawPlayer();
+                            drawWhole = true;
                             drawOnce = false;
                         }
 
@@ -463,6 +469,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         else
                         {   
                             drawOnce = true;
+                            drawWhole = true;
                             state = MainStates.idle;
                         }
                         break;
@@ -481,14 +488,14 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         //FIXME(ra) This is a workaround for screen to update once when entering the state.
                         if (drawOnce)
                         {
-                            TUI.DrawPlayer(true);
                             drawOnce = false;
+                            drawTime = true;
                         }
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
                         {
-                            TUI.RefreshCurrentView(true);
+                            drawTime = true;
                             prevMusicTimePlayed = Utils.MusicTimePlayed;
                         }
 
@@ -496,7 +503,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
                         {
                             prevMusicTimePlayed = 0;
-                            TUI.RefreshCurrentView(true);
+                            drawTime = true;
                         }
 
                         CheckKeyboard();
@@ -524,21 +531,60 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         break;
                 }
 
-                Thread.Sleep(5);
+                // If the view is changed, refresh the screen
+                if (previousView != playerView)
+                {
+                    drawWhole = true;
+                }
+
+                if (playerView == "default" || playerView == "all")
+                {
+                    if (drawWhole) {
+                        TUI.RefreshCurrentView();
+                    } if (drawTime) {
+                        TUI.DrawTime();
+                    } if (drawVisualizer) {
+                        TUI.DrawVisualizer();
+                    }
+                }
+                else {
+                    TUI.RefreshCurrentView();
+                }
+
+                previousView = playerView;
+                drawVisualizer = false;
+                drawTime = false;
+                drawWhole = false;
+
+                if (playerView == "default" || playerView == "all") {
+                    Thread.Sleep(1);
+                } else
+                    Thread.Sleep(300);
+
             }
         }
 
-        private static void EqualizerLoop() {
+        static bool canVisualize = false;
+        private static void EqualizerLoop()
+        {
             while (true)
             {
                 if (Preferences.isVisualizer) {
-                    if (playerView == "default" || playerView == "all") {
-                        TUI.DrawVisualizer();
+                    if (state == MainStates.playing || state == MainStates.play) {
+                        canVisualize = true;
+                    } else {
+                        canVisualize = false;
+                    }
+
+                    if (canVisualize)
+                    {
+                        drawVisualizer = true;
                     }
                 }
                 Thread.Sleep(Visual.refreshTime);
             }
         }
+        
 
         /// <summary>
         /// Removes "[" and "]" from a string to prevent Spectre.Console from blowing up.

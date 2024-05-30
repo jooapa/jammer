@@ -5,14 +5,17 @@ namespace Jammer {
     public static class TUI {
 
         static bool cls = false;
-        
-        public static bool DrawingMain = false;
-        static public void DrawPlayer(bool DrawOnlyTime = false) {
+
+        /// <summary>
+        /// call DrawPlayer(true, true) to draw the whole player
+        /// </summary>
+        /// <param name="DrawTime">Draw the time</param>
+        /// <param name="drawVisualizer">Draw the visualizer</param>
+        /// <param name="drawOnlyVisualizer">Draw only the visualizer</param>
+        /// <param name="DrawOnlyTime">Draw only the time</param>
+        /// <returns></returns>
+        static public void DrawPlayer() {
             try {
-                if (DrawingMain) {
-                    return;
-                }
-                DrawingMain = true;
                 
                 var ansiConsoleSettings = new AnsiConsoleSettings();
                 var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
@@ -41,9 +44,9 @@ namespace Jammer {
                     }
                     cls = false;
                 }
-                if (Start.playerView == "default" || Start.playerView == "fake") {
-                    AnsiConsole.Cursor.SetPosition(0, 0);
-                }
+                // if (Start.playerView == "default" || Start.playerView == "fake") {
+                //     AnsiConsole.Cursor.SetPosition(0, 0);
+                // }
 
                 // render maintable with tables in it
                 mainTable.AddColumns(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
@@ -100,17 +103,9 @@ namespace Jammer {
                 
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
 
-                // render the main table
-                if (DrawOnlyTime) {
-                    AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
-                    AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, Start.consoleWidth - 20));
-                }else {
-                    AnsiConsole.Cursor.SetPosition(0, 0);
-                    AnsiConsole.Write(mainTable);
-                    AnsiConsole.Cursor.SetPosition(0, Start.consoleHeight);
-                    // emptyness for the whole line
-                    AnsiConsole.Write(new string(' ', Start.consoleWidth));
-                }
+                AnsiConsole.Clear();
+                AnsiConsole.Cursor.SetPosition(0, 0);
+                AnsiConsole.Write(mainTable);
             }
             catch (Exception e) {
                 AnsiConsole.Cursor.SetPosition(0, 0);
@@ -119,24 +114,20 @@ namespace Jammer {
                 AnsiConsole.MarkupLine("[red]" + e + "[/]");
             }
 
-            DrawingMain = false;
         }
 
-        public static void DrawVisualizer() {
-
-            if (DrawingMain) {
-                return;
+        static public void DrawVisualizer() {
+            AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
+            if (Start.state == MainStates.playing || Start.state == MainStates.play) {
+                AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
+            } else {
+                AnsiConsole.MarkupLine("[red]"+Visual.GetSongVisual(Start.consoleWidth+35, false) + "[/]");
             }
+        }
 
-            if (Preferences.isVisualizer) {
-                AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
-                if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                    AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
-                }
-                else {
-                    AnsiConsole.MarkupLine("[red]"+Visual.GetSongVisual(Start.consoleWidth+35, false) + "[/]");
-                }
-            }
+        static public void DrawTime() {
+            AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
+            AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, Start.consoleWidth - 20));
         }
 
         static public void ClearScreen() {
@@ -484,11 +475,11 @@ namespace Jammer {
             DrawHelpSettingInfo();
         }
 
-        public static void RefreshCurrentView(bool timeOnly = false) {
+        public static void RefreshCurrentView() {
             //NOTE(ra) This Clear() caused flickering.
             /* AnsiConsole.Clear(); */
             if (Start.playerView == "default") {
-                DrawPlayer(timeOnly);
+                DrawPlayer();
             }
             else if (Start.playerView == "help") {
                 DrawHelp();
@@ -497,7 +488,7 @@ namespace Jammer {
                 DrawSettings();
             }
             else if (Start.playerView == "all") {
-                DrawPlayer(timeOnly);
+                DrawPlayer();
             }
             else if (Start.playerView == "fake") {
                 DrawPlayer();
