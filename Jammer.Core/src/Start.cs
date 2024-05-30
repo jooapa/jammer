@@ -524,7 +524,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 }
 
                 if (playerView != "settings" || playerView != "help")
-                    Thread.Sleep(Visual.refreshTime + Visual.offset);
+                    Thread.Sleep(Visual.refreshTime);
                 else
                     Thread.Sleep(5);
             }

@@ -3,16 +3,13 @@ using System.Text;
 using IniParser;
 using IniParser.Model;
 using Spectre.Console;
+using System.Globalization;
 
 namespace Jammer {
     public class Visual {
         public static string FileContent = @"[Audio Visualizer]
 ; Refresh time in milliseconds
 RefreshTime = 10
-; Offset in milliseconds for the visualizer. 
-; Increase this value if the visualizer is out of sync with the audio.
-; Value can only be positive or zero. 0 >=
-Offset = 0
 ; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
 UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
 ; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
@@ -21,24 +18,30 @@ UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
 ; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
 ; Buffer size for FFT data
 BufferSize = 41000
-; FFT32768 FFT16384           (Recommended)     detect 20Hz - 20kHz
-; FFT8192  FFT4098  FFT2048                    detect 1kHz - 20kHz
-; FFT1024  FFT512   FFT256   (Not Recommended) detect 10kHz - 20kHz
+; higher values will detect more frequencies, 
+; but can be out of sync with the audio
+; Best:    FFT32768 FFT16384        (Recommended)
+; Fast:    FFT4098  FFT2048 FFT8192 (Recommended)
+; Fastest: FFT1024  FFT512  FFT256  (Not Recommended)
 ; if nothing shows up, try changing the 'FrequencyMultiplier'
 DataFlags = FFT16384
 MinFrequency = 50
 MaxFrequency = 17000
 FrequencyMultiplier = 6000
+; Logarithmic multiplier for FFT values, meaning
+; higher values will be more sensitive
+; combine with the 'FrequencyMultiplier' to adjust
+LogarithmicMultiplier = 2.0
 ";
 
 
         public static int refreshTime = 10; // Visualizer enabled flag
-        public static int offset = 0; // Offset in milliseconds for the visualizer
         public static int bufferSize = 41000; // FFT data buffer size
         public static string dataFlags = "FFT16384"; // FFT data flags
         public static int minFrequency = 50; // Minimum frequency
         public static int maxFrequency = 17000; // Maximum frequency
         public static int frequencyMultiplier = 6000; // Frequency multiplier
+        public static float logarithmicMultiplier = 1.0f; // Logarithmic multiplier
         public static string unicodeMap = " ,▁,▂,▃,▄,▅,▆,▇,█";
 
 
@@ -79,7 +82,7 @@ FrequencyMultiplier = 6000
             int maxLength = Math.Max(length - 43 , 1);
 
             StringBuilder frequencyBuilder = new StringBuilder(frequencyCount);
-            
+
             // Iterate through the FFT data and map values to ASCII characters
             for (int i = 0; i < frequencyCount; i++)
             {
@@ -102,7 +105,7 @@ FrequencyMultiplier = 6000
                 float fftValue = fftData[fftIndex] * scaleFactor;
 
                 // // Apply a power function to make higher values more sensitive
-                fftValue = (float)Math.Pow(fftValue, 1.5);
+                fftValue = (float)Math.Pow(fftValue, logarithmicMultiplier);
 
                 // Apply logarithmic scale to the FFT value
                 float average = (float)Math.Log10(1 + fftValue * frequencyMultiplier);
@@ -177,51 +180,62 @@ FrequencyMultiplier = 6000
                 data = parser.ReadFile(path);
             } else {
                 data = parser.ReadFile(path);
-
+                bool changed = false;
                 // Check if the desired entries exist, and add them if they don't
                 if (!data["Audio Visualizer"].ContainsKey("RefreshTime"))
                 {
                     data["Audio Visualizer"]["RefreshTime"] = "10";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("BufferSize"))
                 {
                     data["Audio Visualizer"]["BufferSize"] = "41000";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("DataFlags"))
                 {
                     data["Audio Visualizer"]["DataFlags"] = "FFT16384";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("MinFrequency"))
                 {
                     data["Audio Visualizer"]["MinFrequency"] = "50";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("MaxFrequency"))
                 {
                     data["Audio Visualizer"]["MaxFrequency"] = "17000";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("FrequencyMultiplier"))
                 {
                     data["Audio Visualizer"]["FrequencyMultiplier"] = "6000";
+                    changed = true;
+                }
+                if (!data["Audio Visualizer"].ContainsKey("LogarithmicMultiplier"))
+                {
+                    data["Audio Visualizer"]["LogarithmicMultiplier"] = "2.0";
+                    changed = true;
                 }
                 if (!data["Audio Visualizer"].ContainsKey("UnicodeMap"))
                 {
                     data["Audio Visualizer"]["UnicodeMap"] = " ,▁,▂,▃,▄,▅,▆,▇,█";
-                }
-                if (!data["Audio Visualizer"].ContainsKey("Offset"))
-                {
-                    data["Audio Visualizer"]["Offset"] = "0";
+                    changed = true;
                 }
 
-                // Write the data back to the file
-                parser.WriteFile(path, data);
+                if (changed)
+                {
+                    parser.WriteFile(path, data);
+                }
             }
 
-            refreshTime = int.Parse(data["Audio Visualizer"]["RefreshTime"]);   
-            bufferSize = int.Parse(data["Audio Visualizer"]["BufferSize"]);
+            refreshTime = int.Parse(data["Audio Visualizer"]["RefreshTime"], CultureInfo.InvariantCulture);   
+            bufferSize = int.Parse(data["Audio Visualizer"]["BufferSize"], CultureInfo.InvariantCulture);
             dataFlags = data["Audio Visualizer"]["DataFlags"];
-            minFrequency = int.Parse(data["Audio Visualizer"]["MinFrequency"]);
-            maxFrequency = int.Parse(data["Audio Visualizer"]["MaxFrequency"]);
-            frequencyMultiplier = int.Parse(data["Audio Visualizer"]["FrequencyMultiplier"]);
+            minFrequency = int.Parse(data["Audio Visualizer"]["MinFrequency"], CultureInfo.InvariantCulture);
+            maxFrequency = int.Parse(data["Audio Visualizer"]["MaxFrequency"], CultureInfo.InvariantCulture);
+            frequencyMultiplier = int.Parse(data["Audio Visualizer"]["FrequencyMultiplier"], CultureInfo.InvariantCulture);
+            logarithmicMultiplier = float.Parse(data["Audio Visualizer"]["LogarithmicMultiplier"], CultureInfo.InvariantCulture);
             unicodeMap = data["Audio Visualizer"]["UnicodeMap"];
         }
     }
