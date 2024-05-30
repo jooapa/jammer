@@ -492,7 +492,6 @@ namespace Jammer {
             else if (Start.playerView == "changelanguage") {
                 ChangeLanguage();
             }
-            AnsiConsole.Cursor.Show();
         }
     }
 }

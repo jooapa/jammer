@@ -442,9 +442,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             drawOnce = false;
                         }
 
-                        if (Preferences.isVisualizer)
-                            if (playerView == "default" || playerView == "all")
-                                TUI.DrawVisualizer();
+                        StartDrawingVisualizer();
                         break;
 
                     case MainStates.play:
@@ -499,10 +497,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                             TUI.RefreshCurrentView();
                         }
 
-                        if (Preferences.isVisualizer)
-                            if (playerView == "default" || playerView == "all")
-                                TUI.DrawVisualizer();
-
+                        StartDrawingVisualizer();
                         CheckKeyboard();
                         break;
 
@@ -533,6 +528,13 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 else
                     Thread.Sleep(5);
             }
+        }
+
+        private static void StartDrawingVisualizer()
+        {
+            if (Preferences.isVisualizer)
+                if (playerView == "default" || playerView == "all")
+                    TUI.DrawVisualizer();
         }
 
         /// <summary>

@@ -9,6 +9,10 @@ namespace Jammer {
         public static string FileContent = @"[Audio Visualizer]
 ; Refresh time in milliseconds
 RefreshTime = 10
+; Offset in milliseconds for the visualizer. 
+; Increase this value if the visualizer is out of sync with the audio.
+; Value can only be positive or zero. 0 >=
+Offset = 0
 ; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
 UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
 ; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
@@ -29,6 +33,7 @@ FrequencyMultiplier = 6000
 
 
         public static int refreshTime = 10; // Visualizer enabled flag
+        public static int offset = 0; // Offset in milliseconds for the visualizer
         public static int bufferSize = 41000; // FFT data buffer size
         public static string dataFlags = "FFT16384"; // FFT data flags
         public static int minFrequency = 50; // Minimum frequency
@@ -63,7 +68,6 @@ FrequencyMultiplier = 6000
 
             // Map FFT values to ASCII characters
             string[] unicodeMap = GetUnicodeMap();
-            StringBuilder frequencyBuilder = new();
 
             // Calculate the number of frequencies to display based on the console width
             int frequencyCount = Math.Max(1, length);
@@ -71,11 +75,16 @@ FrequencyMultiplier = 6000
             // Ensure frequencyCount is within bounds of the array
             frequencyCount = Math.Min(frequencyCount, fftData.Length);
 
+            // Calculate this value once before the loop
+            int maxLength = Math.Max(length - 43 , 1);
+
+            StringBuilder frequencyBuilder = new StringBuilder(frequencyCount);
+            
             // Iterate through the FFT data and map values to ASCII characters
             for (int i = 0; i < frequencyCount; i++)
             {
                 // If the length of the frequency string equals the console width, break the loop
-                if (frequencyBuilder.Length == Math.Max(length - 43 , 1))
+                if (frequencyBuilder.Length == maxLength)
                 {
                     break;
                 }
@@ -197,6 +206,10 @@ FrequencyMultiplier = 6000
                 if (!data["Audio Visualizer"].ContainsKey("UnicodeMap"))
                 {
                     data["Audio Visualizer"]["UnicodeMap"] = " ,▁,▂,▃,▄,▅,▆,▇,█";
+                }
+                if (!data["Audio Visualizer"].ContainsKey("Offset"))
+                {
+                    data["Audio Visualizer"]["Offset"] = "0";
                 }
 
                 // Write the data back to the file
