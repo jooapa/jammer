@@ -121,7 +121,7 @@ namespace Jammer {
             if (Start.state == MainStates.playing || Start.state == MainStates.play) {
                 AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
             } else {
-                AnsiConsole.MarkupLine("[red]"+Visual.GetSongVisual(Start.consoleWidth+35, false) + "[/]");
+                AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth+35, false));
             }
         }
 

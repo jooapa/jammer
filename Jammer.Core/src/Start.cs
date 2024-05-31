@@ -543,7 +543,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                         TUI.RefreshCurrentView();
                     } if (drawTime) {
                         TUI.DrawTime();
-                    } if (drawVisualizer) {
+                    } if (drawVisualizer && Preferences.isVisualizer) {
                         TUI.DrawVisualizer();
                     }
                 }
@@ -559,7 +559,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
                 if (playerView == "default" || playerView == "all") {
                     Thread.Sleep(1);
                 } else
-                    Thread.Sleep(300);
+                    Thread.Sleep(100);
 
             }
         }
@@ -570,7 +570,7 @@ System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
             while (true)
             {
                 if (Preferences.isVisualizer) {
-                    if (state == MainStates.playing || state == MainStates.play) {
+                    if (playerView == "default" || playerView == "all") {
                         canVisualize = true;
                     } else {
                         canVisualize = false;

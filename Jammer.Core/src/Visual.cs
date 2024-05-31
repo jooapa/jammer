@@ -9,7 +9,7 @@ namespace Jammer {
     public class Visual {
         public static string FileContent = @"[Audio Visualizer]
 ; Refresh time in milliseconds
-RefreshTime = 10
+RefreshTime = 35
 ; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
 UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
 ; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿

@@ -301,6 +301,7 @@ namespace Jammer
                         case "ToggleVisualizer": // toggle visualizer
                             Preferences.isVisualizer = !Preferences.isVisualizer;
                             Preferences.SaveSettings();
+                            drawWhole = true;
                             break;
                         case "LoadVisualizer":
                             Visual.Read();
@@ -463,7 +464,6 @@ namespace Jammer
                     }
             
                 #if CLI_UI
-                // TUI.RefreshCurrentView();
                 #endif
                 #if AVALONIA_UI
                 // TODO AVALONIA_UI
