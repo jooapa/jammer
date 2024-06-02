@@ -81,6 +81,8 @@ System.Diagnostics.Debug.WriteLine("CLIUI");
 System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
 #endif
             Utils.songs = args;
+            // Theme init
+            Themes.Init();
             Debug.dprint("Run");
             if (args.Length > 0) {
                 // NOTE(ra) If debug switch is defined remove it from the args list

@@ -20,6 +20,7 @@ namespace Jammer
         public static string songsPath = GetSongsPath();
         public static bool isMediaButtons = GetIsMediaButtons();
         public static bool isVisualizer = GetIsVisualizer();
+        public static string theme = "Default";
 
 
         static public void CheckJammerFolderExists()
@@ -74,6 +75,7 @@ namespace Jammer
             settings.localeLanguage = localeLanguage;
             settings.songsPath = songsPath;
             settings.isVisualizer = isVisualizer;
+            settings.theme = theme;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -345,6 +347,7 @@ namespace Jammer
             public string? localeLanguage { get; set; }
             public string? songsPath { get; set; }
             public bool isVisualizer { get; set; }
+            public string? theme { get; set; }
         }
     }
 }

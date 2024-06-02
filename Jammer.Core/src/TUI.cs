@@ -54,6 +54,7 @@ namespace Jammer {
                 songsTable.Border = TableBorder.Rounded;
                 
                 mainTable.Border = TableBorder.Rounded;
+                mainTable.BorderColor(new Color(255, 255, 255));
 
                 // add \n to the end of the maintable until the end of the console by height
                 int tableRowCount=0;
@@ -103,7 +104,6 @@ namespace Jammer {
                 
                 mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
 
-                AnsiConsole.Clear();
                 AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.Write(mainTable);
             }

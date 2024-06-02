@@ -213,6 +213,7 @@ namespace Jammer
                         case "Shuffle": // suffle or save
                             Preferences.isShuffle = !Preferences.isShuffle;
                             Preferences.SaveSettings();
+                            drawTime = true;
                             break;
                         case "SaveAsPlaylist":
                             #if CLI_UI
@@ -241,10 +242,12 @@ namespace Jammer
                         case "Loop": // loop
                             Preferences.isLoop = !Preferences.isLoop;
                             Preferences.SaveSettings();
+                            drawTime = true;
                             break;
                         case "Mute": // mute
                             Play.ToggleMute();
                             Preferences.SaveSettings();
+                            drawTime = true;
                             break;
                         case "ShowHidePlaylist": // show all view
                             if (playerView == "default")
