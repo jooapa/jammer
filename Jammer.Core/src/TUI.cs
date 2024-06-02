@@ -47,14 +47,10 @@ namespace Jammer {
                 // if (Start.playerView == "default" || Start.playerView == "fake") {
                 //     AnsiConsole.Cursor.SetPosition(0, 0);
                 // }
-
+                
                 // render maintable with tables in it
                 mainTable.AddColumns(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
-                songsTable.Border = TableBorder.Rounded;
-                
-                mainTable.Border = TableBorder.Rounded;
-                mainTable.BorderColor(new Color(255, 255, 255));
 
                 // add \n to the end of the maintable until the end of the console by height
                 int tableRowCount=0;
@@ -92,8 +88,9 @@ namespace Jammer {
 
                 var helpTable = new Table
                 {
-                    Border = TableBorder.Rounded,
-                };
+                    // Border = Themes.bStyle(Themes.CurrentTheme.GeneralHelp.BorderStyle),
+                }; // TODO fix this is not the "help" table
+                // helpTable.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralHelp.BorderColor));
                 helpTable.AddColumn($"[red]{Keybindings.Help}[/] {Locale.Player.ForHelp} | [yellow]{Keybindings.Settings}[/] {Locale.Help.ForSettings} | [green]{Keybindings.ShowHidePlaylist}[/] {Locale.Player.ForPlaylist}");
                 mainTable.AddRow(helpTable);
 
@@ -135,8 +132,9 @@ namespace Jammer {
         }
             // "Components" of the Funcs
         static public void UIComponent_Controls(Table table) {
-            table.Border = TableBorder.Rounded;
-            table.Border = TableBorder.Simple;
+            table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
+
             table.Alignment(Justify.Left);
             table.AddColumn(Locale.Player.Looping);
             table.AddColumn(Locale.Player.Shuffle);
@@ -197,7 +195,8 @@ namespace Jammer {
         }
 
         public static Table UIComponent_Time(Table table, int? length = 100) {
-            table.Border = TableBorder.Rounded;
+            table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
             table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, length));
             return table;
         }

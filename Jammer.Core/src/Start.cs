@@ -52,37 +52,38 @@ namespace Jammer
         //
         // Run
         //
+
         public static void Run(string[] args)
         {
+            #if AVALONIA_UI
+                System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
+            #elif CLI_UI
+                System.Diagnostics.Debug.WriteLine("CLI_UI");
+            #else
+                Console.WriteLine("No UI defined. Exiting.");
+                System.Diagnostics.Debug.WriteLine("No UI defined. Exiting.");
+                Environment.Exit(1);
+            #endif
 
-#if AVALONIA_UI
-System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
-#elif CLI_UI
-System.Diagnostics.Debug.WriteLine("CLI_UI");
-#else
-            Console.WriteLine("No UI defined. Exiting.");
-            System.Diagnostics.Debug.WriteLine("No UI defined. Exiting.");
-            Environment.Exit(1);
-#endif
 
+            #if CLI_UI
+                try{
+                    Console.OutputEncoding = System.Text.Encoding.UTF8;
+                } catch (System.Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+            #endif
 
-#if CLI_UI
-            try{
-                Console.OutputEncoding = System.Text.Encoding.UTF8;
-            } catch (System.Exception e) {
-                Console.WriteLine(e.Message);
-            }
-#endif
-
-#if CLI_UI
-System.Diagnostics.Debug.WriteLine("CLIUI");
-#endif
-#if AVALONIA_UI
-System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
-#endif
+            #if CLI_UI
+                System.Diagnostics.Debug.WriteLine("CLIUI");
+            #endif
+            #if AVALONIA_UI
+                System.Diagnostics.Debug.WriteLine("AVALONIA_UI");
+            #endif
             Utils.songs = args;
             // Theme init
             Themes.Init();
+
             Debug.dprint("Run");
             if (args.Length > 0) {
                 // NOTE(ra) If debug switch is defined remove it from the args list

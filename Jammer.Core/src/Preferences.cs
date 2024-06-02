@@ -37,11 +37,7 @@ namespace Jammer
 
 
             // check if settings.json has every data
-            string settingsPath = Path.Combine(Utils.JammerPath, "settings.json");
-            if (!File.Exists(settingsPath))
-            {
-                SaveSettings();
-            }
+            SaveSettings();
 
             // Effects.ini
             Effects.WriteEffects();

@@ -26,6 +26,8 @@ namespace Jammer {
         ""SuccessColor"": ""green"",
         ""InfoColor"": ""green"",
         ""PlaylistNameColor"": ""lightblue"",
+        ""MiniHelpBorderStyle"": ""Rounded"",
+        ""MiniHelpBorderColor"": [255,255,255],
         ""HelpLetterColor"": ""red"",
         ""ForHelpTextColor"": ""white"",
         ""SettingsLetterColor"": ""yellow"",
@@ -34,15 +36,15 @@ namespace Jammer {
         ""ForPlaylistTextColor"": ""white"",
         ""VisualizerColor"": ""white""
     },
-    ""General Playlist"": {
+    ""GeneralPlaylist"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""CurrentSongColor"": ""green"",
         ""PreviousSongColor"": ""grey"",
         ""NextSongColor"": ""grey""
     },
-    ""Whole Playlist"": {
-        ""BorderColor"": ""(255,255,255)"",
+    ""WholePlaylist"": {
+        ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""ChoosingColor"": ""yellow""
     },
@@ -68,7 +70,7 @@ namespace Jammer {
         ""TimebarColor"": ""white"",
         ""TimebarLetter"": ""█""
     },
-    ""General Help"": {
+    ""GeneralHelp"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""ControlTextColor"": ""white"",
@@ -77,7 +79,7 @@ namespace Jammer {
         ""ModifierTextColor_2"": ""yellow"", // TODO
         ""ModifierTextColor_3"": ""red"" // TODO
     },
-    ""General Settings"": {
+    ""GeneralSettings"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""SettingTextColor"": ""white"",
@@ -85,7 +87,7 @@ namespace Jammer {
         ""SettingChangeValueColor"": ""white"",
         ""SettingChangeValueValueColor"": ""green""
     },
-    ""Edit Keybinds"": {
+    ""EditKeybinds"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""DescriptionColor"": ""white"",
@@ -93,7 +95,7 @@ namespace Jammer {
         ""CurrentKeyColor"": ""red"",
         ""EnteredKeyColor"": ""lightblue""
     },
-    ""Language Change"": {
+    ""LanguageChange"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""TextColor"": ""white"",
@@ -101,28 +103,26 @@ namespace Jammer {
     }
 }";
 
-        public static Theme CurrentTheme = new() {};
-
+        public static Theme CurrentTheme { get; private set; }
+        static string themePath = Path.Combine(Utils.JammerPath, "themes");
         public static void Init() {
-            if (!Directory.Exists(Path.Combine(Utils.JammerPath, "themes"))) {
-                Directory.CreateDirectory(Path.Combine(Utils.JammerPath, "themes"));
-            }
-            if (!File.Exists(Path.Combine(Utils.JammerPath, "themes", "Default.json"))) {
-                File.WriteAllText(Path.Combine(Utils.JammerPath, "themes", "Default.json"), fileContent);
-            }
+            CreateTheme("Default");            
 
             if (!SetThemeUsingPreferences()) {
                 SetTheme("Default");
             }
         }
-        public static void CreateTheme(string themeName = "Default") {
-            string json = JsonConvert.SerializeObject(CurrentTheme, Formatting.Indented);
-            string filePath = Path.Combine(Utils.JammerPath, "themes", themeName + ".json");
-            File.WriteAllText(filePath, json);
+        public static void CreateTheme(string themeName) {
+            if (!Directory.Exists(themePath)) {
+                Directory.CreateDirectory(themePath);
+            }
+            if (!File.Exists(Path.Combine(themePath, themeName + ".json"))) {
+                File.WriteAllText(Path.Combine(themePath, themeName + ".json"), fileContent);
+            }
         }
 
         public static bool SetTheme(string themeName = "Default") {
-            string path = Path.Combine(Utils.JammerPath, "themes", themeName + ".json");
+            string path = Path.Combine(themePath, themeName + ".json");
             if (!File.Exists(path)) {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] does not exist", themeName);
                 return false;
@@ -130,24 +130,79 @@ namespace Jammer {
             string json = File.ReadAllText(path);
             string jsonWithoutComments = Regex.Replace(json, @"//.*$", "", RegexOptions.Multiline);
             var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
+
             if (theme == null) {
-                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] is invalid", themeName);
+                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] is not valid", themeName);
                 return false;
             }
-
+            Preferences.theme = themeName;
             CurrentTheme = theme;
             return true;
         }
 
         public static bool SetThemeUsingPreferences() {
             string themeName = Preferences.theme;
-            
+
             if (themeName == null) {
                 return false;
             }
+
+            if (SetTheme(themeName)) {
+                return true;
+            }
+
+            Preferences.theme = "";
+            return false;
+        }
+
+        public static string sColor(string str, string color) {
+            return $"[{color}]{str}[/]";
+        }
+
+        public static Color bColor(int[] color) {
+            return new Color((byte)color[0], (byte)color[1], (byte)color[2]);
+        }
+
+        public static TableBorder bStyle(string style) {
+            // to lowercase
+            style = style.ToLower();
             
-            return SetTheme(themeName);
-            
+            if (style == "ascii")
+                return TableBorder.Ascii;
+            if (style == "ascii2")
+                return TableBorder.Ascii2;
+            if (style == "asciidoublehead")
+                return TableBorder.AsciiDoubleHead;
+            if (style == "horizontal")
+                return TableBorder.Horizontal;
+            if (style == "simple")
+                return TableBorder.Simple;
+            if (style == "simpleheavy")
+                return TableBorder.SimpleHeavy;
+            if (style == "minimal")
+                return TableBorder.Minimal;
+            if (style == "minimalheavyhead")
+                return TableBorder.MinimalHeavyHead;
+            if (style == "minimaldoublehead")
+                return TableBorder.MinimalDoubleHead;
+            if (style == "square")
+                return TableBorder.Square;
+            if (style == "rounded")
+                return TableBorder.Rounded;
+            if (style == "heavy")
+                return TableBorder.Heavy;
+            if (style == "heavyedge")
+                return TableBorder.HeavyEdge;
+            if (style == "heavyhead")
+                return TableBorder.HeavyHead;
+            if (style == "double")
+                return TableBorder.Double;
+            if (style == "doubleedge")
+                return TableBorder.DoubleEdge;
+            if (style == "markdown")
+                return TableBorder.Markdown;
+
+            throw new Exception("Invalid Border Style");
         }
 
         public class Theme
@@ -169,6 +224,8 @@ namespace Jammer {
             public string? SuccessColor { get; set; }
             public string? InfoColor { get; set; }
             public string? PlaylistNameColor { get; set; }
+            public string? MiniHelpBorderStyle { get; set; }
+            public int[]? MiniHelpBorderColor { get; set; }
             public string? HelpLetterColor { get; set; }
             public string? ForHelpTextColor { get; set; }
             public string? SettingsLetterColor { get; set; }
@@ -189,7 +246,7 @@ namespace Jammer {
 
         public class WholePlaylistTheme
         {
-            public string? BorderColor { get; set; }
+            public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
             public string? ChoosingColor { get; set; }
         }
