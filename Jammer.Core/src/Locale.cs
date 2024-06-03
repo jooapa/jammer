@@ -323,6 +323,7 @@ namespace Jammer{
             public static string RedownloadCurrentSong = CheckValueLocale("EditKeysTexts", "RedownloadCurrentSong", "Redownload current song");
             public static string EditKeybindings = CheckValueLocale("EditKeysTexts", "EditKeybindings", "Edit keybindings");
             public static string ChangeLanguage = CheckValueLocale("EditKeysTexts", "ChangeLanguage", "Change language");
+            public static string ChangeTheme = CheckValueLocale("EditKeysTexts", "ChangeTheme", "Change theme");
             public static string PlayRandomSong = CheckValueLocale("EditKeysTexts", "PlayRandomSong", "Play random song");
             public static string PlaylistViewScrollup = CheckValueLocale("EditKeysTexts", "PlaylistViewScrollup", "Scroll up in tables");
             public static string PlaylistViewScrolldown = CheckValueLocale("EditKeysTexts", "PlaylistViewScrolldown", "Scroll down in tables");

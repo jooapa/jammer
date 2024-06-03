@@ -49,7 +49,7 @@ namespace Jammer {
                 // }
                 
                 // render maintable with tables in it
-                mainTable.AddColumns(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8)).Width(Start.consoleWidth);
+                mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
 
                 // add \n to the end of the maintable until the end of the console by height

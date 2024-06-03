@@ -542,12 +542,12 @@ namespace Jammer
 
                 if (playerView == "default" || playerView == "all")
                 {
-                    if (drawWhole) {
-                        TUI.RefreshCurrentView();
+                    if (drawVisualizer && Preferences.isVisualizer) {
+                        TUI.DrawVisualizer();
                     } if (drawTime) {
                         TUI.DrawTime();
-                    } if (drawVisualizer && Preferences.isVisualizer) {
-                        TUI.DrawVisualizer();
+                    } if (drawWhole) {
+                        TUI.RefreshCurrentView();
                     }
                 }
                 else {

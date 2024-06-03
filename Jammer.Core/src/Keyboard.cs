@@ -387,9 +387,11 @@ namespace Jammer
                             // TODO AVALONIA_UI
                             #endif
                             Console.ReadKey(true);
+                            drawWhole = true;
                             break;
                         case "DeleteCurrentSong":
                             Play.DeleteSong(Utils.currentSongIndex, false);
+                            drawWhole = true;
                             break;
                         
                         // Case For A
@@ -454,6 +456,32 @@ namespace Jammer
                             {
                                 playerView = "default";
                             }
+                            break;
+                        case "ChangeTheme":
+                            AnsiConsole.Clear();
+                            string[] themes = Themes.GetAllThemes();
+                            int chosen = Message.MultiSelect(themes, "Choose a theme", "Choose a theme", false);
+                            if (chosen == -1)
+                            {
+                                break;
+                            }
+
+                            if (chosen == themes.Length - 1)
+                            {
+                                AnsiConsole.Clear();
+                                string themeName = Message.Input("Enter a theme name", "Enter a theme name");
+                                if (themeName == "")
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
+                                Themes.CreateTheme(themeName);
+                                Message.Input("Go edit the theme file", "Theme file created in the jammer/themes folder");
+                            }
+
+                            Preferences.theme = themes[chosen];
+                            Preferences.SaveSettings();
+                            drawWhole = true;
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();

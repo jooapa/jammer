@@ -20,7 +20,7 @@ namespace Jammer
         public static string songsPath = GetSongsPath();
         public static bool isMediaButtons = GetIsMediaButtons();
         public static bool isVisualizer = GetIsVisualizer();
-        public static string theme = "Default";
+        public static string theme = GetTheme();
 
 
         static public void CheckJammerFolderExists()
@@ -108,6 +108,21 @@ namespace Jammer
             else
             {
                 return false;
+            }
+        }
+
+        static public string GetTheme()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.theme ?? "light";
+            }
+            else
+            {
+                return "Jammer Default";
             }
         }
 
