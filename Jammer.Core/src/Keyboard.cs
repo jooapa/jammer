@@ -477,10 +477,15 @@ namespace Jammer
                                 }
                                 Themes.CreateTheme(themeName);
                                 Message.Input("Go edit the theme file", "Theme file created in the jammer/themes folder");
+
+                                Preferences.theme = themeName;
+                            }
+                            else {
+                                Preferences.theme = themes[chosen];
                             }
 
-                            Preferences.theme = themes[chosen];
                             Preferences.SaveSettings();
+                            Themes.SetTheme(Preferences.theme);
                             drawWhole = true;
                             break;
                         case "PlayRandomSong":

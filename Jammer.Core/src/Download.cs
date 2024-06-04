@@ -61,7 +61,7 @@ namespace Jammer {
 
                     var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
-
+                    
                     using (var stream = await response.Content.ReadAsStreamAsync())
                     using (var fileStream = new FileStream(songPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                     {

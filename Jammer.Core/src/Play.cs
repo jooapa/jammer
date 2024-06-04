@@ -298,6 +298,7 @@ namespace Jammer
             {
                 Bass.StreamFree(Utils.currentMusic);    
             }
+            Start.drawWhole = true;
         }
         public static void NextSong()
         {

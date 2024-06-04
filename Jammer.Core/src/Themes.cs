@@ -34,14 +34,16 @@ namespace Jammer {
         ""ForSettingsTextColor"": ""white"",
         ""PlaylistLetterColor"": ""green"",
         ""ForPlaylistTextColor"": ""white"",
-        ""VisualizerColor"": ""white""
+        ""VisualizerColor"": ""white"",
+        ""RandomTextColor"": ""white""
     },
     ""GeneralPlaylist"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
         ""CurrentSongColor"": ""green"",
         ""PreviousSongColor"": ""grey"",
-        ""NextSongColor"": ""grey""
+        ""NextSongColor"": ""grey"",
+        ""NoneSongColor"": ""grey""
     },
     ""WholePlaylist"": {
         ""BorderColor"": [255,255,255],
@@ -55,16 +57,21 @@ namespace Jammer {
         ""PlayingLetterLetter"": ""❚❚"",
         ""PausedLetterColor"": ""white"",
         ""PausedLetterLetter"": ""▶"",
+        ""StoppedLetterColor"": ""white"",
+        ""StoppedLetterLetter"": ""■"",
+        ""NextLetterColor"": ""white"",
+        ""NextLetterLetter"": ""▶▶"",
+        ""PreviousLetterColor"": ""white"",
+        ""PreviousLetterLetter"": ""◀◀"",
         ""ShuffleLetterOffColor"": ""red"",
-        ""ShuffleOffLetter"": ""⇌"",
+        ""ShuffleOffLetter"": ""⇌ "",
         ""ShuffleLetterOnColor"": ""green"",
-        ""ShuffleOnLetter"": ""⇌"",
+        ""ShuffleOnLetter"": ""⇌ "",
         ""LoopLetterOffColor"": ""red"",
-        ""LoopOffLetter"": ""↻"",
+        ""LoopOffLetter"": "" ↻  "",
         ""LoopLetterOnColor"": ""green"",
-        ""LoopOnLetter"": ""⟳"",
-        ""CurrentTimeColor"": ""white"",
-        ""TotalTimeColor"": ""white"",
+        ""LoopOnLetter"": "" ⟳  "",
+        ""TimeColor"": ""white"",
         ""VolumeColorNotMuted"": ""white"",
         ""VolumeColorMuted"": ""grey strikethrough"",
         ""TimebarColor"": ""white"",
@@ -122,7 +129,6 @@ namespace Jammer {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]"+Preferences.GetTheme()+"[/] does not exist");
                 AnsiConsole.MarkupLine("[red]Error:[/] Setting theme to [yellow]Jammer Default[/]");
                 SetDefaultTheme();
-                Console.ReadKey(true);
             }
             if (Preferences.theme != "Jammer Default") {
                 AddAllMissingPropertiesInJsonFileIfMissing(Path.Combine(themePath, Preferences.GetTheme() + ".json"));
@@ -280,7 +286,9 @@ namespace Jammer {
                 return TableBorder.DoubleEdge;
             if (style == "markdown")
                 return TableBorder.Markdown;
-
+            if (style == "none")
+                return TableBorder.None;
+                
             throw new Exception("Invalid Border Style");
         }
 
@@ -313,6 +321,7 @@ namespace Jammer {
             public string? PlaylistLetterColor { get; set; }
             public string? ForPlaylistTextColor { get; set; }
             public string? VisualizerColor { get; set; }
+            public string? RandomTextColor { get; set; }
         }
 
         public class GeneralPlaylistTheme
@@ -322,6 +331,7 @@ namespace Jammer {
             public string? CurrentSongColor { get; set; }
             public string? PreviousSongColor { get; set; }
             public string? NextSongColor { get; set; }
+            public string? NoneSongColor { get; set; }
         }
 
         public class WholePlaylistTheme
@@ -339,6 +349,12 @@ namespace Jammer {
             public string? PlayingLetterLetter { get; set; }
             public string? PausedLetterColor { get; set; }
             public string? PausedLetterLetter { get; set; }
+            public string? StoppedLetterColor { get; set; }
+            public string? StoppedLetterLetter { get; set; }
+            public string? NextLetterColor { get; set; }
+            public string? NextLetterLetter { get; set; }
+            public string? PreviousLetterColor { get; set; }
+            public string? PreviousLetterLetter { get; set; }
             public string? ShuffleLetterOffColor { get; set; }
             public string? ShuffleOffLetter { get; set; }
             public string? ShuffleLetterOnColor { get; set; }
@@ -347,8 +363,7 @@ namespace Jammer {
             public string? LoopOffLetter { get; set; }
             public string? LoopLetterOnColor { get; set; }
             public string? LoopOnLetter { get; set; }
-            public string? CurrentTimeColor { get; set; }
-            public string? TotalTimeColor { get; set; }
+            public string? TimeColor { get; set; }
             public string? VolumeColorNotMuted { get; set; }
             public string? VolumeColorMuted { get; set; }
             public string? TimebarColor { get; set; }

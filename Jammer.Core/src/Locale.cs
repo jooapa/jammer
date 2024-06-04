@@ -253,9 +253,9 @@ namespace Jammer{
             public static string ErrorLoadingDescription = CheckValueLocale("OutsideItems", "ErrorLoadingDescription", "Error loading description");
             public static string CurrentPlaylist = CheckValueLocale("OutsideItems", "CurrentPlaylist", "Current playlist");
             public static string CurrentQueue = CheckValueLocale("OutsideItems", "CurrentQueue", "Current queue");
-            public static string CurrPlaylistView = CheckValueLocale("OutsideItems", "CurrPlaylistView", "Current playlist view. Move with");
-            public static string PlaySongWith = CheckValueLocale("OutsideItems", "PlaySongWith", "Play song with");
-            public static string DeleteSongWith = CheckValueLocale("OutsideItems", "DeleteSongWith", "Delete song with");
+            public static string CurrPlaylistView = CheckValueLocale("OutsideItems", "CurrPlaylistView", "Move with");
+            public static string PlaySongWith = CheckValueLocale("OutsideItems", "PlaySongWith", "Play with");
+            public static string DeleteSongWith = CheckValueLocale("OutsideItems", "DeleteSongWith", "Delete with");
             public static string AddToQueue = CheckValueLocale("OutsideItems", "AddToQueue", "Add to queue with");
             public static string DownloadErrorSoundcloud = CheckValueLocale("OutsideItems", "DownloadErrorSoundcloud", "Soundcloud download error");
         }

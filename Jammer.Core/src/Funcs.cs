@@ -1,4 +1,6 @@
 using Spectre.Console;
+using System.Globalization;
+using System.Linq;
 using System.IO;
 
 namespace Jammer {
@@ -56,9 +58,15 @@ namespace Jammer {
             return Start.Sanitize(results.ToArray());
         }
 
-        public static string GetSongWithdots(string song, int length = 80) {
-            if (song.Length > length) {
-                song = string.Concat("...", song.AsSpan(song.Length - length));
+        public static string GetSongWithDots(string song, int length = 80) {
+            var textElementEnumerator = StringInfo.GetTextElementEnumerator(song);
+            var textElements = new List<string>();
+            while (textElementEnumerator.MoveNext()) {
+                textElements.Add(textElementEnumerator.GetTextElement());
+            }
+
+            if (textElements.Count > length) {
+                song = "..." + string.Concat(textElements.Skip(textElements.Count - length));
             }
             return song;
         }
@@ -67,42 +75,51 @@ namespace Jammer {
             string prevSong;
             string nextSong;
             string currentSong;
-            int songLength = Start.consoleWidth - 23;
+            int songLength = Start.consoleWidth - 26;
             if (Utils.songs.Length == 0)
             {
                 currentSong = $"[grey]{Locale.Player.Current}  : -[/]";
             }
             else
             {
-                currentSong = $"[green]{Locale.Player.Current}  : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex]), songLength), "get") + "[/]";
+                currentSong = Locale.Player.Current + "  : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex]), songLength), "get");
+                currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
             }
 
             if (Utils.currentSongIndex > 0)
             {
-                prevSong = $"[grey]{Locale.Player.Previos} : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex - 1]), songLength), "get") + "[/]";
+                prevSong = Locale.Player.Previos + " : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex - 1]), songLength), "get");
+                prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor);
             }
             else
             {
-                prevSong = $"[grey]{Locale.Player.Previos} : -[/]";
+                prevSong = $"{Locale.Player.Previos} : -";
+                prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }
 
 
             if (Utils.currentSongIndex < Utils.songs.Length - 1)
             {
-                nextSong = $"[grey]{Locale.Player.Next}     : " + Play.Title(GetSongWithdots(Start.Sanitize(Utils.songs[Utils.currentSongIndex + 1]), songLength), "get") + "[/]";
+                nextSong = $"{Locale.Player.Next}     : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex + 1]), songLength), "get");
+                nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NextSongColor);
             }
             else
             {
-                nextSong = $"[grey]{Locale.Player.Next}     : -[/]";
+                nextSong = $"{Locale.Player.Next}     : -";
+                nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }      
             
             return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
         }
 
-        public static string CalculateTime(double time) {
+        public static string CalculateTime(double time, bool getColor) {
             int minutes = (int)time / 60;
             int seconds = (int)time % 60;
             string timeString = $"{minutes}:{seconds:D2}";
+            
+            if (getColor) {
+                return Themes.sColor(timeString, Themes.CurrentTheme.Time.TimeColor);
+            }
             return timeString;
         }
 

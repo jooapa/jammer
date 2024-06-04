@@ -421,7 +421,7 @@ namespace Jammer
 
             while (LoopRunning)
             {
-                // AnsiConsole.Cursor.Hide();
+                AnsiConsole.Cursor.Hide();
                 if (Utils.songs.Length != 0)
                 {
                     // if the first song is "" then there are more songs

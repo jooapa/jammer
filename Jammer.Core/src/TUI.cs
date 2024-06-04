@@ -25,7 +25,6 @@ namespace Jammer {
                 }
                 var mainTable = new Table();
                 var songsTable = new Table();
-                var controlsTable = new Table();
                 var timeTable = new Table();
 
                 if (Start.playerView == "default") {
@@ -34,8 +33,6 @@ namespace Jammer {
                 else if (Start.playerView == "all") {
                     UIComponent_Songs(songsTable);
                 }
-
-                UIComponent_Controls(controlsTable);
 
                 if (cls) {
                     if (Start.playerView != "all") {
@@ -49,7 +46,7 @@ namespace Jammer {
                 // }
                 
                 // render maintable with tables in it
-                mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithdots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
+                mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(Utils.currentSong), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
 
                 // add \n to the end of the maintable until the end of the console by height
@@ -124,7 +121,7 @@ namespace Jammer {
 
         static public void DrawTime() {
             AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
-            AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, Start.consoleWidth - 20));
+            AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength));
         }
 
         static public void ClearScreen() {
@@ -135,7 +132,7 @@ namespace Jammer {
             table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
 
-            table.Alignment(Justify.Left);
+            table.Alignment(Justify.Center);
             table.AddColumn(Locale.Player.Looping);
             table.AddColumn(Locale.Player.Shuffle);
             table.AddColumn(Locale.Player.Volume);
@@ -143,32 +140,50 @@ namespace Jammer {
             
             // TODO ADD STATE TO LOCALE
             table.AddRow(new Markup(Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(), 
-                        new Markup(Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(), 
-                        new Markup(volume).Centered());
+                        new Markup(Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered());
         }
 
-        static public string GetStateLogo() {
+        static public string GetStateLogo(bool getColor) {
             string state = Start.state.ToString();
             if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                state = "❚❚";
+                if (getColor) 
+                    state = Themes.sColor(Themes.CurrentTheme.Time.PlayingLetterLetter, Themes.CurrentTheme.Time.PlayingLetterColor);
+                else 
+                    state = Themes.CurrentTheme.Time.PlayingLetterLetter;
             }
             else if (Start.state == MainStates.idle || Start.state == MainStates.pause) {
-                state = "▶ ";
+                if (getColor) 
+                    state = Themes.sColor(Themes.CurrentTheme.Time.PausedLetterLetter, Themes.CurrentTheme.Time.PausedLetterColor);
+                else
+                    state = Themes.CurrentTheme.Time.PausedLetterLetter;
             }
             else if (Start.state == MainStates.stop) {
-                state = "■";
+                if (getColor) 
+                    state = Themes.sColor(Themes.CurrentTheme.Time.StoppedLetterLetter, Themes.CurrentTheme.Time.StoppedLetterColor);
+                else
+                    state = Themes.CurrentTheme.Time.StoppedLetterLetter;
             }
             else if (Start.state == MainStates.next) {
-                state = "▶▶";
+                if (getColor) 
+                    state = Themes.sColor(Themes.CurrentTheme.Time.NextLetterLetter, Themes.CurrentTheme.Time.NextLetterColor);
+                else
+                    state = Themes.CurrentTheme.Time.NextLetterLetter;
             }
             else if (Start.state == MainStates.previous) {
-                state = "◀◀";
+                if (getColor) 
+                    state = Themes.sColor(Themes.CurrentTheme.Time.PreviousLetterLetter, Themes.CurrentTheme.Time.PreviousLetterColor);
+                else
+                    state = Themes.CurrentTheme.Time.PreviousLetterLetter;                    
             }
+
+            state += " ";
 
             return state;
         }
         
         static public void UIComponent_Songs(Table table) {
+            table.Border = Themes.bStyle(Themes.CurrentTheme.WholePlaylist.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.WholePlaylist.BorderColor));
             // AnsiConsole.Clear();
             string[] queueLines = Funcs.GetAllSongsQueue();
             string[] lines = Funcs.GetAllSongs();
@@ -176,7 +191,8 @@ namespace Jammer {
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Locale.OutsideItems.CurrentPlaylist);
             } else {
-                table.AddColumn(Locale.OutsideItems.CurrentPlaylist + " [cyan]" + Utils.currentPlaylist + "[/]");
+                table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
+                    + Themes.sColor(Utils.currentPlaylist, Themes.CurrentTheme.Playlist.PlaylistNameColor));
             }
 
             table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -186,10 +202,14 @@ namespace Jammer {
         }
 
         static public void UIComponent_Normal(Table table) {
+            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralPlaylist.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralPlaylist.BorderColor));
+
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Funcs.GetPrevCurrentNextSong());
             } else {
-                table.AddColumn($"{Locale.Player.Playlist} [cyan]" + Utils.currentPlaylist + "[/]");
+                table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
+                    + Themes.sColor(Utils.currentPlaylist, Themes.CurrentTheme.Playlist.PlaylistNameColor));
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
         }
@@ -197,28 +217,39 @@ namespace Jammer {
         public static Table UIComponent_Time(Table table, int? length = 100) {
             table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
-            table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength, length));
+            table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength));
             return table;
         }
 
-        public static string ProgressBar(double value, double max, int? length = 100) {
-            if (length == null) {
-                length = 100;
-            }
+        public static string ProgressBar(double value, double max) {
+            // if (length == null) {
+            //     length = 100;
+            // }
 
-            string volumeMark = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
-            string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%" : Math.Round(Preferences.volume * 100) + "%";
+            int length = Start.consoleWidth;
 
-            string shuffleMark = Preferences.isShuffle ? "[green]" + "⇌" + "[/]" : "[red]" + "⇌" + "[/]";
-            string loopMark = Preferences.isLoop ? "[green]" + "⟳" + "[/]" : "[red]" + "↻" + "[/]";
+            string volumeMark = Preferences.isMuted ? Themes.sColor(Math.Round(Preferences.oldVolume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorMuted) : Themes.sColor(Math.Round(Preferences.volume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorNotMuted);
+            string volumeString = Math.Round(Preferences.volume * 100) + "%";
+            string shuffleMark = Preferences.isShuffle ? Themes.sColor(Themes.CurrentTheme.Time.ShuffleOnLetter, Themes.CurrentTheme.Time.ShuffleLetterOnColor) : Themes.sColor(Themes.CurrentTheme.Time.ShuffleOffLetter, Themes.CurrentTheme.Time.ShuffleLetterOffColor);
+            string shuffleString =
+                Preferences.isShuffle ? 
+                    Themes.CurrentTheme.Time.ShuffleOnLetter :
+                    Themes.CurrentTheme.Time.ShuffleOffLetter;
 
-            int progress = (int)(value / max * length);
-            string progressBar = GetStateLogo() + " " + shuffleMark + "  " + loopMark + "   " +
-                Funcs.CalculateTime(value) + " |";
+            string loopMark = Preferences.isLoop ? Themes.sColor(Themes.CurrentTheme.Time.LoopOnLetter, Themes.CurrentTheme.Time.LoopLetterOnColor) : Themes.sColor(Themes.CurrentTheme.Time.LoopOffLetter, Themes.CurrentTheme.Time.LoopLetterOffColor);
+            string loopString =
+                Preferences.isLoop ? 
+                    Themes.CurrentTheme.Time.LoopOnLetter :
+                    Themes.CurrentTheme.Time.LoopOffLetter;
+            
+            string progressBar = GetStateLogo(true) + shuffleMark + loopMark +
+                Funcs.CalculateTime(value, true) + " |";
             // length is modified also by the time string
-            length -= Funcs.CalculateTime(value).Length;
-            length -= 2;
-            length -= 4;
+            length -= GetStateLogo(false).Length 
+                + shuffleString.Length 
+                + loopString.Length 
+                + Funcs.CalculateTime(value, false).Length 
+                + 2; // 2 is for the " |"
 
             string extraVolume;
             if (volumeString.Length >= 4) {
@@ -231,18 +262,19 @@ namespace Jammer {
 
             length -= extraVolume.Length;
 
+            int progress = (int)(value / max * length);
             // length is modified also by the volume string
             for (int i = 0; i < length; i++) {
                 if (i < progress) {
-                    progressBar += "█";
+                    progressBar += Themes.CurrentTheme.Time.TimebarLetter;
                 } else {
                     progressBar += " ";
                 }
 
             }
 
-
-            progressBar += "| " + Funcs.CalculateTime(max) + extraVolume;
+            progressBar = Themes.sColor(progressBar, Themes.CurrentTheme.Time.TimebarColor);
+            progressBar += "| " + Funcs.CalculateTime(max, true) + extraVolume;
 
             return progressBar;
         }
