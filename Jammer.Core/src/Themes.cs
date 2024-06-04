@@ -21,6 +21,8 @@ namespace Jammer {
 
 {
     ""Playlist"": {
+        ""BorderStyle"": ""Rounded"",
+        ""BorderColor"": [255,255,255],
         ""PathColor"": ""white"",
         ""ErrorColor"": ""red"",
         ""SuccessColor"": ""green"",
@@ -32,6 +34,7 @@ namespace Jammer {
         ""ForHelpTextColor"": ""white"",
         ""SettingsLetterColor"": ""yellow"",
         ""ForSettingsTextColor"": ""white"",
+        ""ForSeperatorTextColor"": ""white"",
         ""PlaylistLetterColor"": ""green"",
         ""ForPlaylistTextColor"": ""white"",
         ""VisualizerColor"": ""white"",
@@ -48,7 +51,9 @@ namespace Jammer {
     ""WholePlaylist"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""ChoosingColor"": ""yellow""
+        ""NormalSongColor"": ""white"",
+        ""ChoosingColor"": ""yellow"",
+        ""CurrentSongColor"": ""green""
     },
     ""Time"": {
         ""BorderColor"": [255,255,255],
@@ -80,11 +85,12 @@ namespace Jammer {
     ""GeneralHelp"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
+        ""HeaderTextColor"": ""white bold"",
         ""ControlTextColor"": ""white"",
         ""DescriptionTextColor"": ""white"",
         ""ModifierTextColor_1"": ""green"",
-        ""ModifierTextColor_2"": ""yellow"", // TODO
-        ""ModifierTextColor_3"": ""red"" // TODO
+        ""ModifierTextColor_2"": ""yellow"",
+        ""ModifierTextColor_3"": ""red""
     },
     ""GeneralSettings"": {
         ""BorderColor"": [255,255,255],
@@ -307,6 +313,8 @@ namespace Jammer {
 
         public class PlaylistTheme
         {
+            public string? BorderStyle { get; set; }
+            public int[]? BorderColor { get; set; }
             public string? PathColor { get; set; }
             public string? ErrorColor { get; set; }
             public string? SuccessColor { get; set; }
@@ -320,6 +328,7 @@ namespace Jammer {
             public string? ForSettingsTextColor { get; set; }
             public string? PlaylistLetterColor { get; set; }
             public string? ForPlaylistTextColor { get; set; }
+            public string? ForSeperatorTextColor { get; set; }
             public string? VisualizerColor { get; set; }
             public string? RandomTextColor { get; set; }
         }
@@ -339,6 +348,8 @@ namespace Jammer {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
             public string? ChoosingColor { get; set; }
+            public string? NormalSongColor { get; set; }
+            public string? CurrentSongColor { get; set; }
         }
 
         public class TimeTheme
@@ -374,6 +385,7 @@ namespace Jammer {
         {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
+            public string? HeaderTextColor { get; set; }
             public string? ControlTextColor { get; set; }
             public string? DescriptionTextColor { get; set; }
             public string? ModifierTextColor_1 { get; set; }

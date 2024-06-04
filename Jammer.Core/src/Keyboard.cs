@@ -505,6 +505,9 @@ namespace Jammer
                 // TODO AVALONIA_UI
                 #endif
                 Action = "";
+                if (playerView == "all") {
+                    drawWhole = true;
+                }
             }
 
         }

@@ -32,7 +32,6 @@ namespace Jammer
         // public static MainStates state = MainStates.idle;
         // ! Translations needed to locales
         public static MainStates state = MainStates.playing;
-        public static bool drawOnce = false;
         private static Thread loopThread = new(() => { });
         private static Thread visualizerThread = new(() => { });
 #if CLI_UI
@@ -415,7 +414,6 @@ namespace Jammer
             Utils.isInitialized = true;
 
             AnsiConsole.Clear();
-            drawOnce = true;
             TUI.RefreshCurrentView();
             AnsiConsole.Cursor.Hide();
 
@@ -446,14 +444,6 @@ namespace Jammer
                     case MainStates.idle:
                         // TUI.ClearScreen();
                         CheckKeyboard();
-
-                        //FIXME(ra) This is a workaround for screen to update once when entering the state.
-                        if (drawOnce)
-                        {
-                            drawWhole = true;
-                            drawOnce = false;
-                        }
-
                         break;
 
                     case MainStates.play:
@@ -464,14 +454,12 @@ namespace Jammer
                             Play.PlaySong();
                             TUI.ClearScreen();
                             TUI.DrawPlayer();
-                            drawOnce = true;
 
                             Utils.MusicTimePlayed = 0;
                             state = MainStates.playing;
                         }
                         else
                         {   
-                            drawOnce = true;
                             drawWhole = true;
                             state = MainStates.idle;
                         }
@@ -488,12 +476,6 @@ namespace Jammer
                         Utils.currentMusicLength = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
 
                         Utils.MusicTimePercentage = (float)(Utils.MusicTimePlayed / Utils.currentMusicLength * 100);
-                        //FIXME(ra) This is a workaround for screen to update once when entering the state.
-                        if (drawOnce)
-                        {
-                            drawOnce = false;
-                            drawTime = true;
-                        }
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)

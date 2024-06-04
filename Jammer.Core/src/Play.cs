@@ -62,7 +62,11 @@ namespace Jammer
         public static void PlaySong(string[] songs, int Currentindex)
         {
 
-            if (songs.Length == 0)
+            if (songs.Length == 0 
+            || songs[0] == "" 
+            || songs[0] == null 
+            || songs[0] == "½" 
+            || EmptySpaces(songs[0]))
             {
                 #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
@@ -264,6 +268,20 @@ namespace Jammer
             Debug.dprint("End of PlaySong");
         }
 
+        private static bool EmptySpaces(string v)
+        {
+            // if string is totally empty even with spaces
+            foreach (char c in v)
+            {
+                if (c != ' ')
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static void PauseSong()
         {
             Bass.ChannelPause(Utils.currentMusic);
@@ -322,9 +340,8 @@ namespace Jammer
 
         public static void PlayDrawReset() // play, draw, reset lastSeconds
         {
-            // Start.state = MainStates.playing;
-            Start.drawOnce = true;
             Start.prevMusicTimePlayed = 0;
+            Start.drawWhole = true;
         }
 
         public static void RandomSong()
@@ -369,7 +386,6 @@ namespace Jammer
                 }
                 // Clamp again to ensure it's within the valid range
                 //pos = Math.Max(0, Math.Min(pos, Utils.audioStream.Length));
-                Start.drawOnce = true;
             }
             else
             {
@@ -447,9 +463,7 @@ namespace Jammer
         }
 
         public static void MaybeNextSong()
-        {
-            Start.drawOnce = true;
-            
+        {            
             if (Preferences.isLoop)
             {
                 Bass.ChannelSetPosition(Utils.currentMusic, 0);

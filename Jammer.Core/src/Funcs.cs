@@ -9,14 +9,14 @@ namespace Jammer {
         
         static public string[] GetAllSongs() {
             if (Utils.songs.Length == 0) {
-                string[] returnstring = {$"[grey]{Locale.Player.NoSongsInPlaylist}[/]"};
+                string[] returnstring = {Themes.sColor("No songs in playlist", Themes.CurrentTheme.Playlist.InfoColor)}; // "No songs in playlist"
                 return returnstring;
             }
 
             List<string> results = new()
             {
-                $"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}",
-                $"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}"
+                Themes.sColor($"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}", Themes.CurrentTheme.Playlist.InfoColor),
+                Themes.sColor($"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}", Themes.CurrentTheme.Playlist.InfoColor),
             };
 
             int maximum = 7;
@@ -26,19 +26,24 @@ namespace Jammer {
                             
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
                     if (i == Utils.currentSongIndex) {
-                        results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
+                        // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
                     }
                     else if (i == Utils.currentPlaylistSongIndex) {
-                        results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
+                        // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
                     }
                     else if (Utils.currentPlaylistSongIndex <= 3) {
-                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.currentPlaylistSongIndex - 2 && i < Utils.currentPlaylistSongIndex + 3) {
-                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.songs.Length - (maximum - results.Count)) {
-                        results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                 }
             }
