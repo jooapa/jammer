@@ -40,6 +40,7 @@ namespace Jammer {
                 Debug.dprint("Invalid url");
             }
 
+            Start.drawWhole = true;
             return songPath;
         }
 
@@ -98,9 +99,6 @@ namespace Jammer {
             if (System.IO.File.Exists(downloadedPath)) {
                 string input = Message.Input($"Playlist of same name already exists. Overwrite? (y/n)", "Warning");
                 if (input != "y") {
-                    if (Utils.songs.Length == 0 || Utils.songs[0] == url) 
-                        Utils.currentPlaylist = GetDownloadedJammerFileName(url).Replace(".jammer", "");
-
                     songPath = downloadedPath;
                     return;
                 }

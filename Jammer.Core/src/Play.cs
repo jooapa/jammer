@@ -214,9 +214,12 @@ namespace Jammer
                     // Message.Data(path,"dsdsadsads");
                     // read playlist
 
-                    
+                    string tempName = path;
+                    string[] nameExt = path.Split('.');
+
+                    Utils.currentPlaylist = Path.GetFileName(nameExt[0]);
+
                     string[] playlist = System.IO.File.ReadAllLines(path);
-                    
                     // foreach (string s in playlist) {
                     //     Console.WriteLine(s);
                     // }
