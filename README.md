@@ -1,6 +1,6 @@
 # <img src="https://raw.githubusercontent.com/jooapa/jammer/main/icons/trans_icon512x512.png" width="35px"> Jammer — light-weight TUI music player
 
-![banner](.github/img/banner2.png)
+![banner](.github/img/banner3.png)
 
 ## Introduction
 
