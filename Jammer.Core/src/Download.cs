@@ -137,8 +137,6 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error");
             }
 
-            if (Utils.songs.Length == 0 || Utils.songs[0] == url)
-                Utils.currentPlaylist = GetDownloadedJammerFileName(url).Replace(".jammer", "");
             songPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
         }
 
