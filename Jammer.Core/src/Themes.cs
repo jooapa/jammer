@@ -95,6 +95,7 @@ namespace Jammer {
     ""GeneralSettings"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
+        ""HeaderTextColor"": ""white bold"",
         ""SettingTextColor"": ""white"",
         ""SettingValueColor"": ""green"",
         ""SettingChangeValueColor"": ""white"",
@@ -103,6 +104,7 @@ namespace Jammer {
     ""EditKeybinds"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
+        ""HeaderTextColor"": ""white bold"",
         ""DescriptionColor"": ""white"",
         ""CurrentControlColor"": ""white"",
         ""CurrentKeyColor"": ""red"",
@@ -117,8 +119,13 @@ namespace Jammer {
     ""InputBox"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
+        ""TitleColor"": ""white bold"",
         ""InputTextColor"": ""white"",
-        ""titleColor"": ""white bold""
+        ""InputBorderStyle"": ""Rounded"",
+        ""InputBorderColor"": [255,255,255],
+        ""TitleColorIfError"": ""red bold"",
+        ""InputTextColorIfError"": ""red"",
+        ""MultiSelectMoreChoicesTextColor"": ""grey""
     }
 }";
 
@@ -248,6 +255,13 @@ namespace Jammer {
 
         public static string sColor(string str, string color) {
             return $"[{color}]{str}[/]";
+        }
+
+        public static string[] sColor(string[] strs, string color) {
+            for (int i = 0; i < strs.Length; i++) {
+                strs[i] = $"[{color}]{strs[i]}[/]";
+            }
+            return strs;
         }
 
         public static Color bColor(int[] color) {
@@ -397,6 +411,7 @@ namespace Jammer {
         {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
+            public string? HeaderTextColor { get; set; }
             public string? SettingTextColor { get; set; }
             public string? SettingValueColor { get; set; }
             public string? SettingChangeValueColor { get; set; }
@@ -407,6 +422,7 @@ namespace Jammer {
         {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
+            public string? HeaderTextColor { get; set; }
             public string? DescriptionColor { get; set; }
             public string? CurrentControlColor { get; set; }
             public string? CurrentKeyColor { get; set; }
@@ -426,7 +442,12 @@ namespace Jammer {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
             public string? InputTextColor { get; set; }
-            public string? titleColor { get; set; }
+            public string? TitleColor { get; set; }
+            public string? InputBorderStyle { get; set; }
+            public int[]? InputBorderColor { get; set; }
+            public string? TitleColorIfError { get; set; }
+            public string? InputTextColorIfError { get; set; }
+            public string? MultiSelectMoreChoicesTextColor { get; set; }
         }
     }
 }

@@ -544,7 +544,7 @@ namespace Jammer
                 if (playerView == "default" || playerView == "all") {
                     Thread.Sleep(1);
                 } else
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
 
             }
         }

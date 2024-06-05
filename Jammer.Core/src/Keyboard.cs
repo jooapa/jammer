@@ -460,7 +460,7 @@ namespace Jammer
                         case "ChangeTheme":
                             AnsiConsole.Clear();
                             string[] themes = Themes.GetAllThemes();
-                            int chosen = Message.MultiSelect(themes, "Choose a theme", "Choose a theme", false);
+                            int chosen = Message.MultiSelect(themes, "Choose a theme", "Choose a theme");
                             if (chosen == -1)
                             {
                                 break;

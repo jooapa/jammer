@@ -9,9 +9,15 @@ namespace Jammer
         public static string Input(string inputSaying, string title)
         {
             var mainTable = new Table();
+            mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
+            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.BorderColor));
+
             var messageTable = new Table();
-            mainTable.AddColumn(new TableColumn("[bold]" + title + "[/]")).Centered().Width(Start.consoleWidth);
-            messageTable.AddColumn(new TableColumn(inputSaying)).Centered().Width(Start.consoleWidth);
+            messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
+            messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
+
+            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
+            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0,0);
             AnsiConsole.Cursor.Show();
@@ -26,13 +32,13 @@ namespace Jammer
             var messageTable = new Table();
             if (isError)
             {
-                mainTable.AddColumn(new TableColumn("[bold][red]" + title + "[/][/]")).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn("[red]" + data + "[/]")).Centered().Width(Start.consoleWidth);
+                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColorIfError)));
+                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme.InputBox.InputTextColorIfError)));
             }
             else
             {
-                mainTable.AddColumn(new TableColumn("[bold]" + title + "[/]")).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn(data)).Centered().Width(Start.consoleWidth);
+                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor)));
+                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme.InputBox.InputTextColor)));
             }
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.Show();
@@ -44,30 +50,16 @@ namespace Jammer
             }
         }
 
-        public static int MultiSelect(string[] options, string title, string message, bool isError = false)
+        public static int MultiSelect(string[] options, string title, string message)
         {
-            var mainTable = new Table();
-            var messageTable = new Table();
-            if (isError)
-            {
-                mainTable.AddColumn(new TableColumn("[bold][red]" + title + "[/][/]")).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn("[red]" + message + "[/]")).Centered().Width(Start.consoleWidth);
-            }
-            else
-            {
-                mainTable.AddColumn(new TableColumn("[bold]" + title + "[/]")).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn(message)).Centered().Width(Start.consoleWidth);
-            }
-            mainTable.AddRow(messageTable);
 
             AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0,0);
-            AnsiConsole.Write(mainTable);
             
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("Select an option")
+                .Title(title)
                 .PageSize(10)
-                .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
+                .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
                 .AddChoices(options));
             return selection.IndexOf(selection);
         }

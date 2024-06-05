@@ -406,15 +406,20 @@ namespace Jammer {
             string Autosave = (Keybindings.Autosave);
 
             var table = new Table();
-            table.AddColumns(Locale.Settings._Settings, Locale.Settings.Value, Locale.Settings.ChangeValue);
-            table.AddRow(Locale.Settings.Forwardseconds, Preferences.forwardSeconds + " sec", $"[green]{ForwardSecondAmount}[/] {Locale.Settings.ToChange}");
-            table.AddRow(Locale.Settings.Rewindseconds, Preferences.rewindSeconds + " sec", $"[green]{BackwardSecondAmount}[/] {Locale.Settings.ToChange}");
-            table.AddRow(Locale.Settings.ChangeVolumeBy, Preferences.changeVolumeBy * 100 + " %", $"[green]{ChangeVolumeAmount}[/] {Locale.Settings.ToChange}");
-            table.AddRow(Locale.Settings.AutoSave, Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Autosave}[/] {Locale.Settings.ToToggle}");
-            table.AddRow("Load Effects", "", $"[green]{Keybindings.LoadEffects}[/] {"To Load Effects settings"}");
-            table.AddRow("Toggle Media Buttons", Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleMediaButtons}[/] {"To Toggle Media Buttons"}");
-            table.AddRow("Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", $"[green]{Keybindings.ToggleVisualizer}[/] {"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}");
-            table.AddRow("Load Visualizer", "", $"[green]{Keybindings.LoadVisualizer}[/] {"To Load Visualizer settings"}");
+            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
+            table.Width = Start.consoleWidth;
+
+            table.AddColumns(Themes.sColor(Locale.Settings._Settings, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme.GeneralSettings.HeaderTextColor), Themes.sColor(Locale.Settings.ChangeValue, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
+            
+            table.AddRow(Themes.sColor(Locale.Settings.Forwardseconds, Themes.CurrentTheme.GeneralSettings.SettingTextColor) , Themes.sColor(Preferences.forwardSeconds + " sec", Themes.CurrentTheme.GeneralSettings.SettingValueColor)                                                     , Themes.sColor($"{ForwardSecondAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)            + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor(Locale.Settings.Rewindseconds, Themes.CurrentTheme.GeneralSettings.SettingTextColor)  , Themes.sColor(Preferences.rewindSeconds + " sec", Themes.CurrentTheme.GeneralSettings.SettingValueColor)                                                      , Themes.sColor($"{BackwardSecondAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)           + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor(Locale.Settings.ChangeVolumeBy, Themes.CurrentTheme.GeneralSettings.SettingTextColor) , Themes.sColor(Preferences.changeVolumeBy * 100 + " %", Themes.CurrentTheme.GeneralSettings.SettingValueColor)                                                 , Themes.sColor($"{ChangeVolumeAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)             + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor(Locale.Settings.AutoSave, Themes.CurrentTheme.GeneralSettings.SettingTextColor)       , Themes.sColor(Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor)    , Themes.sColor($"{Autosave} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)                       + Themes.sColor($"{Locale.Settings.ToToggle}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Load Effects", Themes.CurrentTheme.GeneralSettings.SettingTextColor)                 , ""                                                                                                                                                            , Themes.sColor($"{Keybindings.LoadEffects} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)        + Themes.sColor($"{"To Load Effects settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Toggle Media Buttons", Themes.CurrentTheme.GeneralSettings.SettingTextColor)         , Themes.sColor(Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.ToggleMediaButtons} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Media Buttons"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Toggle Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor)            , Themes.sColor(Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor)  , Themes.sColor($"{Keybindings.ToggleVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)   + Themes.sColor($"{"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Load Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor)              , ""                                                                                                                                                            , Themes.sColor($"{Keybindings.LoadVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)     + Themes.sColor($"{"To Load Visualizer settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
             DrawHelpSettingInfo();
@@ -487,6 +492,9 @@ namespace Jammer {
             IniFileHandling.Create_KeyDataIni(0);
 
             var table = new Table();
+            table.Border = Themes.bStyle(Themes.CurrentTheme.EditKeybinds.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.EditKeybinds.BorderColor));
+
             table.AddColumn(Locale.Help.Description);
             table.AddColumn(Locale.LocaleKeybind.CurrentControl);
             (string[] _elements, string[] _description) = IniFileHandling.ReadAll_KeyData();
@@ -498,9 +506,9 @@ namespace Jammer {
                 // Check if the description at descIndex is not empty
                 // Add row to the table
                 if(i == 0){
-                    table.AddRow("[red]"+_description[i]+"[/]", "[red]"+_elements[i]+"[/]");
+                    table.AddRow(Themes.sColor(_description[i], Themes.CurrentTheme.EditKeybinds.CurrentKeyColor), Themes.sColor(_elements[i], Themes.CurrentTheme.EditKeybinds.CurrentKeyColor));
                 } else {
-                    table.AddRow(_description[i], _elements[i]);
+                    table.AddRow(Themes.sColor(_description[i], Themes.CurrentTheme.EditKeybinds.DescriptionColor), Themes.sColor(_elements[i], Themes.CurrentTheme.EditKeybinds.CurrentControlColor));
                 }
             }
 
@@ -532,27 +540,29 @@ namespace Jammer {
                 else if(IniFileHandling.isAlt){
                     final = "Alt + " + final;
                 }
-                AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage1} {Keybindings.Choose}[/]\n");
-                AnsiConsole.Markup($"{Locale.LocaleKeybind.EditKeyBindMessage2}\n");
-                AnsiConsole.Markup($"[cyan]{final}[/]\n\n");
+                AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.EditKeyBindMessage1} {Keybindings.Choose}\n", Themes.CurrentTheme.Playlist.InfoColor));
+                AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.EditKeyBindMessage2}\n", Themes.CurrentTheme.Playlist.InfoColor));
+                AnsiConsole.Markup(Themes.sColor($"{final}\n", Themes.CurrentTheme.EditKeybinds.EnteredKeyColor));
 
             } else {
-                AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage3}{Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}[/]\n"); // Press Enter to edit
-                AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.EditKeyBindMessage4}[/]\n");
+                AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.EditKeyBindMessage3}{Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
+                AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.EditKeyBindMessage4}\n", Themes.CurrentTheme.Playlist.InfoColor));
             }
             DrawHelpSettingInfo();
         }
         public static void ChangeLanguage(){
             var table = new Table();
+            table.Border = Themes.bStyle(Themes.CurrentTheme.LanguageChange.BorderStyle);
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme.LanguageChange.BorderColor));
             table.AddColumn(Locale.LocaleKeybind.Description);
             string[] _elements = IniFileHandling.ReadAll_Locales();
             
             // Loop through the _elements array
             for(int i = 0; i < _elements.Length; i++) {
                 if(i==0){
-                    table.AddRow("[red]"+_elements[i]+"[/]");
+                    table.AddRow(Themes.sColor(_elements[i], Themes.CurrentTheme.LanguageChange.CurrentLanguageColor));
                 } else {
-                    table.AddRow(_elements[i]);
+                    table.AddRow(Themes.sColor(_elements[i], Themes.CurrentTheme.LanguageChange.TextColor));
                 }
             }
 
@@ -561,7 +571,7 @@ namespace Jammer {
             AnsiConsole.Write(table);
             AnsiConsole.Cursor.Show();
 
-            AnsiConsole.Markup($"[green]{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}[/]\n");
+            AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
             DrawHelpSettingInfo();
         }
 
