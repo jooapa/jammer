@@ -100,9 +100,9 @@ namespace Jammer {
                 helpTable.AddColumn(
                     Themes.sColor($"{Keybindings.Help}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " " 
                     + Themes.sColor(Locale.Player.ForHelp, Themes.CurrentTheme.Playlist.ForHelpTextColor) + Themes.sColor(" | ", Themes.CurrentTheme.Playlist.ForSeperatorTextColor)
-                    + Themes.sColor($"{Keybindings.Settings}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " "
+                    + Themes.sColor($"{Keybindings.Settings}", Themes.CurrentTheme.Playlist.SettingsLetterColor) + " "
                     + Themes.sColor(Locale.Help.ForSettings, Themes.CurrentTheme.Playlist.ForHelpTextColor) + Themes.sColor(" | ", Themes.CurrentTheme.Playlist.ForSeperatorTextColor)
-                    + Themes.sColor($"{Keybindings.ShowHidePlaylist}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " "
+                    + Themes.sColor($"{Keybindings.ShowHidePlaylist}", Themes.CurrentTheme.Playlist.PlaylistLetterColor) + " "
                     + Themes.sColor(Locale.Player.ForPlaylist, Themes.CurrentTheme.Playlist.ForHelpTextColor)
                 );
                 
@@ -244,10 +244,10 @@ namespace Jammer {
             //     length = 100;
             // }
 
-            int length = Start.consoleWidth;
+            int length = Start.consoleWidth - 14;
 
             string volumeMark = Preferences.isMuted ? Themes.sColor(Math.Round(Preferences.oldVolume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorMuted) : Themes.sColor(Math.Round(Preferences.volume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorNotMuted);
-            string volumeString = Math.Round(Preferences.volume * 100) + "%";
+            string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%":Math.Round(Preferences.volume * 100) + "%";
             string shuffleMark = Preferences.isShuffle ? Themes.sColor(Themes.CurrentTheme.Time.ShuffleOnLetter, Themes.CurrentTheme.Time.ShuffleLetterOnColor) : Themes.sColor(Themes.CurrentTheme.Time.ShuffleOffLetter, Themes.CurrentTheme.Time.ShuffleLetterOffColor);
             string shuffleString =
                 Preferences.isShuffle ? 
@@ -261,7 +261,7 @@ namespace Jammer {
                     Themes.CurrentTheme.Time.LoopOffLetter;
             
             string progressBar = GetStateLogo(true) + shuffleMark + loopMark +
-                Funcs.CalculateTime(value, true) + " |";
+                Funcs.CalculateTime(value, true) + Themes.sColor(" |", Themes.CurrentTheme.Time.TimebarColor);
             // length is modified also by the time string
             length -= GetStateLogo(false).Length 
                 + shuffleString.Length 
@@ -270,15 +270,19 @@ namespace Jammer {
                 + 2; // 2 is for the " |"
 
             string extraVolume;
+            string extraVolumeString;
             if (volumeString.Length >= 4) {
                 extraVolume = " " + volumeMark;
+                extraVolumeString = " " + volumeString;
             } else if (volumeString.Length == 3) {
                 extraVolume = "  " + volumeMark;
+                extraVolumeString = "  " + volumeString;
             } else {
                 extraVolume = "   " + volumeMark;
+                extraVolumeString = "   " + volumeString;
             }
 
-            length -= extraVolume.Length;
+            length -= extraVolumeString.Length;
 
             int progress = (int)(value / max * length);
             // length is modified also by the volume string
@@ -292,7 +296,7 @@ namespace Jammer {
             }
 
             progressBar = Themes.sColor(progressBar, Themes.CurrentTheme.Time.TimebarColor);
-            progressBar += "| " + Funcs.CalculateTime(max, true) + extraVolume;
+            progressBar += Themes.sColor("| ", Themes.CurrentTheme.Time.TimebarColor) + Funcs.CalculateTime(max, true) + extraVolume;
 
             return progressBar;
         }
@@ -440,9 +444,9 @@ namespace Jammer {
             helpTable.AddColumn(
                 Themes.sColor($"{Keybindings.Help}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " " 
                 + Themes.sColor(Locale.Player.ForHelp, Themes.CurrentTheme.Playlist.ForHelpTextColor) + Themes.sColor(" | ", Themes.CurrentTheme.Playlist.ForSeperatorTextColor)
-                + Themes.sColor($"{Keybindings.Settings}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " "
+                + Themes.sColor($"{Keybindings.Settings}", Themes.CurrentTheme.Playlist.SettingsLetterColor) + " "
                 + Themes.sColor(Locale.Help.ForSettings, Themes.CurrentTheme.Playlist.ForHelpTextColor) + Themes.sColor(" | ", Themes.CurrentTheme.Playlist.ForSeperatorTextColor)
-                + Themes.sColor($"{Keybindings.ShowHidePlaylist}", Themes.CurrentTheme.Playlist.HelpLetterColor) + " "
+                + Themes.sColor($"{Keybindings.ShowHidePlaylist}", Themes.CurrentTheme.Playlist.PlaylistLetterColor) + " "
                 + Themes.sColor(Locale.Player.ForPlaylist, Themes.CurrentTheme.Playlist.ForHelpTextColor)
             );
 

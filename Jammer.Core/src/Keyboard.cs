@@ -460,17 +460,33 @@ namespace Jammer
                         case "ChangeTheme":
                             AnsiConsole.Clear();
                             string[] themes = Themes.GetAllThemes();
-                            int chosen = Message.MultiSelect(themes, "Choose a theme", "Choose a theme");
-                            if (chosen == -1)
+                            // move that first element is "Create a new theme" and "Jammer Default"
+                            string[] newThemes = new string[themes.Length + 2];
+                            newThemes[0] = "Create a new theme";
+                            newThemes[1] = "Jammer Default";
+                            for (int i = 0; i < themes.Length; i++)
                             {
+                                newThemes[i + 2] = themes[i];
+                            }
+                            themes = newThemes;
+
+                            string chosen = Message.MultiSelect(themes, "Choose a theme");
+                            
+                            if (chosen == "Jammer Default")
+                            {
+                                Preferences.theme = chosen;
+                                Preferences.SaveSettings();
+                                Themes.SetTheme(Preferences.theme);
+                                drawWhole = true;
                                 break;
                             }
 
-                            if (chosen == themes.Length - 1)
+                            // if the user wants to create a new theme
+                            if (chosen == "Create a new theme")
                             {
                                 AnsiConsole.Clear();
                                 string themeName = Message.Input("Enter a theme name", "Enter a theme name");
-                                if (themeName == "")
+                                if (Play.EmptySpaces(themeName))
                                 {
                                     drawWhole = true;
                                     break;
@@ -481,7 +497,7 @@ namespace Jammer
                                 Preferences.theme = themeName;
                             }
                             else {
-                                Preferences.theme = themes[chosen];
+                                Preferences.theme = chosen;
                             }
 
                             Preferences.SaveSettings();

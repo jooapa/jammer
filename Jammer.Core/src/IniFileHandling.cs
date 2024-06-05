@@ -31,6 +31,7 @@ Loop = L
 Mute = M
 ShowHidePlaylist = F
 ListAllPlaylists = Shift + F
+ChangeTheme = Shift + T
 Help = H
 Settings = C
 ToSongStart = 0

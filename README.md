@@ -103,6 +103,28 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
 
+### Themes
+
+You can customize your own theme, in jammer press by default `Shift + T` that will open a Multi Selection View.
+
+Select 'Create a New Theme'. Then write desired theme name. Then go to `jammer/themes` and you should see `name.json` file that contains all the inforamtion for creating theme.
+
+There should be comments documenting what you can add to the properties.
+
+``` json
+Colors "https://spectreconsole.net/appendix/colors" and "https://spectreconsole.net/appendix/styles"
+write the color name in lowercase ' ' and the styles ' '
+"PlaylistNameColor": "red bold italic"
+but you can have just "bold"
+if you type "" it will be the default color
+Border Styles "https://spectreconsole.net/appendix/borders"
+write the border name with CamelCase
+Example: Rounded
+Only the BorderColor is in RGB format: [0-255,0-255,0-255]
+```
+
+`Jammer Default` option is Jammer's preset Default theme that comes baked.
+
 ### Effects
 
 - Reverb
@@ -142,6 +164,7 @@ Can be changed in the Effects.ini file in the Jammer folder.
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
+| `Shift` + `Tab` | Change Theme|
 
 ### Default Playlist Controls
 

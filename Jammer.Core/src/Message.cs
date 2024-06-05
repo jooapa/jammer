@@ -50,7 +50,7 @@ namespace Jammer
             }
         }
 
-        public static int MultiSelect(string[] options, string title, string message)
+        public static string MultiSelect(string[] options, string title)
         {
 
             AnsiConsole.Cursor.Show();
@@ -61,7 +61,8 @@ namespace Jammer
                 .PageSize(10)
                 .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
                 .AddChoices(options));
-            return selection.IndexOf(selection);
+
+            return selection;
         }
         
     }

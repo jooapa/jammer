@@ -268,7 +268,7 @@ namespace Jammer
             Debug.dprint("End of PlaySong");
         }
 
-        private static bool EmptySpaces(string v)
+        public static bool EmptySpaces(string v)
         {
             // if string is totally empty even with spaces
             foreach (char c in v)
@@ -773,6 +773,7 @@ namespace Jammer
             // set sync
             Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
                 MaybeNextSong();
+                Start.drawWhole = true;
                 Start.prevMusicTimePlayed = 0;
             }, IntPtr.Zero);
 
@@ -785,7 +786,8 @@ namespace Jammer
 
 
             #if CLI_UI
-            TUI.RefreshCurrentView();
+            // TUI.RefreshCurrentView();
+            Start.drawWhole = true;
             #endif
             // TODO AVALONIA_UI
         }

@@ -10,35 +10,38 @@ using System.Text.RegularExpressions;
 
 namespace Jammer {
     public static class Themes {
-
-        public static readonly string fileContent = @"// Colors https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
+        public static readonly string comments = @"// Colors https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
 // write the color name in lowercase ' ' and the styles ' '
-// Example: red bold italic
+// ""PlaylistNameColor"": ""red bold italic""
+// but you can have just ""bold""
+// if you type """" it will be the default color
 // Border Styles https://spectreconsole.net/appendix/borders
 // write the border name with CamelCase
 // Example: Rounded
-// Only the BorderColor is in RGB format ie. [0-255,0-255,0-255]
+// Only the BorderColor is in RGB format: [0-255,0-255,0-255]
+";
 
+        public static readonly string fileContent = @"
 {
     ""Playlist"": {
         ""BorderStyle"": ""Rounded"",
         ""BorderColor"": [255,255,255],
-        ""PathColor"": ""white"",
+        ""PathColor"": """",
         ""ErrorColor"": ""red"",
         ""SuccessColor"": ""green"",
         ""InfoColor"": ""green"",
-        ""PlaylistNameColor"": ""lightblue"",
+        ""PlaylistNameColor"": ""cyan"",
         ""MiniHelpBorderStyle"": ""Rounded"",
         ""MiniHelpBorderColor"": [255,255,255],
         ""HelpLetterColor"": ""red"",
-        ""ForHelpTextColor"": ""white"",
+        ""ForHelpTextColor"": """",
         ""SettingsLetterColor"": ""yellow"",
-        ""ForSettingsTextColor"": ""white"",
-        ""ForSeperatorTextColor"": ""white"",
+        ""ForSettingsTextColor"": """",
+        ""ForSeperatorTextColor"": """",
         ""PlaylistLetterColor"": ""green"",
-        ""ForPlaylistTextColor"": ""white"",
-        ""VisualizerColor"": ""white"",
-        ""RandomTextColor"": ""white""
+        ""ForPlaylistTextColor"": """",
+        ""VisualizerColor"": """",
+        ""RandomTextColor"": """"
     },
     ""GeneralPlaylist"": {
         ""BorderColor"": [255,255,255],
@@ -51,22 +54,22 @@ namespace Jammer {
     ""WholePlaylist"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""NormalSongColor"": ""white"",
+        ""NormalSongColor"": """",
         ""ChoosingColor"": ""yellow"",
         ""CurrentSongColor"": ""green""
     },
     ""Time"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""PlayingLetterColor"": ""white"",
+        ""PlayingLetterColor"": """",
         ""PlayingLetterLetter"": ""❚❚"",
-        ""PausedLetterColor"": ""white"",
+        ""PausedLetterColor"": """",
         ""PausedLetterLetter"": ""▶"",
-        ""StoppedLetterColor"": ""white"",
+        ""StoppedLetterColor"": """",
         ""StoppedLetterLetter"": ""■"",
-        ""NextLetterColor"": ""white"",
+        ""NextLetterColor"": """",
         ""NextLetterLetter"": ""▶▶"",
-        ""PreviousLetterColor"": ""white"",
+        ""PreviousLetterColor"": """",
         ""PreviousLetterLetter"": ""◀◀"",
         ""ShuffleLetterOffColor"": ""red"",
         ""ShuffleOffLetter"": ""⇌ "",
@@ -76,18 +79,18 @@ namespace Jammer {
         ""LoopOffLetter"": "" ↻  "",
         ""LoopLetterOnColor"": ""green"",
         ""LoopOnLetter"": "" ⟳  "",
-        ""TimeColor"": ""white"",
-        ""VolumeColorNotMuted"": ""white"",
+        ""TimeColor"": """",
+        ""VolumeColorNotMuted"": """",
         ""VolumeColorMuted"": ""grey strikethrough"",
-        ""TimebarColor"": ""white"",
+        ""TimebarColor"": """",
         ""TimebarLetter"": ""█""
     },
     ""GeneralHelp"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""HeaderTextColor"": ""white bold"",
-        ""ControlTextColor"": ""white"",
-        ""DescriptionTextColor"": ""white"",
+        ""HeaderTextColor"": """",
+        ""ControlTextColor"": """",
+        ""DescriptionTextColor"": """",
         ""ModifierTextColor_1"": ""green"",
         ""ModifierTextColor_2"": ""yellow"",
         ""ModifierTextColor_3"": ""red""
@@ -95,32 +98,32 @@ namespace Jammer {
     ""GeneralSettings"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""HeaderTextColor"": ""white bold"",
-        ""SettingTextColor"": ""white"",
+        ""HeaderTextColor"": """",
+        ""SettingTextColor"": """",
         ""SettingValueColor"": ""green"",
-        ""SettingChangeValueColor"": ""white"",
+        ""SettingChangeValueColor"": """",
         ""SettingChangeValueValueColor"": ""green""
     },
     ""EditKeybinds"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""HeaderTextColor"": ""white bold"",
-        ""DescriptionColor"": ""white"",
-        ""CurrentControlColor"": ""white"",
+        ""HeaderTextColor"": """",
+        ""DescriptionColor"": """",
+        ""CurrentControlColor"": """",
         ""CurrentKeyColor"": ""red"",
-        ""EnteredKeyColor"": ""lightblue""
+        ""EnteredKeyColor"": ""cyan""
     },
     ""LanguageChange"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""TextColor"": ""white"",
+        ""TextColor"": """",
         ""CurrentLanguageColor"": ""red""
     },
     ""InputBox"": {
         ""BorderColor"": [255,255,255],
         ""BorderStyle"": ""Rounded"",
-        ""TitleColor"": ""white bold"",
-        ""InputTextColor"": ""white"",
+        ""TitleColor"": """",
+        ""InputTextColor"": """",
         ""InputBorderStyle"": ""Rounded"",
         ""InputBorderColor"": [255,255,255],
         ""TitleColorIfError"": ""red bold"",
@@ -152,7 +155,7 @@ namespace Jammer {
                 Directory.CreateDirectory(themePath);
             }
             if (!File.Exists(Path.Combine(themePath, themeName + ".json"))) {
-                File.WriteAllText(Path.Combine(themePath, themeName + ".json"), fileContent);
+                File.WriteAllText(Path.Combine(themePath, themeName + ".json"), comments + fileContent);
             }
         }
 
@@ -162,12 +165,12 @@ namespace Jammer {
             }
 
             string[] themes = Directory.GetFiles(themePath, "*.json");
+
             for (int i = 0; i < themes.Length; i++) {
                 themes[i] = Path.GetFileNameWithoutExtension(themes[i]);
             }
-            // first element is option to create new theme
-            Array.Resize(ref themes, themes.Length + 1);
-            themes[themes.Length - 1] = "Create New Theme";
+
+
             return themes;
         }
 
@@ -207,14 +210,19 @@ namespace Jammer {
 
             // write the theme back to the file
             string newJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-            File.WriteAllText(pathToTheme, newJson);
+            File.WriteAllText(pathToTheme, comments + newJson);
 
             // set the theme
             CurrentTheme = theme;
 
         }
         
-        public static bool SetTheme(string themeName = "Jammer Default") {
+        public static bool SetTheme(string themeName) {
+
+            if (themeName == "Jammer Default") {
+                SetDefaultTheme();
+            }
+
             string path = Path.Combine(themePath, themeName + ".json");
             if (!File.Exists(path)) {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] does not exist", themeName);
@@ -254,14 +262,10 @@ namespace Jammer {
         }
 
         public static string sColor(string str, string color) {
-            return $"[{color}]{str}[/]";
-        }
-
-        public static string[] sColor(string[] strs, string color) {
-            for (int i = 0; i < strs.Length; i++) {
-                strs[i] = $"[{color}]{strs[i]}[/]";
+            if (Play.EmptySpaces(str) || color == "") {
+                return str;
             }
-            return strs;
+            return $"[{color}]{str}[/]";
         }
 
         public static Color bColor(int[] color) {
