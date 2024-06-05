@@ -111,7 +111,7 @@ Select 'Create a New Theme'. Then write desired theme name. Then go to `jammer/t
 
 There should be comments documenting what you can add to the properties.
 
-``` json
+```
 Colors "https://spectreconsole.net/appendix/colors" and "https://spectreconsole.net/appendix/styles"
 write the color name in lowercase ' ' and the styles ' '
 "PlaylistNameColor": "red bold italic"
