@@ -155,7 +155,7 @@ namespace Jammer
                         Play.DeleteSong(Utils.currentPlaylistSongIndex, true);
                         Utils.currentPlaylistSongIndex = new_value;
                     } else if(Action == "AddSongToQueue"){
-                        Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
+                        // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     }
                 }
 
@@ -470,7 +470,7 @@ namespace Jammer
                             }
                             themes = newThemes;
 
-                            string chosen = Message.MultiSelect(themes, "Choose a theme");
+                            string chosen = Message.MultiSelect(themes, "Choose a theme:");
                             
                             if (chosen == "Jammer Default")
                             {
@@ -485,7 +485,7 @@ namespace Jammer
                             if (chosen == "Create a new theme")
                             {
                                 AnsiConsole.Clear();
-                                string themeName = Message.Input("Enter a theme name", "Enter a theme name");
+                                string themeName = Message.Input("Enter a theme name:", "Name of your AMAZING theme");
                                 if (Play.EmptySpaces(themeName))
                                 {
                                     drawWhole = true;

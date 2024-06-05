@@ -200,6 +200,8 @@ namespace Jammer
 
             Playlists.AutoSave();
 
+            Start.drawWhole = true;
+
             try
             {
                 string extension = Path.GetExtension(path).ToLower();

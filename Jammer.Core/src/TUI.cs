@@ -244,7 +244,7 @@ namespace Jammer {
             //     length = 100;
             // }
 
-            int length = Start.consoleWidth - 14;
+            int length = Start.consoleWidth + 4;
 
             string volumeMark = Preferences.isMuted ? Themes.sColor(Math.Round(Preferences.oldVolume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorMuted) : Themes.sColor(Math.Round(Preferences.volume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorNotMuted);
             string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%":Math.Round(Preferences.volume * 100) + "%";
@@ -266,7 +266,8 @@ namespace Jammer {
             length -= GetStateLogo(false).Length 
                 + shuffleString.Length 
                 + loopString.Length 
-                + Funcs.CalculateTime(value, false).Length 
+                + Funcs.CalculateTime(value, false).Length
+                + Funcs.CalculateTime(max, true).Length
                 + 2; // 2 is for the " |"
 
             string extraVolume;
@@ -364,7 +365,6 @@ namespace Jammer {
 
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
-            AnsiConsole.Cursor.Show();
             DrawHelpSettingInfo();
         }
         

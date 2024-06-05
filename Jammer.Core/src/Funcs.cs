@@ -16,7 +16,7 @@ namespace Jammer {
             List<string> results = new()
             {
                 Themes.sColor($"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}", Themes.CurrentTheme.Playlist.InfoColor),
-                Themes.sColor($"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}. {Locale.OutsideItems.AddToQueue} {Keybindings.AddSongToQueue}", Themes.CurrentTheme.Playlist.InfoColor),
+                Themes.sColor($"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.PlaySongWith} {Keybindings.DeleteCurrentSong}.", Themes.CurrentTheme.Playlist.InfoColor),
             };
 
             int maximum = 7;
