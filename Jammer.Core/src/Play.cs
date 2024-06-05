@@ -345,7 +345,7 @@ namespace Jammer
 
         public static void PlayDrawReset() // play, draw, reset lastSeconds
         {
-            Start.prevMusicTimePlayed = 0;
+            Start.prevMusicTimePlayed = -1;
             Start.drawWhole = true;
         }
 
@@ -779,13 +779,13 @@ namespace Jammer
             Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
                 MaybeNextSong();
                 Start.drawWhole = true;
-                Start.prevMusicTimePlayed = 0;
+                Start.prevMusicTimePlayed = -1;
             }, IntPtr.Zero);
 
 
             Start.state = MainStates.playing;
             // play stream
-            Start.prevMusicTimePlayed = 0;
+            Start.prevMusicTimePlayed = -1;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.currentMusic);
 

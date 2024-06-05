@@ -340,6 +340,8 @@ namespace Jammer
                                 // TODO AVALONIA_UI
                                 #endif
                             }
+
+                            drawWhole = true;
                             break;
                         case "BackwardSecondAmount": // set rewind seek to 2 seconds
 
@@ -358,6 +360,7 @@ namespace Jammer
                                 // TODO AVALONIA_UI
                                 #endif
                             }
+                            drawWhole = true;
                             break;
                         case "ChangeVolumeAmount": // set volume change to 3
                             string volumeChangeString = Jammer.Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
@@ -376,6 +379,7 @@ namespace Jammer
                                 // TODO AVALONIA_UI
                                 #endif
                             }
+                            drawWhole = true;
                             break;
                         case "CommandHelpScreen":
                             #if CLI_UI
@@ -398,6 +402,7 @@ namespace Jammer
                         case "AddSongToPlaylist":
                             #if CLI_UI
                             Funcs.AddSongToPlaylist();
+                            drawWhole = true;
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -407,6 +412,7 @@ namespace Jammer
                         case "ShowSongsInPlaylists":
                             #if CLI_UI
                             Funcs.ShowSongsInPlaylist();
+                            drawWhole = true;
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI
@@ -415,6 +421,7 @@ namespace Jammer
                         case "PlayOtherPlaylist":
                             #if CLI_UI
                             Funcs.PlayOtherPlaylist();
+                            drawWhole = true;
                             #endif
                             #if AVALONIA_UI
                             // TODO AVALONIA_UI

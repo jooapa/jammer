@@ -113,7 +113,7 @@ namespace Jammer {
                     mainTable.AddEmptyRow();
                 }
                 
-                mainTable.AddRow(UIComponent_Time(timeTable, Start.consoleWidth - 20));
+                mainTable.AddRow(UIComponent_Time(timeTable));
 
                 AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.Write(mainTable);
@@ -232,7 +232,7 @@ namespace Jammer {
             }
         }
 
-        public static Table UIComponent_Time(Table table, int? length = 100) {
+        public static Table UIComponent_Time(Table table) {
             table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
             table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength));
@@ -244,7 +244,7 @@ namespace Jammer {
             //     length = 100;
             // }
 
-            int length = Start.consoleWidth + 4;
+            int length = Start.consoleWidth -10;
 
             string volumeMark = Preferences.isMuted ? Themes.sColor(Math.Round(Preferences.oldVolume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorMuted) : Themes.sColor(Math.Round(Preferences.volume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorNotMuted);
             string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%":Math.Round(Preferences.volume * 100) + "%";
@@ -267,7 +267,7 @@ namespace Jammer {
                 + shuffleString.Length 
                 + loopString.Length 
                 + Funcs.CalculateTime(value, false).Length
-                + Funcs.CalculateTime(max, true).Length
+                + Funcs.CalculateTime(max, false).Length
                 + 2; // 2 is for the " |"
 
             string extraVolume;
