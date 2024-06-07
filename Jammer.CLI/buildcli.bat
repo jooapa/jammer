@@ -1,11 +1,11 @@
 @ECHO OFF
 cd Jammer.CLI
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
-SET "sourceFolder=bin\Release\net7.0\win10-x64\publish"
+SET "sourceFolder=bin\Release\net8.0\win10-x64\publish"
 
 @REM Build with debug executable
 @REM dotnet build
-@REM SET "sourceFolder=bin\Debug\net7.0\"
+@REM SET "sourceFolder=bin\Debug\net8.0\"
 
 SET "targetFolder=..\nsis"
 

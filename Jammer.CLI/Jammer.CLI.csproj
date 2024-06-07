@@ -8,7 +8,7 @@
     <ApplicationIcon>..\icons\trans_icon512x512.ico</ApplicationIcon>
     <DefineConstants>CLI_UI</DefineConstants>
     <TargetName>Jammer.CLI</TargetName>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   
   <ItemGroup>

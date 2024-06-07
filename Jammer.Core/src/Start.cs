@@ -391,6 +391,9 @@ namespace Jammer
                 Play.PlaySong(Utils.songs, Utils.currentSongIndex);
             }
 
+            Console.CancelKeyPress += new ConsoleCancelEventHandler(Exit.OnExit);
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(Exit.OnProcessExit);
+
             Debug.dprint("Start Loop");
             loopThread = new Thread(Loop);
             visualizerThread = new Thread(EqualizerLoop);

@@ -3,13 +3,13 @@
   <!-- Properties for Windows build -->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
   </PropertyGroup>
 
     <!-- Properties for Linux build -->
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
