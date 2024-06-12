@@ -615,7 +615,7 @@ namespace Jammer
             return true;
         }
 
-        public static void OnKeyReleased(object sender, KeyboardHookEventArgs e) {
+        public static void OnKeyReleased(object? sender, KeyboardHookEventArgs e) {
             if (Preferences.isMediaButtons) {
                 switch(e.Data.KeyCode) {
                     case SharpHook.Native.KeyCode.VcMediaNext:
