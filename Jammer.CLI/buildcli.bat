@@ -1,12 +1,12 @@
 @ECHO OFF
 IF NOT pwd==%cd% (cd /d %~dp0)
 
-SET "RELEASE_VERSION=win-x64"                                       @REM target runtime
+SET "RELEASE_VERSION=win10-x64"                                       @REM target runtime
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     @REM location of the published files
 SET "targetFolder=..\nsis"                                          @REM nsin location
 SET "start_name=Jammer-Setup_V2.7.12.13.exe"                        @REM Change this to the name of the installer
 
-@REM dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
+dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
 
 if %ERRORLEVEL% NEQ 0 (
     ECHO Error building CLI
@@ -60,7 +60,6 @@ XCOPY /S /Y ..\locales "%targetFolder%\locales" 1>NUL
 CALL :COPY_ERRORCHECK
 ECHO.
 
-EXIT /B 0
 makensis %targetFolder%\setup.nsi  
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Error building installer
