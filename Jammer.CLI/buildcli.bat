@@ -1,6 +1,8 @@
 @ECHO OFF
 IF NOT pwd==%cd% (cd /d %~dp0)
 
+@REM DEL /Q /S *.exe
+
 SET "RELEASE_VERSION=win-x64"                                       @REM target runtime
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     @REM location of the published files
 SET "targetFolder=..\nsis"                                          @REM nsin location
@@ -50,6 +52,12 @@ ECHO.
 
 ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
 COPY /B /Y LICENSE %targetFolder% 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+if not EXIST "%targetFolder%\docs" MKDIR "%targetFolder%\docs"
+ECHO Copying "..\docs\console_styling.html" to "%targetFolder%\docs\console_styling.html"
+COPY /B /Y "..\docs\console_styling.html" "%targetFolder%\docs\console_styling.html" 1>NUL
 CALL :COPY_ERRORCHECK
 ECHO.
 

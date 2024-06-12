@@ -133,7 +133,7 @@ namespace Jammer
             {
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.isVisualizer ?? false;
+                return settings?.isVisualizer ?? true;
             }
             else
             {
@@ -250,7 +250,7 @@ namespace Jammer
             {
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.isMediaButtons ?? false;
+                return settings?.isMediaButtons ?? true;
             }
             else
             {

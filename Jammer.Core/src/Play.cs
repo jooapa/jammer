@@ -643,6 +643,7 @@ namespace Jammer
             }
         }
         public static void SetEffectsToChannel() {
+            
             // Start playing from the same position
             long pos = Bass.ChannelGetPosition(Utils.currentMusic);
             StartPlaying();
