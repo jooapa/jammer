@@ -303,7 +303,6 @@ namespace Jammer
                             return;
                         case "--home":
                         case "-hm":
-                            Console.WriteLine(args.Length + " " + Utils.songs.Length + " " + Utils.songs[0]);
                                 // if(Utils.songs.Length != 1 && args.Length != 1) {
                                 //     AnsiConsole.MarkupLine("[red]When using --songs or -so, do not provide any other arguments.[/]"); // TODO ADD LOCALE
                                 //     System.Environment.Exit(1);

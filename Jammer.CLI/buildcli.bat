@@ -1,32 +1,67 @@
 @ECHO OFF
-setlocal
-IF NOT pwd==%cd% (cd /d %~dp0) 
-cd Jammer.CLI
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
-SET "sourceFolder=bin\Release\net8.0\win10-x64\publish"
+IF NOT pwd==%cd% (cd /d %~dp0)
 
-@REM Build with debug executable
-@REM dotnet build
-@REM SET "sourceFolder=bin\Debug\net8.0\"
+SET "RELEASE_VERSION=win-x64"                                       @REM target runtime
+SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     @REM location of the published files
+SET "targetFolder=..\nsis"                                          @REM nsin location
+SET "start_name=Jammer-Setup_V2.7.12.13.exe"                        @REM Change this to the name of the installer
 
-SET "targetFolder=..\nsis"
+@REM dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
 
-@REM COPY Jammer.exe
-COPY /B /Y "%sourceFolder%\Jammer.CLI.exe" "%targetFolder%\Jammer.exe"
-COPY /B /Y "%sourceFolder%\uiohook.dll" "%targetFolder%\uiohook.dll"
+if %ERRORLEVEL% NEQ 0 (
+    ECHO Error building CLI
+    EXIT /B 1
+)
 
-COPY /B /Y "..\icons\trans_icon512x512.ico" "%targetFolder%\Jammer.ico"
-COPY /B /Y "libs\win\x64\bass" "%targetFolder%"
-COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%"
-COPY /Y "libs\win\x64\bass.dll" %targetFolder%
-COPY /Y LICENSE %targetFolder%
+ECHO =========================================
+ECHO ^| Copying source files to target folder ^|
+ECHO =========================================
+ECHO.
 
-mkdir "%targetFolder%\locales"
-XCOPY /S /Y ..\locales "%targetFolder%\locales"
-SET "start_name=Jammer-Setup_V2.7.12.13.exe"
+ECHO Copying "%sourceFolder%\Jammer.CLI.exe" to "%targetFolder%\Jammer.exe"
+COPY /B /Y "%sourceFolder%\Jammer.CLI.exe" "%targetFolder%\Jammer.exe" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
 
+ECHO Copying "%sourceFolder%\Jammer.CLI.pdb" to "%targetFolder%\Jammer.pdb"
+COPY /B /Y "%sourceFolder%\uiohook.dll" "%targetFolder%\uiohook.dll" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
+COPY /B /Y "..\icons\trans_icon512x512.ico" "%targetFolder%\Jammer.ico" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
+COPY /B /Y "libs\win\x64\bass" "%targetFolder%" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
+COPY /B /Y "libs\win\x64\bass_aac.dll" "%targetFolder%" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
+COPY /B /Y "libs\win\x64\bass.dll" %targetFolder% 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+ECHO Copying "%sourceFolder%\uiohook.dll" to "%targetFolder%\uiohook.dll"
+COPY /B /Y LICENSE %targetFolder% 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+IF NOT EXIST "%targetFolder%\locales" MKDIR "%targetFolder%\locales"
+
+ECHO Copying "..\locales" to "%targetFolder%\locales"
+XCOPY /S /Y ..\locales "%targetFolder%\locales" 1>NUL
+CALL :COPY_ERRORCHECK
+ECHO.
+
+EXIT /B 0
 makensis %targetFolder%\setup.nsi  
-
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Error building installer
     EXIT /B 1
@@ -34,5 +69,15 @@ IF %ERRORLEVEL% NEQ 0 (
 
 cd ..\nsis
 
-START "" "%start_name%"
+call "%start_name%"
 cd /d %~dp0
+
+GOTO :EOF
+
+:COPY_ERRORCHECK
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO Error copying file^(s^)
+) ELSE (
+    ECHO File^(s^) copied successfully
+)
+GOTO :EOF
