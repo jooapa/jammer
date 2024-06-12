@@ -55,6 +55,7 @@ jammer --version      show version
 *when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
 
 ```bash
+jammer -h, --help                         show this help message-
 jammer -p, --play <name>                  play playlist
 jammer -c, --create <name>                create playlist
 jammer -d, --delete <name>                delete playlist
@@ -64,6 +65,8 @@ jammer -s, --show <name>
 jammer -l, --list                         list all playlists
 jammer -f, --flush                        flushes all the songs in songs folder
 jammer -sp, --set-path <path>, <default>  set path for songs folder
+jammer -gp, --get-path                    get the path to the jammer/songs folder
+jammer -hm, --home                        play all songs from the jammer/songs folder
 ```
 
 ### Example usage

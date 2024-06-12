@@ -481,7 +481,7 @@ namespace Jammer {
             table.AddColumn(Locale.CliHelp.PlaylistCommands);
             table.AddColumn(Locale.CliHelp.Description);
 
-            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", "Show this help message"); // TODO ADD LOCALE
+            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", "show this help message"); // TODO ADD LOCALE
             table.AddRow($"[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
             table.AddRow($"[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
@@ -491,8 +491,8 @@ namespace Jammer {
             table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
             table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "Delete all songs from the jammer/songs folder"); // TODO ADD LOCALE
             table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "Get the path to the jammer/songs folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "Play songs from the jammer/songs folder"); // TODO ADD LOCALE
+            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "get the path to the jammer/songs folder"); // TODO ADD LOCALE
+            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "play all songs from the jammer/songs folder"); // TODO ADD LOCALE
             AnsiConsole.Write(table);
         }
         public static void Version() {
