@@ -116,6 +116,12 @@ namespace Jammer
                     }
                 }
 
+                if(Utils.songs.Length == 1){
+                    if(Utils.songs[0] == "\\}songs\\}"){
+                        Utils.songs[0] = Path.Combine(Utils.JammerPath, "songs");
+                    }
+                }
+
                 for (int i = 0; i < args.Length; i++) {
                     string arg = args[i];
                     switch (arg) {
