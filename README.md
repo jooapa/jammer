@@ -63,7 +63,7 @@ jammer -a, --add <name> <song> ...        add song to playlist
 jammer -r, --remove <name> <song> ...     remove song from playlist
 jammer -s, --show <name> 
 jammer -l, --list                         list all playlists
-jammer -f, --flush                        flushes all the songs in songs folder
+jammer -f, --flush                        deletes all the songs in songs folder
 jammer -sp, --set-path <path>, <default>  set path for songs folder
 jammer -gp, --get-path                    get the path to the jammer/songs folder
 jammer -hm, --home                        play all songs from the jammer/songs folder
