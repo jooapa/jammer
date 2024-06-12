@@ -1,5 +1,8 @@
 using SharpHook.Native;
 using Spectre.Console;
+// #pragma warning disable CS8604
+// #pragma warning disable CS8602
+// #pragma warning disable CS8600
 
 namespace Jammer {
     public static class TUI {
