@@ -512,10 +512,13 @@ namespace Jammer
                         Play.NextSong();
                         // AnsiConsole.Clear();
                         break;
-
                     case MainStates.previous:
-                        Play.PrevSong();
-                        // AnsiConsole.Clear();
+                        if(Utils.MusicTimePlayed > 3){ // if the song is played for more than 5 seconds, go to the beginning
+                            Play.SeekSong(0, false);
+                            state = MainStates.playing;
+                        } else {
+                            Play.PrevSong();
+                        }
                         break;
                 }
 
