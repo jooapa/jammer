@@ -10,15 +10,21 @@ using System.Text.RegularExpressions;
 
 namespace Jammer {
     public static class Themes {
-        public static readonly string comments = @"// Colors https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
-// write the color name in lowercase ' ' and the styles ' '
-// ""PlaylistNameColor"": ""red bold italic""
-// but you can have just ""bold""
-// if you type """" it will be the default color
-// Border Styles https://spectreconsole.net/appendix/borders
-// write the border name with CamelCase
-// Example: Rounded
-// Only the BorderColor is in RGB format: [0-255,0-255,0-255]
+        public static readonly string comments = 
+@"// Colours: https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
+// or see jammer\docs\console_styling.html
+
+// Write the colour's and styles' name in lowercase: ""white"", ""italic bold""
+// Example: ""PathColor"": ""red bold italic""
+// Note:    If you type """" as a colour's value, it will use the terminal's default color
+// Example: ""PathColor"": """"
+
+
+// Border Styles: https://spectreconsole.net/appendix/borders
+// or see jammer\docs\console_styling.html
+
+// Example: ""BorderStyle"": ""Rounded""
+// BorderColors are in RGB format: [0-255, 0-255, 0-255]
 ";
 
         public static readonly string fileContent = @"

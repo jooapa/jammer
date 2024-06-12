@@ -94,6 +94,11 @@ SetOutPath $PROFILE\Jammer\locales
 File /r "locales\*.*"
 SetOutPath $INSTALL_DIR
 
+CreateDirectory $PROFILE\Jammer\docs
+SetOutPath $PROFILE\Jammer\docs
+File /r "docs\*.*"
+SetOutPath $INSTALL_DIR
+
 SectionEnd
 
 ############# SETUP ################
@@ -176,7 +181,6 @@ Delete "$SENDTO\Jammer.lnk"
 Delete "$INSTDIR\bass.dll"
 Delete "$INSTDIR\bass_aac.dll"
 Delete "$INSTDIR\uiohook.dll"
-
 
 ; Remove the installation directory if it still exists
 RMDir /r $INSTDIR

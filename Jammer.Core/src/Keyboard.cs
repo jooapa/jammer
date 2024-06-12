@@ -295,7 +295,9 @@ namespace Jammer
                             break;
                         case "LoadEffects": // reset effects
                             Effects.ReadEffects();
-                            Play.SetEffectsToChannel();
+                            if(Utils.songs.Length > 0){
+                                Play.SetEffectsToChannel();
+                            }
                             break;
                         case "ToggleMediaButtons": // toggle media buttons
                             Preferences.isMediaButtons = !Preferences.isMediaButtons;
@@ -469,16 +471,17 @@ namespace Jammer
                             string[] themes = Themes.GetAllThemes();
                             // move that first element is "Create a new theme" and "Jammer Default"
                             string[] newThemes = new string[themes.Length + 2];
-                            newThemes[0] = "Create a new theme";
+                            newThemes[0] = "Create a new theme";                        // TODO ADD LOCALE
                             newThemes[1] = "Jammer Default";
                             for (int i = 0; i < themes.Length; i++)
                             {
                                 newThemes[i + 2] = themes[i];
                             }
                             themes = newThemes;
-
-                            string chosen = Message.MultiSelect(themes, "Choose a theme:");
                             
+                            string chosen = Message.MultiSelect(themes, "Choose a theme:"); // TODO ADD LOCALE
+                            
+
                             if (chosen == "Jammer Default")
                             {
                                 Preferences.theme = chosen;
@@ -492,15 +495,22 @@ namespace Jammer
                             if (chosen == "Create a new theme")
                             {
                                 AnsiConsole.Clear();
-                                string themeName = Message.Input("Enter a theme name:", "Name of your AMAZING theme");
+                                string themeName = Message.Input("Enter a theme name:", "Name of your AMAZING theme"); // TODO ADD LOCALE
                                 if (Play.EmptySpaces(themeName))
                                 {
                                     drawWhole = true;
                                     break;
                                 }
                                 Themes.CreateTheme(themeName);
-                                Message.Input("Go edit the theme file", "Theme file created in the jammer/themes folder");
-
+                                Message.Input("Go edit the theme file", "Theme file created in the jammer/themes folder"); // TODO ADD LOCALE
+                                // If windows, open with notepad
+#if WINDOWS
+                                    System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Utils.JammerPath, "themes"));
+#elif LINUX
+                                    System.Diagnostics.Process.Start("xdg-open", Path.Combine(Utils.JammerPath, "themes"));
+#elif MAC
+                                    System.Diagnostics.Process.Start("open", Path.Combine(Utils.JammerPath, "themes"));
+#endif
                                 Preferences.theme = themeName;
                             }
                             else {
@@ -615,7 +625,7 @@ namespace Jammer
             return true;
         }
 
-        public static void OnKeyReleased(object sender, KeyboardHookEventArgs e) {
+        public static void OnKeyReleased(object? sender, KeyboardHookEventArgs e) {
             if (Preferences.isMediaButtons) {
                 switch(e.Data.KeyCode) {
                     case SharpHook.Native.KeyCode.VcMediaNext:

@@ -4,7 +4,7 @@ using ManagedBass;
 namespace Jammer {
     public static class Exit
     {
-        public static void OnExit(object sender, ConsoleCancelEventArgs args)
+        public static void OnExit(object? sender, ConsoleCancelEventArgs args)
         {
             Debug.dprint("OnExit");
             Bass.Free();
@@ -13,7 +13,7 @@ namespace Jammer {
             Environment.Exit(0);
         }
 
-        public static void OnProcessExit(object sender, EventArgs e)
+        public static void OnProcessExit(object? sender, EventArgs e)
         {
             Debug.dprint("OnProcessExit");
             Bass.Free();

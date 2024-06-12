@@ -297,6 +297,18 @@ namespace Jammer
 #endif
                             }
                             return;
+                        case "--get-path":
+                        case "-gp":
+                            AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
+                            return;
+                        case "--home":
+                        case "-hm":
+                                // if(Utils.songs.Length != 1 && args.Length != 1) {
+                                //     AnsiConsole.MarkupLine("[red]When using --songs or -so, do not provide any other arguments.[/]"); // TODO ADD LOCALE
+                                //     System.Environment.Exit(1);
+                                // } 
+                                Utils.songs[0] = Path.Combine(Utils.JammerPath, "songs");
+                                break;
                         case "--start":
                             // open explorer in Jammer folder
 #if CLI_UI
@@ -512,10 +524,13 @@ namespace Jammer
                         Play.NextSong();
                         // AnsiConsole.Clear();
                         break;
-
                     case MainStates.previous:
-                        Play.PrevSong();
-                        // AnsiConsole.Clear();
+                        if(Utils.MusicTimePlayed > 3){ // if the song is played for more than 5 seconds, go to the beginning
+                            Play.SeekSong(0, false);
+                            state = MainStates.playing;
+                        } else {
+                            Play.PrevSong();
+                        }
                         break;
                 }
 
