@@ -116,12 +116,6 @@ namespace Jammer
                     }
                 }
 
-                if(Utils.songs.Length == 1){
-                    if(Utils.songs[0] == "\\}songs\\}"){
-                        Utils.songs[0] = Path.Combine(Utils.JammerPath, "songs");
-                    }
-                }
-
                 for (int i = 0; i < args.Length; i++) {
                     string arg = args[i];
                     switch (arg) {
@@ -303,6 +297,19 @@ namespace Jammer
 #endif
                             }
                             return;
+                        case "--get-path":
+                        case "-gp":
+                            AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
+                            return;
+                        case "--home":
+                        case "-hm":
+                            Console.WriteLine(args.Length + " " + Utils.songs.Length + " " + Utils.songs[0]);
+                                // if(Utils.songs.Length != 1 && args.Length != 1) {
+                                //     AnsiConsole.MarkupLine("[red]When using --songs or -so, do not provide any other arguments.[/]"); // TODO ADD LOCALE
+                                //     System.Environment.Exit(1);
+                                // } 
+                                Utils.songs[0] = Path.Combine(Utils.JammerPath, "songs");
+                                break;
                         case "--start":
                             // open explorer in Jammer folder
 #if CLI_UI
