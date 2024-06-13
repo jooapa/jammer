@@ -33,9 +33,7 @@ with open('VERSION', 'r') as version_file:
     if is_patch:
         patch = int(patch) + 1   
     build = int(build) + 1
-
-    new_version = f'{major}.{minor}.{patch}.{build}'
-
-    os.system(f'python change_version.py "{new_version}')
+    new_version = f"{major}.{minor}.{patch}.{build}"
+    os.system(f'python change_version.py "{new_version}"')
     
     print(f'Version updated to {new_version}')

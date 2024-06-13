@@ -27,9 +27,6 @@ cp -v Jammer.CLI/bin/Release/net8.0/linux-x64/publish/libuiohook.so jammer.AppDi
 cp -v libs/linux/x86_64/libbass* jammer.AppDir/usr/lib
 cp -v locales/* jammer.AppDir/usr/locales
 
-# Copy the wrapper script
-#cp -v jammer-wrapper.sh jammer.AppDir/usr/bin/jammer-wrapper.sh
-
 if [ ! -f ./appimagetool-x86_64.AppImage ]; then
         curl -LO https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
         chmod 700 ./appimagetool-x86_64.AppImage
@@ -37,5 +34,4 @@ fi
 
 ARCH=x86_64 ./appimagetool-x86_64.AppImage jammer.AppDir jammer-$(cat VERSION)-x86_64.AppImage
 
-# Use the wrapper script
-./jammer-2.7.12.13-x86_64.AppImage "test/test folder 1/01 Exilia - Kill me.mp3"
+#./jammer-$(cat VERSION)-x86_64.AppImage 
