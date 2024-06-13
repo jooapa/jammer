@@ -386,9 +386,6 @@ namespace Jammer
         }
 
         public static void StartUp() {
-            
-
-            Console.WriteLine("Ab");
             try {
                 if (!Bass.Init()) {   
                     Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
@@ -401,7 +398,6 @@ namespace Jammer
                 Console.WriteLine(ex.StackTrace);
             }
 
-            Console.WriteLine("Ac");
             InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
