@@ -397,7 +397,6 @@ namespace Jammer
                 Console.WriteLine($"Exception during BASS initialization: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
-
             InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
