@@ -301,13 +301,21 @@ namespace Jammer
                         case "-gp":
                             AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
                             return;
+                        case "--songs":
+                        case "-so":
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                                System.Diagnostics.Process.Start("explorer.exe", Preferences.songsPath);
+                            } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                                System.Diagnostics.Process.Start("xdg-open", Preferences.songsPath);
+                            }
+                            return;
                         case "--home":
                         case "-hm":
                                 // if(Utils.songs.Length != 1 && args.Length != 1) {
                                 //     AnsiConsole.MarkupLine("[red]When using --songs or -so, do not provide any other arguments.[/]"); // TODO ADD LOCALE
                                 //     System.Environment.Exit(1);
                                 // } 
-                                Utils.songs[0] = Path.Combine(Utils.JammerPath, "songs");
+                                Utils.songs[0] = Preferences.songsPath;
                                 break;
                         case "--start":
                             // open explorer in Jammer folder
@@ -378,12 +386,18 @@ namespace Jammer
         }
 
         public static void StartUp() {
-
-            if (!Bass.Init())
-            {
-                Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
-                return;
+            try {
+                if (!Bass.Init()) {   
+                    Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
+                    return;
+                }
+                // Additional code if initialization is successful
+            } catch (Exception ex) {
+                // Log the exception message and stack trace
+                Console.WriteLine($"Exception during BASS initialization: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
             }
+
             InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given

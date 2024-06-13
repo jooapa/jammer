@@ -493,6 +493,7 @@ namespace Jammer {
             table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO ADD LOCALE
             table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "get the path to the jammer/songs folder"); // TODO ADD LOCALE
             table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "play all songs from the jammer/songs folder"); // TODO ADD LOCALE
+            table.AddRow($"[grey]jammer[/] [red]-so[/][grey],[/][red] --songs [/] ", "open jammer/songs folder"); // TODO ADD LOCALE
             AnsiConsole.Write(table);
         }
         public static void Version() {

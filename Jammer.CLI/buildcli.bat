@@ -8,7 +8,7 @@ SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     @REM locatio
 SET "targetFolder=..\nsis"                                          @REM nsin location
 SET "start_name=Jammer-Setup_V2.7.12.13.exe"                        @REM Change this to the name of the installer
 
-dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
+dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained 
 
 if %ERRORLEVEL% NEQ 0 (
     ECHO Error building CLI
