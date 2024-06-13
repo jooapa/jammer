@@ -52,7 +52,7 @@ jammer -d             debug mode
 jammer --version      show version
 ```
 
-*when using **Soundcloud** or **Youtube** **links** dont forget to use **`https://`** at the start.*
+*when using **Soundcloud** or **Youtube** **links** do not forget to use **`https://`** at the start.*
 
 ```bash
 jammer -h, --help                         show this help message-
@@ -86,12 +86,12 @@ jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
 #### Example of making a playlist in cli
 
 ```bash
-jammer -c gd
-jammer -a gd https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
-jammer -p gd
+jammer -c new_playlist
+jammer -a new_playlist https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
+jammer -p new_playlist
 ```
 
-*you can do same opening the `jammer` and pressing saving as by default keybinds `shift + alt + s` and after that `shift + a` to add the playlist by input*
+*you can do same by opening `jammer`, pressing `shift + alt + s` and after that `shift + a` to add the playlist by input*
 
 You can also use `-d` flag that will add logs to current folder.
 
@@ -108,11 +108,9 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 
 ### Themes
 
-You can customize your own theme, in jammer press by default `Shift + T` that will open a Multi Selection View.
+You can create your own theme by pressing `Shift + T` (default keybing)
 
-Select 'Create a New Theme'. Then write desired theme name. Then go to `jammer/themes` and you should see `name.json` file that contains all the inforamtion for creating theme.
-
-There should be comments documenting what you can add to the properties.
+Select 'Create a New Theme' and write the theme's name. Go to `jammer/themes`, you should see `name.json`. It will contain all the information needed for creating a theme.
 
 ```
 Colours: https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
@@ -130,8 +128,6 @@ or see jammer\docs\console_styling.html
 Example: ""BorderStyle"": ""Rounded""
 BorderColors are in RGB format: [0-255, 0-255, 0-255]
 ```
-
-`Jammer Default` option is Jammer's preset Default theme that comes baked.
 
 ### Effects
 
@@ -277,7 +273,7 @@ sh -c "$(wget -O- https://raw.githubusercontent.com/jooapa/jammer/main/usb-appim
 
 ##### Build script for NSIS installer
 
-you can also use `update.py` to change the version of the app.
+you can use `update.py` to change the version of the app.
 
 ```bash
                  |-Major
