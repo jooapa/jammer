@@ -52,5 +52,5 @@ if ! grep -q "export PATH=\"$BIN_DIR:\$PATH\"" ~/.bashrc; then
 fi
 
 echo Installation completed
-echo run source ~/.bashrc to update the PATH
+echo run "'source ~/.bashrc'" to update the PATH
 echo Run: 'jammer --help' to get started
