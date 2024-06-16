@@ -331,6 +331,7 @@ namespace Jammer
         public static bool drawTime = false;
         public static bool drawVisualizer = false;
         public static bool drawWhole = false;
+        private static bool alreadyDrewHelp = false;
 
         public static string previousView = "default";
         public static void Loop()
@@ -455,7 +456,9 @@ namespace Jammer
                 if (playerView == "default" || playerView == "all")
                 {
                     if (drawVisualizer && Preferences.isVisualizer) {
-                        TUI.DrawVisualizer();
+                        if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop) {
+                            TUI.DrawVisualizer();
+                        }
                     } if (drawTime) {
                         TUI.DrawTime();
                     } if (drawWhole) {
@@ -463,7 +466,16 @@ namespace Jammer
                     }
                 }
                 else {
-                    TUI.RefreshCurrentView();
+                    if (playerView == "help" && !alreadyDrewHelp)
+                    {
+                        TUI.DrawHelp();
+                        alreadyDrewHelp = true;
+                    }
+                    else if (playerView != "help")
+                    {
+                        alreadyDrewHelp = false;
+                        TUI.RefreshCurrentView();
+                    }
                 }
 
                 previousView = playerView;
@@ -473,8 +485,10 @@ namespace Jammer
 
                 if (playerView == "default" || playerView == "all") {
                     Thread.Sleep(1);
+                    alreadyDrewHelp = false;
                 } else
                     Thread.Sleep(50);
+                    
 
             }
         }

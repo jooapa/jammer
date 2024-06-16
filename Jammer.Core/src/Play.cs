@@ -79,64 +79,68 @@ namespace Jammer
             Debug.dprint("Play song");
             var path = "";
 
-            string song = songs[Currentindex];
+            Utils.currentSongIndex = Currentindex;
+            Utils.currentPlaylistSongIndex = Currentindex;
+            
+            string song = songs[Utils.currentSongIndex];
+
             // if song has a title, remove it
             if (song.Contains("½"))
             {
                 song = song.Split("½")[0];
             }
-            Utils.songs[Currentindex] = song;
+            Utils.songs[Utils.currentSongIndex] = song;
 
             // check if file is a local
-            if (System.IO.File.Exists(song))
+            if (System.IO.File.Exists(Utils.songs[Utils.currentSongIndex]))
             {
                 // id related to local file path, convert to absolute path
-                path = Path.GetFullPath(song);
+                path = Path.GetFullPath(Utils.songs[Utils.currentSongIndex]);
             }
             // if folder
-            else if (Directory.Exists(song))
+            else if (Directory.Exists(Utils.songs[Utils.currentSongIndex]))
             {
                 int originalLengthMinusFolder = Utils.songs.Length - 1;
                 // add all files in folder to Utils.songs
-                string[] files = Directory.GetFiles(song);
+                string[] files = Directory.GetFiles(Utils.songs[Utils.currentSongIndex]);
                 foreach (string file in files)
                 {
                     AddSong(file);
                 }
-                AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
+                AnsiConsole.MarkupLine("[bold]" + Utils.currentSongIndex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
 
                 if (Utils.songs.Length == originalLengthMinusFolder) {
                     path = Utils.songs[originalLengthMinusFolder - 1];
                 }
                 else {
-                    path = song;
+                    path = Utils.songs[Utils.currentSongIndex];
                 }
                 
                 
             }
-            else if (URL.isValidSoundCloudPlaylist(song)) {
+            else if (URL.isValidSoundCloudPlaylist(Utils.songs[Utils.currentSongIndex])) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(song, "soundcloud");
+                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "soundcloud");
             }
-            else if (URL.IsValidSoundcloudSong(song))
+            else if (URL.IsValidSoundcloudSong(Utils.songs[Utils.currentSongIndex]))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(song);
+                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
             }
-            else if (URL.IsValidYoutubePlaylist(song))
+            else if (URL.IsValidYoutubePlaylist(Utils.songs[Utils.currentSongIndex]))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.GetSongsFromPlaylist(song, "youtube");
+                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "youtube");
             }
-            else if (URL.IsValidYoutubeSong(song))
+            else if (URL.IsValidYoutubeSong(Utils.songs[Utils.currentSongIndex]))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(song);
+                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
             }
-            else if (URL.IsUrl(song))
+            else if (URL.IsUrl(Utils.songs[Utils.currentSongIndex]))
             {
-                path = Download.DownloadSong(song);
+                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
                 // Message.Data(path, song);
             }
             else
@@ -149,10 +153,10 @@ namespace Jammer
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
             Utils.currentSong = path;
-            Utils.currentSongIndex = Currentindex;
-            Utils.currentPlaylistSongIndex = Currentindex;
-            Utils.songs[Currentindex] = Utils.songs[Currentindex];
+            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex];
+            
 
+            // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
             TagLib.File? tagFile;
             string title = "";
@@ -176,13 +180,13 @@ namespace Jammer
                 title = "";
             }
 
-            if (Utils.songs[Currentindex].Contains("½"))
+            if (Utils.songs[Utils.currentSongIndex  ].Contains("½"))
             {
                 title = "";
             }
 
 
-            Utils.songs[Currentindex] = song + title;
+            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex] + title;
 
             Playlists.AutoSave();
 
@@ -218,8 +222,8 @@ namespace Jammer
                         AddSong(s);
                     }
                     // remove playlist from Utils.songs
-                    Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
-                    if (Currentindex == Utils.songs.Length)
+                    Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
+                    if (Utils.currentSongIndex == Utils.songs.Length)
                     {
                         Utils.currentSongIndex = Utils.songs.Length - 1;
                     }
@@ -232,8 +236,8 @@ namespace Jammer
                     Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
                     Debug.dprint("Unsupported file format");
                     // remove song from current Utils.songs
-                    Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
-                    if (Currentindex == Utils.songs.Length)
+                    Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
+                    if (Utils.currentSongIndex == Utils.songs.Length)
                     {
                         Utils.currentSongIndex = Utils.songs.Length - 1;
                     }

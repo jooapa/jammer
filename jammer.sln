@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jammer.CLI", "Jammer.CLI\Jammer.CLI.csproj", "{12AE68F3-49AD-4352-88DF-3461BF93972F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jammer.Avalonia", "Jammer.Avalonia\Jammer.Avalonia.csproj", "{C7C438EE-B7A0-4D52-826F-B48D4D552472}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jammer.Core", "Jammer.Core\Jammer.Core.csproj", "{D3A3A3A4-3A3D-4A3D-8A3D-3A3D3A3D3A3D}"
 EndProject
 Global

@@ -212,12 +212,14 @@ namespace Jammer
                             break;
                         case "SaveAsPlaylist":
                             Funcs.SaveAsPlaylist();
+                            drawWhole = true;
                             break;
                         case "SaveCurrentPlaylist":
                             Funcs.SaveCurrentPlaylist();
                             break;
                         case "ShufflePlaylist":
                             Funcs.ShufflePlaylist();
+                            drawWhole = true;
                             break;
                         case "Loop": // loop
                             Preferences.isLoop = !Preferences.isLoop;
@@ -267,7 +269,7 @@ namespace Jammer
                             break;
                         case "LoadEffects": // reset effects
                             Effects.ReadEffects();
-                            if(Utils.songs.Length > 0){
+                            if(Utils.currentMusic != 0){
                                 Play.SetEffectsToChannel();
                             }
                             break;
@@ -291,6 +293,7 @@ namespace Jammer
                             break;
                         case "PlaylistOptions": // playlist options
                             Funcs.PlaylistInput();
+                            drawWhole = true;
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 

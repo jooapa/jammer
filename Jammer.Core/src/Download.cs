@@ -11,14 +11,13 @@ namespace Jammer {
     public class Download {
         public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
-        static string url = "";
         static string[] playlistSongs = { "" };
         static readonly YoutubeClient youtube = new();
 
-        public static string DownloadSong(string url2) {
+        public static string DownloadSong(string url) {
             songPath = "";
-            url = url2;
-            Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url2.ToString());
+
+            Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url.ToString());
             if (URL.IsValidSoundcloudSong(url)) {
                 DownloadSoundCloudTrackAsync(url).Wait();
             } else if (URL.IsValidYoutubeSong(url)) {
@@ -83,11 +82,12 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload}" + ex.Message);
             }
         }
+
         private static string GetDownloadedJammerFileName(string url) {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", url);
             return downloadedPath.LastIndexOf("/") > 0 ? downloadedPath.Substring(downloadedPath.LastIndexOf("/") + 1) : downloadedPath;
-        }
-        
+        }  
+
         private static async Task DownloadJammerFile(string url) {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
 
@@ -218,8 +218,9 @@ namespace Jammer {
                             file.Tag.Performers = new string[] { track.User.Username };
                         }           
                         file.Save();
+                        if (track.ArtworkUrl != null)
+                            await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
 
-                        await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
                     } else {
                         Debug.dprint("track title returns null");
                     }
@@ -246,12 +247,12 @@ namespace Jammer {
             file.Save();
         }
 
-        public static async Task GetPlaylist(string url) {
+        public static async Task GetPlaylist(string plurl) {
 
             var soundcloud = new SoundCloudClient();
 
             // Get all playlist tracks
-            var playlist = await soundcloud.Playlists.GetAsync(url, true);
+            var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
 
             if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
@@ -266,10 +267,15 @@ namespace Jammer {
                 playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
                 i++;
             }
+
+            // debug
+            foreach (var song in playlistSongs) {
+                Console.WriteLine(song);
+            }
         }
-        public static async Task GetPlaylistYoutube(string url) {
+        public static async Task GetPlaylistYoutube(string plurl) {
             // Get all playlist tracks
-            var playlist = await youtube.Playlists.GetVideosAsync(url);
+            var playlist = await youtube.Playlists.GetVideosAsync(plurl);
             Console.WriteLine(playlist[0]);
             if (playlist.Count() == 0 || playlist == null) {
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
@@ -291,23 +297,30 @@ namespace Jammer {
             }
         }
 
-
-        public static string GetSongsFromPlaylist(string url, string service) {
+        public static string GetSongsFromPlaylist(string plurl, string service) {
             if(service == "soundcloud"){
-                GetPlaylist(url).Wait();
+                GetPlaylist(plurl).Wait();
             }
             else if( service == "youtube"){
-                GetPlaylistYoutube(url).Wait();
+                GetPlaylistYoutube(plurl).Wait();
 
             }
             
-
             // remove the CurrentSong from Utils.songs
             Utils.songs = Utils.songs.Where(val => val != Utils.songs[Utils.currentSongIndex]).ToArray();
+
+            // Message.Data("current song: " + Utils.songs[Utils.currentSongIndex], "Debug");
+            // Message.Data("playlist first song: " + playlistSongs[0], "Debug");
+            // Message.Data("last song: " + Utils.songs[Utils.songs.Length - 1], "Debug");
+
             // add all songs from playlist to Utils.songs but start adding at the currentSongIndex
             Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
+            // Message.Data(Utils.songs[0], "d1");
+            
             // delete duplicate songs
             Utils.songs = Utils.songs.Distinct().ToArray();
+            // Message.Data(Utils.songs[0], "d2");
+            
 
             return DownloadSong(Utils.songs[Utils.currentSongIndex]);
         }
