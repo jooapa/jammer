@@ -59,6 +59,7 @@ PlaylistViewScrollup = PageUp
 PlaylistViewScrolldown = PageDown
 Choose = Enter
 AddSongToQueue = G
+SearchFromYoutube = Ctrl + Y
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
