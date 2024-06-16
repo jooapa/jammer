@@ -547,9 +547,8 @@ namespace Jammer
                     return;
                 }
             }
-            // add song to current Utils.songs
-            Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
-            Utils.songs[Utils.songs.Length - 1] = song;
+
+            Utils.songs = Utils.songs.Take(Utils.currentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.songs.Skip(Utils.currentSongIndex + 1)).ToArray();
 
             if (Utils.songs.Length == 1)
             {

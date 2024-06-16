@@ -243,6 +243,7 @@ namespace Jammer
                             break;
                         case "ListAllPlaylists":
                             Funcs.ListAllPlaylists();
+                            drawWhole = true;
                             break;
                         case "Help": // show help
                             AnsiConsole.Clear();
@@ -296,7 +297,6 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
-
                             string forwardSecondsString = Jammer.Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
@@ -492,12 +492,15 @@ namespace Jammer
                                 string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
                                 resultsString = resultsString.Append("Cancel").ToArray();
                                 // Display the MultiSelect prompt after the loop completes
+                                AnsiConsole.Clear();
                                 string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
 
                                 // Get the id of the selected song
                                 string selectedId = "";
+                                string selectedString = "";
                                 try{
                                     selectedId = results[Array.IndexOf(resultsString, answer)].Id;
+                                    selectedString = results[Array.IndexOf(resultsString, answer)].Title;
                                 } catch {
                                     // If the user cancels the selection
                                     /*
@@ -510,29 +513,15 @@ namespace Jammer
                                     TUI.DrawPlayer();
                                     break;
                                 }
-                                string url = "https://www.youtube.com/watch?v=" + selectedId;
-                                Utils.songs = Utils.songs.Append(url).ToArray();
-
-                                while (true) {
-                                    string ask = Message.Input("Do you want to play the song now? (y/n)", "y/n");
-                                    if (ask == "y") {
-                                        Start.state = MainStates.next;
-                                    }
-                                    if (ask == "n" || ask == "y") {
-                                        AnsiConsole.Clear();
-                                        TUI.DrawPlayer();
-                                        break;
-                                    }
-                                }
+                                string url = "https://www.youtube.com/watch?v=" + selectedId + "½" + selectedString;
+                                
+                                // add to the current playlist index +1
+                                Play.AddSong(url);
                             } else {
-                                AnsiConsole.MarkupLine("[red]No results found.[/]");
+                                Message.Data("No results found", ":(");
                             }
-
+                            drawWhole = true;
                             break;
-
-                        
-                        
-                        
                         case "PlayRandomSong":
                             Play.RandomSong();
                             break;
