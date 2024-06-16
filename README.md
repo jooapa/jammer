@@ -23,11 +23,11 @@ for the playlist feature across different platforms***
 
 ### Install
 
-Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
-Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt
-install libfuse2`.
+Install latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest).
 
-Install without appimage, requires sudo privileges
+Linux version of Jammer requires fuse2. On Ubuntu 22.02 or newer install it by running `apt install libfuse2`.
+
+If appimage is not supported, run these, requires sudo privileges
 
 ```bash
 curl -o InstallJammer.sh https://raw.githubusercontent.com/Jooapa/jammer/main/InstallJammer.sh
@@ -38,10 +38,12 @@ sudo ./InstallJammer.sh
 ### Update existing
 
 ```bash
-jammer update
+jammer --update
 ```
 
 ## Usage
+
+*when using **Soundcloud** or **Youtube** **links** do not forget to use **`https://`** at the start.*
 
 ```bash
 jammer
@@ -52,43 +54,30 @@ jammer https://youtube.com/watch?v=video-id
 jammer https://youtube.com/playlist?list=playlist-id
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/npc_music/616845.mp3
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/example/terraria.jammer
+jammer "path/to/song.mp3"
 
-jammer --start        opens jammer folder
-jammer --update       checks for updates and installs
-jammer --help -h      show help
-jammer -d             debug mode
-jammer --version      show version
+jammer     --start        opens jammer folder
+jammer     --update       checks for updates and installs
+jammer -h, --help         show help
+jammer -d                 debug mode
+jammer -v, --version      show version
 ```
 
-*when using **Soundcloud** or **Youtube** **links** do not forget to use **`https://`** at the start.*
 
 ```bash
-jammer -h, --help                         show this help message-
-jammer -p, --play <name>                  play playlist
-jammer -c, --create <name>                create playlist
-jammer -d, --delete <name>                delete playlist
-jammer -a, --add <name> <song> ...        add song to playlist
-jammer -r, --remove <name> <song> ...     remove song from playlist
-jammer -s, --show <name> 
-jammer -l, --list                         list all playlists
-jammer -f, --flush                        deletes all the songs in songs folder
-jammer -sp, --set-path <path>, <default>  set path for songs folder
-jammer -gp, --get-path                    get the path to the jammer/songs folder
-jammer -hm, --home                        play all songs from the jammer/songs folder
-```
-
-### Example usage
-
-```bash
-jammer "path/to/song.mp3" "path/to/folder" C:\Users\user\jammer\playlists\playlist.jammer
-```
-
-```bash
-jammer https://soundcloud.com/angry-birds-2009-2014/haunted-hogs https://soundcloud.com/angrysausage/sets/undertale-toby-fox
-```
-
-```bash
-jammer https://www.youtube.com/watch?v=4zjFDTIROhQ
+jammer -h, --help                             show this help message-
+jammer -p, --play       <name>                play playlist
+jammer -c, --create     <name>                create playlist
+jammer -d, --delete     <name>                delete playlist
+jammer -a, --add        <name> <song> ...     add song to playlist
+jammer -r, --remove     <name> <song> ...     remove song from playlist
+jammer -s, --show       <name> 
+jammer -l, --list                             list all playlists
+jammer -f, --flush                            deletes all the songs in songs folder
+jammer -sp, --set-path  <path>, <default>     set path for songs folder
+jammer -gp, --get-path                        get the path to the <jammer/songs> folder
+jammer -hm, --home                            play all songs from the <jammer/songs> folder
+jammer -so, --songs                           open <jammer/songs> folder
 ```
 
 #### Example of making a playlist in cli
@@ -98,12 +87,6 @@ jammer -c new_playlist
 jammer -a new_playlist https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
 jammer -p new_playlist
 ```
-
-*you can do same by opening `jammer`, pressing `shift + alt + s` and after that `shift + a` to add the playlist by input*
-
-You can also use `-d` flag that will add logs to current folder.
-
----
 
 ### Supported formats
 
@@ -116,26 +99,9 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 
 ### Themes
 
-You can create your own theme by pressing `Shift + T` (default keybing)
+You can create your own theme by pressing `Shift + T` (default keybind)
 
-Select 'Create a New Theme' and write the theme's name. Go to `jammer/themes`, you should see `name.json`. It will contain all the information needed for creating a theme.
-
-```
-Colours: https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
-or see jammer\docs\console_styling.html
-
-Write the colour's and styles' name in lowercase: ""white"", ""italic bold""
-Example: ""PathColor"": ""red bold italic""
-Note:    If you type """" as a colour's value, it will use the terminal's default color
-Example: ""PathColor"": """"
-
-
-Border Styles: https://spectreconsole.net/appendix/borders
-or see jammer\docs\console_styling.html
-
-Example: ""BorderStyle"": ""Rounded""
-BorderColors are in RGB format: [0-255, 0-255, 0-255]
-```
+Select 'Create a New Theme' and write the theme's name. Go to `<jammer/themes>`, you should see `name.json`. It will contain all the information needed for creating a theme.
 
 ### Effects
 
@@ -148,7 +114,7 @@ BorderColors are in RGB format: [0-255, 0-255, 0-255]
 - Gargle
 - Parametric Equalizer
 
-Can be changed in the Effects.ini file in the Jammer folder.
+These can be changed in the Effects.ini file in the jammer folder.
 
 ### Default Player Controls
 
@@ -195,6 +161,8 @@ Can be changed in the Effects.ini file in the Jammer folder.
 
 ## Language support
 
+Translations may not be up-to-date
+
 Currently supported languages:
 
 - English
@@ -202,6 +170,8 @@ Currently supported languages:
 - Finnish
 
 Create new translation by copying already existing .ini file from /locales and translating it.
+
+# Developing
 
 ## Build / Run yourself
 
@@ -217,32 +187,18 @@ On **Windows**, you need to add the libraries to the executable folder.
 
 ### Run
 
-#### CLI
 
 ```bash
 dotnet run --project Jammer.CLI -p:DefineConstants="CLI_UI" -- [args]
-```
-
-#### AVALONIA
-
-```bash
-dotnet run --project Jammer.Avalonia -p:DefineConstants="AVALONIA_UI" -- [args]
 ```
 
 ### Build
 
 #### Windows
 
-##### _CLI
 
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
-```
-
-##### _AVALONIA
-
-```bash
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="AVALONIA_UI" --self-contained
 ```
 
 ##### Linux
@@ -253,9 +209,6 @@ Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBR
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false -p:DefineConstants="CLI_UI" --self-contained
 ```
 
-```bash
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=true -p:DefineConstants="AVALONIA_UI"
-```
 
 ##### Linux AppImage release
 
@@ -272,7 +225,7 @@ wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appima
 chmod 700 appimagetool-x86_64.AppImage
 ```
 
-To create AppImage run `build.sh`
+To create AppImage run `build-appimage.sh`
 
 or if you want to build it from usb
 
@@ -281,6 +234,10 @@ sh -c "$(wget -O- https://raw.githubusercontent.com/jooapa/jammer/main/usb-appim
 ```
 
 ##### Build script for NSIS installer
+
+```shell
+.\Jammer.CLI\buildcli.bat
+```
 
 you can use `update.py` to change the version of the app.
 
