@@ -364,6 +364,7 @@ namespace Jammer
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
                     AnsiConsole.Clear();
+                    alreadyDrewHelp = false;
                     drawWhole = true;
                 }
 
