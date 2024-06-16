@@ -41,7 +41,7 @@ namespace Jammer
         public static bool isDebug = false;
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
-        public static string version = "2.7.13.14";
+        public static string version = "2.8.0.0";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
         public static float MusicTimePercentage = 0;
     }

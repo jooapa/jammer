@@ -5,7 +5,7 @@ unicode True
 !define HWND_BROADCAST 0xFFFF
 !define WM_SETTINGCHANGE 0x001A
 
-!define VERSION "2.7.13.14"
+!define VERSION "2.8.0.0"
 
 Outfile "Jammer-Setup_V${VERSION}.exe" ; Use the version number here
 BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
