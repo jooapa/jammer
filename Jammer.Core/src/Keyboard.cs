@@ -39,12 +39,7 @@ namespace Jammer
                     Console.Clear();
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
-                        #if CLI_UI
                         Jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
-                        #endif
-                        #if AVALONIA_UI
-                        // TODO AVALONIA_UI
-                        #endif
                     }
 
                     if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
@@ -216,28 +211,13 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "SaveAsPlaylist":
-                            #if CLI_UI
                             Funcs.SaveAsPlaylist();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "SaveCurrentPlaylist":
-                            #if CLI_UI
                             Funcs.SaveCurrentPlaylist();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "ShufflePlaylist":
-                            #if CLI_UI
                             Funcs.ShufflePlaylist();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "Loop": // loop
                             Preferences.isLoop = !Preferences.isLoop;
@@ -253,9 +233,6 @@ namespace Jammer
                             if (playerView == "default")
                             {   
                                 playerView = "all";
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                             }
                             else
                             {
@@ -263,12 +240,7 @@ namespace Jammer
                             }
                             break;
                         case "ListAllPlaylists":
-                            #if CLI_UI
                             Funcs.ListAllPlaylists();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "Help": // show help
                             AnsiConsole.Clear();
@@ -318,12 +290,7 @@ namespace Jammer
                             Play.MaybeNextSong();
                             break;
                         case "PlaylistOptions": // playlist options
-                            #if CLI_UI
                             Funcs.PlaylistInput();
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
 
@@ -335,12 +302,8 @@ namespace Jammer
                             }
                             else
                             {
-                                #if CLI_UI
+
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                #endif
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                             }
 
                             drawWhole = true;
@@ -355,12 +318,7 @@ namespace Jammer
                             }
                             else
                             {
-                                #if CLI_UI
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                #endif
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                             }
                             drawWhole = true;
                             break;
@@ -374,24 +332,14 @@ namespace Jammer
                             }
                             else
                             {
-                                #if CLI_UI
                                 Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                #endif
-                                #if AVALONIA_UI
-                                // TODO AVALONIA_UI
-                                #endif
                             }
                             drawWhole = true;
                             break;
                         case "CommandHelpScreen":
-                            #if CLI_UI
                             TUI.CliHelp();
 
                             AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             Console.ReadKey(true);
                             drawWhole = true;
                             break;
@@ -402,44 +350,25 @@ namespace Jammer
                         
                         // Case For A
                         case "AddSongToPlaylist":
-                            #if CLI_UI
                             Funcs.AddSongToPlaylist();
                             drawWhole = true;
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         // Case For ?
                         case "ShowSongsInPlaylists":
-                            #if CLI_UI
                             Funcs.ShowSongsInPlaylist();
                             drawWhole = true;
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "PlayOtherPlaylist":
-                            #if CLI_UI
                             Funcs.PlayOtherPlaylist();
                             drawWhole = true;
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
                             break;
                         case "RedownloadCurrentSong":
                             Play.ReDownloadSong();
                             break;
                         case "EditKeybindings":
-                            #if CLI_UI
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexKeybind = 0;
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
+
                             if (playerView == "default")
                             {
                                 playerView = "editkeybindings";
@@ -450,13 +379,9 @@ namespace Jammer
                             }
                             break;
                         case "ChangeLanguage":
-                            #if CLI_UI
                             AnsiConsole.Clear();
                             IniFileHandling.ScrollIndexLanguage = 0;
-                            #endif
-                            #if AVALONIA_UI
-                            // TODO AVALONIA_UI
-                            #endif
+
                             if (playerView == "default")
                             {
                                 playerView = "changelanguage";
@@ -531,12 +456,6 @@ namespace Jammer
                         //     Jammer.Message.Data(Playlists.GetList());
                         //     break;
                     }
-            
-                #if CLI_UI
-                #endif
-                #if AVALONIA_UI
-                // TODO AVALONIA_UI
-                #endif
                 Action = "";
                 if (playerView == "all") {
                     drawWhole = true;

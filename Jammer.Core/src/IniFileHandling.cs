@@ -200,21 +200,11 @@ AddSongToQueue = G
                 try {
                     parser.WriteFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), KeyData);
                 } catch(Exception) {
-                    #if CLI_UI
                     Jammer.Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO 
-                    #endif
                     return;
                 }
             } else {
-                #if CLI_UI
                 Jammer.Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
-                #endif
-                #if AVALONIA_UI
-                // TODO AVALONIA_UI
-                #endif
             }
 
         }
@@ -551,32 +541,18 @@ AddSongToQueue = G
             }
             try {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
-                #if CLI_UI
                 Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                #endif
-                #if AVALONIA_UI
-                // TODO AVALONIA_UI
-                #endif
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
             } catch(Exception) {
                 try {
-                    #if CLI_UI
                     Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO AVALONIA_UI
-                    #endif
                     LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                     Preferences.localeLanguage = country_code;
                     Preferences.SaveSettings();
                 } catch(Exception) {
-                    #if CLI_UI
                     Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO AVALONIA_UI
-                    #endif
+
                     return;
                 }
             }
@@ -596,12 +572,7 @@ AddSongToQueue = G
         if (!Directory.Exists(path)) {
             // Handle the situation when the directory does not exist
             // For example, you can throw an exception or return an empty array
-            #if CLI_UI
             Jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
-            #endif
-            #if AVALONIA_UI
-            // TODO 
-            #endif
             Start.playerView = "default";
             return results.ToArray();
         }

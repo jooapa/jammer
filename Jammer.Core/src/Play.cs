@@ -68,12 +68,7 @@ namespace Jammer
             || songs[0] == "½" 
             || EmptySpaces(songs[0]))
             {
-                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
-                #endif
-                #if AVALONIA_UI
-                // TODO Add no songs in playlist message
-                #endif
                 Currentindex = 0;
                 Start.Run(new string[] {});
                 return;
@@ -108,12 +103,7 @@ namespace Jammer
                 {
                     AddSong(file);
                 }
-                #if CLI_UI
                 AnsiConsole.MarkupLine("[bold]" + Currentindex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
-                #endif
-                #if AVALONIA_UI
-                // TODO Add folder message
-                #endif
 
                 if (Utils.songs.Length == originalLengthMinusFolder) {
                     path = Utils.songs[originalLengthMinusFolder - 1];
@@ -151,12 +141,8 @@ namespace Jammer
             }
             else
             {
-                #if CLI_UI
+
                 AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
-                #endif
-                #if AVALONIA_UI
-                // TODO Add song not found message
-                #endif
                 return;
             }
 
@@ -242,12 +228,8 @@ namespace Jammer
                 }
                 else
                 {
-                    #if CLI_UI
+
                     Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO Add unsupported file format message
-                    #endif
                     Debug.dprint("Unsupported file format");
                     // remove song from current Utils.songs
                     Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
@@ -261,12 +243,9 @@ namespace Jammer
             }
             catch (Exception e)
             {
-                #if CLI_UI
+
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
-                #endif
-                #if AVALONIA_UI
-                // TODO Add error message
-                #endif
+
                 Debug.dprint("Error: " + e);
                 return;
             }
@@ -559,12 +538,8 @@ namespace Jammer
             {
                 if (s == song)
                 {
-                    #if CLI_UI
                     Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
-                    #endif
-                    #if AVALONIA_UI
-                    // TODO Add song in playlist message
-                    #endif
+
                     return;
                 }
             }
@@ -587,12 +562,8 @@ namespace Jammer
             // check if index is in range
             if (index < 0 || index > Utils.songs.Length)
             {
-                #if CLI_UI
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
-                #endif
-                #if AVALONIA_UI
-                // TODO Add index out of range message
-                #endif
+
                 return;
             }
             // remove song from current Utils.songs
@@ -758,12 +729,8 @@ namespace Jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                #if CLI_UI
                 Jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
-                #endif
-                #if AVALONIA_UI
-                // TODO Add start playing message
-                #endif
+
 
                 DeleteSong(Utils.currentSongIndex, false);
                 
@@ -791,11 +758,8 @@ namespace Jammer
             Bass.ChannelPlay(Utils.currentMusic);
 
 
-            #if CLI_UI
             // TUI.RefreshCurrentView();
             Start.drawWhole = true;
-            #endif
-            // TODO AVALONIA_UI
         }
 
         public static void SetFXs() {
