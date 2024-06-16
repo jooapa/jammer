@@ -2,6 +2,7 @@ using ManagedBass;
 using Spectre.Console;
 using System.IO;
 using SharpHook;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Jammer
 {
@@ -9,7 +10,7 @@ namespace Jammer
     {
         public static string Action = "";
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
-        public static void CheckKeyboard()
+        public static void CheckKeyboardAsync()
         {
             if (Console.KeyAvailable || Action != "")
             {
@@ -153,7 +154,6 @@ namespace Jammer
                         // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     }
                 }
-
                 switch (Action)
                     {
                         case "ToMainMenu":
@@ -406,7 +406,6 @@ namespace Jammer
                                 newThemes[i + 2] = themes[i];
                             }
                             themes = newThemes;
-                            
                             string chosen = Message.MultiSelect(themes, "Choose a theme:"); // TODO ADD LOCALE
                             
 
@@ -449,15 +448,94 @@ namespace Jammer
                             Themes.SetTheme(Preferences.theme);
                             drawWhole = true;
                             break;
+                        
+                        
+                        
+                        
+                        
+                        case "SearchFromYoutube":
+                            // TODO ADD LOCALE(s)
+                            string search = Message.Input("Search from youtube: ", "Search a song from youtube by its name");
+
+                            List<SearchResult> results = new();
+                            int indexer = 0;
+                            int max = 10;
+                            async Task loopedidoo() {
+                            await foreach (var result in Download.youtube.Search.GetResultsAsync(search)) {
+                                    switch (result) {
+                                        case YoutubeExplode.Search.VideoSearchResult video: {
+                                            var id = video.Id;
+                                            var title = Markup.Escape(video.Title);
+                                            var duration = video.Duration;
+                                            string type = "video";
+                                            results.Add(new SearchResult { Id = id, Title = title, Duration = duration, Type = type });
+                                            break;
+                                        }
+                                        case YoutubeExplode.Search.PlaylistSearchResult playlist: {
+                                            var id = playlist.Id;
+                                            var title = Markup.Escape(playlist.Title);
+                                            string type = "playlist";
+                                            results.Add(new SearchResult { Id = id, Title = title, Type = type });
+                                            break;
+                                        }
+                                    }
+
+                                    if (indexer == max - 1) {
+                                        break;
+                                    }
+                                    indexer++;
+                                }
+                            }
+                            loopedidoo().Wait();
+
+                            if (results.Count > 0) {
+                                string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
+                                resultsString = resultsString.Append("Cancel").ToArray();
+                                // Display the MultiSelect prompt after the loop completes
+                                string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
+
+                                // Get the id of the selected song
+                                string selectedId = "";
+                                try{
+                                    selectedId = results[Array.IndexOf(resultsString, answer)].Id;
+                                } catch {
+                                    // If the user cancels the selection
+                                    /*
+                                    Unhandled exception. System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+                                    at System.Collections.Generic.List`1.get_Item(Int32 index)
+                                    at Jammer.Start.CheckKeyboardAsync() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Keyboard.cs:line 495
+                                    at Jammer.Start.Loop() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Start.cs:line 373
+                                    */
+                                    AnsiConsole.Clear();
+                                    TUI.DrawPlayer();
+                                    break;
+                                }
+                                string url = "https://www.youtube.com/watch?v=" + selectedId;
+                                Utils.songs = Utils.songs.Append(url).ToArray();
+
+                                while (true) {
+                                    string ask = Message.Input("Do you want to play the song now? (y/n)", "y/n");
+                                    if (ask == "y") {
+                                        Start.state = MainStates.next;
+                                    }
+                                    if (ask == "n" || ask == "y") {
+                                        AnsiConsole.Clear();
+                                        TUI.DrawPlayer();
+                                        break;
+                                    }
+                                }
+                            } else {
+                                AnsiConsole.MarkupLine("[red]No results found.[/]");
+                            }
+
+                            break;
+
+                        
+                        
+                        
                         case "PlayRandomSong":
                             Play.RandomSong();
                             break;
-                        // case ConsoleKey.J:
-                        //     Jammer.Message.Input();
-                        //     break;
-                        // case ConsoleKey.K:
-                        //     Jammer.Message.Data(Playlists.GetList());
-                        //     break;
                     }
                 Action = "";
                 if (playerView == "all") {

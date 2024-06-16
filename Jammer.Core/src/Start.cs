@@ -371,7 +371,7 @@ namespace Jammer
                 {
                     case MainStates.idle:
                         // TUI.ClearScreen();
-                        CheckKeyboard();
+                        CheckKeyboardAsync();
                         break;
 
                     case MainStates.play:
@@ -419,7 +419,7 @@ namespace Jammer
                             drawTime = true;
                         }
 
-                        CheckKeyboard();
+                        CheckKeyboardAsync();
                         break;
 
                     case MainStates.pause:

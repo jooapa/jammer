@@ -12,7 +12,7 @@ namespace Jammer {
         public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
         static string[] playlistSongs = { "" };
-        static readonly YoutubeClient youtube = new();
+        public static readonly YoutubeClient youtube = new();
 
         public static string DownloadSong(string url) {
             songPath = "";

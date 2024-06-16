@@ -183,6 +183,7 @@ Can be changed in the Effects.ini file in the Jammer folder.
 | `Alt + S`| Shuffle playlist |
 | `Shift + P`| Play song(s) |
 | `Shift + B`| Redownload current song |
+| `Shift + Y`| Search YouTube for songs |
 
 ## Language support
 
