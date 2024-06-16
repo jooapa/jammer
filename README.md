@@ -27,6 +27,14 @@ Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
 Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt
 install libfuse2`.
 
+Install without appimage, requires sudo privileges
+
+```bash
+curl -o InstallJammer.sh https://raw.githubusercontent.com/Jooapa/jammer/main/InstallJammer.sh
+chmod +x InstallJammer.sh
+sudo ./InstallJammer.sh
+```
+
 ### Update existing
 
 ```bash

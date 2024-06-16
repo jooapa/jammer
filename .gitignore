@@ -3,6 +3,8 @@
 
 test/
 
+*.tar.gz
+
 appimagetool-x86_64.AppImage
 *.AppImage
 jammer.AppDir/usr/
