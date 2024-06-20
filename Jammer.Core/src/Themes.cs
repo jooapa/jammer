@@ -135,6 +135,10 @@ namespace Jammer {
         ""TitleColorIfError"": ""red bold"",
         ""InputTextColorIfError"": ""red"",
         ""MultiSelectMoreChoicesTextColor"": ""grey""
+    },
+    ""Visualizer"": {
+        ""PlayingColor"": ""white"",
+        ""PausedColor"": ""yellow""
     }
 }";
 
@@ -234,6 +238,9 @@ namespace Jammer {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] does not exist", themeName);
                 return false;
             }
+
+            // check missing properties
+            AddAllMissingPropertiesInJsonFileIfMissing(path);
             string json = File.ReadAllText(path);
             string jsonWithoutComments = Regex.Replace(json, @"//.*$", "", RegexOptions.Multiline);
             var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
@@ -333,6 +340,7 @@ namespace Jammer {
             public EditKeybindsTheme? EditKeybinds { get; set; }
             public LanguageChangeTheme? LanguageChange { get; set; }
             public InputBoxTheme? InputBox { get; set; }
+            public VisualizerTheme? Visualizer { get; set; }
         }
 
         public class PlaylistTheme
@@ -458,6 +466,12 @@ namespace Jammer {
             public string? TitleColorIfError { get; set; }
             public string? InputTextColorIfError { get; set; }
             public string? MultiSelectMoreChoicesTextColor { get; set; }
+        }
+
+        public class VisualizerTheme
+        {
+            public string? PlayingColor { get; set; }
+            public string? PausedColor { get; set; }
         }
     }
 }

@@ -132,8 +132,9 @@ namespace Jammer {
 
         static public void DrawVisualizer() {
             AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
+
             if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
+                AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth+35, true));
             } else {
                 AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth+35, false));
             }
