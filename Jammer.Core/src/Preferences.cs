@@ -16,7 +16,7 @@ namespace Jammer
         public static bool isMuted = GetIsMuted();
         public static bool isShuffle = GetIsShuffle();
         public static bool isAutoSave = GetIsAutoSave();
-        public static string? localeLanguage = getLocaleLanguage();
+        public static string? localeLanguage = GetLocaleLanguage();
         public static string songsPath = GetSongsPath();
         public static bool isMediaButtons = GetIsMediaButtons();
         public static bool isVisualizer = GetIsVisualizer();
@@ -270,7 +270,7 @@ namespace Jammer
         }
 
 
-        static public string? getLocaleLanguage()
+        static public string? GetLocaleLanguage()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
             if (File.Exists(JammerPath))

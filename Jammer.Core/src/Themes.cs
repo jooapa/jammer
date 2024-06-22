@@ -70,7 +70,7 @@ namespace Jammer {
         ""PlayingLetterColor"": """",
         ""PlayingLetterLetter"": ""❚❚"",
         ""PausedLetterColor"": """",
-        ""PausedLetterLetter"": ""▶"",
+        ""PausedLetterLetter"": ""▶ "",
         ""StoppedLetterColor"": """",
         ""StoppedLetterLetter"": ""■"",
         ""NextLetterColor"": """",
