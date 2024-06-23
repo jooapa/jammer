@@ -23,17 +23,9 @@ for the playlist feature across different platforms***
 
 ### Install
 
-Install latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest).
-
-Linux version of Jammer requires fuse2. On Ubuntu 22.02 or newer install it by running `apt install libfuse2`.
-
-If appimage is not supported, run these, requires sudo privileges
-
-```bash
-curl -o InstallJammer.sh https://raw.githubusercontent.com/Jooapa/jammer/main/InstallJammer.sh
-chmod +x InstallJammer.sh
-sudo ./InstallJammer.sh
-```
+Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
+Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt
+install libfuse2`.
 
 ### Update existing
 
@@ -142,7 +134,7 @@ These can be changed in the Effects.ini file in the jammer folder.
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
-| `Shift` + `Tab` | Change Theme|
+| `Shift` + `Y` | Change Theme|
 
 ### Default Playlist Controls
 

@@ -105,21 +105,21 @@ SearchFromYoutube = Ctrl + Y
             //NOTE(ra) Use AppImage locale files
             if ( Utils.AppDirMount != null ) {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {
                     LocaleData = new IniData();
                 }
             } else {
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
+                    LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {
                     LocaleData = new IniData();
                 }
 
                 try {
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.getLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
+                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
                     LocaleDataFound = true;
                 } catch(Exception) {}
             }

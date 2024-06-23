@@ -132,8 +132,9 @@ namespace Jammer {
 
         static public void DrawVisualizer() {
             AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
+
             if (Start.state == MainStates.playing || Start.state == MainStates.play) {
-                AnsiConsole.Write(Visual.GetSongVisual(Start.consoleWidth+35));
+                AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth+35, true));
             } else {
                 AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth+35, false));
             }
@@ -312,34 +313,35 @@ namespace Jammer {
             table.Width = Start.consoleWidth;
 
             char separator = '+';
-            string[] ToMainMenu =            (Keybindings.ToMainMenu).Replace(" ", "").Split(separator);
-            string[] AddSongToPlaylist =     (Keybindings.AddSongToPlaylist).Replace(" ", "").Split(separator);
-            string[] ShowSongsInPlaylists =  (Keybindings.ShowSongsInPlaylists).Replace(" ", "").Split(separator);
-            string[] ListAllPlaylists =      (Keybindings.ListAllPlaylists).Replace(" ", "").Split(separator);
-            string[] PlayOtherPlaylist =     (Keybindings.PlayOtherPlaylist).Replace(" ", "").Split(separator);
-            string[] SaveCurrentPlaylist =   (Keybindings.SaveCurrentPlaylist).Replace(" ", "").Split(separator);
-            string[] SaveAsPlaylist =        (Keybindings.SaveAsPlaylist).Replace(" ", "").Split(separator);
-            string[] ShufflePlaylist =       (Keybindings.ShufflePlaylist).Replace(" ", "").Split(separator);
-            string[] PlaySong =              (Keybindings.PlaySong).Replace(" ", "").Split(separator);
-            string[] RedownloadCurrentSong = (Keybindings.RedownloadCurrentSong).Replace(" ", "").Split(separator);
-            string[] PlayPause =             (Keybindings.PlayPause).Replace(" ", "").Split(separator);
-            string[] Quit =                  (Keybindings.Quit).Replace(" ", "").Split(separator);
-            string[] Backwards5s =           (Keybindings.Backwards5s).Replace(" ", "").Split(separator);
-            string[] Forward5s =             (Keybindings.Forward5s).Replace(" ", "").Split(separator);
-            string[] VolumeUp =              (Keybindings.VolumeUp).Replace(" ", "").Split(separator);
-            string[] VolumeDown =            (Keybindings.VolumeDown).Replace(" ", "").Split(separator);
-            string[] Loop =                  (Keybindings.Loop).Replace(" ", "").Split(separator);
-            string[] Mute =                  (Keybindings.Mute).Replace(" ", "").Split(separator);
-            string[] Shuffle =               (Keybindings.Shuffle).Replace(" ", "").Split(separator);
-            string[] NextSong =              (Keybindings.NextSong).Replace(" ", "").Split(separator);
-            string[] PreviousSong =          (Keybindings.PreviousSong).Replace(" ", "").Split(separator);
-            string[] PlayRandomSong =        (Keybindings.PlayRandomSong).Replace(" ", "").Split(separator);
-            string[] DeleteCurrentSong =     (Keybindings.DeleteCurrentSong).Replace(" ", "").Split(separator);
-            string[] PlaylistOptions =       (Keybindings.PlaylistOptions).Replace(" ", "").Split(separator);
-            string[] CommandHelpScreen =     (Keybindings.CommandHelpScreen).Replace(" ", "").Split(separator);
-            string[] EditKeybindings =       (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
-            string[] ChangeLanguage =        (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
-            string[] ChangeTheme =           (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
+            string[] ToMainMenu =              (Keybindings.ToMainMenu).Replace(" ", "").Split(separator);
+            string[] AddSongToPlaylist =       (Keybindings.AddSongToPlaylist).Replace(" ", "").Split(separator);
+            string[] ShowSongsInPlaylists =    (Keybindings.ShowSongsInPlaylists).Replace(" ", "").Split(separator);
+            string[] ListAllPlaylists =        (Keybindings.ListAllPlaylists).Replace(" ", "").Split(separator);
+            string[] PlayOtherPlaylist =       (Keybindings.PlayOtherPlaylist).Replace(" ", "").Split(separator);
+            string[] SaveCurrentPlaylist =     (Keybindings.SaveCurrentPlaylist).Replace(" ", "").Split(separator);
+            string[] SaveAsPlaylist =          (Keybindings.SaveAsPlaylist).Replace(" ", "").Split(separator);
+            string[] ShufflePlaylist =         (Keybindings.ShufflePlaylist).Replace(" ", "").Split(separator);
+            string[] PlaySong =                (Keybindings.PlaySong).Replace(" ", "").Split(separator);
+            string[] RedownloadCurrentSong =   (Keybindings.RedownloadCurrentSong).Replace(" ", "").Split(separator);
+            string[] PlayPause =               (Keybindings.PlayPause).Replace(" ", "").Split(separator);
+            string[] Quit =                    (Keybindings.Quit).Replace(" ", "").Split(separator);
+            string[] Backwards5s =             (Keybindings.Backwards5s).Replace(" ", "").Split(separator);
+            string[] Forward5s =               (Keybindings.Forward5s).Replace(" ", "").Split(separator);
+            string[] VolumeUp =                (Keybindings.VolumeUp).Replace(" ", "").Split(separator);
+            string[] VolumeDown =              (Keybindings.VolumeDown).Replace(" ", "").Split(separator);
+            string[] Loop =                    (Keybindings.Loop).Replace(" ", "").Split(separator);
+            string[] Mute =                    (Keybindings.Mute).Replace(" ", "").Split(separator);
+            string[] Shuffle =                 (Keybindings.Shuffle).Replace(" ", "").Split(separator);
+            string[] NextSong =                (Keybindings.NextSong).Replace(" ", "").Split(separator);
+            string[] PreviousSong =            (Keybindings.PreviousSong).Replace(" ", "").Split(separator);
+            string[] PlayRandomSong =          (Keybindings.PlayRandomSong).Replace(" ", "").Split(separator);
+            string[] DeleteCurrentSong =       (Keybindings.DeleteCurrentSong).Replace(" ", "").Split(separator);
+            string[] PlaylistOptions =         (Keybindings.PlaylistOptions).Replace(" ", "").Split(separator);
+            string[] CommandHelpScreen =       (Keybindings.CommandHelpScreen).Replace(" ", "").Split(separator);
+            string[] EditKeybindings =         (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
+            string[] ChangeLanguage =          (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
+            string[] ChangeTheme =             (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
+            string[] SearchFromYoutube =       (Keybindings.SearchFromYoutube).Replace(" ", "").Split(separator);
 
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
@@ -360,7 +362,7 @@ namespace Jammer {
             table.AddRow(Themes.sColor(Locale.Help.Playlist, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), "" ,                                                                                  DrawHelpTextColouring(EditKeybindings), Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(NextSong), Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                                 DrawHelpTextColouring(ChangeLanguage), Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(PreviousSong), Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                          DrawHelpTextColouring(ChangeTheme), Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(PlayRandomSong), Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(PlayRandomSong), Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                      DrawHelpTextColouring(SearchFromYoutube), Themes.sColor("Search From Youtube", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(DeleteCurrentSong), Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(PlaylistOptions), Themes.sColor(Locale.Help.ShowPlaylistOptions, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));

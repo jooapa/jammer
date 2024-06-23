@@ -457,7 +457,7 @@ namespace Jammer
                 if (playerView == "default" || playerView == "all")
                 {
                     if (drawVisualizer && Preferences.isVisualizer) {
-                        if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop) {
+                        if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop || state == MainStates.idle) {
                             TUI.DrawVisualizer();
                         }
                     } if (drawTime) {
@@ -467,13 +467,11 @@ namespace Jammer
                     }
                 }
                 else {
-                    if (playerView == "help" && !alreadyDrewHelp)
-                    {
+                    if (playerView == "help" && !alreadyDrewHelp) {
                         TUI.DrawHelp();
                         alreadyDrewHelp = true;
                     }
-                    else if (playerView != "help")
-                    {
+                    else if (playerView != "help") {
                         alreadyDrewHelp = false;
                         TUI.RefreshCurrentView();
                     }

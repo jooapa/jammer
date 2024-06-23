@@ -51,7 +51,7 @@ PausingEffect = true
         public static bool pausingEffect = true; // Pausing effect flag
 
         private static float scaleFactor = 1.0f;
-        public static string GetSongVisual(int length, bool isPlaying = true)
+        public static string GetSongVisual(int length, bool isPlaying)
         {
             // If the song is not playing, gradually decrease the scale factor
             if (!isPlaying && pausingEffect)
@@ -125,8 +125,13 @@ PausingEffect = true
                 frequencyBuilder.Append(unicodeMap[index]);
             }
 
-            // Return the frequency string
-            return frequencyBuilder.ToString();
+            string str = frequencyBuilder.ToString();
+
+            if (isPlaying) {
+                return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PlayingColor);
+            } else {
+                return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PausedColor);
+            }
         }
 
         public static string[] GetUnicodeMap()
