@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using ManagedBass;
 using ManagedBass.Aac;
 using ManagedBass.DirectX8;
@@ -137,6 +138,26 @@ namespace Jammer
             {
                 // id related to url, download and convert to absolute path
                 path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
+            }
+            else if (URL.IsValidSpotifyPlaylist(Utils.songs[Utils.currentSongIndex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "spotify");
+            }
+            else if (URL.IsValidSpotifySong(Utils.songs[Utils.currentSongIndex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
+            }
+            else if (URL.IsValidSpotifyAlbum(Utils.songs[Utils.currentSongIndex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "spotify");
+            }
+            else if (URL.IsValidSpotifyArtist(Utils.songs[Utils.currentSongIndex]))
+            {
+                // id related to url, download and convert to absolute path
+                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "spotify");
             }
             else if (URL.IsUrl(Utils.songs[Utils.currentSongIndex]))
             {

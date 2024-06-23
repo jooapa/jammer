@@ -36,6 +36,11 @@ namespace Jammer
         public static string ytPlaylistPattern = @"^https?:\/\/(?:www\.)?youtube\.com\/playlist\?list=[\w-]+$";
         public static string urlPatternHTTPS = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
         public static string urlPatternHTTP = @"http?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
+        public static string spotifyPatternPlaylist = @"https:\/\/open\.spotify\.com\/(playlist)\/[a-zA-Z0-9]+";
+        public static string spotifyPatternSong = @"https:\/\/open\.spotify\.com\/(track)\/[a-zA-Z0-9]+";
+        public static string spotifyPatternAlbum = @"https:\/\/open\.spotify\.com\/(album)\/[a-zA-Z0-9]+";
+        public static string spotifyPatternArtists = @"https:\/\/open\.spotify\.com\/(artist)\/[a-zA-Z0-9]+";
+        public static string spotifyMate = @"https:\/\/spotifymate\.com\/dl\?url=[a-zA-Z0-9%_\-\.]+&title=[a-zA-Z0-9%_\-\+\s]+&type=[a-zA-Z0-9]+";
         public static bool mainLoop = true;
         public static string JammerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "jammer");
         public static bool isDebug = false;
@@ -44,5 +49,6 @@ namespace Jammer
         public static string version = "2.8.1.2";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
         public static float MusicTimePercentage = 0;
+        public static string memory_for_songPath = "";
     }
 }

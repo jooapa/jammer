@@ -2,6 +2,7 @@ using SoundCloudExplode;
 using YoutubeExplode;
 using YoutubeExplode.Common;
 using Spectre.Console;
+using SpotifyExplode;
 using System.IO;
 using TagLib;
 using System.Net;
@@ -11,6 +12,7 @@ namespace Jammer {
     public class Download {
         public static string songPath = "";
         static SoundCloudClient soundcloud = new SoundCloudClient();
+        static SpotifyClient spotify = new SpotifyClient();
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
 
@@ -20,9 +22,22 @@ namespace Jammer {
             Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url.ToString());
             if (URL.IsValidSoundcloudSong(url)) {
                 DownloadSoundCloudTrackAsync(url).Wait();
-            } else if (URL.IsValidYoutubeSong(url)) {
+            } 
+            else if (URL.IsValidYoutubeSong(url)) {
                 DownloadYoutubeTrackAsync(url).Wait();
-            } else if (URL.IsUrl(url)) {
+            } 
+            else if(URL.IsValidSpotifySong(url)){
+                DownloadSpotifyTrackAsync(url).Wait();
+            } 
+            else if (URL.IsUrl(url)) {
+                if (url.EndsWith(".jammer")) {
+                    DownloadJammerFile(url).Wait();
+                }
+                else {
+                    GeneralDownload(url).Wait();
+                }
+            }
+            else if (URL.IsUrl(url)) {
                 if (url.EndsWith(".jammer")) {
                     DownloadJammerFile(url).Wait();
                 }
@@ -44,6 +59,7 @@ namespace Jammer {
                 Preferences.songsPath,
                 formattedUrl
             );
+            Utils.memory_for_songPath = songPath;
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
             if (System.IO.File.Exists(songPath)) {
                 return;
@@ -297,15 +313,100 @@ namespace Jammer {
             }
         }
 
+        private static async Task DownloadSpotifyTrackAsync(string url){
+            string formattedUrl = FormatUrlForFilename(url);
+            songPath = Path.Combine(
+                Preferences.songsPath,
+                formattedUrl
+            );
+            if (System.IO.File.Exists(songPath)) {
+                return;
+            }
+            string? downloadUrl = await spotify.Tracks.GetDownloadUrlAsync(url);
+            if(downloadUrl == null){
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: {Locale.OutsideItems.NoAudioStream}", "Error");
+                return;
+            }
+            try
+            {
+                // var streamManifest = await spotify.Tracks.;
+                // var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
+                // var video = await youtube.Videos.GetAsync(url);
+                
+                string newPath = Path.Combine(Preferences.songsPath, formattedUrl);
+                if (System.IO.File.Exists(newPath)) {
+                    return;
+                }
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {newPath}");
+                GeneralDownload(downloadUrl).Wait();
+                formattedUrl += ".mp3";
+                songPath = newPath;
+                System.IO.File.Move(Utils.memory_for_songPath, newPath);
+                // if (streamInfo != null)
+                // {
+                    // var progress = new Progress<double>(data =>
+                    // {
+                    //     AnsiConsole.Clear();
+                    //     Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
+                    // });
+
+                    // await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
+
+                    // TagLib
+                    // var file = TagLib.File.Create(songPath);
+                    // file.Tag.Title = Start.Sanitize(video.Title);
+                    // file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                    // file.Tag.Album = video.Author.ChannelTitle;
+                    // file.Save();
+                // }
+                // else
+                // {
+                //     Jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
+                // }
+            }
+            catch (Exception ex)
+            {
+                Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                songPath = "";
+            }
+        }
+        public static async Task GetPlaylistSpotify(string plurl){
+            Console.WriteLine("Getting playlist: " + plurl);
+            var playlist = await spotify.Playlists.GetAsync(plurl);
+            List<SpotifyExplode.Tracks.Track> tracks = await spotify.Playlists.GetTracksAsync(plurl);
+
+            if (tracks.Count == 0 || tracks == null) {
+                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                Console.ReadLine();
+                return;
+            }
+
+            // add all tracks permalinkUrl to songs array
+            playlistSongs = new string[tracks.Count];
+            int i = 0;
+            foreach (SpotifyExplode.Tracks.Track track in tracks) {
+                var _url = track.Url?.ToString() ?? string.Empty;
+                var index = _url.IndexOf('?');
+                if (index != -1) {
+                    _url = _url.Substring(0, index);
+                }
+                playlistSongs[i] = _url;
+                i++;
+            }
+        }
+
         public static string GetSongsFromPlaylist(string plurl, string service) {
             if(service == "soundcloud"){
                 GetPlaylist(plurl).Wait();
             }
             else if( service == "youtube"){
                 GetPlaylistYoutube(plurl).Wait();
-
             }
-            
+            else if (service == "spotify") {
+                GetPlaylistSpotify(plurl).Wait();
+            }
+
+
             // remove the CurrentSong from Utils.songs
             Utils.songs = Utils.songs.Where(val => val != Utils.songs[Utils.currentSongIndex]).ToArray();
 
@@ -330,6 +431,90 @@ namespace Jammer {
             if (URL.isValidSoundCloudPlaylist(url)) {
                 return "Soundcloud Playlist";
             }
+            else if (URL.IsValidSpotifyPlaylist(url)){
+                // remove ? and everything after
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+
+                string formattedSCUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("?", " ");
+                if (isCheck)
+                {
+                    return formattedSCUrl;
+                }
+                else
+                {
+                    return formattedSCUrl + ".mp3";
+                }
+            }
+            else if (URL.IsValidSpotifySong(url)){
+                // remove ? and everything after
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+
+                string formattedSCUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("?", " ");
+                if (isCheck)
+                {
+                    return formattedSCUrl;
+                }
+                else
+                {
+                    return formattedSCUrl + ".mp3";
+                }
+            }
+            else if (URL.IsValidSpotifyAlbum(url)){
+                // remove ? and everything after
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+
+                string formattedSCUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("?", " ");
+                if (isCheck)
+                {
+                    return formattedSCUrl;
+                }
+                else
+                {
+                    return formattedSCUrl + ".mp3";
+                }
+            }
+            else if (URL.IsValidSpotifyMate(url)){
+                return "Spotify Mate____TEMP____DELETE____ME____AFTER____DOWNLOAD____";
+            }
+            else if (URL.IsValidSpotifyArtist(url)){
+                // remove ? and everything after
+                int index = url.IndexOf("?");
+                if (index > 0)
+                {
+                    url = url.Substring(0, index);
+                }
+
+                string formattedSCUrl = url.Replace("https://", "")
+                                     .Replace("/", " ")
+                                     .Replace("?", " ");
+                if (isCheck)
+                {
+                    return formattedSCUrl;
+                }
+                else
+                {
+                    return formattedSCUrl + ".mp3";
+                }
+            }
+
             else if (URL.IsValidSoundcloudSong(url))
             {
                 // remove ? and everything after
