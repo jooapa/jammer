@@ -134,7 +134,7 @@ These can be changed in the Effects.ini file in the jammer folder.
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
-| `Shift` + `Tab` | Change Theme|
+| `Shift` + `Y` | Change Theme|
 
 ### Default Playlist Controls
 
