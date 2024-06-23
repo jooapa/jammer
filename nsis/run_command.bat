@@ -20,6 +20,7 @@ IF "%ACTION%"=="update" (
 exit /B 0
 
 :CALLCOMMAND
+ECHO Calling "%CALLCMD%"...
+call "%CALLCMD%"
 ECHO "Done..."
 ECHO "Press enter to exit..."
-call "%CALLCMD%"
