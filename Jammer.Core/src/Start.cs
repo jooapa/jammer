@@ -49,14 +49,11 @@ namespace Jammer
 
         public static void Run(string[] args)
         {
-
-
-
-                try{
-                    Console.OutputEncoding = System.Text.Encoding.UTF8;
-                } catch (System.Exception e) {
-                    Console.WriteLine(e.Message);
-                }
+            try{
+                Console.OutputEncoding = System.Text.Encoding.UTF8;
+            } catch (System.Exception e) {
+                Console.WriteLine(e.Message);
+            }
 
             Utils.songs = args;
             // Theme init

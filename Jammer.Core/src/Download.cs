@@ -132,6 +132,7 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error");
             }
 
+
             songPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
         }
 

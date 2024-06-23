@@ -212,14 +212,10 @@ namespace Jammer
                     Utils.currentPlaylist = Path.GetFileName(nameExt[0]);
 
                     string[] playlist = System.IO.File.ReadAllLines(path);
-                    // foreach (string s in playlist) {
-                    //     Console.WriteLine(s);
-                    // }
-                    // Console.ReadKey();
 
                     // add all songs in playlist to Utils.songs
                     foreach (string s in playlist) {
-                        AddSong(s);
+                        AddSong(s, false);
                     }
                     // remove playlist from Utils.songs
                     Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
@@ -535,7 +531,7 @@ namespace Jammer
 
         }
 
-        public static void AddSong(string song)
+        public static void AddSong(string song, bool AddNext = true )
         {
             // check if song is already in playlist
             foreach (string s in Utils.songs)
@@ -547,9 +543,13 @@ namespace Jammer
                     return;
                 }
             }
-
-            Utils.songs = Utils.songs.Take(Utils.currentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.songs.Skip(Utils.currentSongIndex + 1)).ToArray();
-
+            if (AddNext)
+                Utils.songs = Utils.songs.Take(Utils.currentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.songs.Skip(Utils.currentSongIndex + 1)).ToArray();
+            else {
+                // add song to current Utils.songs
+                Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
+                Utils.songs[Utils.songs.Length - 1] = song;
+            }
             if (Utils.songs.Length == 1)
             {
                 Utils.currentSongIndex = 0;
