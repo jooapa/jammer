@@ -6,7 +6,7 @@ IF NOT pwd==%cd% (cd /d %~dp0)
 SET "RELEASE_VERSION=win-x64"                                       @REM target runtime
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     @REM location of the published files
 SET "targetFolder=..\nsis"                                          @REM nsin location
-SET "start_name=Jammer-Setup_V2.8.0.0.exe"
+SET "start_name=Jammer-Setup_V2.8.1.2.exe"
 
 dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained 
 
