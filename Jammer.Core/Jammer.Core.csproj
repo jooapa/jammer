@@ -24,6 +24,7 @@
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Midi" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <!-- <PackageReference Include="ManagedBass.Fx" Version="3.1.1" /> -->
     <PackageReference Include="SoundCloudExplode" Version="1.6.2" />

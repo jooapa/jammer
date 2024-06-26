@@ -270,7 +270,7 @@ namespace Jammer
                             break;
                         case "LoadEffects": // reset effects
                             Effects.ReadEffects();
-                            if(Utils.currentMusic != 0){
+                            if(Utils.songs.Length > 0){
                                 Play.SetEffectsToChannel();
                             }
                             break;

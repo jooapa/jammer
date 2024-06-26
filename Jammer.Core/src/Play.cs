@@ -1,7 +1,7 @@
 using ManagedBass;
 using ManagedBass.Aac;
 using ManagedBass.DirectX8;
-
+using ManagedBass.Midi;
 // using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
@@ -21,36 +21,14 @@ namespace Jammer
                                                     ".mdz", ".s3z", ".itz", ".xmz"};
         public static string[] aacExtensions = { ".aac", ".m4a", ".adts", ".m4b" };
         public static string[] mp4Extensions = { ".mp4" };
+        public static string[] midiExtensions = { ".mid", ".midi" };
 
-        public static bool isValidExtension(string extension)
+        public static bool isValidExtension(string checkingExt, string[] exts)
         {
-            foreach (string ext in songExtensions)
+            // if checkingExt is in exts
+            foreach (string ext in exts)
             {
-                if (extension == ext)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool isValidAACExtension(string extension)
-        {
-            foreach (string ext in aacExtensions)
-            {
-                if (extension == ext)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool isValidMP4Extension(string extension)
-        {
-            foreach (string ext in mp4Extensions)
-            {
-                if (extension == ext)
+                if (checkingExt == ext)
                 {
                     return true;
                 }
@@ -196,7 +174,11 @@ namespace Jammer
             {
                 string extension = Path.GetExtension(path).ToLower();
 
-                if (isValidExtension(extension) || isValidAACExtension(extension) || isValidMP4Extension(extension))
+                if (isValidExtension(extension, songExtensions)
+                 || isValidExtension(extension, aacExtensions)
+                 || isValidExtension(extension, mp4Extensions)
+                 || isValidExtension(extension, midiExtensions)
+                   )
                 {
                     Debug.dprint("Audiofile");
                     StartPlaying();
@@ -668,7 +650,7 @@ namespace Jammer
                     // Console.WriteLine(a + " " + posdot);
                     // Console.ReadKey();
 
-                    if(Play.isValidAACExtension(ext) || Play.isValidExtension(ext) || Play.isValidMP4Extension(ext)){
+                    if(isValidExtension(ext, aacExtensions) || isValidExtension(ext, songExtensions) || isValidExtension(ext, mp4Extensions)){
                         
                         return a[..posdot];
                     } else {
@@ -708,7 +690,7 @@ namespace Jammer
             BassFlags flags = BassFlags.Default;
             
 
-            if (isValidAACExtension(Path.GetExtension(Utils.currentSong)))
+            if (isValidExtension(Path.GetExtension(Utils.currentSong), aacExtensions))
             {
                 BassAac.PlayAudioFromMp4 = false;
                 BassAac.AacSupportMp4 = false;
@@ -716,12 +698,17 @@ namespace Jammer
                 // custom flags
                 Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
             }
-            else if (isValidMP4Extension(Path.GetExtension(Utils.currentSong)))
+            else if (isValidExtension(Path.GetExtension(Utils.currentSong), mp4Extensions))
             {
                 // flags
                 BassAac.PlayAudioFromMp4 = true;
                 BassAac.AacSupportMp4 = true;
                 Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
+            }
+            else if (isValidExtension(Path.GetExtension(Utils.currentSong), midiExtensions))
+            {
+                BassMidi.DefaultFont = "WeedsGM3.sf2";
+                Utils.currentMusic = BassMidi.CreateStream(Utils.currentSong, 0, 0, flags);
             }
             else
             {
@@ -732,11 +719,9 @@ namespace Jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                Jammer.Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
-
+                Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
                 DeleteSong(Utils.currentSongIndex, false);
-                
             }
 
             // set volume
