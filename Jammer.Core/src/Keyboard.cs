@@ -535,7 +535,10 @@ namespace Jammer
 
                             Preferences.currentSf2 = chosenSoundFont;
                             Preferences.SaveSettings();
-                            Play.SetSoundFont(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.currentSf2));
+                            long position = Bass.ChannelGetPosition(Utils.currentMusic);
+                            Play.StartPlaying();
+                            // goto the position
+                            Bass.ChannelSetPosition(Utils.currentMusic, position);
                             drawWhole = true;
                             break;
                     }

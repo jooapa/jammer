@@ -55,7 +55,6 @@ jammer -d                 debug mode
 jammer -v, --version      show version
 ```
 
-
 ```bash
 jammer -h, --help                             show this help message-
 jammer -p, --play       <name>                play playlist

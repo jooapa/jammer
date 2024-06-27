@@ -21,7 +21,7 @@ namespace Jammer
         public static bool isMediaButtons = GetIsMediaButtons();
         public static bool isVisualizer = GetIsVisualizer();
         public static string theme = GetTheme();
-        public static string currentSf2 = "";
+        public static string currentSf2 = GetCurrentSf2();
 
 
         static public void CheckJammerFolderExists()

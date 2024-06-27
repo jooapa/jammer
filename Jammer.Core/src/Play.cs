@@ -683,7 +683,6 @@ namespace Jammer
 
         static public void StartPlaying()
         {
-            string type = "";
             ResetMusic();
 
             // flags
@@ -726,7 +725,6 @@ namespace Jammer
                     throw new Exception("Can't set the SoundFont");
                 }
                 Utils.currentMusic = BassMidi.CreateStream(Utils.currentSong, 0, 0, flags);
-                type = "midi";
             }
             else
             {
@@ -746,8 +744,7 @@ namespace Jammer
             Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
             // set FXs
-            if (type != "midi")
-                SetFXs();
+            SetFXs();
 
 
             // set sync
