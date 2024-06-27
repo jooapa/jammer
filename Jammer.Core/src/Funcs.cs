@@ -339,6 +339,19 @@ namespace Jammer {
             return false;
         }
 
+        public static bool IsDirectory(string path) {
+            if (Directory.Exists(path)) {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool IsFile(string path) {
+            if (File.Exists(path)) {
+                return true;
+            }
+            return false;
+        }
 
     }
 

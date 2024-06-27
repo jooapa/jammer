@@ -297,7 +297,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
-                            string forwardSecondsString = Jammer.Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
+                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
@@ -448,11 +448,6 @@ namespace Jammer
                             Themes.SetTheme(Preferences.theme);
                             drawWhole = true;
                             break;
-                        
-                        
-                        
-                        
-                        
                         case "SearchFromYoutube":
                             // TODO ADD LOCALE(s)
                             string search = Message.Input("Search from youtube: ", "Search a song from youtube by its name");
@@ -524,6 +519,24 @@ namespace Jammer
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();
+                            break;
+                        case "ChangeSoundFont":
+                            AnsiConsole.Clear();
+                            string[] soundFonts = SoundFont.GetSoundFonts();
+
+                            if (soundFonts.Length == 0)
+                            {
+                                Message.Data("No soundfonts found", "Please add soundfonts to the soundfonts folder", true);
+                                drawWhole = true;
+                                break;
+                            }
+
+                            string chosenSoundFont = Message.MultiSelect(soundFonts, "Choose a soundfont:"); // TODO ADD LOCALE
+
+                            Preferences.currentSf2 = chosenSoundFont;
+                            Preferences.SaveSettings();
+                            Play.SetSoundFont(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.currentSf2));
+                            drawWhole = true;
                             break;
                     }
                 Action = "";

@@ -54,6 +54,7 @@ PlayOtherPlaylist = Shift + O
 RedownloadCurrentSong = Shift + B
 EditKeybindings = Shift + E
 ChangeLanguage = Shift + L
+ChangeSoundFont = Shift + G
 PlayRandomSong = R
 PlaylistViewScrollup = PageUp
 PlaylistViewScrolldown = PageDown

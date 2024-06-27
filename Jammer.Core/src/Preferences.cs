@@ -21,6 +21,7 @@ namespace Jammer
         public static bool isMediaButtons = GetIsMediaButtons();
         public static bool isVisualizer = GetIsVisualizer();
         public static string theme = GetTheme();
+        public static string currentSf2 = "";
 
 
         static public void CheckJammerFolderExists()
@@ -33,6 +34,9 @@ namespace Jammer
             }
             if (!Directory.Exists(Path.Combine(JammerPath, "playlists"))){
                 Directory.CreateDirectory(Path.Combine(JammerPath, "playlists"));
+            }
+            if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts"))){
+                Directory.CreateDirectory(Path.Combine(JammerPath, "soundfonts"));
             }
 
 
@@ -72,6 +76,7 @@ namespace Jammer
             settings.songsPath = songsPath;
             settings.isVisualizer = isVisualizer;
             settings.theme = theme;
+            settings.currentSf2 = currentSf2;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -300,6 +305,21 @@ namespace Jammer
             }
         }
 
+        static public string GetCurrentSf2()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.currentSf2 ?? "";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
         static public void OpenJammerFolder()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
@@ -355,6 +375,7 @@ namespace Jammer
             public string? songsPath { get; set; }
             public bool isVisualizer { get; set; }
             public string? theme { get; set; }
+            public string? currentSf2 { get; set; }
         }
     }
 }

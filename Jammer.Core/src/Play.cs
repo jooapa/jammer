@@ -21,7 +21,7 @@ namespace Jammer
                                                     ".mdz", ".s3z", ".itz", ".xmz"};
         public static string[] aacExtensions = { ".aac", ".m4a", ".adts", ".m4b" };
         public static string[] mp4Extensions = { ".mp4" };
-        public static string[] midiExtensions = { ".mid", ".midi" };
+        public static string[] midiExtensions = { ".mid", ".midi", ".rmi", ".kar" };
 
         public static bool isValidExtension(string checkingExt, string[] exts)
         {
@@ -706,8 +706,25 @@ namespace Jammer
                 Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
             }
             else if (isValidExtension(Path.GetExtension(Utils.currentSong), midiExtensions))
-            {
-                BassMidi.DefaultFont = "WeedsGM3.sf2";
+            {        
+                var newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
+                if (newFont == 0)
+                {
+                    Message.Data("Can't load the SoundFont: " + Preferences.GetCurrentSf2(), "Error loading the soundfont", true);
+                }
+                var sf = new MidiFont[]
+                {
+                    new() {
+                        Handle = newFont,
+                        Preset = -1, // Use all presets
+                        Bank = 0 // Use default bank(s)
+                    }
+                };
+                int m = BassMidi.StreamSetFonts(0, sf, 1);
+                if (m == -1)
+                {
+                    throw new Exception("Can't set the SoundFont");
+                }
                 Utils.currentMusic = BassMidi.CreateStream(Utils.currentSong, 0, 0, flags);
             }
             else
@@ -750,6 +767,29 @@ namespace Jammer
             Start.drawWhole = true;
         }
 
+        public static void SetSoundFont(string soundFontPath)
+        {
+            BassMidi.FontFree(Utils.currentMusic);
+            var newFont = BassMidi.FontInit(soundFontPath, FontInitFlags.Unicode);
+            if (newFont == 0)
+            {
+                Message.Data("Can't load the SoundFont", soundFontPath, true);
+            }
+            var sf = new MidiFont[]
+            {
+                new() {
+                    Handle = newFont,
+                    Preset = -1, // Use all presets
+                    Bank = 0 // Use default bank(s)
+                }
+            };
+            int m = BassMidi.StreamSetFonts(0, sf, 1);
+            if (m == -1)
+            {
+                throw new Exception("Can't set the SoundFont");
+            }
+        }
+        
         public static void SetFXs() {
             // MARK: - EFFECT FX EXAMPLES
             // DXReverbParameters reverb = new()
