@@ -1,25 +1,19 @@
 @ECHO OFF
 IF NOT pwd==%cd% (cd /d %~dp0)
 
-@REM DEL /Q /S *.exe
-
 SET "RELEASE_VERSION=win-x64"                                       
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     
 SET "sourceFolder2=bin\Release\net8.0\%RELEASE_VERSION%"     
 SET "targetFolder=..\nsis"                                          
 SET "start_name=Jammer-Setup_V2.8.4.4.exe"
 
-@REM dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained 
+dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained 
 
 if %ERRORLEVEL% NEQ 0 (
     ECHO Error building CLI
     EXIT /B 1
 )
 
-ECHO =========================================
-ECHO ^|     At:n esittely koodi incoming    ^|
-ECHO =========================================
-ECHO.
 
 ECHO \Jammer.CLI.exe"
 COPY /B /Y "%sourceFolder%\Jammer.CLI.exe" "%targetFolder%\Jammer.exe" 1>NUL
@@ -51,7 +45,7 @@ COPY /B /Y "LICENSE" "nsis/" 1>NUL
 ECHO.
 cd Jammer.CLI
 
-::--------------------------------------------------- paska
+::--------------------------------------------------- 
 if not EXIST "%targetFolder%\docs" MKDIR "%targetFolder%\docs"
 ECHO Copying "..\docs\console_styling.html" to "%targetFolder%\docs\console_styling.html"
 COPY /B /Y "..\docs\console_styling.html" "%targetFolder%\docs\console_styling.html" 1>NUL
@@ -71,8 +65,6 @@ IF %ERRORLEVEL% NEQ 0 (
     EXIT /B 1
 )
 
-:: ?????? mitä ↓↓↓↓ ??????↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ en oo lukiossa opettelemassa hiroglyphejä 🥴
-:: ja aika mukavaa nääsun kakat täälllä kuten tämä mielenkiintoinen "CALL :COPY_ERRORCHECK" jota ei ole::?? 'The system cannot find the batch label specified - COPY_ERRORCHECK'
 @REM call %start_name%
 @REM cd /d %~dp0
 

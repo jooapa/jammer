@@ -523,15 +523,59 @@ namespace Jammer
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
+                            string[] newSoundFonts = new string[soundFonts.Length + 3];
+                            newSoundFonts[0] = "Cancel";
+                            newSoundFonts[1] = "Link to a soundfont by path"; // TODO ADD LOCALE
+                            newSoundFonts[2] = "Import soundfont by path"; // TODO ADD LOCALE
 
-                            if (soundFonts.Length == 0)
+                            for (int i = 0; i < soundFonts.Length; i++)
                             {
-                                Message.Data("No soundfonts found", "Please add soundfonts to the soundfonts folder", true);
-                                drawWhole = true;
-                                break;
+                                newSoundFonts[i + 3] = soundFonts[i];
                             }
 
+                            soundFonts = newSoundFonts;
+
                             string chosenSoundFont = Message.MultiSelect(soundFonts, "Choose a soundfont:"); // TODO ADD LOCALE
+
+                            switch (chosenSoundFont)
+                            {
+                                case "Cancel":
+                                    drawWhole = true;
+                                    chosenSoundFont = Preferences.currentSf2;
+                                    break;
+                                case "Link to a soundfont by path":
+                                    string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    if (File.Exists(path))
+                                    {
+                                        SoundFont.MakeAbsoluteSfFile(path);
+                                        chosenSoundFont = path;
+                                    }
+                                    else
+                                    {
+                                        Message.Data("The file does not exist", ":(", true);
+                                        drawWhole = true;
+                                        chosenSoundFont = Preferences.currentSf2;
+                                    }
+                                    break;
+                                case "Import soundfont by path":
+                                    string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    if (File.Exists(importPath))
+                                    {
+                                        chosenSoundFont = Preferences.currentSf2;
+                                        string importAf = SoundFont.ImportSoundFont(importPath);
+                                        if (importAf != string.Empty)
+                                        {
+                                            chosenSoundFont = importAf;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Message.Data("The file does not exist", ":(", true);
+                                        drawWhole = true;
+                                        chosenSoundFont = Preferences.currentSf2;
+                                    }
+                                    break;
+                            }
 
                             Preferences.currentSf2 = chosenSoundFont;
                             Preferences.SaveSettings();

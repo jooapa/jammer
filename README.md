@@ -88,6 +88,20 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
 
+### MIDI support
+
+Jammer supports playing ***.mid***, ***.midi***, ***.rmi***, ***.kar*** files. To play, you need to have a SoundFont file ***.sf2***, ***.sf3***, ***.sfz***, ***sf2pack***
+
+Here is one sf2 file you can use [ChoriumRevA.SF2](https://www.un4seen.com/download.php?x/ChoriumRevA), *This is BASS's recommended SoundFont file.*
+
+To change the SoundFont file, press `Shift + G` (default keybind).
+
+`Link to the SoundFont by path`: This will link the SoundFont file by path. **This will not copy the SoundFont file to the <jammer/soundfonts>.**
+
+`Import soundfont by path`: **This will copy the SoundFont file to the `<jammer/soundfonts>`.**
+
+Will show all the SoundFont files in the `<jammer/soundfonts>` folder.
+
 ### Themes
 
 You can create your own theme by pressing `Shift + T` (default keybind)

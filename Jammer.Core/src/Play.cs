@@ -706,10 +706,15 @@ namespace Jammer
             }
             else if (isValidExtension(Path.GetExtension(Utils.currentSong), midiExtensions))
             {        
-                var newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
+                int newFont;
+                newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
+
                 if (newFont == 0)
                 {
-                    Message.Data("Can't load the SoundFont: " + Preferences.GetCurrentSf2(), "Error loading the soundfont", true);
+                    newFont = BassMidi.FontInit(Path.Combine(Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
+
+                    if (newFont == 0)
+                        Message.Data("Can't load the SoundFont: " + Preferences.GetCurrentSf2(), "Error loading the soundfont", true);
                 }
                 var sf = new MidiFont[]
                 {
