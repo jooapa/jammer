@@ -40,7 +40,7 @@ COPY /B /Y "../libs\win\x64\bass.dll" %targetFolder% 1>NUL
 ECHO.
 
 cd ..
-ECHO Copying LICENSE vittu
+ECHO Copying LICENSE
 COPY /B /Y "LICENSE" "nsis/" 1>NUL
 ECHO.
 cd Jammer.CLI
