@@ -34,6 +34,7 @@ namespace Jammer
         public static MainStates state = MainStates.playing;
         private static Thread loopThread = new(() => { });
         private static Thread visualizerThread = new(() => { });
+        private static Thread keyboardThread = new(() => { });
         public static int consoleWidth = Console.WindowWidth;
         public static int consoleHeight = Console.WindowHeight;        
         public static bool CLI = false;
@@ -318,8 +319,10 @@ namespace Jammer
             Debug.dprint("Start Loop");
             loopThread = new Thread(Loop);
             visualizerThread = new Thread(EqualizerLoop);
+            keyboardThread = new Thread(KeyboardLoop);
             loopThread.Start();
             visualizerThread.Start();
+            keyboardThread.Start();
         }
 
         //
@@ -369,7 +372,6 @@ namespace Jammer
                 {
                     case MainStates.idle:
                         // TUI.ClearScreen();
-                        CheckKeyboardAsync();
                         break;
 
                     case MainStates.play:
@@ -417,7 +419,6 @@ namespace Jammer
                             drawTime = true;
                         }
 
-                        CheckKeyboardAsync();
                         break;
 
                     case MainStates.pause:
@@ -507,6 +508,16 @@ namespace Jammer
                     }
                 }
                 Thread.Sleep(Visual.refreshTime);
+            }
+        }
+
+        private static void KeyboardLoop()
+        {
+            while (true)
+            {
+                CheckKeyboard();
+                
+                Thread.Sleep(5);
             }
         }
         

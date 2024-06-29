@@ -10,7 +10,7 @@ namespace Jammer
     {
         public static string Action = "";
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
-        public static void CheckKeyboardAsync()
+        public static void CheckKeyboard()
         {
             if (Console.KeyAvailable || Action != "")
             {
