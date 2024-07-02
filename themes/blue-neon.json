@@ -1,0 +1,171 @@
+// Colours: https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
+// or see jammer\docs\console_styling.html
+
+// Write the colour's and styles' name in lowercase: "white", "italic bold"
+// Example: "PathColor": "red bold italic"
+// Note:    If you type "" as a colour's value, it will use the terminal's default color
+// Example: "PathColor": ""
+
+
+// Border Styles: https://spectreconsole.net/appendix/borders
+// or see jammer\docs\console_styling.html
+
+// Example: "BorderStyle": "Rounded"
+// BorderColors are in RGB format: [0-255, 0-255, 0-255]
+{
+  "Playlist": {
+    "BorderStyle": "MinimalDoubleHead",
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "PathColor": "white",
+    "ErrorColor": "red bold",
+    "SuccessColor": "green bold",
+    "InfoColor": "blue bold",
+    "PlaylistNameColor": "cyan bold",
+    "MiniHelpBorderStyle": "Rounded",
+    "MiniHelpBorderColor": [
+      0,
+      102,
+      204
+    ],
+    "HelpLetterColor": "magenta bold",
+    "ForHelpTextColor": "white",
+    "SettingsLetterColor": "yellow bold",
+    "ForSettingsTextColor": "white",
+    "PlaylistLetterColor": "green bold",
+    "ForPlaylistTextColor": "white",
+    "ForSeperatorTextColor": "white",
+    "VisualizerColor": "blue bold",
+    "RandomTextColor": "magenta bold"
+  },
+  "GeneralPlaylist": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Double",
+    "CurrentSongColor": "green bold",
+    "PreviousSongColor": "grey",
+    "NextSongColor": "grey",
+    "NoneSongColor": "grey"
+  },
+  "WholePlaylist": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Rounded",
+    "ChoosingColor": "yellow bold",
+    "NormalSongColor": "white",
+    "CurrentSongColor": "green bold"
+  },
+  "Time": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Ascii",
+    "PlayingLetterColor": "white",
+    "PlayingLetterLetter": "❚❚",
+    "PausedLetterColor": "white",
+    "PausedLetterLetter": "▶ ",
+    "StoppedLetterColor": "white",
+    "StoppedLetterLetter": "■",
+    "NextLetterColor": "white",
+    "NextLetterLetter": "▶▶",
+    "PreviousLetterColor": "white",
+    "PreviousLetterLetter": "◀◀",
+    "ShuffleLetterOffColor": "red bold",
+    "ShuffleOffLetter": "S ",
+    "ShuffleLetterOnColor": "green bold",
+    "ShuffleOnLetter": "S ",
+    "LoopLetterOffColor": "red bold",
+    "LoopOffLetter": "L ",
+    "LoopLetterOnColor": "green bold",
+    "LoopOnLetter": "L ",
+    "TimeColor": "white",
+    "VolumeColorNotMuted": "white",
+    "VolumeColorMuted": "grey strikethrough bold",
+    "TimebarColor": "blue",
+    "TimebarLetter": "█"
+  },
+  "GeneralHelp": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Heavy",
+    "HeaderTextColor": "blue bold",
+    "ControlTextColor": "white",
+    "DescriptionTextColor": "white",
+    "ModifierTextColor_1": "green bold",
+    "ModifierTextColor_2": "yellow bold",
+    "ModifierTextColor_3": "red bold"
+  },
+  "GeneralSettings": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Double",
+    "HeaderTextColor": "blue bold",
+    "SettingTextColor": "white",
+    "SettingValueColor": "green bold",
+    "SettingChangeValueColor": "white",
+    "SettingChangeValueValueColor": "green bold"
+  },
+  "EditKeybinds": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Ascii",
+    "HeaderTextColor": "blue bold",
+    "DescriptionColor": "white",
+    "CurrentControlColor": "white",
+    "CurrentKeyColor": "red bold",
+    "EnteredKeyColor": "cyan bold"
+  },
+  "LanguageChange": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Heavy",
+    "TextColor": "white",
+    "CurrentLanguageColor": "red bold"
+  },
+  "InputBox": {
+    "BorderColor": [
+      0,
+      102,
+      204
+    ],
+    "BorderStyle": "Double",
+    "InputTextColor": "white",
+    "TitleColor": "white bold",
+    "InputBorderStyle": "Heavy",
+    "InputBorderColor": [
+      0,
+      102,
+      204
+    ],
+    "TitleColorIfError": "red bold",
+    "InputTextColorIfError": "red",
+    "MultiSelectMoreChoicesTextColor": "grey"
+  },
+  "Visualizer": {
+    "PlayingColor": "blue3",
+    "PausedColor": "navyblue"
+  }
+}
