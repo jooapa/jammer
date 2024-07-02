@@ -177,6 +177,8 @@ Currently supported languages:
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=#jooapa/jammer&Date" frameBorder="0"></iframe>
+
 # Developing
 
 ## Build / Run yourself
