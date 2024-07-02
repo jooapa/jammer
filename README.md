@@ -179,7 +179,13 @@ Create new translation by copying already existing .ini file from /locales and t
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=jooapa/jammer&type=Date)](https://star-history.com/#jooapa/jammer&Date)
+<a href="https://star-history.com/#jooapa/jammer&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date" />
+ </picture>
+</a>
 
 # Developing
 
