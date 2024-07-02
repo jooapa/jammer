@@ -267,3 +267,7 @@ python update.py 101
 ### Incoming Features
 
 - [ ] Add more audio formats
+
+## Known Issues
+
+Some times when song starts, it will show the url and not the title?! :(
