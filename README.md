@@ -177,6 +177,16 @@ Currently supported languages:
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
+## Star History
+
+<a href="https://star-history.com/#jooapa/jammer&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=jooapa/jammer&type=Date" />
+ </picture>
+</a>
+
 # Developing
 
 ## Build / Run yourself
@@ -257,3 +267,7 @@ python update.py 101
 ### Incoming Features
 
 - [ ] Add more audio formats
+
+## Known Issues
+
+Some times when song starts, it will show the url and not the title?! :(
