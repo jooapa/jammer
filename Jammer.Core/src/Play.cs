@@ -397,9 +397,9 @@ namespace Jammer
         public static void ModifyVolume(float volume)
         {
             Preferences.volume += volume;
-            if (Preferences.volume > 1)
+            if (Preferences.volume > 1.5f)
             {
-                Preferences.volume = 1;
+                Preferences.volume = 1.5f;
             }
             else if (Preferences.volume < 0)
             {
