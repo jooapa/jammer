@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace Jammer {
     public class Download {
         public static string songPath = "";
-        static SoundCloudClient soundcloud = new SoundCloudClient();
+        public static readonly SoundCloudClient soundcloud = new();
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
 

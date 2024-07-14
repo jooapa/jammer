@@ -45,7 +45,7 @@ namespace Jammer{
         ```
     */
     public static class Keybindings{
-        public static string Search = CheckValue("Search", "Ctrl + F");
+        public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
         public static string CurrentState = CheckValue("CurrentState", "F12");

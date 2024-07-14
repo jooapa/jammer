@@ -355,10 +355,15 @@ namespace Jammer {
 
     }
 
-    public class SearchResult {
+    public class YTSearchResult {
         public string Id { get; set; }
         public string Title { get; set; }
         public TimeSpan? Duration { get; set; }
         public string Type { get; set; }
+    }
+
+    public class SCSearchResult {
+        public string Url { get; set; }
+        public string Title { get; set; }
     }
 }

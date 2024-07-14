@@ -452,72 +452,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Search":
-                            // TODO ADD LOCALE(s)
-                            string search = Message.Input("Search from youtube: ", "Search a song from youtube by its name");
-
-                            List<SearchResult> results = new();
-                            int indexer = 0;
-                            int max = 10;
-                            async Task loopedidoo() {
-                                await foreach (var result in Download.youtube.Search.GetResultsAsync(search)) {
-                                    switch (result) {
-                                        case YoutubeExplode.Search.VideoSearchResult video: {
-                                            var id = video.Id;
-                                            var title = Markup.Escape(video.Title);
-                                            var duration = video.Duration;
-                                            string type = "video";
-                                            results.Add(new SearchResult { Id = id, Title = title, Duration = duration, Type = type });
-                                            break;
-                                        }
-                                        case YoutubeExplode.Search.PlaylistSearchResult playlist: {
-                                            var id = playlist.Id;
-                                            var title = Markup.Escape(playlist.Title);
-                                            string type = "playlist";
-                                            results.Add(new SearchResult { Id = id, Title = title, Type = type });
-                                            break;
-                                        }
-                                    }
-
-                                    if (indexer == max - 1) {
-                                        break;
-                                    }
-                                    indexer++;
-                                }
-                            }
-                            loopedidoo().Wait();
-
-                            if (results.Count > 0) {
-                                string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
-                                resultsString = resultsString.Append("Cancel").ToArray();
-                                // Display the MultiSelect prompt after the loop completes
-                                AnsiConsole.Clear();
-                                string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
-
-                                // Get the id of the selected song
-                                string selectedId = "";
-                                string selectedString = "";
-                                try{
-                                    selectedId = results[Array.IndexOf(resultsString, answer)].Id;
-                                    selectedString = results[Array.IndexOf(resultsString, answer)].Title;
-                                } catch {
-                                    // If the user cancels the selection
-                                    /*
-                                    Unhandled exception. System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
-                                    at System.Collections.Generic.List`1.get_Item(Int32 index)
-                                    at Jammer.Start.CheckKeyboardAsync() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Keyboard.cs:line 495
-                                    at Jammer.Start.Loop() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Start.cs:line 373
-                                    */
-                                    drawWhole = true;
-                                    break;
-                                }
-                                string url = "https://www.youtube.com/watch?v=" + selectedId + "½" + selectedString;
-                                
-                                // add to the current playlist index +1
-                                Play.AddSong(url);
-                            } else {
-                                Message.Data("No results found", ":(");
-                            }
-                            drawWhole = true;
+                            Search.SearchSong();
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();
