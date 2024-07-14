@@ -36,6 +36,7 @@ Help = H
 Settings = C
 ToSongStart = 0
 ToSongEnd = 9
+ToggleInfo = I
 PlaylistOptions = F2
 ForwardSecondAmount = 1
 BackwardSecondAmount = 2
@@ -60,12 +61,12 @@ PlaylistViewScrollup = PageUp
 PlaylistViewScrolldown = PageDown
 Choose = Enter
 AddSongToQueue = G
-SearchFromYoutube = Ctrl + Y
+Search = Ctrl + Y
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
-        private static IniData KeyData;
-        private static IniData LocaleData;
+        private static IniData? KeyData;
+        private static IniData? LocaleData;
         public static int LocaleAmount = 0;
         public static bool EditingKeybind = false;
         public static bool KeyDataFound = false;
@@ -83,50 +84,6 @@ SearchFromYoutube = Ctrl + Y
         public static bool isCtrlAlt = false;
         public static bool isShiftCtrl = false;
         public static bool isShiftCtrlAlt = false;
-        
-
-        static IniFileHandling() {
-            /**
-            Tries loading ini files
-            */
-            try {
-                KeyData = parser.ReadFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), System.Text.Encoding.UTF8);
-                KeyDataFound = true;
-                KeybindAmount = KeyData["Keybinds"].Count;
-            } catch(Exception) {
-                try {
-                    KeyData = parser.ReadFile("KeyData.ini", System.Text.Encoding.UTF8);
-                    KeyDataFound = true;
-                    KeybindAmount = KeyData["Keybinds"].Count;
-                } catch(Exception) {        
-                    KeyData = new IniData();
-                }
-            }
-
-            //NOTE(ra) Use AppImage locale files
-            if ( Utils.AppDirMount != null ) {
-                try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.AppDirMount, "usr/locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
-                    LocaleDataFound = true;
-                } catch(Exception) {
-                    LocaleData = new IniData();
-                }
-            } else {
-                try {
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
-                    LocaleDataFound = true;
-                } catch(Exception) {
-                    LocaleData = new IniData();
-                }
-
-                try {
-                    LocaleData = parser.ReadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "locales", $"{Preferences.GetLocaleLanguage()}.ini"), System.Text.Encoding.UTF8);
-                    LocaleDataFound = true;
-                } catch(Exception) {}
-            }
-
-            LocaleAndKeyDataFound = LocaleDataFound && KeyDataFound;
-        }
 
         public static void ReadNewKeybinds(){
             // Read new keybinds from file
@@ -142,7 +99,7 @@ SearchFromYoutube = Ctrl + Y
                 } catch(Exception) {        
                     KeyData = new IniData();
                 }
-            }
+            } 
         }
         public static void WriteIni_KeyData(){
             // Write keypress to file
@@ -174,7 +131,7 @@ SearchFromYoutube = Ctrl + Y
             }
             // Check if keybinds exist
             bool isExisting = false;
-            string isExistingKeyName = "";
+            string isExistingKeyName;
             // Check if keybind exists
             foreach (var section in KeyData.Sections){
                 foreach (var key in section.Keys){
@@ -217,6 +174,7 @@ SearchFromYoutube = Ctrl + Y
 
        public static void Create_KeyDataIni(int hardReset){
             string filePath = Path.Combine(Utils.JammerPath, "KeyData.ini");
+            
             // Create if not existing
             if(hardReset == 0){
                 if (!File.Exists(filePath))
@@ -251,20 +209,30 @@ SearchFromYoutube = Ctrl + Y
                 // Append missing keys to the file
                 if (missingKeys.Count > 0){
                     Type type = typeof(Keybindings);
-                    using (StreamWriter sw = File.AppendText(filePath)){
-                        foreach (string key in missingKeys){
-                            // Get field as string name from public static field
-                            var field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
-                            if (field != null){
-                                var value = field.GetValue(null);
-                                sw.WriteLine($"{key} = {value}");
-                            }
-                            else{
-                                sw.WriteLine($"{key} = Error");
-                            }
+                    using StreamWriter sw = File.AppendText(filePath);
+                    foreach (string key in missingKeys)
+                    {
+                        // Get field as string name from public static field
+                        var field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
+                        if (field != null)
+                        {
+                            var value = field.GetValue(null);
+                            sw.WriteLine($"{key} = {value}");
+                        }
+                        else
+                        {
+                            sw.WriteLine($"{key} = Error");
                         }
                     }
                 }
+                // remove keys that are not in the default FileContent
+                HashSet<string> removeKeys = new HashSet<string>(keysFromFile);
+                removeKeys.ExceptWith(keysFromString);
+                foreach (string key in removeKeys)
+                {
+                    KeyData["Keybinds"].RemoveKey(key);
+                }
+                parser.WriteFile(filePath, KeyData);
             }
             ReadNewKeybinds();
         }
@@ -284,16 +252,18 @@ SearchFromYoutube = Ctrl + Y
             return keys;
         }
 
-        public static string FindMatch_KeyData(
-            ConsoleKey key_pressed,
-            bool isAlt,
-            bool isCtrl,
-            bool isShift,
-            bool isShiftAlt,
-            bool isShiftCtrl,
-            bool isCtrlAlt,
-            bool isShiftCtrlAlt
-            ){
+        public static string FindMatch_KeyData
+            (
+                ConsoleKey key_pressed,
+                bool isAlt,
+                bool isCtrl,
+                bool isShift,
+                bool isShiftAlt,
+                bool isShiftCtrl,
+                bool isCtrlAlt,
+                bool isShiftCtrlAlt
+            )
+        {
             char separator = '+'; // Inside .ini file
             string key_pressed_string = key_pressed.ToString().ToLower();
 
@@ -510,7 +480,7 @@ SearchFromYoutube = Ctrl + Y
         
         // country code. en, fi, se, de etc...
         public static void Ini_LoadNewLocale(){
-            DirectoryInfo? di = null;
+            DirectoryInfo? di;
             try {
                 di = new DirectoryInfo(Path.Combine(Utils.JammerPath, "locales"));
             } catch(Exception) {
@@ -561,7 +531,10 @@ SearchFromYoutube = Ctrl + Y
 
         }
 
-        public static string ReadIni_LocaleData(string section, string key){
+        public static string? ReadIni_LocaleData(string section, string key){
+            if (LocaleData == null){
+                return null;
+            }
             string key_value = LocaleData[section][key];
             return key_value;
         }

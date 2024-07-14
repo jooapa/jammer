@@ -96,7 +96,7 @@ Here is one sf2 file you can use [ChoriumRevA.SF2](https://www.un4seen.com/downl
 
 To change the SoundFont file, press `Shift + G` (default keybind).
 
-`Link to the SoundFont by path`: This will link the SoundFont file by path. **This will not copy the SoundFont file to the <jammer/soundfonts>.**
+`Link to a soundFont by path`: This will link the SoundFont file by path. **This will not copy the SoundFont file to the <jammer/soundfonts>.**
 
 `Import soundfont by path`: **This will copy the SoundFont file to the `<jammer/soundfonts>`.**
 
@@ -147,7 +147,7 @@ These can be changed in the Effects.ini file in the jammer folder.
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
-| `Shift` + `T` | Change Theme|
+| `Shift + T` | Change Theme|
 | `Shift + G`| Change SoundFont |
 
 ### Default Playlist Controls

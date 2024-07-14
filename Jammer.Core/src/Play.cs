@@ -123,7 +123,6 @@ namespace Jammer
             }
             else
             {
-
                 AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
                 return;
             }
@@ -613,9 +612,9 @@ namespace Jammer
         }
 
         /// <summary>
-        /// 
+        /// Get the title of the song
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">title</param>
         /// <param name="getOrNot">get | not | getMeta</param>
         /// <returns></returns>
         public static string Title(string title, string getOrNot)
@@ -742,7 +741,8 @@ namespace Jammer
             {
                 Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
-                DeleteSong(Utils.currentSongIndex, false);
+                // DeleteSong(Utils.currentSongIndex, false);
+                return;
             }
 
             // set volume

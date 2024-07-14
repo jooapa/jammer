@@ -117,7 +117,6 @@ namespace Jammer
                         IniFileHandling.Ini_LoadNewLocale();
                     }
                 }
-
                 else if(playerView.Equals("all")){
                     Console.Clear();
                     if(Action == "PlaylistViewScrolldown"){
@@ -292,6 +291,10 @@ namespace Jammer
                         case "ToSongEnd": // goto song end
                             Play.MaybeNextSong();
                             break;
+                        case "ToggleInfo": // toggle info
+                            Message.Data("Info", "Info is toggled");
+                            drawWhole = true;
+                            break;
                         case "PlaylistOptions": // playlist options
                             Funcs.PlaylistInput();
                             drawWhole = true;
@@ -456,7 +459,7 @@ namespace Jammer
                             int indexer = 0;
                             int max = 10;
                             async Task loopedidoo() {
-                            await foreach (var result in Download.youtube.Search.GetResultsAsync(search)) {
+                                await foreach (var result in Download.youtube.Search.GetResultsAsync(search)) {
                                     switch (result) {
                                         case YoutubeExplode.Search.VideoSearchResult video: {
                                             var id = video.Id;
@@ -504,8 +507,7 @@ namespace Jammer
                                     at Jammer.Start.CheckKeyboardAsync() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Keyboard.cs:line 495
                                     at Jammer.Start.Loop() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Start.cs:line 373
                                     */
-                                    AnsiConsole.Clear();
-                                    TUI.DrawPlayer();
+                                    drawWhole = true;
                                     break;
                                 }
                                 string url = "https://www.youtube.com/watch?v=" + selectedId + "½" + selectedString;

@@ -341,7 +341,7 @@ namespace Jammer {
             string[] EditKeybindings =         (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
             string[] ChangeLanguage =          (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
             string[] ChangeTheme =             (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
-            string[] SearchFromYoutube =       (Keybindings.SearchFromYoutube).Replace(" ", "").Split(separator);
+            string[] SearchFromYoutube =       (Keybindings.Search).Replace(" ", "").Split(separator);
             string[] ChangeSoundFont =           (Keybindings.ChangeSoundFont).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));

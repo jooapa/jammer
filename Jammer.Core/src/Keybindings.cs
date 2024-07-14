@@ -45,7 +45,7 @@ namespace Jammer{
         ```
     */
     public static class Keybindings{
-        public static string SearchFromYoutube = CheckValue("SearchFromYoutube", "Ctrl + Y");
+        public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
         public static string CurrentState = CheckValue("CurrentState", "F12");
@@ -69,6 +69,7 @@ namespace Jammer{
         public static string Settings = CheckValue("Settings", "C");
         public static string ToSongStart = CheckValue("ToSongStart", "0");
         public static string ToSongEnd = CheckValue("ToSongEnd", "9");
+        public static string ToggleInfo = CheckValue("ToggleInfo", "I");
         public static string PlaylistOptions = CheckValue("PlaylistOptions", "F2");
         public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
         public static string BackwardSecondAmount = CheckValue("BackwardSecondAmount", "2");
