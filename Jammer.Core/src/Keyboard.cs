@@ -451,7 +451,7 @@ namespace Jammer
                             Themes.SetTheme(Preferences.theme);
                             drawWhole = true;
                             break;
-                        case "SearchFromYoutube":
+                        case "Search":
                             // TODO ADD LOCALE(s)
                             string search = Message.Input("Search from youtube: ", "Search a song from youtube by its name");
 

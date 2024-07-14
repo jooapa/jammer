@@ -174,7 +174,7 @@ Search = Ctrl + Y
 
        public static void Create_KeyDataIni(int hardReset){
             string filePath = Path.Combine(Utils.JammerPath, "KeyData.ini");
-            
+
             // Create if not existing
             if(hardReset == 0){
                 if (!File.Exists(filePath))
@@ -194,15 +194,33 @@ Search = Ctrl + Y
             }
             // Add missing keys
             else if(hardReset == 2 && File.Exists(filePath)){
-            
                 var parser_local_fun = new IniParser.Parser.IniDataParser();
+            
                 IniData iniDataFromString = parser_local_fun.Parse(FileContent);
                 // Extract keys from the string representation
                 HashSet<string> keysFromString = ExtractKeys(iniDataFromString);
 
                 // Extract keys from the file
                 HashSet<string> keysFromFile = ExtractKeys(KeyData);
+                HashSet<string> uselessKeysFromFile = ExtractKeys(KeyData);
 
+
+                // Useless keys are the ones that are in the uselessKeysFromFile but not in the FileCOntent
+                HashSet<string> keysFromString2 = ExtractKeys(iniDataFromString);
+                uselessKeysFromFile.ExceptWith(keysFromString2);
+                
+                // log 
+                // foreach (string key in uselessKeysFromFile) {
+                //     Console.WriteLine(key);
+                // }
+                // Console.ReadKey();
+
+                // Remove useless keys from
+                foreach (string key in uselessKeysFromFile) {
+                    KeyData["Keybinds"].RemoveKey(key);
+                }
+
+                parser.WriteFile(filePath, KeyData);
                 // Find missing keys
                 HashSet<string> missingKeys = new HashSet<string>(keysFromString);
                 missingKeys.ExceptWith(keysFromFile);
@@ -212,6 +230,7 @@ Search = Ctrl + Y
                     using StreamWriter sw = File.AppendText(filePath);
                     foreach (string key in missingKeys)
                     {
+
                         // Get field as string name from public static field
                         var field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
                         if (field != null)
@@ -225,15 +244,8 @@ Search = Ctrl + Y
                         }
                     }
                 }
-                // remove keys that are not in the default FileContent
-                HashSet<string> removeKeys = new HashSet<string>(keysFromFile);
-                removeKeys.ExceptWith(keysFromString);
-                foreach (string key in removeKeys)
-                {
-                    KeyData["Keybinds"].RemoveKey(key);
-                }
-                parser.WriteFile(filePath, KeyData);
             }
+
             ReadNewKeybinds();
         }
             // Method to extract keys from IniData object
