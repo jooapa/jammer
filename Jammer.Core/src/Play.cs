@@ -67,19 +67,18 @@ namespace Jammer
             {
                 song = song.Split("½")[0];
             }
-            Utils.songs[Utils.currentSongIndex] = song;
 
             // check if file is a local
-            if (System.IO.File.Exists(Utils.songs[Utils.currentSongIndex]))
+            if (System.IO.File.Exists(song))
             {
                 // id related to local file path, convert to absolute path
-                path = Path.GetFullPath(Utils.songs[Utils.currentSongIndex]);
+                path = Path.GetFullPath(song);
             }
             // if folder
-            else if (Directory.Exists(Utils.songs[Utils.currentSongIndex]))
+            else if (Directory.Exists(song))
             {
                 // add all files in folder to Utils.songs
-                string[] files = Directory.GetFiles(Utils.songs[Utils.currentSongIndex]);
+                string[] files = Directory.GetFiles(song);
                 foreach (string file in files)
                 {
                     AddSong(file);
@@ -88,36 +87,36 @@ namespace Jammer
                 // remove folder from Utils.songs
                 Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
 
-                path = Utils.songs[Utils.currentSongIndex];
+                path = song;
             }
-            else if (URL.isValidSoundCloudPlaylist(Utils.songs[Utils.currentSongIndex])) {
+            else if (URL.isValidSoundCloudPlaylist(song)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "soundcloud");
+                path = Download.GetSongsFromPlaylist(song, "soundcloud");
             }
-            else if (URL.IsValidSoundcloudSong(Utils.songs[Utils.currentSongIndex]))
+            else if (URL.IsValidSoundcloudSong(song))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
+                path = Download.DownloadSong(song);
             }
-            else if (URL.IsValidYoutubePlaylist(Utils.songs[Utils.currentSongIndex]))
+            else if (URL.IsValidYoutubePlaylist(song))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.GetSongsFromPlaylist(Utils.songs[Utils.currentSongIndex], "youtube");
+                path = Download.GetSongsFromPlaylist(song, "youtube");
             }
-            else if (URL.IsValidYoutubeSong(Utils.songs[Utils.currentSongIndex]))
+            else if (URL.IsValidYoutubeSong(song))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
+                path = Download.DownloadSong(song);
             }
-            else if (URL.IsUrl(Utils.songs[Utils.currentSongIndex]))
+            else if (URL.IsUrl(song))
             {
-                path = Download.DownloadSong(Utils.songs[Utils.currentSongIndex]);
+                path = Download.DownloadSong(song);
                 // Message.Data(path, song);
             }
             else
             {
-                path = Utils.songs[Utils.currentSongIndex];
+                path = song;
             }
 
             Start.prevMusicTimePlayed = -1;

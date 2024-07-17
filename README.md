@@ -267,5 +267,4 @@ python update.py 101
 
 ## Known Issues
 
-Sometimes when song starts, it will show the url and not the title?! :(
-  >reason: Global variables. before the song starts, the title is removed to get the url. after song is get it will be put topgether again. if the screen is refreshed before the title is put back, it will show the url.
+Perfect app, no issues.
