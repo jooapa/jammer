@@ -87,7 +87,7 @@ namespace Jammer
                 // remove folder from Utils.songs
                 Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
 
-                path = song;
+                path = Utils.songs[Utils.currentSongIndex];
             }
             else if (URL.isValidSoundCloudPlaylist(song)) {
                 // id related to url, download and convert to absolute path
@@ -202,7 +202,7 @@ namespace Jammer
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
 
                 Debug.dprint("Error: " + e);
-                Log.Error(e.ToString());
+                Log.Error(e.ToString() + "##");
                 return;
             }
             Debug.dprint("End of PlaySong");
@@ -656,16 +656,13 @@ namespace Jammer
             BassAac.PlayAudioFromMp4 = true;
             BassAac.AacSupportMp4 = true;
 
-            if (isValidExtension(Path.GetExtension(Utils.currentSong), aacExtensions))
-            {
+            ////
+            Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
+            if (Utils.currentMusic == 0)
                 Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
-            }
-            else if (isValidExtension(Path.GetExtension(Utils.currentSong), mp4Extensions))
-            {
+            if (Utils.currentMusic == 0)
                 Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
-            }
-            else if (isValidExtension(Path.GetExtension(Utils.currentSong), midiExtensions))
-            {        
+            if (Utils.currentMusic == 0) {
                 int newFont;
                 newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
 
@@ -691,12 +688,7 @@ namespace Jammer
                 }
                 Utils.currentMusic = BassMidi.CreateStream(Utils.currentSong, 0, 0, flags);
             }
-            else
-            {
-                // create stream
-                Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
-            }
-
+            
             // create stream
             if (Utils.currentMusic == 0)
             {
@@ -704,7 +696,7 @@ namespace Jammer
 
                 // DeleteSong(Utils.currentSongIndex, false);
                 // return;
-                Log.Error(Bass.LastError.ToString());
+                Log.Error(Bass.LastError.ToString() + " " + Utils.currentSong);
             } 
             else {
                 Log.Info("Started playing: " + Utils.currentSong);
