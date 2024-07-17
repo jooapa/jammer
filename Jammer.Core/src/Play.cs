@@ -131,7 +131,6 @@ namespace Jammer
 
             TagLib.File? tagFile;
             string title = "";
-            string tempUtilsSong = Utils.songs[Utils.currentSongIndex];
             try {
                 tagFile = TagLib.File.Create(path);
                 title = tagFile.Tag.Title;
