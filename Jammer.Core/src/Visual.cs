@@ -10,12 +10,6 @@ namespace Jammer {
         public static string FileContent = @"[Audio Visualizer]
 ; Refresh time in milliseconds
 RefreshTime = 35
-; Unicode map for visualizer in the format ' ,▁,▂,▃,▄,▅,▆,▇,█'
-UnicodeMap =  ,▁,▂,▃,▄,▅,▆,▇,█
-; UnicodeMap =  ,⣀,⣄,⣤,⣦,⣶,⣷,⣿
-; UnicodeMap =  ,⠁,⠁,⠃,⠇,⠏,⠛,⠿,⡿,⣿
-; UnicodeMap =  ⣿,⡿,⡏,⠛,⠏,⠇,⠃,⠁
-; UnicodeMap = ▫,▪,▬,□,▢,▭,▣,▯,▤,▥,▮,█
 ; Buffer size for FFT data
 ; meaning higher values will detect more frequencies,
 BufferSize = 41000
@@ -47,7 +41,6 @@ PausingEffect = true
         public static int maxFrequency = 17000; // Maximum frequency
         public static int frequencyMultiplier = 900000000; // Frequency multiplier
         public static float logarithmicMultiplier = 4f; // Logarithmic multiplier
-        public static string unicodeMap = " ,▁,▂,▃,▄,▅,▆,▇,█";
         public static bool pausingEffect = true; // Pausing effect flag
 
         private static float scaleFactor = 1.0f;
@@ -136,14 +129,12 @@ PausingEffect = true
 
         public static string[] GetUnicodeMap()
         {
-            string[] map = unicodeMap.Split(',');
-
-            if (map[0].Length == 0)
+            if (Themes.CurrentTheme == null || Themes.CurrentTheme.Visualizer == null || Themes.CurrentTheme.Visualizer.UnicodeMap == null)
             {
-                map[0] = " ";
+                return new string[] { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" };
+            } else {
+                return Themes.CurrentTheme.Visualizer.UnicodeMap; 
             }
-
-            return map; 
         }
 
         public static DataFlags GetFFTDataFlags()
@@ -176,11 +167,16 @@ PausingEffect = true
             
             // Create the file if it doesn't exist
             if (!File.Exists(path)) {
+                Log.Info("Creating Visualizer.ini file");
                 File.WriteAllText(path, FileContent, Encoding.UTF8);
-            } 
+            }
+            else {
+                Log.Info("Visualizer.ini file already exists");
+            }
         }
 
         public static void Read() {
+            Log.Info("Reading Visualizer.ini file");
             string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
             var parser = new FileIniDataParser();
             IniData data;
@@ -227,11 +223,6 @@ PausingEffect = true
                     data["Audio Visualizer"]["LogarithmicMultiplier"] = "2.0";
                     changed = true;
                 }
-                if (!data["Audio Visualizer"].ContainsKey("UnicodeMap"))
-                {
-                    data["Audio Visualizer"]["UnicodeMap"] = " ,▁,▂,▃,▄,▅,▆,▇,█";
-                    changed = true;
-                }
                 if (!data["Audio Visualizer"].ContainsKey("PausingEffect"))
                 {
                     data["Audio Visualizer"]["PausingEffect"] = "true";
@@ -251,7 +242,6 @@ PausingEffect = true
             maxFrequency = int.Parse(data["Audio Visualizer"]["MaxFrequency"], CultureInfo.InvariantCulture);
             frequencyMultiplier = int.Parse(data["Audio Visualizer"]["FrequencyMultiplier"], CultureInfo.InvariantCulture);
             logarithmicMultiplier = float.Parse(data["Audio Visualizer"]["LogarithmicMultiplier"], CultureInfo.InvariantCulture);
-            unicodeMap = data["Audio Visualizer"]["UnicodeMap"];
             pausingEffect = bool.Parse(data["Audio Visualizer"]["PausingEffect"]);
         }
     }

@@ -203,15 +203,13 @@ On **Windows**, you need to add the libraries to the executable folder.
 
 ### Run
 
-
 ```bash
-dotnet run --project Jammer.CLI -p:DefineConstants="CLI_UI" -- [args]
+dotnet run --project Jammer.CLI -- [args]
 ```
 
 ### Build
 
 #### Windows
-
 
 ```bash
 dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
@@ -224,7 +222,6 @@ Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBR
 ```bash
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false -p:DefineConstants="CLI_UI" --self-contained
 ```
-
 
 ##### Linux AppImage release
 
@@ -270,4 +267,5 @@ python update.py 101
 
 ## Known Issues
 
-Some times when song starts, it will show the url and not the title?! :(
+Sometimes when song starts, it will show the url and not the title?! :(
+  >reason: Global variables. before the song starts, the title is removed to get the url. after song is get it will be put topgether again. if the screen is refreshed before the title is put back, it will show the url.

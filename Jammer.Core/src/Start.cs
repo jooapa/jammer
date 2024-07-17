@@ -49,16 +49,19 @@ namespace Jammer
 
         public static void Run(string[] args)
         {
+            Log.Info("Starting Jammer...");
             try{
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
+                Log.Info("Output encoding set to UTF8");
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
+                Log.Error("Error setting output encoding to UTF8");
             }
 
             Utils.songs = args;
             // Theme init
             Themes.Init();
-
+            Log.Info("Themes initialized");
             Debug.dprint("Run");
             if (args.Length > 0) {
                 CheckArgs(args);
@@ -74,6 +77,7 @@ namespace Jammer
             try {
                 if (!Bass.Init()) {   
                     Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
+                    Log.Error("BASS initialization failed");
                     return;
                 }
                 // Additional code if initialization is successful
@@ -82,6 +86,10 @@ namespace Jammer
                 Console.WriteLine($"Exception during BASS initialization: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
+            Log.Info("BASS initialized");
+
+            // Initialize the keyboard hook
+            Log.Info("Initializing keyboard hook");
             InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given

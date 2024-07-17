@@ -62,6 +62,7 @@ PlaylistViewScrolldown = PageDown
 Choose = Enter
 AddSongToQueue = G
 Search = Ctrl + Y
+ShowLog = Ctrl + L
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();

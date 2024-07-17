@@ -45,7 +45,6 @@ namespace Jammer{
         ```
     */
     public static class Keybindings{
-        public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
         public static string CurrentState = CheckValue("CurrentState", "F12");
@@ -94,6 +93,8 @@ namespace Jammer{
         public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "ArrowDown");
         public static string Choose = CheckValue("Choose", "Enter");
         public static string AddSongToQueue = CheckValue("AddSongToQueue", "G");
+        public static string Search = CheckValue("Search", "Ctrl + Y");
+        public static string ShowLog = CheckValue("ShowLog", "Shift + L");
 
         public static string CheckValue(string value, string defaultValue){
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);

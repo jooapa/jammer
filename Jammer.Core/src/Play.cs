@@ -78,23 +78,17 @@ namespace Jammer
             // if folder
             else if (Directory.Exists(Utils.songs[Utils.currentSongIndex]))
             {
-                int originalLengthMinusFolder = Utils.songs.Length - 1;
                 // add all files in folder to Utils.songs
                 string[] files = Directory.GetFiles(Utils.songs[Utils.currentSongIndex]);
                 foreach (string file in files)
                 {
                     AddSong(file);
                 }
-                AnsiConsole.MarkupLine("[bold]" + Utils.currentSongIndex + "[/] : " + Utils.songs.Length + " : " + Utils.currentSongIndex + " : " + originalLengthMinusFolder);
+                
+                // remove folder from Utils.songs
+                Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
 
-                if (Utils.songs.Length == originalLengthMinusFolder) {
-                    path = Utils.songs[originalLengthMinusFolder - 1];
-                }
-                else {
-                    path = Utils.songs[Utils.currentSongIndex];
-                }
-                
-                
+                path = Utils.songs[Utils.currentSongIndex];
             }
             else if (URL.isValidSoundCloudPlaylist(Utils.songs[Utils.currentSongIndex])) {
                 // id related to url, download and convert to absolute path
@@ -123,21 +117,22 @@ namespace Jammer
             }
             else
             {
-                AnsiConsole.MarkupLine($"[red] {Locale.OutsideItems.SongNotFound}[/]");
-                return;
+                path = Utils.songs[Utils.currentSongIndex];
             }
 
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
             Utils.currentSong = path;
-            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex];
-            
+            Start.drawWhole = true;
+
+            Log.Info("Playing: " + Utils.songs[Utils.currentSongIndex]);
 
             // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
+
             TagLib.File? tagFile;
             string title = "";
-
+            string tempUtilsSong = Utils.songs[Utils.currentSongIndex];
             try {
                 tagFile = TagLib.File.Create(path);
                 title = tagFile.Tag.Title;
@@ -149,6 +144,7 @@ namespace Jammer
 
             } catch (Exception) {
                 tagFile = null;
+                Log.Error("Error getting title of the song");
             }
             
 
@@ -157,11 +153,10 @@ namespace Jammer
                 title = "";
             }
 
-            if (Utils.songs[Utils.currentSongIndex  ].Contains("½"))
+            if (Utils.songs[Utils.currentSongIndex].Contains("½"))
             {
                 title = "";
             }
-
 
             Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex] + title;
 
@@ -173,16 +168,7 @@ namespace Jammer
             {
                 string extension = Path.GetExtension(path).ToLower();
 
-                if (isValidExtension(extension, songExtensions)
-                 || isValidExtension(extension, aacExtensions)
-                 || isValidExtension(extension, mp4Extensions)
-                 || isValidExtension(extension, midiExtensions)
-                   )
-                {
-                    Debug.dprint("Audiofile");
-                    StartPlaying();
-                }
-                else if (extension == ".jammer") {
+                if (extension == ".jammer") {
                     Debug.dprint("jammer");
                     // Message.Data(path,"dsdsadsads");
                     // read playlist
@@ -209,17 +195,7 @@ namespace Jammer
                 }
                 else
                 {
-
-                    Console.WriteLine(Locale.OutsideItems.UnsupportedFileFormat);
-                    Debug.dprint("Unsupported file format");
-                    // remove song from current Utils.songs
-                    Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
-                    if (Utils.currentSongIndex == Utils.songs.Length)
-                    {
-                        Utils.currentSongIndex = Utils.songs.Length - 1;
-                    }
-                    // Start.state = MainStates.playing;
-                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                    StartPlaying();
                 }
             }
             catch (Exception e)
@@ -228,6 +204,7 @@ namespace Jammer
                 Console.WriteLine($"{Locale.OutsideItems.Error}: " + e);
 
                 Debug.dprint("Error: " + e);
+                Log.Error(e.ToString());
                 return;
             }
             Debug.dprint("End of PlaySong");
@@ -294,6 +271,7 @@ namespace Jammer
                 Utils.currentSongIndex = index;
                 Utils.queueSongs.RemoveAt(0);
             } else {
+
                 if (Utils.songs.Length >= 1) // no next song if only one song or less
                 {
                     Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
@@ -514,16 +492,6 @@ namespace Jammer
 
         public static void AddSong(string song, bool AddNext = true )
         {
-            // check if song is already in playlist
-            foreach (string s in Utils.songs)
-            {
-                if (s == song)
-                {
-                    Console.WriteLine(Locale.OutsideItems.SongInPlaylist);
-
-                    return;
-                }
-            }
             if (AddNext)
                 Utils.songs = Utils.songs.Take(Utils.currentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.songs.Skip(Utils.currentSongIndex + 1)).ToArray();
             else {
@@ -687,20 +655,15 @@ namespace Jammer
             // flags
             BassFlags flags = BassFlags.Default;
             
+            BassAac.PlayAudioFromMp4 = true;
+            BassAac.AacSupportMp4 = true;
 
             if (isValidExtension(Path.GetExtension(Utils.currentSong), aacExtensions))
             {
-                BassAac.PlayAudioFromMp4 = false;
-                BassAac.AacSupportMp4 = false;
-
-                // custom flags
                 Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
             }
             else if (isValidExtension(Path.GetExtension(Utils.currentSong), mp4Extensions))
             {
-                // flags
-                BassAac.PlayAudioFromMp4 = true;
-                BassAac.AacSupportMp4 = true;
                 Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
             }
             else if (isValidExtension(Path.GetExtension(Utils.currentSong), midiExtensions))
@@ -739,10 +702,14 @@ namespace Jammer
             // create stream
             if (Utils.currentMusic == 0)
             {
-                Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
+                // Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
                 // DeleteSong(Utils.currentSongIndex, false);
-                return;
+                // return;
+                Log.Error(Bass.LastError.ToString());
+            } 
+            else {
+                Log.Info("Started playing: " + Utils.currentSong);
             }
 
             // set volume
@@ -750,7 +717,6 @@ namespace Jammer
 
             // set FXs
             SetFXs();
-
 
             // set sync
             Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {

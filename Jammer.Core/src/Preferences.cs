@@ -30,12 +30,15 @@ namespace Jammer
 
             if (!Directory.Exists(JammerPath))
             {
+                Log.Error("Jammer folder does not exist, creating one...");
                 Directory.CreateDirectory(JammerPath);
             }
             if (!Directory.Exists(Path.Combine(JammerPath, "playlists"))){
+                Log.Error("Playlists folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "playlists"));
             }
             if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts"))){
+                Log.Error("Soundfonts folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "soundfonts"));
             }
 
@@ -43,16 +46,19 @@ namespace Jammer
             // check if settings.json has every data
             SaveSettings();
 
+            Log.Info("Loading Effects.ini");
             // Effects.ini
             Effects.WriteEffects();
             Effects.ReadEffects();
             
+            Log.Info("Loading Visualizer.ini");
             // Visualizer.ini
             Visual.Write();
             Visual.Read();
 
             if (!Directory.Exists(songsPath))
             {
+                Log.Error("Songs folder does not exist, creating one...");
                 Directory.CreateDirectory(songsPath);
             }
         }

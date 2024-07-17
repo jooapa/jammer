@@ -137,6 +137,9 @@ namespace Jammer {
         ""MultiSelectMoreChoicesTextColor"": ""grey""
     },
     ""Visualizer"": {
+        ""UnicodeMap"": [
+            "" "",""▁"",""▂"",""▃"",""▄"",""▅"",""▆"",""▇"",""█""
+        ],
         ""PlayingColor"": ""white"",
         ""PausedColor"": ""yellow""
     }
@@ -470,6 +473,7 @@ namespace Jammer {
 
         public class VisualizerTheme
         {
+            public string[]? UnicodeMap { get; set; }
             public string? PlayingColor { get; set; }
             public string? PausedColor { get; set; }
         }

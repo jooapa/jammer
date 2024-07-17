@@ -22,7 +22,8 @@ namespace Jammer
                 }
 
                 string item = args[i];
-                AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
+                // AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Checking} {item}[/]");
+                Log.Info($"{Locale.OutsideItems.Checking} {item}");
 
                 if (URL.IsUrl(item))
                 {
@@ -52,10 +53,12 @@ namespace Jammer
                     }
                     else if (URL.IsUrl(item))
                     {
-                        AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
+                        // AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
+                        Log.Info($"URL {item} {Locale.OutsideItems.IsValid}");
                     }
                     else {
-                        AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
+                        // AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
+                        Log.Error($"URL {item} {Locale.OutsideItems.IsntValid}");
                         // delete item from args
                         args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
                         i--;
@@ -77,13 +80,13 @@ namespace Jammer
                         args[i] = ConvertToAbsolutePath(item);
                     }
                 }
-                else if (!File.Exists(item))
-                {
-                    AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} '{item}'{Locale.OutsideItems.DoesntExist}[/]");
-                    // delete item from args
-                    args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
-                    i--;
-                }
+                // else if (!File.Exists(item))
+                // {
+                //     AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.File} '{item}'{Locale.OutsideItems.DoesntExist}[/]");
+                //     // delete item from args
+                //     args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                //     i--;
+                // }
 
                 if (title != "")
                 {

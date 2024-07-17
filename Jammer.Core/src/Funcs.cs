@@ -296,8 +296,6 @@ namespace Jammer {
             string currentSong = Utils.songs[Utils.currentSongIndex];
             // shuffle playlist
             Play.Shuffle();
-            // delete duplicates
-            Utils.songs = Utils.songs.Distinct().ToArray();
 
             Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
             // set new song from shuffle to the current song

@@ -317,11 +317,7 @@ namespace Jammer {
             // add all songs from playlist to Utils.songs but start adding at the currentSongIndex
             Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
             // Message.Data(Utils.songs[0], "d1");
-            
-            // delete duplicate songs
-            Utils.songs = Utils.songs.Distinct().ToArray();
-            // Message.Data(Utils.songs[0], "d2");
-            
+                        
 
             return DownloadSong(Utils.songs[Utils.currentSongIndex]);
         }

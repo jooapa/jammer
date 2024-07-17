@@ -426,7 +426,7 @@ namespace Jammer
                             {
                                 AnsiConsole.Clear();
                                 string themeName = Message.Input("Enter a theme name:", "Name of your AMAZING theme"); // TODO ADD LOCALE
-                                if (Play.EmptySpaces(themeName))
+                                if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
                                 {
                                     drawWhole = true;
                                     break;
@@ -456,6 +456,11 @@ namespace Jammer
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();
+                            break;
+                        case "ShowLog":
+                            AnsiConsole.Clear();
+                            Message.Data(Log.GetLog(), "Log");
+                            drawWhole = true;
                             break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();

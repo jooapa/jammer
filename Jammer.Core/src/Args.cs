@@ -181,12 +181,12 @@ namespace Jammer
                         case "--start":
                             // open explorer in Jammer folder
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
-                            // if windows
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                                 System.Diagnostics.Process.Start("explorer.exe", Utils.JammerPath);
                             } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                                 System.Diagnostics.Process.Start("xdg-open", Utils.JammerPath);
                             }
+                            Environment.Exit(0);
                             return;
                         case "--update":
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {

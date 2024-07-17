@@ -172,8 +172,12 @@ HighFreqRTRatio = 0.001
             
             // Create the file if it doesn't exist
             if (!File.Exists(path)) {
+                Log.Info("Creating the Effects.ini file");
                 File.WriteAllText(path, FileContent);
-            } 
+            }
+            else {
+                Log.Info("Effects.ini file already exists");
+            }
             // else {
             //     // use the fileContent to fill in any missing values
             //     var parser = new FileIniDataParser();
@@ -202,6 +206,7 @@ HighFreqRTRatio = 0.001
 
        public static void ReadEffects() {
             try {
+                Log.Info("Reading the Effects.ini file");
                 var parser = new FileIniDataParser();
                 IniData data = new();
                 data = parser.ReadFile(Path.Combine(Utils.JammerPath, "Effects.ini"));
