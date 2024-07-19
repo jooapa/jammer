@@ -291,7 +291,7 @@ namespace Jammer{
             public static string PlayPause = CheckValueLocale("EditKeysTexts", "PlayPause", "Play/Pause");
             public static string Quit = CheckValueLocale("EditKeysTexts", "Quit", "Quit");
             public static string NextSong = CheckValueLocale("EditKeysTexts", "NextSong", "Next song");
-            public static string PreviousSong = CheckValueLocale("EditKeysTexts", "PreviousSong", "Previos song");
+            public static string PreviousSong = CheckValueLocale("EditKeysTexts", "PreviousSong", "Previous song");
             public static string PlaySong = CheckValueLocale("EditKeysTexts", "PlaySong", "Play song");
             public static string Forward5s = CheckValueLocale("EditKeysTexts", "Forward5s", "Forward");
             public static string Backwards5s = CheckValueLocale("EditKeysTexts", "Backwards5s", "Rewind");

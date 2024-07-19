@@ -1,8 +1,8 @@
 using SharpHook.Native;
 using Spectre.Console;
-// #pragma warning disable CS8604
-// #pragma warning disable CS8602
-// #pragma warning disable CS8600
+#pragma warning disable CS8604
+#pragma warning disable CS8602
+#pragma warning disable CS8600
 
 namespace Jammer {
     public static class TUI {
@@ -52,10 +52,19 @@ namespace Jammer {
                 // if (Start.playerView == "default" || Start.playerView == "fake") {
                 //     AnsiConsole.Cursor.SetPosition(0, 0);
                 // }
-                
+                string songPath;
+                if (Utils.currentSong == "") {
+                    songPath = "No song is playing";
+                } else {
+                    if (Utils.currentMusic == 0) {
+                        songPath = "Cannot play the song";
+                    } else {
+                        songPath = Utils.currentSong;
+                    }
+                }
                 // render maintable with tables in it
                 mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(
-                    Utils.currentMusic == 0 ? "ERROR: Cannot play current song" : Utils.currentSong
+                    songPath
                 ), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
 

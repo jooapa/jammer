@@ -125,7 +125,6 @@ namespace Jammer
         public static bool drawTime = false;
         public static bool drawVisualizer = false;
         public static bool drawWhole = false;
-        private static bool alreadyDrewHelp = false;
 
         public static string previousView = "default";
         public static void Loop()
@@ -158,7 +157,6 @@ namespace Jammer
                     consoleHeight = Console.WindowHeight;
                     consoleWidth = Console.WindowWidth;
                     AnsiConsole.Clear();
-                    alreadyDrewHelp = false;
                     drawWhole = true;
                 }
 
@@ -242,6 +240,12 @@ namespace Jammer
                         break;
                 }
 
+                // if no song is playing, set the current song to ""
+                if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped) 
+                {
+                    Utils.currentSong = "";
+                }
+
                 // If the view is changed, refresh the screen
                 if (previousView != playerView)
                 {
@@ -261,12 +265,10 @@ namespace Jammer
                     }
                 }
                 else {
-                    if (playerView == "help" && !alreadyDrewHelp ||playerView == "help" && drawWhole) {
+                    if (playerView == "help" && drawWhole) {
                         TUI.DrawHelp();
-                        alreadyDrewHelp = true;
                     }
-                    else if (playerView != "help") {
-                        alreadyDrewHelp = false;
+                    else if (playerView != "help" && drawWhole) {
                         TUI.RefreshCurrentView();
                     }
                 }
@@ -278,11 +280,8 @@ namespace Jammer
 
                 if (playerView == "default" || playerView == "all") {
                     Thread.Sleep(1);
-                    alreadyDrewHelp = false;
                 } else
-                    Thread.Sleep(50);
-                    
-
+                    Thread.Sleep(5);
             }
         }
 
