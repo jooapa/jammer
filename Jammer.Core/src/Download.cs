@@ -150,6 +150,8 @@ namespace Jammer {
                 return;
             }
 
+            AnsiConsole.Cursor.SetPosition(0, Start.consoleWidth);
+            AnsiConsole.MarkupLine("Getting track. please wait...");
             try
             {
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
@@ -162,6 +164,9 @@ namespace Jammer {
                     {
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
+                        if (data == 1) {
+                            Start.drawWhole = true;
+                        }
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
@@ -198,6 +203,9 @@ namespace Jammer {
                 return;
             }
 
+            // AnsiConsole.Clear();
+            AnsiConsole.Cursor.SetPosition(0, Start.consoleWidth);
+            AnsiConsole.MarkupLine("Getting track. please wait...");
             try {
                 var track = await soundcloud.Tracks.GetAsync(url);
 
@@ -208,6 +216,9 @@ namespace Jammer {
                         var progress = new Progress<double>(data => {
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
+                            if (data == 1) {
+                                Start.drawWhole = true;
+                            }
                         });
                         
                         await soundcloud.DownloadAsync(track, songPath, progress);
@@ -253,6 +264,8 @@ namespace Jammer {
             var soundcloud = new SoundCloudClient();
 
             // Get all playlist tracks
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine("Getting playlist tracks...");
             var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
 
             if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
@@ -276,6 +289,8 @@ namespace Jammer {
         }
         public static async Task GetPlaylistYoutube(string plurl) {
             // Get all playlist tracks
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine("Getting playlist tracks...");
             var playlist = await youtube.Playlists.GetVideosAsync(plurl);
             Console.WriteLine(playlist[0]);
             if (playlist.Count() == 0 || playlist == null) {

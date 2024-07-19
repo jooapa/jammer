@@ -53,15 +53,15 @@ namespace Jammer {
                 //     AnsiConsole.Cursor.SetPosition(0, 0);
                 // }
                 string songPath;
-                if (Utils.currentSong == "") {
+                if (Utils.currentMusic == 0 && Utils.curSongError) {
+                    songPath = "Error: cannot play the song";
+                } else if (Utils.currentMusic == 0) {
                     songPath = "No song is playing";
-                } else {
-                    if (Utils.currentMusic == 0) {
-                        songPath = "Cannot play the song";
-                    } else {
-                        songPath = Utils.currentSong;
-                    }
                 }
+                else {
+                    songPath = Utils.currentSong;
+                }
+
                 // render maintable with tables in it
                 mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(
                     songPath

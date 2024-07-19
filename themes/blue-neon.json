@@ -162,6 +162,12 @@
     ],
     "TitleColorIfError": "red bold",
     "InputTextColorIfError": "red",
+    "InputBorderStyleIfError": "Heavy",
+    "InputBorderColorIfError": [
+      0,
+      102,
+      204
+    ],
     "MultiSelectMoreChoicesTextColor": "grey"
   },
   "Visualizer": {

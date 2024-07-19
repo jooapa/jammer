@@ -117,6 +117,8 @@ namespace Jammer
                     } 
                     if(Action == "Choose"){
                         IniFileHandling.Ini_LoadNewLocale();
+                        AnsiConsole.Clear();
+                        Action = "";
                     }
 
                     drawWhole = true;

@@ -260,6 +260,12 @@ namespace Jammer
         }
         public static void NextSong()
         {
+            if (Utils.songs.Length == 0)
+            {
+                Start.state = MainStates.pause;
+                return;
+            }
+
             if(Utils.queueSongs.Count > 0){
                 PlayDrawReset();
                 PlaySong(Utils.queueSongs.ToArray(), 0);
@@ -300,6 +306,12 @@ namespace Jammer
         }
         public static void PrevSong()
         {
+            if (Utils.songs.Length == 0)
+            {
+                Start.state = MainStates.pause;
+                return;
+            }
+
             Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
             if (Utils.currentSongIndex < 0)
             {
@@ -697,9 +709,11 @@ namespace Jammer
 
                 // DeleteSong(Utils.currentSongIndex, false);
                 // return;
+                Utils.curSongError = true;
                 Log.Error(Bass.LastError.ToString() + " " + Utils.currentSong);
             } 
             else {
+                Utils.curSongError = false;
                 Log.Info("Started playing: " + Utils.currentSong);
             }
 

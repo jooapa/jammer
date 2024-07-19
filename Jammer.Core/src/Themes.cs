@@ -134,6 +134,8 @@ namespace Jammer {
         ""InputBorderColor"": [255,255,255],
         ""TitleColorIfError"": ""red bold"",
         ""InputTextColorIfError"": ""red"",
+        ""InputBorderStyleIfError"": ""Rounded"",
+        ""InputBorderColorIfError"": [255,255,255],
         ""MultiSelectMoreChoicesTextColor"": ""grey""
     },
     ""Visualizer"": {
@@ -468,6 +470,8 @@ namespace Jammer {
             public int[]? InputBorderColor { get; set; }
             public string? TitleColorIfError { get; set; }
             public string? InputTextColorIfError { get; set; }
+            public string? InputBorderStyleIfError { get; set; }
+            public int[]? InputBorderColorIfError { get; set; }
             public string? MultiSelectMoreChoicesTextColor { get; set; }
         }
 

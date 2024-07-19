@@ -26,6 +26,7 @@ namespace Jammer
         ///  time played in seconds
         /// </summary>
         public static double MusicTimePlayed = 0;
+        public static bool curSongError = false;
         public static double preciseTime = 0;
         public static int currentSongIndex = 0;
         public static int previousSongIndex = 0;
