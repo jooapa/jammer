@@ -332,8 +332,8 @@ namespace Jammer{
             public static string ToggleInfo = CheckValueLocale("EditKeysTexts", "ToggleInfo", "Toggle info view");
             public static string LoadEffects = CheckValueLocale("EditKeysTexts", "LoadEffects", "Load effects");
             public static string ToggleMediaButtons = CheckValueLocale("EditKeysTexts", "ToggleMediaButtons", "Toggle media buttons");
-            public static string ToggleVisualizer = CheckValueLocale("EditKeysTexts", "ToggleVisualizer", "Toggle media buttons");
-            public static string LoadVisualizer = CheckValueLocale("EditKeysTexts", "LoadVisualizer", "Toggle visualizer type");
+            public static string ToggleVisualizer = CheckValueLocale("EditKeysTexts", "ToggleVisualizer", "Toggle Visualizer");
+            public static string LoadVisualizer = CheckValueLocale("EditKeysTexts", "LoadVisualizer", "Load Visualizer");
             public static string Choose = CheckValueLocale("EditKeysTexts", "Choose", "Choose");
             public static string ChangeSoundFont = CheckValueLocale("EditKeysTexts", "ChangeSoundFont", "Change soundfont");
             public static string ShowLog = CheckValueLocale("EditKeysTexts", "ShowLog", "Show log");

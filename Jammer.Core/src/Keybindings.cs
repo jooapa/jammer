@@ -93,7 +93,7 @@ namespace Jammer{
         public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "PageDown");
         public static string Choose = CheckValue("Choose", "Enter");
         public static string AddSongToQueue = CheckValue("AddSongToQueue", "G");
-        public static string Search = CheckValue("SearchYT", "Ctrl + Y");
+        public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ShowLog = CheckValue("ShowLog", "Shift + L");
 
         public static string CheckValue(string value, string defaultValue){

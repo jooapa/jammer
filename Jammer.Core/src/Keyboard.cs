@@ -282,6 +282,7 @@ namespace Jammer
                         case "ToggleMediaButtons": // toggle media buttons
                             Preferences.isMediaButtons = !Preferences.isMediaButtons;
                             Preferences.SaveSettings();
+                            drawWhole = true;   
                             break;
                         case "ToggleVisualizer": // toggle visualizer
                             Preferences.isVisualizer = !Preferences.isVisualizer;
