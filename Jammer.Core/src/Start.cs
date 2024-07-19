@@ -261,7 +261,7 @@ namespace Jammer
                     }
                 }
                 else {
-                    if (playerView == "help" && !alreadyDrewHelp) {
+                    if (playerView == "help" && !alreadyDrewHelp ||playerView == "help" && drawWhole) {
                         TUI.DrawHelp();
                         alreadyDrewHelp = true;
                     }

@@ -453,6 +453,7 @@ namespace Jammer
                             break;
                         case "Search":
                             Search.SearchSong();
+                            drawWhole = true;
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();

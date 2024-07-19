@@ -5,28 +5,32 @@ namespace Jammer
     public static class Search
     {
         public static void SearchSong() {
-            AnsiConsole.Clear();
-            string platform = Message.MultiSelect(new string[] { "Youtube", "SoundCloud"}, "Select a platform to search from");
+            string platform = Message.Input("Type 'y' for [red]Youtube[/] or 's' for [darkorange]SoundCloud[/]:", "Search for a song on Youtube or SoundCloud");
+            platform = platform.ToLower();
 
-            if (platform == "Youtube") {
-                string type = Message.MultiSelect(new string[] { "Video", "Playlist"}, "Select a type to search for");
-                if (type == "Video") {
+            if (platform == "youtube" || platform == "y") {
+                string type = Message.Input("Type 'v|t' for Video or 'p' for Playlist:", "[red]Youtube[/] Search for a Video|Track or Playlist? ");
+                type = type.ToLower();
+
+                if (type == "video" || type == "v" || type == "track" || type == "t") {
                     SearchYTSong("video");
-                } else if (type == "Playlist") {
+                } else if (type == "playlist" || type == "p") {
                     SearchYTSong("playlist");
                 }
-            } else if (platform == "SoundCloud") {
-                string type = Message.MultiSelect(new string[] { "Track", "Playlist"}, "Select a type to search for");
-                if (type == "Track") {
+            } else if (platform == "soundcloud" || platform == "s") {
+                string type = Message.Input("Type 't' for Track or 'p' for Playlist:","[darkorange]Soundcloud[/] Search for a Track or Playlist?");
+                type = type.ToLower();
+
+                if (type == "track" || type == "t") {
                     SearchSCSong("track");
-                } else if (type == "Playlist") {
+                } else if (type == "playlist" || type == "p") {
                     SearchSCSong("playlist");
                 }
             }
         }
         public static void SearchYTSong(string type) {
             // TODO ADD LOCALE(s)
-            string search = Message.Input("Search from youtube: ", "Search a song from youtube by its name");
+            string search = Message.Input("Search:", "Search a song from Youtube by its name");
 
             List<YTSearchResult> results = new();
             int indexer = 0;
@@ -62,7 +66,7 @@ namespace Jammer
 
             if (results.Count > 0) {
                 string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
-                resultsString = resultsString.Append("Cancel").ToArray();
+                resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
                 // Display the MultiSelect prompt after the loop completes
                 AnsiConsole.Clear();
                 string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
@@ -93,10 +97,9 @@ namespace Jammer
             }
             Start.drawWhole = true;
         }
-
         public static void SearchSCSong(string type) {
             // TODO ADD LOCALE(s)
-            string search = Message.Input("Search from SoundCloud: ", "Search a song from SoundCloud by its name");
+            string search = Message.Input("Search:", "Search a song from SoundCloud by its name");
 
             List<SCSearchResult> results = new();
             int indexer = 0;
@@ -130,7 +133,7 @@ namespace Jammer
 
             if (results.Count > 0) {
                 string[] resultsString = results.Select(r => Markup.Escape(r.Title)).ToArray();
-                resultsString = resultsString.Append("Cancel").ToArray();
+                resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
                 // Display the MultiSelect prompt after the loop completes
                 AnsiConsole.Clear();
                 string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max);

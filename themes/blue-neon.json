@@ -165,6 +165,16 @@
     "MultiSelectMoreChoicesTextColor": "grey"
   },
   "Visualizer": {
+    "UnicodeMap": [
+      "▁",
+      "▂",
+      "▃",
+      "▄",
+      "▅",
+      "▆",
+      "▇",
+      "█"
+    ],
     "PlayingColor": "blue3",
     "PausedColor": "navyblue"
   }
