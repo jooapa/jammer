@@ -25,10 +25,7 @@ namespace Jammer
             AnsiConsole.Write(mainTable);
             
             // replace inputSaying every character inside of [] @"\[.*?\]
-            string pattern = @"\[.*?\]";
-            string replacement = "";
-            Regex rgx = new Regex(pattern);
-            int len = rgx.Replace(inputSaying, replacement).Length;
+            int len = Start.Purge(inputSaying).Length;
             len += 6;
             AnsiConsole.Cursor.SetPosition(len, 5);
 

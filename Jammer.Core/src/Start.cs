@@ -3,6 +3,7 @@ using Jammer;
 using System.Runtime.InteropServices;
 using Spectre.Console;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 
 namespace Jammer
@@ -326,6 +327,21 @@ namespace Jammer
             // input = input.Replace("\"", "");
             // input = input.Replace("\'", "");
             return input;
+        }
+
+        // replace inputSaying every character inside of [] @"\[.*?\]
+        /// <summary>
+        /// Removes all occurrences of text enclosed in square brackets from the input string.
+        /// </summary>
+        /// <param name="input">The input string to be purged.</param>
+        /// <returns>The input string with all occurrences of text enclosed in square brackets removed.</returns>
+        public static string Purge(string input)
+        {
+            string pattern = @"\[.*?\]";
+            string replacement = "";
+            Regex rgx = new(pattern);
+            string text = rgx.Replace(input, replacement);
+            return text;
         }
 
         /// <summary>
