@@ -329,6 +329,15 @@ namespace Jammer{
             public static string PlaylistViewScrolldown = CheckValueLocale("EditKeysTexts", "PlaylistViewScrolldown", "Scroll down in tables");
             public static string Enter = CheckValueLocale("EditKeysTexts", "Enter", "Choose highlighted item in tables");
             public static string AddSongToQueue = CheckValueLocale("EditKeysTexts", "AddSongToQueue", "Add song to queue in playlist view");
+            public static string ToggleInfo = CheckValueLocale("EditKeysTexts", "ToggleInfo", "Toggle info view");
+            public static string LoadEffects = CheckValueLocale("EditKeysTexts", "LoadEffects", "Load effects");
+            public static string ToggleMediaButtons = CheckValueLocale("EditKeysTexts", "ToggleMediaButtons", "Toggle media buttons");
+            public static string ToggleVisualizer = CheckValueLocale("EditKeysTexts", "ToggleVisualizer", "Toggle media buttons");
+            public static string LoadVisualizer = CheckValueLocale("EditKeysTexts", "LoadVisualizer", "Toggle visualizer type");
+            public static string Choose = CheckValueLocale("EditKeysTexts", "Choose", "Choose");
+            public static string ChangeSoundFont = CheckValueLocale("EditKeysTexts", "ChangeSoundFont", "Change soundfont");
+            public static string ShowLog = CheckValueLocale("EditKeysTexts", "ShowLog", "Show log");
+            public static string Search = CheckValueLocale("EditKeysTexts", "Search", "Search");
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
