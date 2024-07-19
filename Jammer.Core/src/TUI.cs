@@ -354,6 +354,8 @@ namespace Jammer {
             string[] ChangeTheme =             (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
             string[] Search =       (Keybindings.Search).Replace(" ", "").Split(separator);
             string[] ChangeSoundFont =         (Keybindings.ChangeSoundFont).Replace(" ", "").Split(separator);
+            string[] ToSongStart =         (Keybindings.ToSongStart).Replace(" ", "").Split(separator);
+            string[] ToSongEnd =         (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
 
@@ -378,6 +380,8 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(PlaylistOptions), Themes.sColor(Locale.Help.ShowPlaylistOptions, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)                               );
             table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(ToSongStart), Themes.sColor(Locale.LocaleKeybind.GoToSongStart, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
 
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
