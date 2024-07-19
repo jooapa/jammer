@@ -9,7 +9,7 @@ namespace Jammer
             platform = platform.ToLower();
 
             if (platform == "youtube" || platform == "y") {
-                string type = Message.Input("Type 'v|t' for Video or 'p' for Playlist:", "[red]Youtube[/] Search for a Video|Track or Playlist?", true);
+                string type = Message.Input("Type 'v' for Video or 'p' for Playlist:", "[red]Youtube[/] Search for a Video or Playlist?", true);
                 type = type.ToLower();
 
                 if (type == "video" || type == "v" || type == "track" || type == "t") {
