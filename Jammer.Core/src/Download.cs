@@ -150,8 +150,15 @@ namespace Jammer {
                 return;
             }
 
-            AnsiConsole.Cursor.SetPosition(0, Start.consoleWidth);
-            AnsiConsole.MarkupLine("Getting track. please wait...");
+            AnsiConsole.Cursor.SetPosition(3, 2);
+            var theText = "Getting track. please wait...";
+            var tmpstr = theText;
+            var spaces = Start.consoleWidth - theText.Length-3;
+            for (int i = 0; i < spaces; i++) {
+                tmpstr += " ";
+            }
+            AnsiConsole.MarkupLine(tmpstr);
+
             try
             {
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
@@ -203,9 +210,16 @@ namespace Jammer {
                 return;
             }
 
-            // AnsiConsole.Clear();
-            AnsiConsole.Cursor.SetPosition(0, Start.consoleWidth);
-            AnsiConsole.MarkupLine("Getting track. please wait...");
+            AnsiConsole.Cursor.SetPosition(3, 2);
+            var theText = "Getting track. please wait...";
+            var tmpstr = theText;
+            var spaces = Start.consoleWidth - theText.Length-3;
+            for (int i = 0; i < spaces; i++) {
+                tmpstr += " ";
+            }
+
+            AnsiConsole.MarkupLine(tmpstr);
+
             try {
                 var track = await soundcloud.Tracks.GetAsync(url);
 

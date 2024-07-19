@@ -76,7 +76,7 @@ namespace Jammer
         public static void StartUp() {
             try {
                 if (!Bass.Init()) {   
-                    Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true);
+                    /* Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true); */
                     Log.Error("BASS initialization failed");
                     return;
                 }
@@ -241,7 +241,7 @@ namespace Jammer
                 }
 
                 // if no song is playing, set the current song to ""
-                if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped) 
+                if (Utils.songs.Length == 0) 
                 {
                     Utils.currentSong = "";
                 }
