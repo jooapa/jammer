@@ -63,8 +63,14 @@ PausingEffect = true
             int bytesRead = Bass.ChannelGetData(Utils.currentMusic, fftData, (int)GetFFTDataFlags());
             if (bytesRead <= 0)
             {
-                // Handle error if data retrieval fails
-                return "Error: Unable to retrieve FFT data.";
+                string songPath;
+                if (Utils.currentMusic == 0 && Utils.curSongError) {
+                    songPath = "Error: cannot read FFT data";
+                } else {
+                    songPath = "";
+                }
+
+                return songPath;
             }
 
             // Map FFT values to ASCII characters
