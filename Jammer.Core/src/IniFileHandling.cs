@@ -277,11 +277,12 @@ ShowLog = Ctrl + L
                 bool isShiftCtrlAlt
             )
         {
+            // Message.Data($"{key_pressed}", "Debug");
             char separator = '+'; // Inside .ini file
-            string key_pressed_string = key_pressed.ToString().ToLower();
-
+            string key_pressed_string = key_pressed.ToString();
+            // Message.Data($"{key_pressed_string}", "Debug");
             // If number key. d0, d1, d2 etc ->
-            if(key_pressed_string[..1] == "d" && key_pressed_string.Length == 2){
+            if(key_pressed_string[..1] == "D" && key_pressed_string.Length == 2){
                 key_pressed_string = key_pressed_string.Substring(1,1);
             }
             string currentKeyPress = "";
@@ -317,15 +318,17 @@ ShowLog = Ctrl + L
                                 altModifier = true;
                                 break;
                             default:
-                                currentKeyPress = lowerCasePart;
+                                currentKeyPress = part;
                                 break;
                         }
                     }
+                    // Message.Data($"{currentKeyPress} {key_pressed_string}", "Debug");
                     if(currentKeyPress.Equals(key_pressed_string)){
                         bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                         bool isShiftAltModifier = altModifier && shiftModifier;
                         bool isCtrlAltModifier = altModifier && ctrlModifier;
                         bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
+                        // Message.Data($"{isShiftCtrlModifier} {isShiftAltModifier} {isCtrlAltModifier} {isShiftAltCtrlModifier}", "Debug");
                         // Look through matches in modifiers
                         if(isShiftAltCtrlModifier && isShiftCtrlAlt){ // Shift + Alt + Ctrl
                             return key.KeyName;

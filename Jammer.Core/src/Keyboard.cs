@@ -40,10 +40,10 @@ namespace Jammer
                     Console.Clear();
                     if(key.Key == ConsoleKey.Delete && isShiftAlt && !IniFileHandling.EditingKeybind){
                         IniFileHandling.Create_KeyDataIni(1);
-                        Jammer.Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
+                        Message.Data(Locale.LocaleKeybind.KeybindResettedMessage1, Locale.LocaleKeybind.KeybindResettedMessage2);
                     }
 
-                    if(key.Key == ConsoleKey.DownArrow && !IniFileHandling.EditingKeybind){
+                    if(Action == "PlaylistViewScrolldown" && !IniFileHandling.EditingKeybind){
                         // nullifu action
                         Action = "";
                         if(IniFileHandling.ScrollIndexKeybind + 1 > IniFileHandling.KeybindAmount){
@@ -52,7 +52,7 @@ namespace Jammer
                             IniFileHandling.ScrollIndexKeybind += 1;
                         }
                     } 
-                    else if(key.Key == ConsoleKey.UpArrow && !IniFileHandling.EditingKeybind){
+                    else if(Action == "PlaylistViewScrollup" && !IniFileHandling.EditingKeybind){
                         Action = "";
                         if(IniFileHandling.ScrollIndexKeybind - 1 < 0 ){
                             IniFileHandling.ScrollIndexKeybind = IniFileHandling.KeybindAmount - 1;
@@ -93,9 +93,11 @@ namespace Jammer
                     if(IniFileHandling.EditingKeybind){
                         Action = "";
                     }
+
+                    drawWhole = true;
                 }
                 else if(playerView.Equals("changelanguage")){
-                    Console.Clear();
+                    AnsiConsole.Clear();
                     // Jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
@@ -116,6 +118,8 @@ namespace Jammer
                     if(Action == "Choose"){
                         IniFileHandling.Ini_LoadNewLocale();
                     }
+
+                    drawWhole = true;
                 }
                 else if(playerView.Equals("all")){
                     Console.Clear();
@@ -453,6 +457,7 @@ namespace Jammer
                             break;
                         case "Search":
                             Search.SearchSong();
+                            drawWhole = true;
                             break;
                         case "PlayRandomSong":
                             Play.RandomSong();

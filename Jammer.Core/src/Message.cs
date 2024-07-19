@@ -1,5 +1,6 @@
 using Jammer;
 using Spectre.Console;
+using System.Text.RegularExpressions;
 
 
 namespace Jammer
@@ -22,7 +23,13 @@ namespace Jammer
             AnsiConsole.Cursor.SetPosition(0,0);
             AnsiConsole.Cursor.Show();
             AnsiConsole.Write(mainTable);
-            AnsiConsole.Cursor.SetPosition(inputSaying.Length + 6, 5);
+            // replace inputSaying every character inside of [] @"\[.*?\]
+            string pattern = @"\[.*?\]";
+            string replacement = "";
+            Regex rgx = new Regex(pattern);
+            int len = rgx.Replace(inputSaying, replacement).Length;
+            len += 6;
+            AnsiConsole.Cursor.SetPosition(len, 5);
             string input = Console.ReadLine() ?? string.Empty;
             return input;
         }

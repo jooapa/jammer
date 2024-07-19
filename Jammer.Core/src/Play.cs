@@ -353,7 +353,8 @@ namespace Jammer
             {
                 MaybeNextSong();
             }
-            PlayDrawReset();
+            Start.prevMusicTimePlayed = -1;
+            // PlayDrawReset();
             return;
         }
         public static void SetVolume(float volume) {

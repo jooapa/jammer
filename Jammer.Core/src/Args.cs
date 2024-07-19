@@ -43,9 +43,8 @@ namespace Jammer
                     switch (arg) {
                         case "-h":
                         case "--help":
-                                TUI.ClearScreen();
                                 TUI.CliHelp();
-
+                                Environment.Exit(0);
                             return;
                         case "--play":
                         case "-p":
@@ -53,7 +52,6 @@ namespace Jammer
                                 Playlists.Play(args[i+1], true);
                             } else {
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistName);
-
                                 Environment.Exit(1);
                             }
                             break;
@@ -73,8 +71,8 @@ namespace Jammer
                                 Playlists.Delete(args[i+1]);
                             } else {
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-                                Environment.Exit(0);
                             }
+                            Environment.Exit(0);
                             break;
                         case "--add":
                         case "-a":
@@ -87,9 +85,8 @@ namespace Jammer
                                 Playlists.Add(secondHalf);
                             } else {
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-
-                                Environment.Exit(0);
                             }
+                            Environment.Exit(0);
                             break;
                         case "--remove":
                         case "-r":
@@ -102,9 +99,8 @@ namespace Jammer
                                 Playlists.Remove(secondHalf);
                             } else {
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-
-                                Environment.Exit(0);
                             }
+                            Environment.Exit(0);
                             break;
                         case "--show":
                         case "-s":
@@ -112,22 +108,23 @@ namespace Jammer
                                 Playlists.ShowCli(args[i+1]);
                             } else {
                                 AnsiConsole.WriteLine(Locale.OutsideItems.NoPlaylistNameSong);
-
-                                Environment.Exit(0);
                             }
+                            Environment.Exit(0);
                             return;
                         case "--list":
                         case "-l":
                             Playlists.PrintList();
+                            Environment.Exit(0);
                             return;
                         case "--version":
                         case "-v":
                             AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.version + "[/]");
-
+                            Environment.Exit(0);
                             return;
                         case "--flush":
                         case "-f":
                             Songs.Flush();
+                            Environment.Exit(0);
                             return;
                         case "--set-path":
                         case "-sp": // TODO ADD LOCALE :)) https://www.youtube.com/watch?v=thPv_v7890g
@@ -157,10 +154,12 @@ namespace Jammer
                                 
 
                             }
+                            Environment.Exit(0);
                             return;
                         case "--get-path":
                         case "-gp":
                             AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
+                            Environment.Exit(0);
                             return;
                         case "--songs":
                         case "-so":
@@ -169,6 +168,7 @@ namespace Jammer
                             } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
                                 System.Diagnostics.Process.Start("xdg-open", Preferences.songsPath);
                             }
+                            Environment.Exit(0);
                             return;
                         case "--home":
                         case "-hm":
@@ -177,6 +177,7 @@ namespace Jammer
                                 //     System.Environment.Exit(1);
                                 // } 
                                 Utils.songs[0] = Preferences.songsPath;
+                                Environment.Exit(0);
                                 break;
                         case "--start":
                             // open explorer in Jammer folder
@@ -216,6 +217,7 @@ namespace Jammer
                             } else {
                                 AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.UpToDate}[/]");
                             }
+                            Environment.Exit(0);
                             return;
                     }
                 }

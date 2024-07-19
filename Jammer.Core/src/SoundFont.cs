@@ -7,11 +7,22 @@ namespace Jammer {
                 return new string[0];
             }
 
-            string[] soundfonts = Directory.GetFiles(Path.Combine(Utils.JammerPath, "soundfonts"), "*.sf2");
-            string[] jammerSfFonts = Directory.GetFiles(Path.Combine(Utils.JammerPath, "soundfonts"), "*.jammer-sf");
+            string[] soundfonts = Directory.GetFiles(Path.Combine(Utils.JammerPath, "soundfonts"), "*");
+            string[] soundfontsExt = new string[soundfonts.Length];
+            string[] jammerSfFonts = Array.Empty<string>();
 
 
             for (int i = 0; i < soundfonts.Length; i++) {
+                // if the file is a jammer-sf file, add it to the list
+                if (Path.GetExtension(soundfonts[i]) == ".jammer-sf") {
+                    jammerSfFonts = jammerSfFonts.Append(soundfonts[i]).ToArray();
+                }
+                // file extension to lower case, and check for .sf2, .sf3, .sfz, sf2pack
+                soundfontsExt[i] = Path.GetExtension(soundfonts[i]).ToLowerInvariant();
+                if (soundfontsExt[i] != ".sf2" && soundfontsExt[i] != ".sf3" && soundfontsExt[i] != ".sfz" && soundfontsExt[i] != ".sf2pack") {
+                    soundfonts[i] = string.Empty;
+                }
+
                 soundfonts[i] = Path.GetFileName(soundfonts[i]);
             }
 
@@ -24,6 +35,8 @@ namespace Jammer {
                 }
             }
 
+            // remove empty strings
+            soundfonts = soundfonts.Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return soundfonts;
         }
 
