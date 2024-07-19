@@ -1,9 +1,15 @@
 #!/bin/bash
-rm jammer-*.AppImage || true > /dev/null 2>&1
 set -e -b
 DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-rm jammer.AppDir/usr/bin/Jammer
+if [ -f jammer-*.AppImage ]; then
+    rm jammer-*.AppImage
+fi
+
+if [ -f jammer.AppDir/user/bin/Jammer ]; then
+    rm jammer.AppDir/usr/bin/Jammer
+fi
+
 cd Jammer.CLI
 rm -rf bin
 rm -rf obj
