@@ -5,7 +5,7 @@ SET "RELEASE_VERSION=win-x64"
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     
 SET "sourceFolder2=bin\Release\net8.0\%RELEASE_VERSION%"     
 SET "targetFolder=..\nsis"                                          
-SET "start_name=Jammer-Setup_V2.11.2.2.exe"
+SET "start_name=Jammer-Setup_V2.13.4.4.exe"
 
 dotnet publish -r %RELEASE_VERSION% -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained 
 
