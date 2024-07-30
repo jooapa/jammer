@@ -108,6 +108,11 @@ You can create your own theme by pressing `Shift + T` (default keybind)
 
 Select 'Create a New Theme' and write the theme's name. Go to `<jammer/themes>`, you should see `name.json`. It will contain all the information needed for creating a theme.
 
+### Visualizer
+
+You can change the visualizer style in custom Themes.
+To change the visualizer settings, go to `<jammer/Visualizer.ini>` and change the settings.
+
 ### Effects
 
 - Reverb
