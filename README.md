@@ -51,7 +51,7 @@ jammer "path/to/song.mp3"
 jammer     --start        opens jammer folder
 jammer     --update       checks for updates and installs
 jammer -h, --help         show help
-jammer -d                 debug mode
+jammer -D                 debug mode
 jammer -v, --version      show version
 ```
 
