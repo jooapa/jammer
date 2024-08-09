@@ -22,12 +22,20 @@ namespace Jammer
                             Debug.dprint(APPDIRlen.Length.ToString());
                         }
 
-                        long size = Preferences.DirSize(new System.IO.DirectoryInfo(Utils.JammerPath));
-                        Debug.dprint($"JammerDirSize: {size}");
-                        Debug.dprint($"JammerDirSize: {Preferences.ToKilobytes(size)}");
-                        Debug.dprint($"JammerDirSize: {Preferences.ToMegabytes(size)}");
-                        Debug.dprint($"JammerDirSize: {Preferences.ToGigabytes(size)}");
-
+                        try {
+                            long size = Preferences.DirSize(new System.IO.DirectoryInfo(Utils.JammerPath));
+                            Debug.dprint($"JammerDirSize: {size}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToKilobytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToMegabytes(size)}");
+                            Debug.dprint($"JammerDirSize: {Preferences.ToGigabytes(size)}");
+                        }
+                        catch (DirectoryNotFoundException e) {
+                            Debug.dprint("Error in DirSize, folder doesnt exist yet.");
+                            Debug.dprint(e.Message);
+                        }
+                        catch (System.Exception) {
+                            Debug.dprint("Error in DirSize");
+                        }
                         List<string> argumentsList = new List<string>(args);
                         argumentsList.RemoveAt(i);
                         args = argumentsList.ToArray();
