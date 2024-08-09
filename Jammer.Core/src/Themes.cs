@@ -148,7 +148,7 @@ namespace Jammer {
 }";
 
         public static Theme? CurrentTheme { get; private set; }
-        static string themePath = Path.Combine(Utils.JammerPath, "themes");
+        static readonly string themePath = Path.Combine(Utils.JammerPath, "themes");
         public static void Init() {
             int returne = 0;
             if (Preferences.GetTheme() == null || Preferences.GetTheme() == "" || Preferences.GetTheme() == "Jammer Default") {

@@ -48,7 +48,7 @@ namespace Jammer
     }
 
     // Class to hold Util related Functions
-    public class UtilFuncs {
+    public static class UtilFuncs {
         // Return user preferred path for JammerPath
         public static string GetJammerPath() {
             string defaultJammerFolderName = "jammer";
