@@ -27,7 +27,12 @@ namespace Jammer
             // replace inputSaying every character inside of [] @"\[.*?\]
             int len = Start.Purge(inputSaying).Length;
             len += 6;
-            AnsiConsole.Cursor.SetPosition(len, 5);
+ 
+            // count how many \n are in the inputSaying
+            int count = Regex.Matches(title, @"\n").Count;
+            count += Regex.Matches(inputSaying, @"\n").Count;
+            
+            AnsiConsole.Cursor.SetPosition(len, 5 + count);
 
             if (oneChar)
             {

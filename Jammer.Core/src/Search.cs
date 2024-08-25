@@ -121,9 +121,13 @@ namespace Jammer
             int indexer = 0;
             int max = 10;
             async Task loopedidoo() {
+
                 if (type == "playlist") {
-                    await foreach (var result in Download.soundcloud.Search.GetPlaylistsAsync(search)) {
+                    await foreach (var result in Download.ReturnSoundCloudClient().Search.GetPlaylistsAsync(search)) {
                         var url = result.Url;
+                        if (url == null || url == "" || result.Title == null || result.Title == "") {
+                            continue;
+                        }
                         var title = Markup.Escape(result.Title);
                         results.Add(new SCSearchResult { Url = url, Title = title});
 
@@ -133,7 +137,7 @@ namespace Jammer
                         indexer++;
                     }
                 } else if (type == "track") {
-                    await foreach (var result in Download.soundcloud.Search.GetTracksAsync(search)) {
+                    await foreach (var result in Download.ReturnSoundCloudClient().Search.GetTracksAsync(search)) {
                         var url = result.Url;
                         var title = Markup.Escape(result.Title);
                         results.Add(new SCSearchResult { Url = url, Title = title});

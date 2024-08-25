@@ -46,6 +46,7 @@ LoadEffects = 5
 ToggleMediaButtons = 6
 ToggleVisualizer = 7
 LoadVisualizer = 8
+SetSoundcloudClientID = Alt + 1
 CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete

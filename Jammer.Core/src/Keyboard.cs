@@ -349,6 +349,40 @@ namespace Jammer
                             }
                             drawWhole = true;
                             break;
+                        case "SetSoundcloudClientID":
+                            if (Preferences.clientID == "")
+                            {
+                                
+                            }
+                            SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
+
+                            string soundcloudClientID = Jammer.Message.Input(
+                                "Enter your Soundcloud Client ID:", 
+                                "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" + 
+                                "type 'cancel' to cancel" + "\n" + 
+                                "type 'reset' to reset to default"
+                            );
+
+                            if (soundcloudClientID == "cancel")
+                            {
+                                drawWhole = true;
+                                break;
+                            }
+
+                            if (soundcloudClientID == "reset")
+                            {
+                                Preferences.clientID = "";
+                                Preferences.SaveSettings();
+                                drawWhole = true;                                
+                                break;
+                            }
+
+                            Preferences.clientID = soundcloudClientID;
+
+                            Preferences.SaveSettings();
+
+                            drawWhole = true;
+                            break;
                         case "CommandHelpScreen":
                             TUI.CliHelp();
 

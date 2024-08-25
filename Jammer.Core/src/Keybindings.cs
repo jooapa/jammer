@@ -78,6 +78,7 @@ namespace Jammer{
         public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
         public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");
         public static string LoadVisualizer = CheckValue("LoadVisualizer", "8");
+        public static string SetSoundcloudClientID = CheckValue("SetSoundcloudClientID", "Alt + 1");
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");

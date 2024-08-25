@@ -22,6 +22,7 @@ namespace Jammer
         public static bool isVisualizer = GetIsVisualizer();
         public static string theme = GetTheme();
         public static string currentSf2 = GetCurrentSf2();
+        public static string clientID = GetClientId();
 
 
         static public void CheckJammerFolderExists()
@@ -83,6 +84,7 @@ namespace Jammer
             settings.isVisualizer = isVisualizer;
             settings.theme = theme;
             settings.currentSf2 = currentSf2;
+            settings.clientID = clientID;
             
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -326,6 +328,21 @@ namespace Jammer
             }
         }
 
+        static public string GetClientId()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.clientID ?? "";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
         static public void OpenJammerFolder()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
@@ -382,6 +399,7 @@ namespace Jammer
             public bool isVisualizer { get; set; }
             public string? theme { get; set; }
             public string? currentSf2 { get; set; }
+            public string? clientID { get; set; }
         }
     }
 }

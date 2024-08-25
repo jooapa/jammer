@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 namespace Jammer {
     public class Download {
         public static string songPath = "";
-        public static readonly SoundCloudClient soundcloud = new();
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
 
@@ -197,6 +196,13 @@ namespace Jammer {
             }
         }
 
+        public static SoundCloudClient ReturnSoundCloudClient() {
+            if (Preferences.clientID == "") {
+                return new SoundCloudClient();
+            }
+            return new SoundCloudClient(Preferences.clientID);
+        }  
+
         public static async Task DownloadSoundCloudTrackAsync(string url) {
             // if already downloaded, don't download again
             string formattedUrl = FormatUrlForFilename(url);
@@ -219,6 +225,8 @@ namespace Jammer {
             }
 
             AnsiConsole.MarkupLine(tmpstr);
+
+            var soundcloud = ReturnSoundCloudClient();
 
             try {
                 var track = await soundcloud.Tracks.GetAsync(url);
@@ -256,8 +264,8 @@ namespace Jammer {
 
             }
             catch (Exception ex) { 
-                Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
-                , Locale.OutsideItems.DownloadErrorSoundcloud);
+                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
+                , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
                 songPath = "";
             }
         }
@@ -275,30 +283,42 @@ namespace Jammer {
 
         public static async Task GetPlaylist(string plurl) {
 
-            var soundcloud = new SoundCloudClient();
+            var soundcloud = ReturnSoundCloudClient();
 
             // Get all playlist tracks
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine("Getting playlist tracks...");
-            var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
+            try {
+                var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
 
-            if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
-                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
-                Console.ReadLine();
-                return;
+                if (playlist == null) {
+                    Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                    Message.Data("Maybe your Client ID is invalid or the playlist is private", "Error");
+                    return;
+                }
+
+                if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
+                    Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                    Console.ReadLine();
+                    return;
+                }
+
+                // add all tracks permalinkUrl to songs array
+                playlistSongs = new string[playlist.Tracks.Count()];
+                int i = 0;
+                foreach (var track in playlist.Tracks) {
+                    playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
+                    i++;
+                }
+
+                // debug
+                foreach (var song in playlistSongs) {
+                    Console.WriteLine(song);
+                }
             }
-
-            // add all tracks permalinkUrl to songs array
-            playlistSongs = new string[playlist.Tracks.Count()];
-            int i = 0;
-            foreach (var track in playlist.Tracks) {
-                playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
-                i++;
-            }
-
-            // debug
-            foreach (var song in playlistSongs) {
-                Console.WriteLine(song);
+            catch (Exception ex) {
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                Environment.Exit(1);
             }
         }
         public static async Task GetPlaylistYoutube(string plurl) {
