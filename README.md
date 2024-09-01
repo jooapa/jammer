@@ -192,6 +192,16 @@ Create new translation by copying already existing .ini file from /locales and t
  </picture>
 </a>
 
+## Soundcloud
+### User can now change the SoundCloud client id
+soundcloud every now and then changes the client id, which is not cool, so this allows change allows the user to change it :)
+on default the keybind is `Alt + Shift + 1` or go change it in the `settings.json`
+
+#### way to get the id on your own
+- open up the [soundcloud.com](soundcloud.com)
+- open the inspect element -> Network tab
+- start playing some random song
+- you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
 # Developing
 
 ## Build / Run yourself
