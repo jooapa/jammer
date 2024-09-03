@@ -185,7 +185,6 @@ namespace Jammer
                                 //     System.Environment.Exit(1);
                                 // } 
                                 Utils.songs[0] = Preferences.songsPath;
-                                Environment.Exit(0);
                                 break;
                         case "--start":
                             // open explorer in Jammer folder
