@@ -1,8 +1,7 @@
-/* using ManagedBass; */
-/* using System; */
-/* using System.IO; */
-/* using System.Text.RegularExpressions; */
-using System.IO;
+
+using System.Text.Json;
+
+
 namespace Jammer
 {
     public struct Utils
@@ -12,6 +11,7 @@ namespace Jammer
         /// </summary>
         public static List<string> oldPlaylist = new ();
         public static int currentMusic { get; set; }
+        // public static bool isM3u;
         public static string[] songs = { "" };
         public static List<string> queueSongs = new List<string>();
         /// <summary>
@@ -45,6 +45,16 @@ namespace Jammer
         public static string version = "2.14.6.6";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
         public static float MusicTimePercentage = 0;
+
+        public class Song
+        {
+            public string? Path { get; set; }
+            public string? Title { get; set; }
+            public string? Author { get; set; }
+            public string? Album { get; set; }
+            public string? Year { get; set; }
+            public string? Genre { get; set; }
+        }
     }
 
     // Class to hold Util related Functions
@@ -64,6 +74,121 @@ namespace Jammer
 
             // use the default user profile path
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), defaultJammerFolderName);
+        }
+
+        // INFO ABOUT JAMMER SONG STRING
+        // ½ is a separator between song path and song title and more...
+        // Example:
+        // /home/user/Music/song.mp3½Song Title
+        // NEW SYSTEM
+        // still the same but the details can be dynamic
+        // Example:
+        // /home/user/Music/song.mp3###@@@###{ "title": "Song Title", "author": "Author Name", "album": "Album Name", "year": "2021", "genre": "Rock" }
+
+        /// <summary>
+        /// Extracts song details from a given string.
+        /// </summary>
+        /// <param name="song">The song string, which may contain metadata separated by "###@@@###".</param>
+        /// <returns>A <see cref="Song"/> object containing the song details.</returns>
+        public static Utils.Song GetSongDetails(string song) {
+            Utils.Song songDetails = new();
+            if (song.Contains("###@@@###"))
+            {
+                string[] songParts = song.Split("###@@@###");
+                songDetails.Path = songParts[0];
+                string json = songParts[1];
+                if (!string.IsNullOrEmpty(json))
+                {
+                    songDetails = JsonSerializer.Deserialize<Utils.Song>(json) ?? new Utils.Song();
+                }
+                else
+                {
+                    songDetails = new Utils.Song();
+                }
+            }
+            else
+            {
+                songDetails.Path = song;
+            }
+            // compund assignment operator
+            // if null, assign new Song()
+            songDetails ??= new Utils.Song();
+            return songDetails;
+        }
+        
+        /// <summary>
+        /// Combines the path and serialized representation of a song into a single string.
+        /// </summary>
+        /// <param name="song">The song to combine.</param>
+        /// <returns>The combined string.</returns>
+        /// <remarks>
+        /// The combined string is in the format of "path###@@@###{json}".
+        /// </remarks>
+        public static string CombineToSongString(Utils.Song song) {
+            string songString = song.Path + "###@@@###";
+            songString += JsonSerializer.Serialize(song);
+            return songString;
+        }
+
+        /// <summary>
+        /// Get the title of the song
+        /// </summary>
+        /// <param name="title">title</param>
+        /// <param name="getOrNot">get | not | getMeta</param>
+        /// <returns></returns>
+        public static string Title(string song)
+        {
+            Utils.Song songDetails = GetSongDetails(song);
+            string title_new = songDetails?.Title ?? "";
+            if (title_new != "")
+            {
+                return title_new;
+            }
+        
+            TagLib.File? tagFile;
+            try
+            {
+                tagFile = TagLib.File.Create(song);
+                title_new = tagFile.Tag.Title;
+        
+                if (title_new == null || title_new == "")
+                    title_new = Path.GetFileName(song);
+        
+                if (title_new != null)
+                    return title_new;
+            }
+            catch (Exception)
+            {
+                tagFile = null;
+            }
+            return songDetails.Path;
+        }
+
+        public static string Author(string song) {
+            Utils.Song songDetails = GetSongDetails(song);
+            string author = songDetails?.Author ?? "";
+            if (author != "")
+            {
+                return author;
+            }
+        
+            TagLib.File? tagFile;
+            try
+            {
+                tagFile = TagLib.File.Create(song);
+                author = tagFile.Tag.FirstPerformer;
+        
+                if (author == null || author == "")
+                    author = "Unknown";
+        
+                if (author != null)
+                    return author;
+            }
+            catch (Exception)
+            {
+                tagFile = null;
+            }
+            return songDetails.Path;
         }
     }
 }

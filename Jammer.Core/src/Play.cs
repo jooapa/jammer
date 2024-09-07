@@ -43,7 +43,6 @@ namespace Jammer
             if (songs.Length == 0 
             || songs[0] == "" 
             || songs[0] == null 
-            || songs[0] == "½" 
             || EmptySpaces(songs[0]))
             {
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
@@ -55,30 +54,24 @@ namespace Jammer
                 Currentindex--;
             }
             Debug.dprint("Play song");
-            var path = "";
 
             Utils.currentSongIndex = Currentindex;
             Utils.currentPlaylistSongIndex = Currentindex;
             
-            string song = songs[Utils.currentSongIndex];
-
-            // if song has a title, remove it
-            if (song.Contains("½"))
-            {
-                song = song.Split("½")[0];
-            }
+            // get song details
+            Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
 
             // check if file is a local
-            if (System.IO.File.Exists(song))
+            if (System.IO.File.Exists(song.Path))
             {
                 // id related to local file path, convert to absolute path
-                path = Path.GetFullPath(song);
+                song.Path = Path.GetFullPath(song.Path);
             }
             // if folder
-            else if (Directory.Exists(song))
+            else if (Directory.Exists(song.Path))
             {
                 // add all files in folder to Utils.songs
-                string[] files = Directory.GetFiles(song);
+                string[] files = Directory.GetFiles(song.Path);
                 foreach (string file in files)
                 {
                     AddSong(file);
@@ -86,42 +79,39 @@ namespace Jammer
                 
                 // remove folder from Utils.songs
                 Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
-
-                path = Utils.songs[Utils.currentSongIndex];
+                
+                // reapply new path in details
+                song.Path = Utils.songs[Utils.currentSongIndex];
             }
-            else if (URL.isValidSoundCloudPlaylist(song)) {
+            else if (URL.isValidSoundCloudPlaylist(song.Path)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                path = Download.GetSongsFromPlaylist(song, "soundcloud");
+                song.Path = Download.GetSongsFromPlaylist(song.Path, "soundcloud");
             }
-            else if (URL.IsValidSoundcloudSong(song))
+            else if (URL.IsValidSoundcloudSong(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(song);
+                song.Path = Download.DownloadSong(song.Path);
             }
-            else if (URL.IsValidYoutubePlaylist(song))
+            else if (URL.IsValidYoutubePlaylist(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.GetSongsFromPlaylist(song, "youtube");
+                song.Path = Download.GetSongsFromPlaylist(song.Path, "youtube");
             }
-            else if (URL.IsValidYoutubeSong(song))
+            else if (URL.IsValidYoutubeSong(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                path = Download.DownloadSong(song);
+                song.Path = Download.DownloadSong(song.Path);
             }
-            else if (URL.IsUrl(song))
+            else if (URL.IsUrl(song.Path))
             {
-                path = Download.DownloadSong(song);
+                song.Path = Download.DownloadSong(song.Path);
                 // Message.Data(path, song);
-            }
-            else
-            {
-                path = song;
             }
 
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
-            Utils.currentSong = path;
+            Utils.currentSong = song.Path;
             Start.drawWhole = true;
 
             Log.Info("Playing: " + Utils.songs[Utils.currentSongIndex]);
@@ -130,33 +120,43 @@ namespace Jammer
             // taglib get title to display
 
             TagLib.File? tagFile;
-            string title = "";
+            string title = "", author = "", album = "", year = "", genre = "";
             try {
-                tagFile = TagLib.File.Create(path);
+                tagFile = TagLib.File.Create(song.Path);
                 title = tagFile.Tag.Title;
-
-                if (title == null || title == "")
-                    title = "";
-                else
-                    title = "½" + title;
-
+                author = tagFile.Tag.FirstPerformer;
+                album = tagFile.Tag.Album;
+                year = tagFile.Tag.Year.ToString();
+                genre = tagFile.Tag.FirstGenre;
             } catch (Exception) {
                 tagFile = null;
                 Log.Error("Error getting title of the song");
             }
             
 
-            if (title == null || title == "")
+            // append title to song
+            if (song.Title == null || song.Title == "")
             {
-                title = "";
+                song.Title = title;
+            }
+            if (song.Author == null || song.Author == "")
+            {
+                song.Author = author;
+            }
+            if (song.Album == null || song.Album == "")
+            {
+                song.Album = album;
+            }
+            if (song.Year == null || song.Year == "")
+            {
+                song.Year = year;
+            }
+            if (song.Genre == null || song.Genre == "")
+            {
+                song.Genre = genre;
             }
 
-            if (Utils.songs[Utils.currentSongIndex].Contains("½"))
-            {
-                title = "";
-            }
-
-            Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex] + title;
+            Utils.songs[Utils.currentSongIndex] = UtilFuncs.CombineToSongString(song);
 
             Playlists.AutoSave();
 
@@ -164,19 +164,19 @@ namespace Jammer
 
             try
             {
-                string extension = Path.GetExtension(path).ToLower();
+                string extension = Path.GetExtension(song.Path).ToLower();
 
                 if (extension == ".jammer") {
                     Debug.dprint("jammer");
                     // Message.Data(path,"dsdsadsads");
                     // read playlist
 
-                    string tempName = path;
-                    string[] nameExt = path.Split('.');
+                    string tempName = song.Path;
+                    string[] nameExt = song.Path.Split('.');
 
                     Utils.currentPlaylist = Path.GetFileName(nameExt[0]);
 
-                    string[] playlist = System.IO.File.ReadAllLines(path);
+                    string[] playlist = System.IO.File.ReadAllLines(song.Path);
 
                     // add all songs in playlist to Utils.songs
                     foreach (string s in playlist) {
@@ -588,75 +588,6 @@ namespace Jammer
             // suffle songs
             Random rnd = new Random();
             Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
-        }
-
-        /// <summary>
-        /// Get the title of the song
-        /// </summary>
-        /// <param name="title">title</param>
-        /// <param name="getOrNot">get | not | getMeta</param>
-        /// <returns></returns>
-        public static string Title(string title, string getOrNot)
-        {
-            if(getOrNot == "getMeta") {
-                TagLib.File? tagFile;
-                try {
-                    string title_new = "";
-                    tagFile = TagLib.File.Create(title);
-                    title_new = tagFile.Tag.Title;
-
-                    if (title_new == null || title_new == "")
-                        title_new = "";
-
-                    return title_new;
-                } catch (Exception) {
-                    tagFile = null;
-                }
-                return title;
-            }
-            else if (title.Contains("½"))
-            {
-                string[] titleSplit = title.Split("½");
-                if (getOrNot == "get")
-                {
-                    string a = titleSplit[1];
-                    int posdot = a.LastIndexOf(".");
-                    string ext = "";
-                    if(posdot != -1){
-                        ext = a[posdot..];
-                    }
-                    // Console.WriteLine(a + " " + posdot);
-                    // Console.ReadKey();
-
-                    if(isValidExtension(ext, aacExtensions) || isValidExtension(ext, songExtensions) || isValidExtension(ext, mp4Extensions)){
-                        
-                        return a[..posdot];
-                    } else {
-                        return a;
-                    }
-                }
-                else if (getOrNot == "not")
-                {
-                    return titleSplit[0];
-                }
-            }
-            return title;
-        }
-        public static string Author(string path) {
-            TagLib.File? tagFile;
-            try {
-                string title_new = "";
-                tagFile = TagLib.File.Create(path);
-                title_new = tagFile.Tag.Performers[0];
-
-                if (title_new == null || title_new == "")
-                    title_new = "";
-
-                return title_new;
-            } catch (Exception) {
-                tagFile = null;
-            }
-            return "Unknown";
         }
 
         static public void StartPlaying()

@@ -101,7 +101,10 @@ namespace Jammer
                     Start.drawWhole = true;
                     return;
                 }
-                string url = "https://www.youtube.com/watch?v=" + selectedId + "½" + selectedString;
+                Utils.Song song = new Utils.Song();
+                song.Path = selectedId;
+                song.Title = selectedString;
+                string url = UtilFuncs.CombineToSongString(song);
                 
                 // add to the current playlist index +1
                 Play.AddSong(url);
@@ -185,7 +188,10 @@ namespace Jammer
                     Start.drawWhole = true;
                     return;
                 }
-                string url = selectedUrl + "½" + selectedString;
+                Utils.Song song = new Utils.Song();
+                song.Path = selectedUrl;
+                song.Title = selectedString;
+                string url = UtilFuncs.CombineToSongString(song);
                 
                 // add to the current playlist index +1
                 Play.AddSong(url);

@@ -221,6 +221,7 @@ namespace Jammer
                             break;
                         case "SaveCurrentPlaylist":
                             Funcs.SaveCurrentPlaylist();
+                            drawWhole = true;
                             break;
                         case "ShufflePlaylist":
                             Funcs.ShufflePlaylist();

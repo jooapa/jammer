@@ -2,6 +2,9 @@ using Spectre.Console;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Jammer {
 
@@ -27,23 +30,23 @@ namespace Jammer {
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
                     if (i == Utils.currentSongIndex) {
                         // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(UtilFuncs.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
                     }
                     else if (i == Utils.currentPlaylistSongIndex) {
                         // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(UtilFuncs.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
                     }
                     else if (Utils.currentPlaylistSongIndex <= 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(UtilFuncs.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.currentPlaylistSongIndex - 2 && i < Utils.currentPlaylistSongIndex + 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(UtilFuncs.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.songs.Length - (maximum - results.Count)) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(UtilFuncs.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                 }
             }
@@ -87,13 +90,13 @@ namespace Jammer {
             }
             else
             {
-                currentSong = Locale.Player.Current + "  : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex]), songLength), "get");
+                currentSong = Locale.Player.Current + "  : " + GetSongWithDots(Start.Sanitize(UtilFuncs.Title(Utils.songs[Utils.currentSongIndex])), songLength);
                 currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
             }
 
             if (Utils.currentSongIndex > 0)
             {
-                prevSong = Locale.Player.Previos + " : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex - 1]), songLength), "get");
+                prevSong = Locale.Player.Previos + " : " + GetSongWithDots(Start.Sanitize(UtilFuncs.Title(Utils.songs[Utils.currentSongIndex - 1])), songLength);
                 prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor);
             }
             else
@@ -105,7 +108,7 @@ namespace Jammer {
 
             if (Utils.currentSongIndex < Utils.songs.Length - 1)
             {
-                nextSong = $"{Locale.Player.Next}     : " + Play.Title(GetSongWithDots(Start.Sanitize(Utils.songs[Utils.currentSongIndex + 1]), songLength), "get");
+                nextSong = $"{Locale.Player.Next}     : " + GetSongWithDots(Start.Sanitize(UtilFuncs.Title(Utils.songs[Utils.currentSongIndex + 1])), songLength);
                 nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NextSongColor);
             }
             else
@@ -260,8 +263,7 @@ namespace Jammer {
         public static void SaveCurrentPlaylist()
         {
             if (Utils.currentPlaylist == "") {
-                Jammer.Message.Data(Locale.Player.SaveCurrentPlaylistError1,Locale.Player.SaveCurrentPlaylistError2, true);
-                return;
+                SaveReplacePlaylist();
             }
             // save playlist
             Playlists.Save(Utils.currentPlaylist, true);

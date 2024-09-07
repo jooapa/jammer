@@ -137,6 +137,7 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
                 AnsiConsole.MarkupLine("[red]" + e + "[/]");
+                AnsiConsole.WriteLine(Utils.songs.Length);
             }
 
         }

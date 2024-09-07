@@ -1,24 +1,21 @@
-using Spectre.Console;
-using System.IO;
-
 namespace Jammer
 {
     public class Absolute
     {
         public static string[] Correctify(string[] args)
         {
-            string title;
+            string details;
             for (int i = 0; i < args.Length; i++)
             {
-                title = "";
+                details = "";
 
-                // split title by ½
-                string[] titleSplit = args[i].Split("½");
+                // split title by ###@@@###
+                string[] detailSplit = args[i].Split("###@@@###");
     
-                if (titleSplit.Length > 1)
+                if (detailSplit.Length > 1)
                 {
-                    title = titleSplit[1];
-                    args[i] = titleSplit[0];
+                    details = detailSplit[1];
+                    args[i] = detailSplit[0];
                 }
 
                 string item = args[i];
@@ -88,9 +85,9 @@ namespace Jammer
                 //     i--;
                 // }
 
-                if (title != "")
+                if (details != "")
                 {
-                    args[i] = args[i] + "½" + title;
+                    args[i] = args[i] + "###@@@###" + details;
                 }
             }
 
