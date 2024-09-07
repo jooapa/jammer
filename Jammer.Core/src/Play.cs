@@ -59,7 +59,12 @@ namespace Jammer
             Utils.currentPlaylistSongIndex = Currentindex;
             
             // get song details
-            Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
+            // Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
+            Song song = new Song() {
+                Path = songs[Utils.currentSongIndex]
+            };
+            
+            song.ExtractSongDetails();
 
             // check if file is a local
             if (System.IO.File.Exists(song.Path))
@@ -156,7 +161,7 @@ namespace Jammer
                 song.Genre = genre;
             }
 
-            Utils.songs[Utils.currentSongIndex] = UtilFuncs.CombineToSongString(song);
+            Utils.songs[Utils.currentSongIndex] = song.ToSongString();
 
             Playlists.AutoSave();
 

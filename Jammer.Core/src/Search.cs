@@ -101,10 +101,12 @@ namespace Jammer
                     Start.drawWhole = true;
                     return;
                 }
-                Utils.Song song = new Utils.Song();
-                song.Path = selectedId;
-                song.Title = selectedString;
-                string url = UtilFuncs.CombineToSongString(song);
+                Song song = new Song() {
+                    Path = selectedId,
+                    Title = selectedString
+                };
+                song.ExtractSongDetails();
+                string url = song.ToSongString();
                 
                 // add to the current playlist index +1
                 Play.AddSong(url);
@@ -188,10 +190,16 @@ namespace Jammer
                     Start.drawWhole = true;
                     return;
                 }
-                Utils.Song song = new Utils.Song();
-                song.Path = selectedUrl;
-                song.Title = selectedString;
-                string url = UtilFuncs.CombineToSongString(song);
+                // Utils.Song song = new Utils.Song();
+                // song.Path = selectedUrl;
+                // song.Title = selectedString;
+                // string url = UtilFuncs.CombineToSongString(song);
+                Song song = new Song() {
+                    Path = selectedUrl,
+                    Title = selectedString
+                };
+                song.ExtractSongDetails();
+                string url = song.ToSongString();
                 
                 // add to the current playlist index +1
                 Play.AddSong(url);
