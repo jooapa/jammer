@@ -24,6 +24,11 @@ namespace Jammer
                 string[] parts = Path.Split("###@@@###");
                 Path = parts[0];
                 string json = parts[1];
+                
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
 
                 Song metadata = JsonSerializer.Deserialize<Song>(json) ?? new Song();
 

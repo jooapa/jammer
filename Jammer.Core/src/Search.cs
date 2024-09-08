@@ -102,7 +102,7 @@ namespace Jammer
                     return;
                 }
                 Song song = new Song() {
-                    Path = selectedId,
+                    Path = "https://www.youtube.com/watch?v=" + selectedId,
                     Title = selectedString
                 };
                 song.ExtractSongDetails();

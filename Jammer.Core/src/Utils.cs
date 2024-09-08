@@ -7,12 +7,7 @@ namespace Jammer
 {
     public struct Utils
     {
-        /// <summary>
-        /// for avalonia
-        /// </summary>
-        public static List<string> oldPlaylist = new ();
         public static int currentMusic { get; set; }
-        // public static bool isM3u;
         public static string[] songs = { "" };
         public static List<string> queueSongs = new List<string>();
         /// <summary>
@@ -41,6 +36,10 @@ namespace Jammer
         public static bool mainLoop = true;
         public static string JammerPath = UtilFuncs.GetJammerPath();
         public static bool isDebug = false;
+
+        /// <summary>
+        /// path to current playlist
+        /// </summary>
         public static string currentPlaylist = "";
         public static bool isInitialized = false;
         public static string version = "2.14.6.6";

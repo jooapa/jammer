@@ -9,11 +9,7 @@ namespace Jammer
         {
             Console.WriteLine($"{Locale.OutsideItems.CreatingPlaylist}: " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -51,11 +47,7 @@ namespace Jammer
             
             AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
 
             if (File.Exists(playlistPath) || URL.IsUrl(playlist))
             {
@@ -98,16 +90,26 @@ namespace Jammer
                 }
             }
         }
+        
+        static public string GetPath(string playlist)
+        {
+            // if playlist is not a path, return the path
+            if (!playlist.Contains(Path.DirectorySeparatorChar))
+            {
+                return Path.Combine(
+                    Utils.JammerPath,
+                    "playlists",
+                    playlist + ".jammer"
+                );
+            }
+            return Path.GetFullPath(playlist);
+        }
 
         static public void Delete(string playlist)
         {
             Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist);
             string playlistName = playlist;
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -122,11 +124,7 @@ namespace Jammer
         static public void Add(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.AddingSongsTo} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -168,11 +166,7 @@ namespace Jammer
         static public void Remove(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.RemovingFrom} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -222,11 +216,7 @@ namespace Jammer
         {
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.ShowingPlaylist} [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlist
-            );
+            string playlistPath = GetPath(playlist);
 
             string playlistList = "";
             if (File.Exists(playlistPath))
@@ -251,11 +241,8 @@ namespace Jammer
 
         static public void Save(string playlistName, bool force = false)
         {
-            string playlistPath = Path.Combine(
-                Utils.JammerPath,
-                "playlists",
-                playlistName + ".jammer"
-            );
+            string playlistPath = GetPath(playlistName);
+            
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))
             {

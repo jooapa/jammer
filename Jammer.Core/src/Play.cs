@@ -39,17 +39,31 @@ namespace Jammer
         // playsong function will play the song at the index of the array and get the path of the song
         public static void PlaySong(string[] songs, int Currentindex)
         {
+            // delete all empty songs
+            if (songs[Currentindex] == "")
+            {
+                Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
+                if (Utils.songs.Length == 0)
+                {
+                    Start.state = MainStates.pause;
+                    return;
+                }
+                if (Currentindex == Utils.songs.Length)
+                {
+                    Currentindex--;
+                }
+                PlaySong(Utils.songs, Currentindex);
+                return;
+            }
 
-            if (songs.Length == 0 
-            || songs[0] == "" 
-            || songs[0] == null 
-            || EmptySpaces(songs[0]))
+            if (songs.Length == 0)
             {
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.NoSongsInPlaylist}[/]");
                 Currentindex = 0;
                 Start.Run(new string[] {});
                 return;
             }
+
             while(Currentindex > songs.Length){
                 Currentindex--;
             }
@@ -63,14 +77,15 @@ namespace Jammer
             Song song = new Song() {
                 Path = songs[Utils.currentSongIndex]
             };
-            
+            string fullPath = "";
+
             song.ExtractSongDetails();
 
             // check if file is a local
             if (System.IO.File.Exists(song.Path))
             {
                 // id related to local file path, convert to absolute path
-                song.Path = Path.GetFullPath(song.Path);
+                fullPath = Path.GetFullPath(song.Path);
             }
             // if folder
             else if (Directory.Exists(song.Path))
@@ -86,37 +101,39 @@ namespace Jammer
                 Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
                 
                 // reapply new path in details
-                song.Path = Utils.songs[Utils.currentSongIndex];
+                fullPath = Utils.songs[Utils.currentSongIndex];
             }
             else if (URL.isValidSoundCloudPlaylist(song.Path)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                song.Path = Download.GetSongsFromPlaylist(song.Path, "soundcloud");
+                fullPath = Download.GetSongsFromPlaylist(song.Path, "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                song.Path = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.Path);
             }
             else if (URL.IsValidYoutubePlaylist(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                song.Path = Download.GetSongsFromPlaylist(song.Path, "youtube");
+                fullPath = Download.GetSongsFromPlaylist(song.Path, "youtube");
             }
             else if (URL.IsValidYoutubeSong(song.Path))
             {
                 // id related to url, download and convert to absolute path
-                song.Path = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.Path);
             }
             else if (URL.IsUrl(song.Path))
             {
-                song.Path = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.Path);
                 // Message.Data(path, song);
             }
 
+            // Message.Data(fullPath, "path");
+
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
-            Utils.currentSong = song.Path;
+            Utils.currentSong = fullPath;
             Start.drawWhole = true;
 
             Log.Info("Playing: " + Utils.songs[Utils.currentSongIndex]);
@@ -127,7 +144,7 @@ namespace Jammer
             TagLib.File? tagFile;
             string title = "", author = "", album = "", year = "", genre = "";
             try {
-                tagFile = TagLib.File.Create(song.Path);
+                tagFile = TagLib.File.Create(fullPath);
                 title = tagFile.Tag.Title;
                 author = tagFile.Tag.FirstPerformer;
                 album = tagFile.Tag.Album;
@@ -162,26 +179,25 @@ namespace Jammer
             }
 
             Utils.songs[Utils.currentSongIndex] = song.ToSongString();
-
+            // Concatenate all song strings
+            string allSongs = string.Join("\n", Utils.songs);
+            //Message.Data(allSongs, "Current Playlist");
             Playlists.AutoSave();
 
             Start.drawWhole = true;
 
             try
             {
-                string extension = Path.GetExtension(song.Path).ToLower();
+                string extension = Path.GetExtension(fullPath).ToLower();
 
                 if (extension == ".jammer") {
                     Debug.dprint("jammer");
                     // Message.Data(path,"dsdsadsads");
-                    // read playlist
 
-                    string tempName = song.Path;
-                    string[] nameExt = song.Path.Split('.');
+                    // get absolute path
+                    Utils.currentPlaylist = Path.GetFullPath(fullPath);
 
-                    Utils.currentPlaylist = Path.GetFileName(nameExt[0]);
-
-                    string[] playlist = System.IO.File.ReadAllLines(song.Path);
+                    string[] playlist = System.IO.File.ReadAllLines(fullPath);
 
                     // MARK: - Detect if playlist is using the old format
                     string newPlaylist = "";
@@ -205,8 +221,8 @@ namespace Jammer
                     if (isOldFormat) {
                         string input = Message.Input("Update to new format (y/n)","Old playlist format detected. \nDo you want to update it to the new format?", true);
                         if (input == "y") {
-                            System.IO.File.WriteAllText(song.Path, newPlaylist);
-                            playlist = System.IO.File.ReadAllLines(song.Path);
+                            System.IO.File.WriteAllText(fullPath, newPlaylist);
+                            playlist = System.IO.File.ReadAllLines(fullPath);
                         }
                     }
 
