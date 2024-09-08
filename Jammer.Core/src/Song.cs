@@ -19,9 +19,9 @@ namespace Jammer
         /// </summary>
         public void ExtractSongDetails()
         {
-            if (Path != null && Path.Contains("###@@@###"))
+            if (Path != null && Path.Contains(Utils.jammerFileDelimeter))
             {
-                string[] parts = Path.Split("###@@@###");
+                string[] parts = Path.Split(Utils.jammerFileDelimeter);
                 Path = parts[0];
                 string json = parts[1];
                 
@@ -49,12 +49,22 @@ namespace Jammer
         /// <param name="song">The song to combine.</param>
         /// <returns>The combined string.</returns>
         /// <remarks>
-        /// The combined string is in the format of "path###@@@###{json}".
+        /// The combined string is in the format of "path|{json}".
         /// </remarks>
         public static string ToSongString(this Song song)
         {
-            string songString = song.Path + "###@@@###";
-            songString += JsonSerializer.Serialize(song);
+            if (song == null || string.IsNullOrEmpty(song.Path))
+            {
+                return string.Empty; // or handle it as needed
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            string songString = song.Path + Utils.jammerFileDelimeter;
+            songString += JsonSerializer.Serialize(song, options);
             return songString;
         }
 

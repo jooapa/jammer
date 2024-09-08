@@ -10,7 +10,7 @@ namespace Jammer
                 details = "";
 
                 // split title by ###@@@###
-                string[] detailSplit = args[i].Split("###@@@###");
+                string[] detailSplit = args[i].Split(Utils.jammerFileDelimeter);
     
                 if (detailSplit.Length > 1)
                 {
@@ -87,7 +87,7 @@ namespace Jammer
 
                 if (details != "")
                 {
-                    args[i] = args[i] + "###@@@###" + details;
+                    args[i] = args[i] + Utils.jammerFileDelimeter + details;
                 }
             }
 

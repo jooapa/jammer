@@ -69,7 +69,7 @@ namespace Jammer {
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
 
                 // add \n to the end of the maintable until the end of the console by height
-                int tableRowCount=0;
+                int tableRowCount = 0;
                 int magicIndex;
 
                 if (Start.playerView == "default") {

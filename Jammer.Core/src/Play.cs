@@ -190,54 +190,9 @@ namespace Jammer
             {
                 string extension = Path.GetExtension(fullPath).ToLower();
 
-                if (extension == ".jammer") {
-                    Debug.dprint("jammer");
-                    // Message.Data(path,"dsdsadsads");
-
-                    // get absolute path
-                    Utils.currentPlaylist = Path.GetFullPath(fullPath);
-
-                    string[] playlist = System.IO.File.ReadAllLines(fullPath);
-
-                    // MARK: - Detect if playlist is using the old format
-                    string newPlaylist = "";
-                    bool isOldFormat = false;
-                    foreach (string s in playlist) {
-                        if (s.Contains('½') && !s.Contains("###@@@###")) {
-                            isOldFormat = true;
-
-                            string[] split = s.Split('½');
-                            Song newSong = new Song() {
-                                Path = split[0],
-                                Title = split[1]
-                            };
-                            newPlaylist += newSong.ToSongString() + "\n";
-                        }
-                        else {
-                            newPlaylist += s + "\n";
-                        }
-                    }
-
-                    if (isOldFormat) {
-                        string input = Message.Input("Update to new format (y/n)","Old playlist format detected. \nDo you want to update it to the new format?", true);
-                        if (input == "y") {
-                            System.IO.File.WriteAllText(fullPath, newPlaylist);
-                            playlist = System.IO.File.ReadAllLines(fullPath);
-                        }
-                    }
-
-                    // add all songs in playlist to Utils.songs
-                    foreach (string s in playlist) {
-                        AddSong(s, false);
-                    }
-                    // remove playlist from Utils.songs
-                    Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
-                    if (Utils.currentSongIndex == Utils.songs.Length)
-                    {
-                        Utils.currentSongIndex = Utils.songs.Length - 1;
-                    }
-                    Start.state = MainStates.playing;
-                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                if (extension == ".jammer")
+                {
+                    HandleJammerPlaylist(fullPath);
                 }
                 else
                 {
@@ -254,6 +209,63 @@ namespace Jammer
                 return;
             }
             Debug.dprint("End of PlaySong");
+        }
+
+        public static void HandleJammerPlaylist(string fullPath)
+        {
+            Debug.dprint("jammer");
+
+            // get absolute path
+            Utils.currentPlaylist = Path.GetFullPath(fullPath);
+
+            string[] playlist = System.IO.File.ReadAllLines(fullPath);
+
+            // MARK: - Detect if playlist is using the old format
+            string newPlaylist = "";
+            bool isOldFormat = false;
+            foreach (string s in playlist)
+            {
+                if (s.Contains('½') && !s.Contains(Utils.jammerFileDelimeter))
+                {
+                    isOldFormat = true;
+
+                    string[] split = s.Split('½');
+                    Song newSong = new Song()
+                    {
+                        Path = split[0],
+                        Title = split[1]
+                    };
+                    newPlaylist += newSong.ToSongString() + "\n";
+                }
+                else
+                {
+                    newPlaylist += s + "\n";
+                }
+            }
+
+            if (isOldFormat)
+            {
+                string input = Message.Input("Update to new format (y/n)", "Old playlist format detected. \nDo you want to update it to the new format?", true);
+                if (input == "y")
+                {
+                    System.IO.File.WriteAllText(fullPath, newPlaylist);
+                    playlist = System.IO.File.ReadAllLines(fullPath);
+                }
+            }
+
+            // add all songs in playlist to Utils.songs
+            foreach (string s in playlist)
+            {
+                AddSong(s, false);
+            }
+            // remove playlist from Utils.songs
+            Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
+            if (Utils.currentSongIndex == Utils.songs.Length)
+            {
+                Utils.currentSongIndex = Utils.songs.Length - 1;
+            }
+            Start.state = MainStates.playing;
+            PlaySong(Utils.songs, Utils.currentSongIndex);
         }
 
         public static bool EmptySpaces(string v)
