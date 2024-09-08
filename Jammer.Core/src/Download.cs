@@ -91,7 +91,7 @@ namespace Jammer {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
 
             if (System.IO.File.Exists(downloadedPath)) {
-                string input = Message.Input($"Playlist of same name already exists. Overwrite? (y/n)", "Warning");
+                string input = Message.Input($"Playlist of same name already exists. Overwrite? (y/n)", "Warning", true);
                 if (input != "y") {
                     songPath = downloadedPath;
                     return;
@@ -99,31 +99,30 @@ namespace Jammer {
             }
 
             try {
-                using (var httpClient = new HttpClient()) {
-                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
-                    httpClient.Timeout = TimeSpan.FromMinutes(10);
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                httpClient.Timeout = TimeSpan.FromMinutes(10);
 
-                    var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
+                var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
 
-                    using (var stream = await response.Content.ReadAsStreamAsync())
-                    using (var fileStream = new FileStream(downloadedPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var fileStream = new FileStream(downloadedPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                {
+                    var buffer = new byte[8192];
+                    int bytesRead;
+                    long totalBytesRead = 0;
+                    long totalBytes = response.Content.Headers.ContentLength ?? -1;
+
+                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                     {
-                        var buffer = new byte[8192];
-                        int bytesRead;
-                        long totalBytesRead = 0;
-                        long totalBytes = response.Content.Headers.ContentLength ?? -1;
+                        await fileStream.WriteAsync(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
 
-                        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        if (totalBytes > 0)
                         {
-                            await fileStream.WriteAsync(buffer, 0, bytesRead);
-                            totalBytesRead += bytesRead;
-
-                            if (totalBytes > 0)
-                            {
-                                double progressPercentage = (double)totalBytesRead / totalBytes * 100;
-                                Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
-                            }
+                            double progressPercentage = (double)totalBytesRead / totalBytes * 100;
+                            Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
                         }
                     }
                 }

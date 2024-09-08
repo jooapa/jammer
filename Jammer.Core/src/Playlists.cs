@@ -105,6 +105,17 @@ namespace Jammer
             return Path.GetFullPath(playlist);
         }
 
+        public static string ReturnJammerPlaylistPath(string playlist)
+        {
+            // playlist var is a path
+            // return the name of the file, if its in the jammer folder
+            if (playlist.Contains(Utils.JammerPath))
+            {
+                return Path.GetFileName(playlist);
+            }
+            return playlist;
+        }
+
         static public void Delete(string playlist)
         {
             Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist);
@@ -266,7 +277,7 @@ namespace Jammer
                 }
                 catch (Exception ex)
                 {
-                    Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
                 }
             }
             else
