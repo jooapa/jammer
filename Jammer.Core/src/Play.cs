@@ -183,6 +183,33 @@ namespace Jammer
 
                     string[] playlist = System.IO.File.ReadAllLines(song.Path);
 
+                    // MARK: - Detect if playlist is using the old format
+                    string newPlaylist = "";
+                    bool isOldFormat = false;
+                    foreach (string s in playlist) {
+                        if (s.Contains('½') && !s.Contains("###@@@###")) {
+                            isOldFormat = true;
+
+                            string[] split = s.Split('½');
+                            Song newSong = new Song() {
+                                Path = split[0],
+                                Title = split[1]
+                            };
+                            newPlaylist += newSong.ToSongString() + "\n";
+                        }
+                        else {
+                            newPlaylist += s + "\n";
+                        }
+                    }
+
+                    if (isOldFormat) {
+                        string input = Message.Input("Update to new format (y/n)","Old playlist format detected. \nDo you want to update it to the new format?", true);
+                        if (input == "y") {
+                            System.IO.File.WriteAllText(song.Path, newPlaylist);
+                            playlist = System.IO.File.ReadAllLines(song.Path);
+                        }
+                    }
+
                     // add all songs in playlist to Utils.songs
                     foreach (string s in playlist) {
                         AddSong(s, false);
