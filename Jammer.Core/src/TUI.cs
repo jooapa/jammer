@@ -225,7 +225,7 @@ namespace Jammer {
                 table.AddColumn("No Specific Playlist Name");
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Utils.currentPlaylist, Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                    + Themes.sColor(Playlists.ReturnJammerPlaylistPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
             }
 
             // table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -243,7 +243,7 @@ namespace Jammer {
                 table.AddColumn(Funcs.GetPrevCurrentNextSong());
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Utils.currentPlaylist, Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                    + Themes.sColor(Playlists.ReturnJammerPlaylistPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
         }

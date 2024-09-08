@@ -105,13 +105,18 @@ namespace Jammer
             return Path.GetFullPath(playlist);
         }
 
+        /// <summary>
+        /// Returns the name of the playlist if it is in the jammer folder, else returns the path, for visual purposes only
+        /// </summary>
+        /// <param name="playlist"></param>
+        /// <returns>path or name</returns>
         public static string ReturnJammerPlaylistPath(string playlist)
         {
             // playlist var is a path
             // return the name of the file, if its in the jammer folder
             if (playlist.Contains(Utils.JammerPath))
             {
-                return Path.GetFileName(playlist);
+                return Path.GetFileNameWithoutExtension(playlist);
             }
             return playlist;
         }
