@@ -182,7 +182,7 @@ namespace Jammer
             // Concatenate all song strings
             string allSongs = string.Join("\n", Utils.songs);
             //Message.Data(allSongs, "Current Playlist");
-            Playlists.AutoSave();
+            // Playlists.AutoSave();
 
             Start.drawWhole = true;
 
@@ -570,6 +570,7 @@ namespace Jammer
                 Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
                 Utils.songs[Utils.songs.Length - 1] = song;
             }
+            Playlists.AutoSave();
             if (Utils.songs.Length == 1)
             {
                 Utils.currentSongIndex = 0;

@@ -273,6 +273,7 @@ namespace Jammer
                         case "Autosave": // autosave or not
                             Preferences.isAutoSave = !Preferences.isAutoSave;
                             Preferences.SaveSettings();
+                            drawWhole = true;
                             break;
                         case "LoadEffects": // reset effects
                             Effects.ReadEffects();
