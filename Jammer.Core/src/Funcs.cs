@@ -238,7 +238,7 @@ namespace Jammer {
         // Play other playlist
         public static void PlayOtherPlaylist()
         {
-            string? playlistNameToPlay = Jammer.Message.Input(Locale.Player.PlayOtherPlaylistMessage1,Locale.Player.PlayOtherPlaylistMessage2);
+            string? playlistNameToPlay = Message.Input(Locale.Player.PlayOtherPlaylistMessage1,Locale.Player.PlayOtherPlaylistMessage2);
             if (playlistNameToPlay == "" || playlistNameToPlay == null) { 
                 Jammer.Message.Data(Locale.Player.PlayOtherPlaylistError1, Locale.Player.PlayOtherPlaylistError2, true);
                 return;

@@ -45,7 +45,7 @@ namespace Jammer
                 }
             }
             
-            AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
+            // AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
             string playlistPath = GetPath(playlistName);
 
@@ -65,12 +65,11 @@ namespace Jammer
                         AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.PlaylistIsEmpty}[/]");
                     }
                     else {
-                        // AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + Start.Sanitize(Utils.songs) + "[/]");
+                        AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + Start.Sanitize(playlistName) + "[/]");
                     }
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + Utils.songs + "[/]");
                     Start.state = MainStates.play;
                     Jammer.Play.PlaySong(Utils.songs, 0);
                 }
