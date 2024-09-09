@@ -198,7 +198,7 @@ soundcloud every now and then changes the client id, which is not cool, so this 
 on default the keybind is `Alt + Shift + 1` or go change it in the `settings.json`
 
 #### way to get the id on your own
-- open up the [soundcloud.com](https://soundcloud.com)
+- open up the [soundcloud.com](https://soundcloud.com/discover)
 - open the inspect element -> Network tab
 - start playing some random song
 - you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
