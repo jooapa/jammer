@@ -126,6 +126,13 @@ To change the visualizer settings, go to `<jammer/Visualizer.ini>` and change th
 
 These can be changed in the Effects.ini file in the jammer folder.
 
+### Jammer Folder Location
+
+- **Windows**: `C:\Users\username\jammer`
+- **Linux**: `/home/username/jammer`
+
+This can be changed by an environment variable `JAMMER_CONFIG_PATH`
+
 ### Default Player Controls
 
 | Key | Action |
