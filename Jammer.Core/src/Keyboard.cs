@@ -576,8 +576,9 @@ namespace Jammer
                 if (playerView == "all") {
                     drawWhole = true;
                 }
-            }
 
+                Playlists.AutoSave();
+            }
         }
 
         public static void PauseSong(bool onlyPause = false)

@@ -206,14 +206,12 @@ namespace Jammer {
             }
             songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
             Play.AddSong(songToAdd);
-            Playlists.AutoSave();
         }
 
         // Delete current song from playlist
         public static void DeleteCurrentSongFromPlaylist()
         {
             Play.DeleteSong(Utils.currentSongIndex, false);
-            Playlists.AutoSave();
         }
 
         // Show songs in playlist
@@ -302,7 +300,6 @@ namespace Jammer {
             Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
             // set new song from shuffle to the current song
             Utils.currentSong = Utils.songs[Utils.currentSongIndex];
-            Playlists.AutoSave();
         }
 
         // Play single song

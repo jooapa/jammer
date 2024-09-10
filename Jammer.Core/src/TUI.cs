@@ -225,7 +225,7 @@ namespace Jammer {
                 table.AddColumn("No Specific Playlist Name");
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Playlists.ReturnJammerPlaylistPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                    + Themes.sColor(Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
             }
 
             // table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -243,7 +243,7 @@ namespace Jammer {
                 table.AddColumn(Funcs.GetPrevCurrentNextSong());
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Playlists.ReturnJammerPlaylistPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                    + Themes.sColor(Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
         }
@@ -353,10 +353,11 @@ namespace Jammer {
             string[] EditKeybindings =         (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
             string[] ChangeLanguage =          (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
             string[] ChangeTheme =             (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
-            string[] Search =       (Keybindings.Search).Replace(" ", "").Split(separator);
+            string[] Search =                  (Keybindings.Search).Replace(" ", "").Split(separator);
             string[] ChangeSoundFont =         (Keybindings.ChangeSoundFont).Replace(" ", "").Split(separator);
-            string[] ToSongStart =         (Keybindings.ToSongStart).Replace(" ", "").Split(separator);
-            string[] ToSongEnd =         (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
+            string[] ToSongStart =             (Keybindings.ToSongStart).Replace(" ", "").Split(separator);
+            string[] ToSongEnd =               (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
+            string[] ShowLog =                 (Keybindings.ShowLog).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
 
@@ -378,7 +379,7 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(PreviousSong), Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                         DrawHelpTextColouring(ChangeTheme), Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(PlayRandomSong), Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                     DrawHelpTextColouring(Search), Themes.sColor("Search from YT/SC", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(DeleteCurrentSong), Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                   DrawHelpTextColouring(ChangeSoundFont), Themes.sColor("Change SoundFont", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(PlaylistOptions), Themes.sColor(Locale.Help.ShowPlaylistOptions, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)                               );
+            table.AddRow(DrawHelpTextColouring(PlaylistOptions), Themes.sColor(Locale.Help.ShowPlaylistOptions, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                               DrawHelpTextColouring(ShowLog), Themes.sColor("Show Session Log", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToSongStart), Themes.sColor(Locale.LocaleKeybind.GoToSongStart, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));

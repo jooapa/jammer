@@ -9,7 +9,7 @@ namespace Jammer
         {
             Console.WriteLine($"{Locale.OutsideItems.CreatingPlaylist}: " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = GetPath(playlistName);
+            string playlistPath = GetJammerPlaylistPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -47,13 +47,13 @@ namespace Jammer
             
             // AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
-            string playlistPath = GetPath(playlistName);
-
+            string playlistPath = GetJammerPlaylistPath(playlistName);
+            AnsiConsole.MarkupLine($"[green]{playlistPath}[/]");
             if (File.Exists(playlistPath) || URL.IsUrl(playlist))
             {
 
                 Utils.currentSongIndex = 0;
-                Utils.songs = new string[] { GetPath(playlist) };
+                Utils.songs = new string[] { GetJammerPlaylistPath(playlist) };
 
                 Utils.currentPlaylist = playlistName;
                 
@@ -84,12 +84,16 @@ namespace Jammer
                 {
                     AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: " + playlist + $" {Locale.OutsideItems.DoesntExist}[/]");
                     Environment.Exit(0);
-                    return;
                 }
             }
         }
         
-        static public string GetPath(string playlist)
+        /// <summary>
+        /// Returns the path of the playlist
+        /// </summary>
+        /// <param name="playlist"></param>
+        /// <returns></returns>
+        static public string GetJammerPlaylistPath(string playlist)
         {
             // if playlist is not a path, return the path
             if (!playlist.Contains(Path.DirectorySeparatorChar))
@@ -108,7 +112,7 @@ namespace Jammer
         /// </summary>
         /// <param name="playlist"></param>
         /// <returns>path or name</returns>
-        public static string ReturnJammerPlaylistPath(string playlist)
+        public static string GetJammerPlaylistVisualPath(string playlist)
         {
             // playlist var is a path
             // return the name of the file, if its in the jammer folder
@@ -123,7 +127,7 @@ namespace Jammer
         {
             Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist);
             string playlistName = playlist;
-            string playlistPath = GetPath(playlistName);
+            string playlistPath = GetJammerPlaylistPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -138,7 +142,7 @@ namespace Jammer
         static public void Add(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = GetPath(playlistName);
+            string playlistPath = GetJammerPlaylistPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.AddingSongsTo} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -180,7 +184,7 @@ namespace Jammer
         static public void Remove(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = GetPath(playlistName);
+            string playlistPath = GetJammerPlaylistPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.RemovingFrom} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -230,7 +234,7 @@ namespace Jammer
         {
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.ShowingPlaylist} [red]" + playlist + "[/]");
             playlist = playlist + ".jammer";
-            string playlistPath = GetPath(playlist);
+            string playlistPath = GetJammerPlaylistPath(playlist);
 
             string playlistList = "";
             if (File.Exists(playlistPath))
@@ -255,7 +259,7 @@ namespace Jammer
 
         static public void Save(string playlistName, bool force = false)
         {
-            string playlistPath = GetPath(playlistName);
+            string playlistPath = GetJammerPlaylistPath(playlistName);
             
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))

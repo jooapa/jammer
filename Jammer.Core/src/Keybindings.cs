@@ -78,7 +78,7 @@ namespace Jammer{
         public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
         public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");
         public static string LoadVisualizer = CheckValue("LoadVisualizer", "8");
-        public static string SetSoundcloudClientID = CheckValue("SetSoundcloudClientID", "Alt + 1");
+        public static string SetSoundcloudClientID = CheckValue("SetSoundcloudClientID", "Shift + Alt + 1");
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");
@@ -95,7 +95,7 @@ namespace Jammer{
         public static string Choose = CheckValue("Choose", "Enter");
         public static string AddSongToQueue = CheckValue("AddSongToQueue", "G");
         public static string Search = CheckValue("Search", "Ctrl + Y");
-        public static string ShowLog = CheckValue("ShowLog", "Shift + L");
+        public static string ShowLog = CheckValue("ShowLog", "Ctrl + L");
 
         public static string CheckValue(string value, string defaultValue){
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);
