@@ -49,10 +49,16 @@ namespace Jammer
         /// <param name="song">The song to combine.</param>
         /// <returns>The combined string.</returns>
         /// <remarks>
-        /// The combined string is in the format of "path|{json}".
+        /// The combined string is in the format of "path?|{json}".
         /// </remarks>
         public static string ToSongString(this Song song)
         {
+            // Message.Data(song.URI + " " + song.Title + " " + song.Author + " " + song.Album + " " + song.Year + " " + song.Genre, "ToSongString");
+            if (IsAlreadyInString(song))
+            {
+                return song.URI;
+            }
+            
             if (song == null || string.IsNullOrEmpty(song.URI))
             {
                 return string.Empty; // or handle it as needed
@@ -66,6 +72,16 @@ namespace Jammer
             string songString = song.URI + Utils.jammerFileDelimeter;
             songString += JsonSerializer.Serialize(song, options);
             return songString;
+        }
+
+        public static bool IsAlreadyInString(this Song song)
+        {
+            if (song == null || string.IsNullOrEmpty(song.URI))
+            {
+                return false;
+            }
+
+            return song.URI.Contains(Utils.jammerFileDelimeter) && song.URI.Contains('{') && song.URI.Contains('}');
         }
 
         

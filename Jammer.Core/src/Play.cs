@@ -133,7 +133,7 @@ namespace Jammer
 
             // Message.Data(fullPath + " || " + song.Path, "path");
             // if the Utils.songs current is not the same as the song.Path
-            if (song.URI != Utils.songs[Utils.currentSongIndex])
+            if (fullPath != Utils.songs[Utils.currentSongIndex])
             {
                 song.Title = ""; // TODO might break something :/
                 song.URI = Utils.songs[Utils.currentSongIndex];
@@ -178,7 +178,7 @@ namespace Jammer
             {
                 song.Album = album;
             }
-            if (song.Year == null || song.Year == "")
+            if (song.Year == null || song.Year == "" || song.Year == "0")
             {
                 song.Year = year;
             }
@@ -189,7 +189,7 @@ namespace Jammer
 
             Utils.songs[Utils.currentSongIndex] = song.ToSongString();
             // Concatenate all song strings
-            string allSongs = string.Join("\n", Utils.songs);
+            // string allSongs = string.Join("\n", Utils.songs);
             //Message.Data(allSongs, "Current Playlist");
 
             Start.drawWhole = true;
