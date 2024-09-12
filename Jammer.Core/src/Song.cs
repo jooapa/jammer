@@ -7,7 +7,7 @@ namespace Jammer
     public class Song
     {
         [JsonIgnore]
-        public string? Path { get; set; }
+        public string? URI { get; set; }
         public string? Title { get; set; }
         public string? Author { get; set; }
         public string? Album { get; set; }
@@ -19,10 +19,10 @@ namespace Jammer
         /// </summary>
         public void ExtractSongDetails()
         {
-            if (Path != null && Path.Contains(Utils.jammerFileDelimeter))
+            if (URI != null && URI.Contains(Utils.jammerFileDelimeter))
             {
-                string[] parts = Path.Split(Utils.jammerFileDelimeter);
-                Path = parts[0];
+                string[] parts = URI.Split(Utils.jammerFileDelimeter);
+                URI = parts[0];
                 string json = parts[1];
                 
                 if (string.IsNullOrEmpty(json))
@@ -53,7 +53,7 @@ namespace Jammer
         /// </remarks>
         public static string ToSongString(this Song song)
         {
-            if (song == null || string.IsNullOrEmpty(song.Path))
+            if (song == null || string.IsNullOrEmpty(song.URI))
             {
                 return string.Empty; // or handle it as needed
             }
@@ -63,7 +63,7 @@ namespace Jammer
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
 
-            string songString = song.Path + Utils.jammerFileDelimeter;
+            string songString = song.URI + Utils.jammerFileDelimeter;
             songString += JsonSerializer.Serialize(song, options);
             return songString;
         }
@@ -77,9 +77,9 @@ namespace Jammer
         /// <returns></returns>
         public static string Title(string song)
         {
-            Song song1 = new Song() { Path = song };
+            Song song1 = new Song() { URI = song };
             song1.ExtractSongDetails();
-            return song1.Title ?? song1.Path;
+            return song1.Title ?? song1.URI;
         }
     }
 }

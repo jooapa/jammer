@@ -102,9 +102,14 @@ namespace Jammer
                     return;
                 }
                 Song song = new Song() {
-                    Path = "https://www.youtube.com/watch?v=" + selectedId,
                     Title = selectedString
                 };
+
+                if (type == "playlist") {
+                    song.URI = "https://www.youtube.com/playlist?list=" + selectedId;
+                } else {
+                    song.URI = "https://www.youtube.com/watch?v=" + selectedId;
+                }
                 song.ExtractSongDetails();
                 string url = song.ToSongString();
                 
@@ -195,7 +200,7 @@ namespace Jammer
                 // song.Title = selectedString;
                 // string url = UtilFuncs.CombineToSongString(song);
                 Song song = new Song() {
-                    Path = selectedUrl,
+                    URI = selectedUrl,
                     Title = selectedString
                 };
                 song.ExtractSongDetails();

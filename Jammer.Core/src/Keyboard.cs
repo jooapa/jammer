@@ -577,7 +577,7 @@ namespace Jammer
                     drawWhole = true;
                 }
 
-                Playlists.AutoSave();
+                Playlists.AutoSave(); // TODO BEST WAY TO DO IT
             }
         }
 

@@ -129,7 +129,7 @@ These can be changed in the Effects.ini file in the jammer folder.
 ### Jammer Folder Location
 
 - **Windows**: `C:\Users\username\jammer`
-- **Linux**: `/home/username/jammer`
+- **Linux**: `~/jammer`
 
 This can be changed by an environment variable `JAMMER_CONFIG_PATH`
 
@@ -282,10 +282,6 @@ you can use `update.py` to change the version of the app.
                  |||---Patch
 python update.py 101
 ```
-
-### Incoming Features
-
-- [ ] Add more audio formats
 
 ## Known Issues
 

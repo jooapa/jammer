@@ -75,23 +75,23 @@ namespace Jammer
             // get song details
             // Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
             Song song = new Song() {
-                Path = songs[Utils.currentSongIndex]
+                URI = songs[Utils.currentSongIndex]
             };
             string fullPath = "";
 
             song.ExtractSongDetails();
 
             // check if file is a local
-            if (System.IO.File.Exists(song.Path))
+            if (System.IO.File.Exists(song.URI))
             {
                 // id related to local file path, convert to absolute path
-                fullPath = Path.GetFullPath(song.Path);
+                fullPath = Path.GetFullPath(song.URI);
             }
             // if folder
-            else if (Directory.Exists(song.Path))
+            else if (Directory.Exists(song.URI))
             {
                 // add all files in folder to Utils.songs
-                string[] files = Directory.GetFiles(song.Path);
+                string[] files = Directory.GetFiles(song.URI);
                 foreach (string file in files)
                 {
                     AddSong(file);
@@ -103,33 +103,42 @@ namespace Jammer
                 // reapply new path in details
                 fullPath = Utils.songs[Utils.currentSongIndex];
             }
-            else if (URL.isValidSoundCloudPlaylist(song.Path)) {
+            else if (URL.isValidSoundCloudPlaylist(song.URI)) {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                fullPath = Download.GetSongsFromPlaylist(song.Path, "soundcloud");
+                fullPath = Download.GetSongsFromPlaylist(song.URI, "soundcloud");
             }
-            else if (URL.IsValidSoundcloudSong(song.Path))
+            else if (URL.IsValidSoundcloudSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.URI);
             }
-            else if (URL.IsValidYoutubePlaylist(song.Path))
+            else if (URL.IsValidYoutubePlaylist(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.GetSongsFromPlaylist(song.Path, "youtube");
+                fullPath = Download.GetSongsFromPlaylist(song.URI, "youtube");
             }
-            else if (URL.IsValidYoutubeSong(song.Path))
+            else if (URL.IsValidYoutubeSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.URI);
             }
-            else if (URL.IsUrl(song.Path))
+            else if (URL.IsUrl(song.URI))
             {
-                fullPath = Download.DownloadSong(song.Path);
+                fullPath = Download.DownloadSong(song.URI);
                 // Message.Data(path, song);
             }
 
             // Message.Data(fullPath, "path");
+
+            // Message.Data(fullPath + " || " + song.Path, "path");
+            // if the Utils.songs current is not the same as the song.Path
+            if (song.URI != Utils.songs[Utils.currentSongIndex])
+            {
+                song.Title = ""; // TODO might break something :/
+                song.URI = Utils.songs[Utils.currentSongIndex];
+            }
+            // Message.Data(fullPath + " || " + song.Path, "path");
 
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
@@ -231,7 +240,7 @@ namespace Jammer
                     string[] split = s.Split('½');
                     Song newSong = new Song()
                     {
-                        Path = split[0],
+                        URI = split[0],
                         Title = split[1]
                     };
                     newPlaylist += newSong.ToSongString() + "\n";

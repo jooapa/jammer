@@ -355,9 +355,26 @@ namespace Jammer {
 
             }
             
-            // remove the CurrentSong from Utils.songs
-            Utils.songs = Utils.songs.Where(val => val != Utils.songs[Utils.currentSongIndex]).ToArray();
+            // print all the songs in the playlist
+            // foreach (var song in Utils.songs) {
+            //     Console.WriteLine(song);
+            // }
+            // Console.ReadLine();
+            // remove the plurl from the songs array if it exists any where
+            Utils.songs = Utils.songs.Where(val => !val.Contains(plurl)).ToArray();
 
+
+            // Console.WriteLine("----Utils.songs----");
+            // foreach (var song in Utils.songs) {
+            //     Console.WriteLine(song);
+            // }
+            // Console.WriteLine("--------");
+            // Console.WriteLine("----playlistSongs----");
+            // foreach (var song in playlistSongs) {
+            //     Console.WriteLine(song);
+            // }
+            // Console.WriteLine("--------");
+            // Console.ReadLine();
             // Message.Data("current song: " + Utils.songs[Utils.currentSongIndex], "Debug");
             // Message.Data("playlist first song: " + playlistSongs[0], "Debug");
             // Message.Data("last song: " + Utils.songs[Utils.songs.Length - 1], "Debug");
@@ -365,6 +382,17 @@ namespace Jammer {
             // add all songs from playlist to Utils.songs but start adding at the currentSongIndex
             Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
             // Message.Data(Utils.songs[0], "d1");
+            // Console.WriteLine("----Utils.songs----");
+            // foreach (var song in Utils.songs) {
+            //     Console.WriteLine(song);
+            // }
+            // Console.WriteLine("--------");
+            // Console.WriteLine("----playlistSongs)----");
+            // foreach (var song in playlistSongs) {
+            //     Console.WriteLine(song);
+            // }
+            // Console.WriteLine("--------");
+            // Console.ReadLine();
                         
 
             return DownloadSong(Utils.songs[Utils.currentSongIndex]);
