@@ -524,55 +524,6 @@ namespace Jammer
                 SeekSong(0, false);
                 return;
             }
-            // string path = Utils.currentSong;
-            // string fileName = Path.GetFileName(path);
-            // string temporary_filename = Utils.songs[Utils.currentSongIndex].Split("½")[0];
-            // System.IO.File.Delete(path);
-            // Utils.songs[Utils.currentSongIndex] = Utils.songs[Utils.currentSongIndex].Split("½")[0];
-
-            // if(fileName.Contains("www.youtube.com") && !URL.IsUrl(temporary_filename)){
-            //     // reconstruct url
-            //     int space = fileName.IndexOf(" ");
-            //     if(space != -1){
-            //         fileName = fileName.Remove(space, 1).Insert(space, "/");
-            //         space = fileName.IndexOf(" ");
-            //         if(space != -1){
-            //             fileName = fileName.Remove(space, 1).Insert(space, "?");
-            //         }
-            //         // remove .mp4
-            //         int dotPos = temporary_filename.LastIndexOf(".mp4");
-            //         if(dotPos != -1){
-            //             fileName = fileName.Remove(fileName.Length - 4, 4);
-            //         }
-            //     }
-            //     string new_url = "https://" + fileName;
-            //     Utils.songs[Utils.currentSongIndex] = new_url;
-            // } else if(fileName.Contains("soundcloud.com") && !URL.IsUrl(temporary_filename)){
-            //     // reconstruct url
-            //     int space = fileName.IndexOf(" ");
-            //     if(space != -1){
-            //         fileName = fileName.Remove(space, 1).Insert(space, "/");
-            //         space = fileName.IndexOf(" ");
-            //         if(space != -1){
-            //             fileName = fileName.Remove(space, 1).Insert(space, "/");
-            //         }
-            //         // remove .mp3
-            //         int dotPos = temporary_filename.LastIndexOf(".mp3");
-            //         if(dotPos != -1){
-            //             fileName = fileName.Remove(fileName.Length - 4, 4);
-            //         }
-            //     }
-            //     string new_url = "https://" + fileName;
-                
-            //     Utils.songs[Utils.currentSongIndex] = new_url;
-            // } else {
-            //     Utils.songs[Utils.currentSongIndex] = temporary_filename;
-            // }
-
-            
-            // PlaySong(Utils.songs, Utils.currentSongIndex);
-            // SeekSong(0, false);
-
         }
 
         public static void AddSong(string song, bool AddNext = true )
@@ -667,19 +618,23 @@ namespace Jammer
         static public void StartPlaying()
         {
             ResetMusic();
-
+            
+            // Message.Data(Utils.currentSong, "Playing: ");
             // flags
             BassFlags flags = BassFlags.Default;
             
-            BassAac.PlayAudioFromMp4 = true;
-            BassAac.AacSupportMp4 = true;
+            //BassAac.PlayAudioFromMp4 = true;
+            //BassAac.AacSupportMp4 = true;
 
             ////
             Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
+            //Message.Data(Utils.currentMusic.ToString(), "Current Music");
             if (Utils.currentMusic == 0)
                 Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
+                //Message.Data(Utils.currentMusic.ToString(), "Current Music");
             if (Utils.currentMusic == 0)
                 Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
+                //Message.Data(Utils.currentMusic.ToString(), "Current Music");
             if (Utils.currentMusic == 0) {
                 int newFont;
                 newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
@@ -688,8 +643,8 @@ namespace Jammer
                 {
                     newFont = BassMidi.FontInit(Path.Combine(Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
 
-                    if (newFont == 0)
-                        Message.Data("Can't load the SoundFont: " + Preferences.GetCurrentSf2(), "Error loading the soundfont", true);
+                    //if (newFont == 0 && Utils.curSongError)
+                    //    Message.Data("Can't load the SoundFont: " + Preferences.GetCurrentSf2(), "Error loading the soundfont", true);
                 }
                 var sf = new MidiFont[]
                 {

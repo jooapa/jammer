@@ -6,6 +6,8 @@ using System.IO;
 using TagLib;
 using System.Net;
 using System.Text.RegularExpressions;
+using YoutubeExplode.Videos.Streams;
+using System.Runtime.InteropServices;
 
 namespace Jammer {
     public class Download {
@@ -176,6 +178,9 @@ namespace Jammer {
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
 
+                    // TURN MP4 TO AAC
+                    // songPath = FFMPEGMP4ToAAC(songPath);
+
                     // TagLib
                     var file = TagLib.File.Create(songPath);
                     file.Tag.Title = Start.Sanitize(video.Title);
@@ -185,7 +190,7 @@ namespace Jammer {
                 }
                 else
                 {
-                    Jammer.Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
+                    Message.Data(Locale.OutsideItems.NoAudioStream, Locale.OutsideItems.Error);
                 }
             }
             catch (Exception ex)
@@ -193,6 +198,44 @@ namespace Jammer {
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
                 songPath = "";
             }
+        }
+
+        private static string FFMPEGMP4ToAAC(string songPath)
+        {
+            string aacPath = songPath.Replace(".mp4", ".aac");
+            
+            // ffmpeg for linux is just "ffmpeg" for windows the path is the same folder as the exe
+            string ffmpegPath = "ffmpeg";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
+            }
+            
+            string arguments = $"-i \"{songPath}\" -vn -acodec copy \"{aacPath}\"";
+
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = ffmpegPath,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            System.Diagnostics.Process process = new System.Diagnostics.Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
+            // continue soon as the process is done
+            process.WaitForExit();
+
+            // delete the mp4 file
+            //System.IO.File.Delete(songPath);
+            
+            return aacPath;
         }
 
         public static SoundCloudClient ReturnSoundCloudClient() {
@@ -243,7 +286,7 @@ namespace Jammer {
                         });
                         
                         await soundcloud.DownloadAsync(track, songPath, progress);
-
+                        
                         var file = TagLib.File.Create(songPath);
                         file.Tag.Title = Start.Sanitize(track.Title);
                         file.Tag.Description = track.Description;
@@ -450,7 +493,7 @@ namespace Jammer {
             }
             else
             {
-                return formattedYTUrl + ".mp4";
+                return formattedYTUrl + ".aac";
             }
         }
     }

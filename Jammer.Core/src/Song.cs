@@ -130,7 +130,14 @@ namespace Jammer
         {
             Song song1 = new Song() { URI = song };
             song1.ExtractSongDetails();
-            return song1.Title ?? song1.URI;
+            if (song1.Title != null && song1.Title != "")
+            {
+                return song1.Title;
+            }
+            else
+            {
+                return song1.URI;
+            }
         }
     }
 }
