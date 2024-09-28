@@ -265,22 +265,57 @@ namespace Jammer
             if (File.Exists(playlistPath))
             {
                 if (!force) {
-                    string input = Jammer.Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
+                    string input = Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
                     // y/n prompt
                     if (input != "y")
                     {
                         return;
                     }
                 }
-                try
-                {
-                    if (File.Exists(playlistPath))
-                    {
-                        File.Delete(playlistPath);
-                    }
+                try {
 
-                    File.WriteAllLines(playlistPath, Utils.songs);
-                    Utils.currentPlaylist = playlistName;
+                    string extension = Path.GetExtension(playlistPath);
+
+                    if (extension == ".jammer")
+                    {
+                        File.WriteAllLines(playlistPath, Utils.songs);
+                        Utils.currentPlaylist = playlistName;
+                    }
+                    else if (extension == ".m3u" || extension == ".m3u8")
+                    {
+                        string content = File.ReadAllText(playlistPath);
+                        string newContent;
+                        if (content.StartsWith("#EXTM3U"))
+                        {
+                            newContent = "#EXTM3U\n";
+                        }
+                        else
+                        {
+                            newContent = "";
+                        }
+
+                        // if the file has anythng starting with #EXT-X- take that line and add it to the new content
+                        string[] lines = content.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string line in lines)
+                        {
+                            if (line.StartsWith("#EXT-X-"))
+                            {
+                                newContent += line + Environment.NewLine;
+                            }
+                        }
+
+                        newContent += Environment.NewLine;
+
+                        foreach (string song in Utils.songs)
+                        {
+                            newContent += SongExtensions.ToSong(song).ToSongM3UString() + Environment.NewLine;
+                        }
+
+                        File.WriteAllText(playlistPath, newContent);
+                        Utils.currentPlaylist = playlistName;
+
+                        // Message.Data(newContent, "SAVE M3U");
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -13,7 +13,7 @@ namespace Jammer
         public string? Album { get; set; }
         public string? Year { get; set; }
         public string? Genre { get; set; }
-
+        public string? Duration { get; set; }
         /// <summary>
         /// Extracts song details from the Path property if it contains metadata.
         /// </summary>
@@ -37,6 +37,7 @@ namespace Jammer
                 Album = metadata.Album;
                 Year = metadata.Year;
                 Genre = metadata.Genre;
+                Duration = metadata.Duration;
             }
         }
     }
@@ -74,6 +75,41 @@ namespace Jammer
             return songString;
         }
 
+        public static Song ToSong(this string songString)
+        {
+            if (string.IsNullOrEmpty(songString))
+            {
+                return new Song();
+            }
+
+            if (songString.Contains(Utils.jammerFileDelimeter))
+            {
+                string[] parts = songString.Split(Utils.jammerFileDelimeter);
+                string uri = parts[0];
+                string json = parts[1];
+                Song song = JsonSerializer.Deserialize<Song>(json) ?? new Song();
+                song.URI = uri;
+                return song;
+            }
+
+            return new Song() { URI = songString };
+        }
+
+        public static string ToSongM3UString(this Song song)
+        {
+            if (song == null || string.IsNullOrEmpty(song.URI))
+            {
+                return string.Empty; // or handle it as needed
+            }
+            
+            string songINF = "#EXTINF:" + song.Duration + "," + song.Title;
+
+            string songString = songINF
+            + "\n" + 
+            song.URI; 
+            return songString;
+        }
+
         public static bool IsAlreadyInString(this Song song)
         {
             if (song == null || string.IsNullOrEmpty(song.URI))
@@ -89,7 +125,6 @@ namespace Jammer
         /// Get the title of the song
         /// </summary>
         /// <param name="title">title</param>
-        /// <param name="getOrNot">get | not | getMeta</param>
         /// <returns></returns>
         public static string Title(string song)
         {
