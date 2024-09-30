@@ -24,8 +24,7 @@ for the playlist feature across different platforms***
 ### Install
 
 Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
-Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt
-install libfuse2`.
+Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt install libfuse2 ffmpeg`
 
 ### Update existing
 
@@ -56,14 +55,16 @@ jammer -v, --version      show version
 ```
 
 ```bash
-jammer -h, --help                             show this help message-
+jammer -h, --help                             show this help message
+## these commands are for the playlists in the <jammer/playlists> folder
 jammer -p, --play       <name>                play playlist
 jammer -c, --create     <name>                create playlist
 jammer -d, --delete     <name>                delete playlist
 jammer -a, --add        <name> <song> ...     add song to playlist
 jammer -r, --remove     <name> <song> ...     remove song from playlist
-jammer -s, --show       <name> 
+jammer -s, --show       <name>                show songs in playlist
 jammer -l, --list                             list all playlists
+
 jammer -f, --flush                            deletes all the songs in songs folder
 jammer -sp, --set-path  <path>, <default>     set path for songs folder
 jammer -gp, --get-path                        get the path to the <jammer/songs> folder
@@ -133,6 +134,27 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 This can be changed by an environment variable `JAMMER_CONFIG_PATH`
 
+### m3u and m3u8 support
+
+Jammer supports m3u and m3u8 playlists. You can play them but with pretty limited functionality.
+
+Starting the m3u file with `#EXTM3U` and example of the m3u of all the features that are supported.
+
+```m3u
+#EXTM3U
+#EXT-X-PLAYLIST-TYPE:VOD
+#EXT-X-TARGETDURATION:10
+#EXT-X-VERSION:3
+#EXT-X-MEDIA-SEQUENCE:0
+
+#EXTINF:0,Lady Gaga - Telephone ft. Beyoncé
+https://www.youtube.com/watch?v=Zwnvgz3ey78
+#EXTINF:0,Epic Music 
+/home/user/epic music/epic_music.mp3
+
+/tmp/secret_klinoff.mp3
+```
+
 ### Default Player Controls
 
 | Key | Action |
@@ -189,6 +211,20 @@ Currently supported languages:
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
+## Soundcloud
+
+### User can now change the SoundCloud client id
+
+soundcloud every now and then changes the client id, which is not cool, so this allows change allows the user to change it :)
+on default the keybind is `Alt + Shift + 1` or go change it in the `settings.json`
+
+#### way to get the id on your own
+
+- open up the [soundcloud.com](https://soundcloud.com/discover)
+- open the inspect element -> Network tab
+- start playing some random song
+- you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
+
 ## Star History
 
 <a href="https://star-history.com/#jooapa/jammer&Date">
@@ -199,16 +235,6 @@ Create new translation by copying already existing .ini file from /locales and t
  </picture>
 </a>
 
-## Soundcloud
-### User can now change the SoundCloud client id
-soundcloud every now and then changes the client id, which is not cool, so this allows change allows the user to change it :)
-on default the keybind is `Alt + Shift + 1` or go change it in the `settings.json`
-
-#### way to get the id on your own
-- open up the [soundcloud.com](https://soundcloud.com/discover)
-- open the inspect element -> Network tab
-- start playing some random song
-- you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
 # Developing
 
 ## Build / Run yourself
