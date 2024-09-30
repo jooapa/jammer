@@ -101,8 +101,10 @@ namespace Jammer
             {
                 return string.Empty; // or handle it as needed
             }
+
+            string dur = song.Duration ?? "0";
             
-            string songINF = "#EXTINF:" + song.Duration + "," + song.Title;
+            string songINF = "#EXTINF:" + dur + "," + song.Title;
 
             string songString = songINF
             + "\n" + 

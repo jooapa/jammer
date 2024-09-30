@@ -24,29 +24,31 @@ namespace Jammer {
 
             int maximum = 7;
             
+            int songLength = Start.consoleWidth - 14; // 26
+
             for (int i = 0; i < Utils.songs.Length; i++) {
                 string keyValue = Utils.songs[i].ToString();
                             
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
                     if (i == Utils.currentSongIndex) {
                         // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(SongExtensions.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
                     }
                     else if (i == Utils.currentPlaylistSongIndex) {
                         // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(SongExtensions.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
                     }
                     else if (Utils.currentPlaylistSongIndex <= 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(SongExtensions.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.currentPlaylistSongIndex - 2 && i < Utils.currentPlaylistSongIndex + 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(SongExtensions.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.songs.Length - (maximum - results.Count)) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {Start.Sanitize(SongExtensions.Title(keyValue))}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                 }
             }

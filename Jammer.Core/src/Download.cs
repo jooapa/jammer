@@ -493,7 +493,7 @@ namespace Jammer {
             }
             else
             {
-                return formattedYTUrl + ".aac";
+                return formattedYTUrl + ".mp4";
             }
         }
     }

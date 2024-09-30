@@ -182,8 +182,8 @@ namespace Jammer
                             state = MainStates.previous; // previous song
                             break;
                         case "PlaySongs":
-                                Funcs.PlaySingleSong();
-                                break;
+                            Funcs.PlaySingleSong();
+                            break;
                         case "Forward5s": // move forward 5 seconds
                             Play.SeekSong(Preferences.forwardSeconds, true);
                             drawTime = true;

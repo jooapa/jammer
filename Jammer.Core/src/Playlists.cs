@@ -208,7 +208,7 @@ namespace Jammer
                     {
                         // delete song from playlist
                         songs = songs.Where(val => val != song).ToArray();
-                        File.WriteAllLines(playlistPath, songs);
+                        File.WriteAllLines(playlistPath, songs, System.Text.Encoding.UTF8);
                     }
                     else
                     {
@@ -257,7 +257,13 @@ namespace Jammer
             return playlistList;
         }
 
-        static public void Save(string playlistName, bool force = false)
+        /// <summary>
+        /// Type can be jammer, m3u, m3u8, auto (Chosen by context)
+        /// </summary>
+        /// <param name="playlistName"></param>
+        /// <param name="force"></param>
+        /// <param name="type"></param>
+        static public void Save(string playlistName, bool force = false, string type = "auto")
         {
             string playlistPath = GetJammerPlaylistPath(playlistName);
             
@@ -278,7 +284,7 @@ namespace Jammer
 
                     if (extension == ".jammer")
                     {
-                        File.WriteAllLines(playlistPath, Utils.songs);
+                        File.WriteAllLines(playlistPath, Utils.songs, System.Text.Encoding.UTF8);
                         Utils.currentPlaylist = playlistName;
                     }
                     else if (extension == ".m3u" || extension == ".m3u8")
@@ -326,7 +332,7 @@ namespace Jammer
             {
                 try
                 {
-                    File.WriteAllLines(playlistPath, Utils.songs);
+                    File.WriteAllLines(playlistPath, Utils.songs, System.Text.Encoding.UTF8);
                     Utils.currentPlaylist = playlistName;
                 }
                 catch (Exception ex)

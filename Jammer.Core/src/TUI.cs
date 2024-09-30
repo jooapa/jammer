@@ -225,14 +225,19 @@ namespace Jammer {
                 table.AddColumn("No Specific Playlist Name");
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                    + Themes.sColor(
+                        Funcs.GetSongWithDots(
+                            Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist)
+                        , Start.consoleWidth - 20), 
+                    Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                );
             }
 
             // table.AddColumn(Locale.OutsideItems.CurrentQueue);
             for(int i = 0; i < lines.Length; i++){
                 // table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
                 table.AddRow(lines[i]);
-            }
+            } 
         }
 
         static public void UIComponent_Normal(Table table) {
@@ -242,8 +247,14 @@ namespace Jammer {
             if (Utils.currentPlaylist == "") {
                 table.AddColumn(Funcs.GetPrevCurrentNextSong());
             } else {
-                table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
-                    + Themes.sColor(Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist), Themes.CurrentTheme.Playlist.PlaylistNameColor));
+                table.AddColumn(
+                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
+                        Themes.sColor(
+                            Funcs.GetSongWithDots(
+                                Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist)
+                            , Start.consoleWidth - 20), 
+                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                );
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
         }

@@ -4,13 +4,11 @@
 #EXT-X-VERSION:3
 #EXT-X-MEDIA-SEQUENCE:0
 
-#EXTINF:0,Lady Gaga - Telephone ft. Beyoncé
+#EXTINF:0,Lady Gaga - Telephone ft. Beyoncé (Audio)
 https://www.youtube.com/watch?v=Zwnvgz3ey78
 #EXTINF:0,Lady Gaga - Bad Romance
 https://www.youtube.com/watch?v=qrO4YZeyl0I
-#EXTINF:,
-C:\Users\user\Documents\GitHub\jammer\npc_music
-#EXTINF:,
+#EXTINF:0,
 C:\Users\user\Documents\GitHub\jammer\npc_music\easy_mode.ogg
 #EXTINF:0,The Final Phase
 C:\Users\user\Documents\GitHub\jammer\npc_music\616845.mp3
