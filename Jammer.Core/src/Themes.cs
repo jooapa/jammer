@@ -170,7 +170,7 @@ namespace Jammer {
                 Directory.CreateDirectory(themePath);
             }
             if (!File.Exists(Path.Combine(themePath, themeName + ".json"))) {
-                File.WriteAllText(Path.Combine(themePath, themeName + ".json"), comments + fileContent);
+                File.WriteAllText(Path.Combine(themePath, themeName + ".json"), comments + fileContent, System.Text.Encoding.UTF8);
             }
         }
 
@@ -225,7 +225,7 @@ namespace Jammer {
 
             // write the theme back to the file
             string newJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-            File.WriteAllText(pathToTheme, comments + newJson);
+            File.WriteAllText(pathToTheme, comments + newJson, System.Text.Encoding.UTF8);
 
             // set the theme
             CurrentTheme = theme;

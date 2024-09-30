@@ -67,7 +67,7 @@ namespace Jammer {
             
             // if it doesn't exist, create it
             if (!Path.Exists(sfFilePath)) {
-                File.WriteAllText(sfFilePath, soundfontPath);
+                File.WriteAllText(sfFilePath, soundfontPath, System.Text.Encoding.UTF8);
             }
         }
     }

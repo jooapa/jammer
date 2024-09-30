@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using TagLib;
 
 
@@ -260,10 +261,28 @@ namespace Jammer
 
             if (isOldFormat)
             {
-                string input = Message.Input("Update to new format (y/n)", "Old playlist format detected. \nDo you want to update it to the new format?", true);
+                string input = Message.Input(
+                    "Update Playlist? (y/n)",
+                    "Hold On a Second! 🤠" + Environment.NewLine + 
+                    "This might be an old playlist format." + Environment.NewLine +
+                    "Do you want to update it to the new format?" + Environment.NewLine +
+                    "The old format is outdated and will not work at all." + Environment.NewLine +
+                    "but just incase a backup will be created to 'playlist/backups'.",
+                    true
+                    );
+                
                 if (input == "y")
                 {
-                    System.IO.File.WriteAllText(fullPath, newPlaylist);
+                    if (!Directory.Exists(Path.Combine(Utils.JammerPath, "playlists", "backups")))
+                    {
+                        Directory.CreateDirectory(Path.Combine(Utils.JammerPath, "playlists", "backups"));
+                    }
+
+                    string backupPath = Path.Combine(Utils.JammerPath, "playlists", "backups", Path.GetFileNameWithoutExtension(fullPath) + "_"+ DateTime.Now.ToString("dd-MM_HH-mm-ss") + ".jammer");
+                    System.IO.File.WriteAllText(backupPath, System.IO.File.ReadAllText(fullPath), Encoding.UTF8);
+
+                    // Message.Data(fullPath + " " + newPlaylist, "newPlaylist");
+                    System.IO.File.WriteAllText(fullPath, newPlaylist, Encoding.UTF8);
                     playlist = System.IO.File.ReadAllLines(fullPath);
                 }
             }
@@ -623,8 +642,8 @@ namespace Jammer
             // flags
             BassFlags flags = BassFlags.Default;
             
-            //BassAac.PlayAudioFromMp4 = true;
-            //BassAac.AacSupportMp4 = true;
+            BassAac.PlayAudioFromMp4 = true;
+            BassAac.AacSupportMp4 = true;
 
             ////
             Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);

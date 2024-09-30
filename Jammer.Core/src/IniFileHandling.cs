@@ -181,7 +181,7 @@ ShowLog = Ctrl + L
             if(hardReset == 0){
                 if (!File.Exists(filePath))
                 {
-                    File.WriteAllText(filePath, FileContent);
+                    File.WriteAllText(filePath, FileContent, System.Text.Encoding.UTF8);
                 }
             } 
             // Delete if exists and create
@@ -192,7 +192,7 @@ ShowLog = Ctrl + L
                     File.Delete(filePath);
                 }
                 // Create the file and write the content to it
-                File.WriteAllText(filePath, FileContent);
+                File.WriteAllText(filePath, FileContent, System.Text.Encoding.UTF8);
             }
             // Add missing keys
             else if(hardReset == 2 && File.Exists(filePath)){

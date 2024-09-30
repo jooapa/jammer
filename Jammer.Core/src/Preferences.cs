@@ -92,7 +92,7 @@ namespace Jammer
             {
                 File.Delete(JammerPath);
             }
-            File.WriteAllText(JammerPath, jsonString);
+            File.WriteAllText(JammerPath, jsonString, System.Text.Encoding.UTF8);
         }
 
         static public string GetSongsPath()

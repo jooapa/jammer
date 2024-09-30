@@ -317,7 +317,7 @@ namespace Jammer
                             newContent += SongExtensions.ToSong(song).ToSongM3UString() + Environment.NewLine;
                         }
 
-                        File.WriteAllText(playlistPath, newContent);
+                        File.WriteAllText(playlistPath, newContent, System.Text.Encoding.UTF8);
                         Utils.currentPlaylist = playlistName;
 
                         // Message.Data(newContent, "SAVE M3U");

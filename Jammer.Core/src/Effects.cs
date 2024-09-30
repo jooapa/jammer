@@ -173,7 +173,7 @@ HighFreqRTRatio = 0.001
             // Create the file if it doesn't exist
             if (!File.Exists(path)) {
                 Log.Info("Creating the Effects.ini file");
-                File.WriteAllText(path, FileContent);
+                File.WriteAllText(path, FileContent, System.Text.Encoding.UTF8);
             }
             else {
                 Log.Info("Effects.ini file already exists");

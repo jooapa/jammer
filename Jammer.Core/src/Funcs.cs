@@ -24,7 +24,7 @@ namespace Jammer {
 
             int maximum = 7;
             
-            int songLength = Start.consoleWidth - 14; // 26
+            int songLength = Start.consoleWidth - 17; // 26
 
             for (int i = 0; i < Utils.songs.Length; i++) {
                 string keyValue = Utils.songs[i].ToString();
