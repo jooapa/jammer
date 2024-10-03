@@ -76,7 +76,7 @@ jammer -so, --songs                           open <jammer/songs> folder
 
 ```bash
 jammer -c new_playlist
-jammer -a new_playlist https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd
+jammer -a new_playlist "https://www.youtube.com/playlist?list=PLnaJlq-zKc0WUXhwhSowwJdpe1fZumJzd"
 jammer -p new_playlist
 ```
 
