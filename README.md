@@ -134,18 +134,17 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 This can be changed by an environment variable `JAMMER_CONFIG_PATH`
 
-### m3u and m3u8 support
+### M3U and M3U8 Support
 
 Jammer supports m3u and m3u8 playlists. You can play them but with pretty limited functionality.
 
-Starting the m3u file with `#EXTM3U` and example of the m3u of all the features that are supported.
+m3u files can be played just by opening them with Jammer. But cannot be opened with the `--play`, `-p` command from the <jammer/playlists> folder. You can `Save as` (default keybind `Shift + Alt + S`) the m3u file, Thus creating a JAMMER playlist to <jammer/playlists> folder.
+
+Starting the m3u or m3u8 file with `#EXTM3U` and example of the m3u of all the features that are supported.
 
 ```m3u
 #EXTM3U
-#EXT-X-PLAYLIST-TYPE:VOD
-#EXT-X-TARGETDURATION:10
 #EXT-X-VERSION:3
-#EXT-X-MEDIA-SEQUENCE:0
 
 #EXTINF:0,Lady Gaga - Telephone ft. Beyoncé
 https://www.youtube.com/watch?v=Zwnvgz3ey78
@@ -177,7 +176,7 @@ https://www.youtube.com/watch?v=Zwnvgz3ey78
 | `N` | Next song in playlist |
 | `P` | Previous song in playlist |
 | `Delete` | Delete current song from playlist |
-| `F2` | Show playlist options |
+| `F3` | Search song in playlist |
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
