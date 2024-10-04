@@ -25,14 +25,14 @@ namespace Jammer
             AnsiConsole.Write(mainTable);
             
             // replace inputSaying every character inside of [] @"\[.*?\]
-            int len = Start.Purge(inputSaying).Length;
-            len += 6;
+            //int len = Start.Purge(inputSaying).Length;
+            //len += 6;
  
             // count how many \n are in the inputSaying
             int count = Regex.Matches(title, @"\n").Count;
             count += Regex.Matches(inputSaying, @"\n").Count;
             
-            AnsiConsole.Cursor.SetPosition(len, 5 + count);
+            AnsiConsole.Cursor.SetPosition(5, 5 + count);
 
             if (oneChar)
             {
@@ -41,7 +41,7 @@ namespace Jammer
             }
             else
             {
-                string input = Console.ReadLine() ?? string.Empty;
+                string input = ReadLine.Read(inputSaying + " ");
                 return input;
             }
         }
@@ -91,5 +91,6 @@ namespace Jammer
             return selection;
         }
         
+           
     }
 }

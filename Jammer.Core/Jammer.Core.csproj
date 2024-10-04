@@ -21,13 +21,14 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference> -->
     
+    <PackageReference Include="FuzzySharp" Version="2.0.2" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="m3uParser.NET" Version="1.0.17" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Midi" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <!-- <PackageReference Include="ManagedBass.Fx" Version="3.1.1" /> -->
+    <PackageReference Include="ReadLine" Version="2.0.1" />
     <PackageReference Include="SoundCloudExplode" Version="1.6.4" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />

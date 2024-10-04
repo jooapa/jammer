@@ -304,10 +304,14 @@ namespace Jammer
                             Message.Data("Info", "Info is toggled");
                             drawWhole = true;
                             break;
-                        case "PlaylistOptions": // playlist options
-                            Funcs.PlaylistInput();
+                        case "SearchInPlaylist": // playlist options
+                            Search.SearchForSongInPlaylistAsync();
                             drawWhole = true;
                             break;
+                        //case "RenameSong": // rename song
+                        //    string newName = Message.Input("Enter the new name:", "New name");
+                        //    drawWhole = true;
+                        //    break;
                         case "ForwardSecondAmount": // set forward seek to 1 second
                             string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
@@ -495,7 +499,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Search":
-                            Search.SearchSong();
+                            Search.SearchSongOnMediaPlatform();
                             drawWhole = true;
                             break;
                         case "PlayRandomSong":

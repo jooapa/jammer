@@ -1,10 +1,11 @@
 using Spectre.Console;
+using FuzzySharp;
 
 namespace Jammer
 {
     public static class Search
     {
-        public static void SearchSong() {
+        public static void SearchSongOnMediaPlatform() {
             string platform = Message.Input("Type 'y' for [red]Youtube[/] or 's' for [darkorange]SoundCloud[/]:", "Search for a song on Youtube or SoundCloud", true);
             platform = platform.ToLower();
 
@@ -67,7 +68,7 @@ namespace Jammer
             }
             loopedidoo().Wait();
 
-            if (results.Count > 0) {
+            if (results.Count() > 0) {
                 string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
                 // add cancel to the list
                 resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
@@ -212,6 +213,45 @@ namespace Jammer
                 Message.Data("No results found", ":(");
             }
             Start.drawWhole = true;
+        }
+        public static void SearchForSongInPlaylistAsync()
+        {
+            // Fuzzy search
+            string search = Message.Input("Search:", "Search for a song in the current playlist");
+
+            if (string.IsNullOrEmpty(search))
+            {
+                return;
+            }
+
+            List<string> songTitles = Utils.songs.Select(SongExtensions.Title).ToList();
+            
+            // Perform fuzzy search using FuzzySharp
+            var results = Process.ExtractTop(search, songTitles, limit: songTitles.Count)
+                                .Where(result => result.Score > 50)
+                                .Select(result => result.Value)
+                                .ToList();
+
+            if (results.Count > 0)
+            {
+                string[] resultsString = results.ToArray();
+                resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
+
+                // Display the MultiSelect prompt after the loop completes
+                AnsiConsole.Clear();
+                string answer = Message.MultiSelect(resultsString, $"Search results for '{search}' in the current playlist: {results.Count}");
+
+                if (answer != "Cancel")
+                {
+                    // Find the index of the selected song by the title in the songTitles list
+                    int index = songTitles.IndexOf(answer);
+                    Play.PlaySong(Utils.songs, index);
+                }
+            }
+            else
+            {
+                Message.Data("No results found", ":(");
+            }
         }
     }
 }

@@ -26,8 +26,7 @@ namespace Jammer {
             } else if (URL.IsUrl(url)) {
                 if (url.EndsWith(".jammer")) {
                     DownloadJammerFile(url).Wait();
-                }
-                else {
+                } else {
                     GeneralDownload(url).Wait();
                 }
             } else {
