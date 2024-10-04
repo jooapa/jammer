@@ -138,7 +138,7 @@ This can be changed by an environment variable `JAMMER_CONFIG_PATH`
 
 Jammer supports m3u and m3u8 playlists. You can play them but with pretty limited functionality.
 
-m3u files can be played just by opening them with Jammer. But cannot be opened with the `--play`, `-p` command from the <jammer/playlists> folder. You can `Save as` (default keybind `Shift + Alt + S`) the m3u file, Thus creating a JAMMER playlist to <jammer/playlists> folder.
+m3u files can be played just by opening them with Jammer. But cannot be opened with the `--play`, `-p` command from the `<jammer/playlists>` folder. You can `Save as` (default keybind `Shift + Alt + S`) the m3u file, Thus creating a JAMMER playlist to `<jammer/playlists>` folder.
 
 Starting the m3u or m3u8 file with `#EXTM3U` and example of the m3u of all the features that are supported.
 
