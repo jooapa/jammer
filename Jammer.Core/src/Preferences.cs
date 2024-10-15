@@ -42,6 +42,10 @@ namespace Jammer
                 Log.Error("Soundfonts folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "soundfonts"));
             }
+            if (!Directory.Exists(Path.Combine(JammerPath, "locales"))){
+                Log.Error("Soundfonts folder does not exist, creating one...");
+                Directory.CreateDirectory(Path.Combine(JammerPath, "locales"));
+            }
 
 
             // check if settings.json has every data
@@ -62,6 +66,10 @@ namespace Jammer
                 Log.Error("Songs folder does not exist, creating one...");
                 Directory.CreateDirectory(songsPath);
             }
+
+            // load current locale
+            IniFileHandling.SetLocaleData();
+
         }
 
         static public void SaveSettings()

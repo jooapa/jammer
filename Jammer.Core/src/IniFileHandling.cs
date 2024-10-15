@@ -501,22 +501,19 @@ ShowLog = Ctrl + L
             try {
                 di = new DirectoryInfo(Path.Combine(Utils.JammerPath, "locales"));
             } catch(Exception) {
-                try {
-                    di = new DirectoryInfo(Path.Combine(Utils.JammerPath, "locales"));
-                } catch(Exception) {
-                    return;
-                }
+                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+                return;
             }
             
             FileInfo[]? files = null;
             try{
                 files = di.GetFiles("*.ini");
             } catch {
-                try {
-                di = new DirectoryInfo(Path.Combine("locales"));
-                files = di.GetFiles("*.ini");
-                } catch(Exception) {}
+                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+                return;
             }
+
+            Message.Data(ScrollIndexLanguage.ToString(), ScrollIndexLanguage.ToString());
 
             string country_code = "en";
             for(int i = 0; i < files?.Length; i++){
@@ -525,27 +522,25 @@ ShowLog = Ctrl + L
                     char c = '.';
                     int pos = filename.IndexOf(c);
                     country_code = filename.Substring(0,pos);
+
+                    Message.Data(country_code, country_code);
                     break;
                 }
             }
             try {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
-                Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
+                Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
             } catch(Exception) {
-                try {
-                    Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
-                    LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
-                    Preferences.localeLanguage = country_code;
-                    Preferences.SaveSettings();
-                } catch(Exception) {
-                    Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
-
-                    return;
-                }
+                Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+                return;
             }
 
+        }
+
+        public static void SetLocaleData(){
+            LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
         }
 
         public static string? ReadIni_LocaleData(string section, string key){
@@ -556,26 +551,26 @@ ShowLog = Ctrl + L
             return key_value;
         }
 
-        public static string[] ReadAll_Locales(){
-        List<string> results = new();
-        DirectoryInfo? di = null;
-        string path = Path.Combine(Utils.JammerPath, "locales");
+        public static string[] ReadAll_Locales() {
+            List<string> results = new();
+            DirectoryInfo? di = null;
+            string path = Path.Combine(Utils.JammerPath, "locales");
 
-        if (!Directory.Exists(path)) {
-            // Handle the situation when the directory does not exist
-            // For example, you can throw an exception or return an empty array
-            Jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
-            Start.playerView = "default";
-            return results.ToArray();
-        }
+            if (!Directory.Exists(path)) {
+                // Handle the situation when the directory does not exist
+                // For example, you can throw an exception or return an empty array
+                Jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
+                Start.playerView = "default";
+                return results.ToArray();
+            }
 
-        di = new DirectoryInfo(path);
-        FileInfo[] files = di.GetFiles("*.ini");
-        LocaleAmount = files.Length;
+            di = new DirectoryInfo(path);
+            FileInfo[] files = di.GetFiles("*.ini");
+            LocaleAmount = files.Length;
 
-        if (LocaleAmount == 0) {
-            throw new Exception(Locale.OutsideItems.NoLocaleInDir);
-        }
+            if (LocaleAmount == 0) {
+                throw new Exception(Locale.OutsideItems.NoLocaleInDir);
+            }
 
             int maximum = 15;
             for(int i = 0; i < files.Length; i++){
