@@ -523,7 +523,7 @@ ShowLog = Ctrl + L
                     int pos = filename.IndexOf(c);
                     country_code = filename.Substring(0,pos);
 
-                    Message.Data(country_code, country_code);
+                    // Message.Data(country_code, country_code);
                     break;
                 }
             }

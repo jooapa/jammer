@@ -171,7 +171,6 @@ namespace Jammer {
             table.AddColumn(Locale.Player.Volume);
             string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
             
-            // TODO ADD STATE TO LOCALE
             table.AddRow(new Markup(Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(), 
                         new Markup(Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered());
         }
@@ -514,8 +513,8 @@ namespace Jammer {
             var table = new Table();
             table.AddColumn(Locale.CliHelp.PlaylistCommands);
             table.AddColumn(Locale.CliHelp.Description);
-
-            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", "show this help message"); // TODO ADD LOCALE
+            // TODO LOCALE ehkä joskus
+            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", "show this help message");
             table.AddRow($"[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
             table.AddRow($"[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
@@ -523,11 +522,11 @@ namespace Jammer {
             table.AddRow($"[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
-            table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "delete all songs from the <jammer/songs> folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "get the path to the <jammer/songs> folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "play all songs from the <jammer/songs> folder"); // TODO ADD LOCALE
-            table.AddRow($"[grey]jammer[/] [red]-so[/][grey],[/][red] --songs [/] ", "open <jammer/songs> folder"); // TODO ADD LOCALE
+            table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "delete all songs from the <jammer/songs> folder");
+            table.AddRow($"[grey]jammer[/] [red]-sp[/][grey],[/][red] --set-path [/] <path>, <default>", "Set the path to the jammer/songs folder"); 
+            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "get the path to the <jammer/songs> folder");
+            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "play all songs from the <jammer/songs> folder");
+            table.AddRow($"[grey]jammer[/] [red]-so[/][grey],[/][red] --songs [/] ", "open <jammer/songs> folder");
             AnsiConsole.Write(table);
         }
         public static void Version() {

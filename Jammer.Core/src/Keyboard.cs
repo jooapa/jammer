@@ -449,14 +449,14 @@ namespace Jammer
                             string[] themes = Themes.GetAllThemes();
                             // move that first element is "Create a new theme" and "Jammer Default"
                             string[] newThemes = new string[themes.Length + 2];
-                            newThemes[0] = "Create a new theme";                        // TODO ADD LOCALE
+                            newThemes[0] = "Create a new theme";
                             newThemes[1] = "Jammer Default";
                             for (int i = 0; i < themes.Length; i++)
                             {
                                 newThemes[i + 2] = themes[i];
                             }
                             themes = newThemes;
-                            string chosen = Message.MultiSelect(themes, "Choose a theme:"); // TODO ADD LOCALE
+                            string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
                             
 
                             if (chosen == "Jammer Default")
@@ -472,14 +472,14 @@ namespace Jammer
                             if (chosen == "Create a new theme")
                             {
                                 AnsiConsole.Clear();
-                                string themeName = Message.Input("Enter a theme name:", "Name of your AMAZING theme"); // TODO ADD LOCALE
+                                string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
                                 if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
                                 {
                                     drawWhole = true;
                                     break;
                                 }
                                 Themes.CreateTheme(themeName);
-                                Message.Input("Go edit the theme file", "Theme file created in the jammer/themes folder"); // TODO ADD LOCALE
+                                Message.Input(Locale.Miscellaneous.GoEditThemeFile, Locale.Miscellaneous.ThemeFileCreatedInJammerFolder);
                                 // If windows, open with notepad
 #if WINDOWS
                                     System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Utils.JammerPath, "themes"));
@@ -515,8 +515,8 @@ namespace Jammer
                             string[] soundFonts = SoundFont.GetSoundFonts();
                             string[] newSoundFonts = new string[soundFonts.Length + 3];
                             newSoundFonts[0] = "Cancel";
-                            newSoundFonts[1] = "Link to a soundfont by path"; // TODO ADD LOCALE
-                            newSoundFonts[2] = "Import soundfont by path"; // TODO ADD LOCALE
+                            newSoundFonts[1] = "Link to a soundfont by path";
+                            newSoundFonts[2] = "Import soundfont by path";
 
                             for (int i = 0; i < soundFonts.Length; i++)
                             {
@@ -525,7 +525,7 @@ namespace Jammer
 
                             soundFonts = newSoundFonts;
 
-                            string chosenSoundFont = Message.MultiSelect(soundFonts, "Choose a soundfont:"); // TODO ADD LOCALE
+                            string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
 
                             switch (chosenSoundFont)
                             {

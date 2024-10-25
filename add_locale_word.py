@@ -2,7 +2,7 @@
 This script is used to add a new locale word to the project.
 
 Usage:
-    python add_locale_word.py <key> <value>
+    python add_locale_word.py <key> <value> optional: <default_value>
     
 Example:
     python add_locale_word.py "CliHelp" "ShowHelpMessage"
@@ -20,7 +20,7 @@ value_start_word = "            public static string "
 """
 Add a new locale word to the project.
 """
-def add_locale_word(key, value) -> bool:
+def add_locale_word(key, value) -> None:
     with open("Jammer.Core/src/Locale.cs", "r") as file:
         lines = file.readlines()
         
@@ -39,13 +39,27 @@ def add_locale_word(key, value) -> bool:
             else:
                 file.write(line)
                 
-    
+    with open("locales/en.ini", "r") as file:
+        ini_lines = file.readlines()
+        
+    with open("locales/en.ini", "w") as file:
+        for line in ini_lines:
+            if "[" + key + "]" in line:
+                file.write(line)
+                file.write(value + " = Temp Wordings" + "\n")
+            else:
+                file.write(line)
+                
+    print("New locale word added successfully!")
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python add_locale_word.py <key> <value>")
+    if len(sys.argv) != 3 and len(sys.argv) != 4:
+        print("Usage: python add_locale_word.py <key> <value> optional: <default_value>")
         sys.exit(1)
         
     key = sys.argv[1]
     value = sys.argv[2]
+    # rest is the default value
+    default = sys.argv[3] if len(sys.argv) == 4 else "Temp Wordings"
     
     add_locale_word(key, value)

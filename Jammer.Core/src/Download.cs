@@ -316,7 +316,7 @@ namespace Jammer {
 
                         var progress = new Progress<double>(data => {
                             AnsiConsole.Clear();
-                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} to {songPath}"); //TODO ADD LOCALE
+                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} {songPath}");
                             if (data == 1) {
                                 Start.drawWhole = true;
                             }

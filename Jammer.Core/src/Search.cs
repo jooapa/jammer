@@ -6,7 +6,7 @@ namespace Jammer
     public static class Search
     {
         public static void SearchSongOnMediaPlatform() {
-            string platform = Message.Input("Type 'y' for [red]Youtube[/] or 's' for [darkorange]SoundCloud[/]:", "Search for a song on Youtube or SoundCloud", true);
+            string platform = Message.Input("Type 'y' for [red]Youtube[/] or 's' for [darkorange]SoundCloud[/]:", Locale.Miscellaneous.SearchForSongOnYoutubeorSoundcloud, true);
             platform = platform.ToLower();
 
             if (platform == "youtube" || platform == "y") {
@@ -30,8 +30,7 @@ namespace Jammer
             }
         }
         public static void SearchYTSong(string type) {
-            // TODO ADD LOCALE(s)
-            string search = Message.Input("Search:", "Search a song from Youtube by its name");
+            string search = Message.Input(Locale.EditKeysTexts.Search+":", Locale.Miscellaneous.SearchASongFromYoutubeByName);
             if (search == "") {
                 Start.drawWhole = true;
                 return;
@@ -122,8 +121,7 @@ namespace Jammer
             Start.drawWhole = true;
         }
         public static void SearchSCSong(string type) {
-            // TODO ADD LOCALE(s)
-            string search = Message.Input("Search:", "Search a song from SoundCloud by its name");
+            string search = Message.Input(Locale.EditKeysTexts.Search+":", Locale.Miscellaneous.SearchASongFromSoundcloudByName);
             if (search == "") {
                 Start.drawWhole = true;
                 return;

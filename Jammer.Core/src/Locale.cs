@@ -175,6 +175,15 @@ namespace Jammer{
             public static string Exit = CheckValueLocale("PlaylistOptions", "Exit", "exit");
         }
         public static class Miscellaneous{
+            public static string SearchASongFromSoundcloudByName = CheckValueLocale("Miscellaneous", "SearchASongFromSoundcloudByName", "Search a song from SoundCloud by its name");
+            public static string SearchForSongOnYoutubeorSoundcloud = CheckValueLocale("Miscellaneous", "SearchForSongOnYoutubeorSoundcloud", "Search for a song on Youtube or SoundCloud");
+            public static string SearchASongFromYoutubeByName = CheckValueLocale("Miscellaneous", "SearchASongFromYoutubeByName", "Search a song from Youtube by its name");
+            public static string ThemeFileCreatedInJammerFolder = CheckValueLocale("Miscellaneous", "ThemeFileCreatedInJammerFolder", "Theme file created in the jammer/themes folder");
+            public static string ChooseSoundFont = CheckValueLocale("Miscellaneous", "ChooseSoundFont", "Choose a soundfont:");
+            public static string GoEditThemeFile = CheckValueLocale("Miscellaneous", "GoEditThemeFile", "Go edit the theme file in <jammer/themes>");
+            public static string EnterThemeName = CheckValueLocale("Miscellaneous", "EnterThemeName", "Enter a theme name");
+            public static string ChooseTheme = CheckValueLocale("Miscellaneous", "ChooseTheme", "Choose a theme:");
+            public static string NameOfYourAwesomeTheme = CheckValueLocale("Miscellaneous", "NameOfYourAwesomeTheme", "Name of your AWESOME theme");
             public static string On = CheckValueLocale("Miscellaneous", "On", "On");
             public static string Off = CheckValueLocale("Miscellaneous", "Off", "Off");
             public static string True = CheckValueLocale("Miscellaneous", "True", "True");
