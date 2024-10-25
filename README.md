@@ -9,7 +9,7 @@ play local files or songs from different sites?
 
 Jammer is a simple CLI music player that supports playing songs from your **local files**, **Youtube** and **Soundcloud**.
 
-Compatible with **`Windows`**, *`Linux`*.
+Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have no way to compile to mac)*
 
 ***Jammer shines its best when using it as a playlist. That's why I created it,
 for the playlist feature across different platforms***
