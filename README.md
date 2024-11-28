@@ -176,6 +176,7 @@ https://www.youtube.com/watch?v=Zwnvgz3ey78
 | `N` | Next song in playlist |
 | `P` | Previous song in playlist |
 | `Delete` | Delete current song from playlist |
+| `Shift + Delete` | Delete current song from playlist and PC |
 | `F3` | Search song in playlist |
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|

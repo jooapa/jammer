@@ -159,8 +159,6 @@ namespace Jammer
                                 Preferences.SaveSettings();
                             } else {
                                 AnsiConsole.MarkupLine("[red]No songs path given.[/]"); // TODO ADD LOCALE
-                                
-
                             }
                             Environment.Exit(0);
                             return;
@@ -172,9 +170,9 @@ namespace Jammer
                         case "--songs":
                         case "-so":
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                                System.Diagnostics.Process.Start("explorer.exe", Preferences.songsPath);
+                                Process.Start("explorer.exe", Preferences.songsPath);
                             } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-                                System.Diagnostics.Process.Start("xdg-open", Preferences.songsPath);
+                                Process.Start("xdg-open", Preferences.songsPath);
                             }
                             Environment.Exit(0);
                             return;
@@ -190,9 +188,9 @@ namespace Jammer
                             // open explorer in Jammer folder
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.OpeningFolder}[/]");
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                                System.Diagnostics.Process.Start("explorer.exe", Utils.JammerPath);
+                                Process.Start("explorer.exe", Utils.JammerPath);
                             } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-                                System.Diagnostics.Process.Start("xdg-open", Utils.JammerPath);
+                                Process.Start("xdg-open", Utils.JammerPath);
                             }
                             Environment.Exit(0);
                             return;

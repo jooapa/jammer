@@ -97,6 +97,7 @@ namespace Jammer{
         public static string AddSongToQueue = CheckValue("AddSongToQueue", "G");
         public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ShowLog = CheckValue("ShowLog", "Ctrl + L");
+        public static string HardDeleteCurrentSong = CheckValue("HardDeleteCurrentSong", "Shift + Delete");
 
         public static string CheckValue(string value, string defaultValue){
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);

@@ -561,7 +561,7 @@ namespace Jammer
                 PlaySong(Utils.songs, Utils.currentSongIndex);
             }
         }
-        public static void  DeleteSong(int index, bool isQueue)
+        public static void  DeleteSong(int index, bool isQueue, bool hardDelete = false)
         {
             if (Utils.songs.Length == 0)
             {
@@ -571,9 +571,14 @@ namespace Jammer
             if (index < 0 || index > Utils.songs.Length)
             {
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
-
                 return;
             }
+            // delete song from disk
+            if (hardDelete)
+            {
+                System.IO.File.Delete(Utils.currentSong);
+            }
+
             // remove song from current Utils.songs
             Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
             Utils.currentSongIndex--;

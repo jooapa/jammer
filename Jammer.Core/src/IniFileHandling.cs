@@ -64,6 +64,7 @@ Choose = Enter
 AddSongToQueue = G
 Search = Ctrl + Y
 ShowLog = Ctrl + L
+HardDeleteCurrentSong = Shift + Delete
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();

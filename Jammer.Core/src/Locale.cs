@@ -269,6 +269,7 @@ namespace Jammer{
             public static string DownloadErrorSoundcloud = CheckValueLocale("OutsideItems", "DownloadErrorSoundcloud", "Soundcloud download error");
         }
         public static class LocaleKeybind{
+            public static string HardDeleteCurrentSong = CheckValueLocale("LocaleKeybind", "HardDeleteCurrentSong", "Delete song from playlist and PC");
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
             public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel. Save with");

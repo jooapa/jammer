@@ -42,6 +42,7 @@ namespace Jammer
             else
             {
                 string input = ReadLine.Read(inputSaying + " ");
+                ReadLine.AddHistory(input);
                 return input;
             }
         }

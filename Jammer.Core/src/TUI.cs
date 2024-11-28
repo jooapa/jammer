@@ -369,9 +369,9 @@ namespace Jammer {
             string[] ToSongStart =             (Keybindings.ToSongStart).Replace(" ", "").Split(separator);
             string[] ToSongEnd =               (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
             string[] ShowLog =                 (Keybindings.ShowLog).Replace(" ", "").Split(separator);
+            string[] HardDeleteCurrentSong =   (Keybindings.HardDeleteCurrentSong).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
-
 
             table.AddRow(DrawHelpTextColouring(PlayPause), Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                               DrawHelpTextColouring(AddSongToPlaylist), Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(Quit), Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),                                                         DrawHelpTextColouring(ShowSongsInPlaylists), Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
@@ -395,6 +395,7 @@ namespace Jammer {
             table.AddRow(DrawHelpTextColouring(ToMainMenu), Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToSongStart), Themes.sColor(Locale.LocaleKeybind.GoToSongStart, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(HardDeleteCurrentSong), Themes.sColor(Locale.LocaleKeybind.HardDeleteCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             //table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
 
             AnsiConsole.Cursor.SetPosition(0, 0);

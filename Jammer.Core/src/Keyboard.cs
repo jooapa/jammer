@@ -400,7 +400,10 @@ namespace Jammer
                             Play.DeleteSong(Utils.currentSongIndex, false);
                             drawWhole = true;
                             break;
-                        
+                        case "HardDeleteCurrentSong":
+                            Play.DeleteSong(Utils.currentSongIndex, false, true);
+                            drawWhole = true;
+                            break;
                         // Case For A
                         case "AddSongToPlaylist":
                             Funcs.AddSongToPlaylist();
