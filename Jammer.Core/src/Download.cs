@@ -92,8 +92,8 @@ namespace Jammer {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
 
             if (System.IO.File.Exists(downloadedPath)) {
-                string input = Message.Input($"Playlist of same name already exists. Overwrite? (y/n)", "Warning", true);
-                if (input != "y") {
+                string input = Message.Input(Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " (y/n)", "Warning", true);
+                if (input != "y" && input != "yes") {
                     songPath = downloadedPath;
                     return;
                 }
