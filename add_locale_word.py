@@ -1,15 +1,11 @@
 """
 This script is used to add a new locale word to the project.
-
-Usage:
-    python add_locale_word.py <key> <value> optional: <default_value>
     
 Example:
-    python add_locale_word.py "CliHelp" "ShowHelpMessage"
+    python.bat .\add_locale_word.py -s CliHelp -k ShowHelpMessage -v "k akkalol asdasd asd asd asd" 
 """
 
-import sys
-import os
+import sys, os, argparse
 
 # public static class Settings
 key_start_word = "        public static class "
@@ -20,46 +16,60 @@ value_start_word = "            public static string "
 """
 Add a new locale word to the project.
 """
-def add_locale_word(key, value) -> None:
-    with open("Jammer.Core/src/Locale.cs", "r") as file:
+
+
+def add_locale_word(key, value, default) -> None:
+    with open("Jammer.Core/src/Locale.cs", "r", encoding="utf-8") as file:
         lines = file.readlines()
-        
-    with open("Jammer.Core/src/Locale.cs", "w") as file:
+
+    with open("Jammer.Core/src/Locale.cs", "w", encoding="utf-8") as file:
         for line in lines:
             if key_start_word + key in line:
                 # append to next line the new value
                 file.write(line)
-                file.write(value_start_word + 
+                file.write(value_start_word +
                            value +
-                            ' = CheckValueLocale(' +
-                           '"' + 
-                           key + 
-                           '", "' + 
-                           value + '", "Temp Wordings"); // TODO Dont leave me here\n')
+                           ' = CheckValueLocale(' +
+                           '"' +
+                           key +
+                           '", "' +
+                           value + '", "' + default + '");\n')
             else:
                 file.write(line)
-                
-    with open("locales/en.ini", "r") as file:
-        ini_lines = file.readlines()
-        
-    with open("locales/en.ini", "w") as file:
-        for line in ini_lines:
-            if "[" + key + "]" in line:
-                file.write(line)
-                file.write(value + " = Temp Wordings" + "\n")
-            else:
-                file.write(line)
-                
+
+    locales_dir = "locales"
+    for filename in os.listdir(locales_dir):
+        if filename.endswith(".ini"):
+            file_path = os.path.join(locales_dir, filename)
+            with open(file_path, "r", encoding="utf-8") as file:
+                ini_lines = file.readlines()
+
+            with open(file_path, "w", encoding="utf-8") as file:
+                for line in ini_lines:
+                    if "[" + key + "]" in line:
+                        file.write(line)
+                        file.write(value + " = " + default + "\n")
+                    else:
+                        file.write(line)
+                # Add the new key-value pair at the end of the file if not found
+                if not any("[" + key + "]" in line for line in ini_lines):
+                    file.write(f"\n[{key}]\n{value} = " + default + "\n")
+
     print("New locale word added successfully!")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print("Usage: python add_locale_word.py <key> <value> optional: <default_value>")
-        sys.exit(1)
-        
-    key = sys.argv[1]
-    value = sys.argv[2]
-    # rest is the default value
-    default = sys.argv[3] if len(sys.argv) == 4 else "Temp Wordings"
-    
-    add_locale_word(key, value)
+    parser = argparse.ArgumentParser(description="This script is used to add a new locale word to the project.")
+                
+    parser.add_argument(
+        "--section", "-s", 
+        help="The key for the new locale word")
+    parser.add_argument(
+        "--key", "-k", 
+        help="The value for the new locale word")
+    parser.add_argument(
+        "--value", "-v", nargs='?', default="Temp Wordings", 
+        help="The default value for the new locale word (optional)")
+
+    args = parser.parse_args()
+
+    add_locale_word(args.section, args.key, args.value)
