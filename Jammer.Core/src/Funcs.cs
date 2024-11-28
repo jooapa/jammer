@@ -86,36 +86,52 @@ namespace Jammer {
             string nextSong;
             string currentSong;
             int songLength = Start.consoleWidth - 26;
+
+            // "Locale.Player."current previous and next song needs to be calculated which string is longer
+            Dictionary<string, int> songLengths = new() {
+                {Locale.Player.Current, Locale.Player.Current.Length},
+                {Locale.Player.Previos, Locale.Player.Previos.Length},
+                {Locale.Player.Next, Locale.Player.Next.Length}
+            };
+
+            var longestSong = songLengths.Aggregate((x, y) => x.Value > y.Value ? x : y);
+
+            // add spaces to the string to make them the same length
+            string currentSongString = longestSong.Key == Locale.Player.Current ? Locale.Player.Current : Locale.Player.Current + new string(' ', longestSong.Value - Locale.Player.Current.Length);
+            string prevSongString = longestSong.Key == Locale.Player.Previos ? Locale.Player.Previos : Locale.Player.Previos + new string(' ', longestSong.Value - Locale.Player.Previos.Length);
+            string nextSongString = longestSong.Key == Locale.Player.Next ? Locale.Player.Next : Locale.Player.Next + new string(' ', longestSong.Value - Locale.Player.Next.Length);
+
             if (Utils.songs.Length == 0)
             {
-                currentSong = $"[grey]{Locale.Player.Current}  : -[/]";
+                currentSong = $"{Locale.Player.Current} : -";
+                currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }
             else
             {
-                currentSong = Locale.Player.Current + "  : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex])), songLength);
+                currentSong = currentSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex])), songLength);
                 currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
             }
 
             if (Utils.currentSongIndex > 0)
             {
-                prevSong = Locale.Player.Previos + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex - 1])), songLength);
+                prevSong = prevSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex - 1])), songLength);
                 prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor);
             }
             else
             {
-                prevSong = $"{Locale.Player.Previos} : -";
+                prevSong = prevSongString + " : -";
                 prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }
 
 
             if (Utils.currentSongIndex < Utils.songs.Length - 1)
             {
-                nextSong = $"{Locale.Player.Next}     : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex + 1])), songLength);
+                nextSong = $"{nextSongString} : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex + 1])), songLength);
                 nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NextSongColor);
             }
             else
             {
-                nextSong = $"{Locale.Player.Next}     : -";
+                nextSong = $"{nextSongString} : -";
                 nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }      
             
