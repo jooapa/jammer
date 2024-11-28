@@ -208,6 +208,8 @@ Currently supported languages:
 
 - Finnish
 
+- Portuguese :: [Natanaelfelixx](https://github.com/jooapa/jammer/pull/93)
+
 Create new translation by copying already existing .ini file from /locales and translating it.
 
 ## Soundcloud
