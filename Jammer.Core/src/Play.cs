@@ -91,18 +91,9 @@ namespace Jammer
             // if folder
             else if (Directory.Exists(song.URI))
             {
-                // add all files in folder to Utils.songs
-                string[] files = Directory.GetFiles(song.URI);
-                foreach (string file in files)
-                {
-                    AddSong(file);
-                }
-                
-                // remove folder from Utils.songs
-                Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
-                
-                // reapply new path in details
-                fullPath = Utils.songs[Utils.currentSongIndex];
+                // skip if folder
+                NextSong();
+                return;
             }
             else if (URL.isValidSoundCloudPlaylist(song.URI)) {
                 // id related to url, download and convert to absolute path

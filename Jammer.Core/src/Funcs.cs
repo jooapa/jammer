@@ -222,8 +222,11 @@ namespace Jammer {
                 Jammer.Message.Data( Locale.Player.AddSongToPlaylistError3+ " " + songToAdd, Locale.Player.AddSongToPlaylistError4, true);
                 return;
             }
-            songToAdd = Absolute.Correctify(new string[] { songToAdd })[0];
-            Play.AddSong(songToAdd);
+            string[] songsToAdd = Absolute.Correctify(new string[] { songToAdd });
+            // Play.AddSong(songToAdd);
+            foreach (string song in songsToAdd) {
+                Play.AddSong(song);
+            }
         }
 
         // Delete current song from playlist

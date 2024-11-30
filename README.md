@@ -37,6 +37,7 @@ jammer --update
 *when using **Soundcloud** or **Youtube** **links** do not forget to use **`https://`** at the start.*
 
 ```bash
+# examples of how to use
 jammer
 jammer [song] ... [folder]
 jammer https://soundcloud.com/username/track-name
@@ -47,29 +48,26 @@ jammer https://raw.githubusercontent.com/jooapa/jammer/main/npc_music/616845.mp3
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/example/terraria.jammer
 jammer "path/to/song.mp3"
 
-jammer     --start        opens jammer folder
-jammer     --update       checks for updates and installs
-jammer -h, --help         show help
-jammer -D                 debug mode
-jammer -v, --version      show version
-```
+jammer     --start        # opens jammer folder
+jammer     --update       # checks for updates and installs
+jammer -h, --help         # show help
+jammer -D                 # debug mode
+jammer -v, --version      # show version
 
-```bash
-jammer -h, --help                             show this help message
 ## these commands are for the playlists in the <jammer/playlists> folder
-jammer -p, --play       <name>                play playlist
-jammer -c, --create     <name>                create playlist
-jammer -d, --delete     <name>                delete playlist
-jammer -a, --add        <name> <song> ...     add song to playlist
-jammer -r, --remove     <name> <song> ...     remove song from playlist
-jammer -s, --show       <name>                show songs in playlist
-jammer -l, --list                             list all playlists
+jammer -p, --play       <name>                # play playlist
+jammer -c, --create     <name>                # create playlist
+jammer -d, --delete     <name>                # delete playlist
+jammer -a, --add        <name> <song> ...     # add song to playlist
+jammer -r, --remove     <name> <song> ...     # remove song from playlist
+jammer -s, --show       <name>                # show songs in playlist
+jammer -l, --list                             # list all playlists
 
-jammer -f, --flush                            deletes all the songs in songs folder
-jammer -sp, --set-path  <path>, <default>     set path for songs folder
-jammer -gp, --get-path                        get the path to the <jammer/songs> folder
-jammer -hm, --home                            play all songs from the <jammer/songs> folder
-jammer -so, --songs                           open <jammer/songs> folder
+jammer -f, --flush                            # deletes all the songs in songs folder
+jammer -sp, --set-path  <path>, <default>     # set path for songs folder
+jammer -gp, --get-path                        # get the path to the <jammer/songs> folder
+jammer -hm, --home                            # play all songs from the <jammer/songs> folder
+jammer -so, --songs                           # open <jammer/songs> folder
 ```
 
 #### Example of making a playlist in cli

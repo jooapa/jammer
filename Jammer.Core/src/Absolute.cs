@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Jammer
 {
     public class Absolute
@@ -69,6 +71,22 @@ namespace Jammer
                     if (IsRelativePath(item)) {
                         args[i] = ConvertToAbsolutePath(item);
                     }
+                    // Message.Data(Start.Sanitize(JsonSerializer.Serialize(args)), "12");
+
+                    // get every file in the folder
+                    string[] files = Directory.GetFiles(item);
+
+                    // dekete the folder
+                    args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+                    i--;
+
+                    foreach (string file in files)
+                    {
+                        args = args.Take(i + 1).Concat(new string[] { IsRelativePath(file) ? ConvertToAbsolutePath(file): file}).Concat(args.Skip(i + 1)).ToArray();
+                        i++;
+                    }
+
+                    // Message.Data(Start.Sanitize(JsonSerializer.Serialize(args)), "12");
                 }
                 // if exits, convert to absolute path
                 else if (File.Exists(item))
