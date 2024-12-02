@@ -19,7 +19,6 @@ namespace Jammer {
         /// <returns></returns>
         static public void DrawPlayer() {
             try {
-                
                 var ansiConsoleSettings = new AnsiConsoleSettings();
                 var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
                 if (Start.playerView == "help" || Start.playerView == "settings")
@@ -34,6 +33,10 @@ namespace Jammer {
 
                 var songsTable = new Table();
                 var timeTable = new Table();
+
+
+                // näyttää aina ne tiedot eikä mitään url hommaa
+                Funcs.UpdateSongListCorrectly();
 
                 if (Start.playerView == "default") {
                     UIComponent_Normal(songsTable);
@@ -219,7 +222,8 @@ namespace Jammer {
             // AnsiConsole.Clear();
             // string[] queueLines = Funcs.GetAllSongsQueue();
             string[] lines = Funcs.GetAllSongs();
-
+            
+            
             if (Utils.currentPlaylist == "") {
                 table.AddColumn("No Specific Playlist Name");
             } else {

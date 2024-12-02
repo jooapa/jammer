@@ -10,6 +10,59 @@ namespace Jammer {
 
     public static class Funcs {
         
+        static public void UpdateSongListCorrectly(){
+            for(int i = Utils.songs.Length-1; i > 0; i--){
+
+                Song song = new()
+                {
+                    URI = Utils.songs[i]
+                };
+                song.ExtractSongDetails();
+
+                string fullPath = Path.GetFullPath(song.URI);
+
+                TagLib.File? tagFile;
+                string title = "", author = "", album = "", year = "", genre = "";
+                try {
+                    tagFile = TagLib.File.Create(fullPath);
+                    title = tagFile.Tag.Title;
+                    author = tagFile.Tag.FirstPerformer;
+                    album = tagFile.Tag.Album;
+                    year = tagFile.Tag.Year.ToString();
+                    genre = tagFile.Tag.FirstGenre;
+                } catch (Exception) {
+                    tagFile = null;
+                    Log.Error("Error getting title of the song");
+                }
+                
+
+                if (song.Title == null || song.Title == "")
+                {
+                    song.Title = title;
+                }
+                if (song.Author == null || song.Author == "")
+                {
+                    song.Author = author;
+                }
+                if (song.Album == null || song.Album == "")
+                {
+                    song.Album = album;
+                }
+                if (song.Year == null || song.Year == "" || song.Year == "0")
+                {
+                    song.Year = year;
+                }
+                if (song.Genre == null || song.Genre == "")
+                {
+                    song.Genre = genre;
+                }
+
+                // Utils.songs[Utils.currentSongIndex] = song.ToSongString();
+                Utils.songs[i] = SongExtensions.ToSongString(song);
+            } 
+            
+        }
+        
         static public string[] GetAllSongs() {
             if (Utils.songs.Length == 0) {
                 string[] returnstring = {Themes.sColor("No songs in playlist", Themes.CurrentTheme.Playlist.InfoColor)}; // "No songs in playlist"
