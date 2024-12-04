@@ -128,7 +128,7 @@ namespace Jammer
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
                         if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){
-                            Utils.currentPlaylistSongIndex = Utils.songs.Length -1;
+                            Utils.currentPlaylistSongIndex = 0;
                         } else {
                             Utils.currentPlaylistSongIndex += 1;
                         }
@@ -136,7 +136,7 @@ namespace Jammer
                     if(Action == "PlaylistViewScrollup"){
                         Action = "";
                         if(Utils.currentPlaylistSongIndex - 1 < 0 ){
-                            Utils.currentPlaylistSongIndex = 0;
+                            Utils.currentPlaylistSongIndex = Utils.songs.Length -1;
                         } else {
                             Utils.currentPlaylistSongIndex -= 1;
                         }
