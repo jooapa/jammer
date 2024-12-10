@@ -396,7 +396,8 @@ namespace Jammer {
                 }
             }
             catch (Exception ex) {
-                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error");
+                Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }
         }
