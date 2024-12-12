@@ -157,7 +157,38 @@ namespace Jammer
                         Utils.currentPlaylistSongIndex = new_value;
                     } else if(Action == "AddSongToQueue"){
                         // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
+                    } else if (Action == "HardDeleteCurrentSong") {
+                        Action = "";
+
+                        int new_value = Utils.currentPlaylistSongIndex;
+                        if (Utils.currentPlaylistSongIndex < Utils.songs.Length && Utils.currentPlaylistSongIndex > 0) {
+                            new_value--;
+                        }
+
+                        try {
+                            Play.DeleteSong(Utils.currentPlaylistSongIndex, true, true);
+                        } catch (System.Exception e) {
+                            Console.WriteLine(e);
+                            Console.ReadKey();
+                        }
+                        //Play.DeleteSong(Utils.currentPlaylistSongIndex, true, true);
+
+                        // Debugging output to verify indices and array state
+                        // Console.WriteLine($"Current Index: {Utils.currentPlaylistSongIndex}, New Value: {new_value}, Total Songs: {Utils.songs.Length}, Current Song Index: {Utils.currentSongIndex}");
+                        // Console.ReadKey();
+
+                        if (Utils.songs.Length > 0) {
+                            if (Utils.currentPlaylistSongIndex == Utils.currentSongIndex + 2 
+                                || Utils.currentPlaylistSongIndex == Utils.songs.Length) {
+                                Play.NextSong();
+                            }
+                        } else {
+                            PauseSong(true);
+                        }
+
+                        Utils.currentPlaylistSongIndex = Math.Clamp(new_value + 1, 0, Math.Max(Utils.songs.Length - 1, 0));
                     }
+
                 }
                 switch (Action)
                     {

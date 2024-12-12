@@ -178,10 +178,6 @@ namespace Jammer
                             return;
                         case "--home":
                         case "-hm":
-                                // if(Utils.songs.Length != 1 && args.Length != 1) {
-                                //     AnsiConsole.MarkupLine("[red]When using --songs or -so, do not provide any other arguments.[/]"); // TODO ADD LOCALE
-                                //     System.Environment.Exit(1);
-                                // } 
                                 Utils.songs[0] = Preferences.songsPath;
                                 break;
                         case "--start":
