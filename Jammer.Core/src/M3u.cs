@@ -57,7 +57,7 @@ namespace Jammer {
                 }
 
 
-                Utils.currentPlaylist = path;
+                Utils.CurrentPlaylist = path;
 
                 return jammerFileSongs;
             }
@@ -90,7 +90,7 @@ namespace Jammer {
                 // Message.Data(jammerSongs[i], "ParseM3u");
             }
 
-            Utils.currentPlaylist = path;
+            Utils.CurrentPlaylist = path;
 
             return jammerSongs;
         }

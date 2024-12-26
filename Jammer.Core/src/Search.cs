@@ -222,7 +222,7 @@ namespace Jammer
                 return;
             }
 
-            List<string> songTitles = Utils.songs.Select(SongExtensions.Title).ToList();
+            List<string> songTitles = Utils.Songs.Select(SongExtensions.Title).ToList();
             
             // Perform fuzzy search using FuzzySharp
             var results = Process.ExtractTop(search, songTitles, limit: songTitles.Count)
@@ -243,7 +243,7 @@ namespace Jammer
                 {
                     // Find the index of the selected song by the title in the songTitles list
                     int index = songTitles.IndexOf(answer);
-                    Play.PlaySong(Utils.songs, index);
+                    Play.PlaySong(Utils.Songs, index);
                 }
             }
             else

@@ -12,7 +12,7 @@ namespace Jammer
                 string arg = args[i];
                 switch(arg) {
                     case "-D":
-                        Utils.isDebug = true;
+                        Utils.IsDebug = true;
                         Debug.dprint("\n--- Debug Started ---\n");
                         Debug.dprint($"HOME Path Environment Variable: {Environment.GetEnvironmentVariable("APPDIR")}");
                         var APPDIRlen = Environment.GetEnvironmentVariable("APPDIR");
@@ -41,7 +41,7 @@ namespace Jammer
                         args = argumentsList.ToArray();
 
                         //NOTES(ra) So nasty it breaks my hearth,
-                        Utils.songs = args;
+                        Utils.Songs = args;
                         break;
                 }
             }
@@ -126,7 +126,7 @@ namespace Jammer
                             return;
                         case "--version":
                         case "-v":
-                            AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.version + "[/]");
+                            AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.Version + "[/]");
                             Environment.Exit(0);
                             return;
                         case "--flush":
@@ -178,7 +178,7 @@ namespace Jammer
                             return;
                         case "--home":
                         case "-hm":
-                                Utils.songs[0] = Preferences.songsPath;
+                                Utils.Songs[0] = Preferences.songsPath;
                                 break;
                         case "--start":
                             // open explorer in Jammer folder
@@ -196,7 +196,7 @@ namespace Jammer
                                 return;
                             }
                             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.CheckingUpdates}[/]");
-                            string latestVersion = Update.CheckForUpdate(Utils.version);
+                            string latestVersion = Update.CheckForUpdate(Utils.Version);
                             if (latestVersion != "") {
                                 
                                 string downloadPath = Update.UpdateJammer(latestVersion);

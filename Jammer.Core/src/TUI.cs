@@ -56,13 +56,13 @@ namespace Jammer {
                 //     AnsiConsole.Cursor.SetPosition(0, 0);
                 // }
                 string songPath;
-                if (Utils.currentMusic == 0 && Utils.curSongError) {
+                if (Utils.CurrentMusic == 0 && Utils.CurSongError) {
                     songPath = "Error: cannot play the song";
-                } else if (Utils.currentMusic == 0) {
+                } else if (Utils.CurrentMusic == 0) {
                     songPath = "No song is playing";
                 }
                 else {
-                    songPath = Utils.currentSong;
+                    songPath = Utils.CurrentSongPath;
                 }
 
                 // render maintable with tables in it
@@ -77,7 +77,7 @@ namespace Jammer {
 
                 if (Start.playerView == "default") {
                     magicIndex = 18;
-                    if (Utils.currentPlaylist == "") {
+                    if (Utils.CurrentPlaylist == "") {
                         magicIndex -= 2;
                     }
                     if (Preferences.isVisualizer) {
@@ -90,8 +90,8 @@ namespace Jammer {
                         magicIndex++;
                     }
                     // there is not 5 songs in the playlist
-                    if (Utils.songs.Length < 5) {
-                        magicIndex += Utils.songs.Length;
+                    if (Utils.Songs.Length < 5) {
+                        magicIndex += Utils.Songs.Length;
                         magicIndex-=5;
                     }
                 }
@@ -140,7 +140,7 @@ namespace Jammer {
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
                 AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
                 AnsiConsole.MarkupLine("[red]" + e + "[/]");
-                AnsiConsole.WriteLine(Utils.songs.Length);
+                AnsiConsole.WriteLine(Utils.Songs.Length);
             }
 
         }
@@ -157,7 +157,7 @@ namespace Jammer {
 
         static public void DrawTime() {
             AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
-            AnsiConsole.MarkupLine(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength));
+            AnsiConsole.MarkupLine(ProgressBar(Utils.TotalMusicDurationInSec, Utils.SongDurationInSec));
         }
 
         static public void ClearScreen() {
@@ -224,13 +224,13 @@ namespace Jammer {
             string[] lines = Funcs.GetAllSongs();
             
             
-            if (Utils.currentPlaylist == "") {
+            if (Utils.CurrentPlaylist == "") {
                 table.AddColumn("No Specific Playlist Name");
             } else {
                 table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " 
                     + Themes.sColor(
                         Funcs.GetSongWithDots(
-                            Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist)
+                            Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
                         , Start.consoleWidth - 20), 
                     Themes.CurrentTheme.Playlist.PlaylistNameColor)
                 );
@@ -247,14 +247,14 @@ namespace Jammer {
             table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralPlaylist.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralPlaylist.BorderColor));
 
-            if (Utils.currentPlaylist == "") {
+            if (Utils.CurrentPlaylist == "") {
                 table.AddColumn(Funcs.GetPrevCurrentNextSong());
             } else {
                 table.AddColumn(
                     Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
                         Themes.sColor(
                             Funcs.GetSongWithDots(
-                                Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist)
+                                Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
                             , Start.consoleWidth - 20), 
                         Themes.CurrentTheme.Playlist.PlaylistNameColor)
                 );
@@ -265,7 +265,7 @@ namespace Jammer {
         public static Table UIComponent_Time(Table table) {
             table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
-            table.AddColumn(ProgressBar(Utils.MusicTimePlayed, Utils.currentMusicLength));
+            table.AddColumn(ProgressBar(Utils.TotalMusicDurationInSec, Utils.SongDurationInSec));
             return table;
         }
 
@@ -509,7 +509,7 @@ namespace Jammer {
             /* table.AddRow("[grey]jammer[/] [green]playlist[/]", Locale.CliHelp.ShowPlaylistCommands); */
             table.AddRow($"[grey]jammer[/] [green]--start[/]", Locale.CliHelp.OpenJammerFolder);
             table.AddRow($"[grey]jammer[/] [green]--update[/]", Locale.CliHelp.AutoUpdateJammer);
-            table.AddRow($"[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.version + "[/]");
+            table.AddRow($"[grey]jammer[/] [green]-v[/][grey],[/][green] --version[/]", $"{Locale.CliHelp.ShowJammerVersion} [grey]" + Utils.Version + "[/]");
             AnsiConsole.Write(table);
 
             PlaylistHelp();
@@ -535,7 +535,7 @@ namespace Jammer {
             AnsiConsole.Write(table);
         }
         public static void Version() {
-            AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version} " + Utils.version + "[/]");
+            AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version} " + Utils.Version + "[/]");
         }
 
         public static void EditKeyBindings(){

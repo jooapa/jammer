@@ -4,7 +4,7 @@ namespace Jammer {
         private static void New(string txt, bool isErr = false) {
             var time = DateTime.Now.ToString("HH:mm:ss"); // case sensitive
 
-            var curPlaylist = Playlists.GetJammerPlaylistVisualPath(Utils.currentPlaylist);
+            var curPlaylist = Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist);
             if (curPlaylist == "") {
                 curPlaylist = "No playlist";
             }

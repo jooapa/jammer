@@ -127,46 +127,46 @@ namespace Jammer
                     Console.Clear();
                     if(Action == "PlaylistViewScrolldown"){
                         Action = "";
-                        if(Utils.currentPlaylistSongIndex + 1 >= Utils.songs.Length){
-                            Utils.currentPlaylistSongIndex = 0;
+                        if(Utils.CurrentPlaylistSongIndex + 1 >= Utils.Songs.Length){
+                            Utils.CurrentPlaylistSongIndex = 0;
                         } else {
-                            Utils.currentPlaylistSongIndex += 1;
+                            Utils.CurrentPlaylistSongIndex += 1;
                         }
                     }
                     if(Action == "PlaylistViewScrollup"){
                         Action = "";
-                        if(Utils.currentPlaylistSongIndex - 1 < 0 ){
-                            Utils.currentPlaylistSongIndex = Utils.songs.Length -1;
+                        if(Utils.CurrentPlaylistSongIndex - 1 < 0 ){
+                            Utils.CurrentPlaylistSongIndex = Utils.Songs.Length -1;
                         } else {
-                            Utils.currentPlaylistSongIndex -= 1;
+                            Utils.CurrentPlaylistSongIndex -= 1;
                         }
                     } 
                     if(Action == "Choose"){
                         // EDIT MENU
                         Action = "";
-                        Utils.currentSongIndex = Utils.currentPlaylistSongIndex;
-                        Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                        Utils.CurrentSongIndex = Utils.CurrentPlaylistSongIndex;
+                        Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                     } else if(Action == "DeleteCurrentSong"){
                         Action = "";
-                        int new_value = Utils.currentPlaylistSongIndex;
-                        if(Utils.currentPlaylistSongIndex <= Utils.songs.Length 
-                        && Utils.currentPlaylistSongIndex != 0){
+                        int new_value = Utils.CurrentPlaylistSongIndex;
+                        if(Utils.CurrentPlaylistSongIndex <= Utils.Songs.Length 
+                        && Utils.CurrentPlaylistSongIndex != 0){
                             new_value--;
                         }
-                        Play.DeleteSong(Utils.currentPlaylistSongIndex, true);
-                        Utils.currentPlaylistSongIndex = new_value;
+                        Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
+                        Utils.CurrentPlaylistSongIndex = new_value;
                     } else if(Action == "AddSongToQueue"){
                         // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     } else if (Action == "HardDeleteCurrentSong") {
                         Action = "";
 
-                        int new_value = Utils.currentPlaylistSongIndex;
-                        if (Utils.currentPlaylistSongIndex < Utils.songs.Length && Utils.currentPlaylistSongIndex > 0) {
+                        int new_value = Utils.CurrentPlaylistSongIndex;
+                        if (Utils.CurrentPlaylistSongIndex < Utils.Songs.Length && Utils.CurrentPlaylistSongIndex > 0) {
                             new_value--;
                         }
 
                         try {
-                            Play.DeleteSong(Utils.currentPlaylistSongIndex, true, true);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true, true);
                         } catch (System.Exception e) {
                             Console.WriteLine(e);
                             Console.ReadKey();
@@ -177,16 +177,16 @@ namespace Jammer
                         // Console.WriteLine($"Current Index: {Utils.currentPlaylistSongIndex}, New Value: {new_value}, Total Songs: {Utils.songs.Length}, Current Song Index: {Utils.currentSongIndex}");
                         // Console.ReadKey();
 
-                        if (Utils.songs.Length > 0) {
-                            if (Utils.currentPlaylistSongIndex == Utils.currentSongIndex + 2 
-                                || Utils.currentPlaylistSongIndex == Utils.songs.Length) {
+                        if (Utils.Songs.Length > 0) {
+                            if (Utils.CurrentPlaylistSongIndex == Utils.CurrentSongIndex + 2 
+                                || Utils.CurrentPlaylistSongIndex == Utils.Songs.Length) {
                                 Play.NextSong();
                             }
                         } else {
                             PauseSong(true);
                         }
 
-                        Utils.currentPlaylistSongIndex = Math.Clamp(new_value + 1, 0, Math.Max(Utils.songs.Length - 1, 0));
+                        Utils.CurrentPlaylistSongIndex = Math.Clamp(new_value + 1, 0, Math.Max(Utils.Songs.Length - 1, 0));
                     }
 
                 }
@@ -308,7 +308,7 @@ namespace Jammer
                             break;
                         case "LoadEffects": // reset effects
                             Effects.ReadEffects();
-                            if(Utils.songs.Length > 0){
+                            if(Utils.Songs.Length > 0){
                                 Play.SetEffectsToChannel();
                             }
                             break;
@@ -428,11 +428,11 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "DeleteCurrentSong":
-                            Play.DeleteSong(Utils.currentSongIndex, false);
+                            Play.DeleteSong(Utils.CurrentSongIndex, false);
                             drawWhole = true;
                             break;
                         case "HardDeleteCurrentSong":
-                            Play.DeleteSong(Utils.currentSongIndex, false, true);
+                            Play.DeleteSong(Utils.CurrentSongIndex, false, true);
                             drawWhole = true;
                             break;
                         // Case For A
@@ -603,10 +603,10 @@ namespace Jammer
 
                             Preferences.currentSf2 = chosenSoundFont;
                             Preferences.SaveSettings();
-                            long position = Bass.ChannelGetPosition(Utils.currentMusic);
+                            long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
                             Play.StartPlaying();
                             // goto the position
-                            Bass.ChannelSetPosition(Utils.currentMusic, position);
+                            Bass.ChannelSetPosition(Utils.CurrentMusic, position);
                             drawWhole = true;
                             break;
                     }
@@ -622,11 +622,11 @@ namespace Jammer
         public static void PauseSong(bool onlyPause = false)
         {
             if(onlyPause){
-                Bass.ChannelPause(Utils.currentMusic);
+                Bass.ChannelPause(Utils.CurrentMusic);
                 state = MainStates.pause;
                 return;
             }
-            if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Playing)
+            if (Bass.ChannelIsActive(Utils.CurrentMusic) == PlaybackState.Playing)
             {
                 state = MainStates.pause;
             }

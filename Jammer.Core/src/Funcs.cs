@@ -11,11 +11,11 @@ namespace Jammer {
     public static class Funcs {
         
         static public void UpdateSongListCorrectly(){
-            for(int i = Utils.songs.Length-1; i > 0; i--){
+            for(int i = Utils.Songs.Length-1; i > 0; i--){
 
                 Song song = new()
                 {
-                    URI = Utils.songs[i]
+                    URI = Utils.Songs[i]
                 };
                 song.ExtractSongDetails();
 
@@ -58,13 +58,13 @@ namespace Jammer {
                 }
 
                 // Utils.songs[Utils.currentSongIndex] = song.ToSongString();
-                Utils.songs[i] = SongExtensions.ToSongString(song);
+                Utils.Songs[i] = SongExtensions.ToSongString(song);
             } 
             
         }
         
         static public string[] GetAllSongs() {
-            if (Utils.songs.Length == 0) {
+            if (Utils.Songs.Length == 0) {
                 string[] returnstring = {Themes.sColor("No songs in playlist", Themes.CurrentTheme.Playlist.InfoColor)}; // "No songs in playlist"
                 return returnstring;
             }
@@ -79,27 +79,27 @@ namespace Jammer {
             
             int songLength = Start.consoleWidth - 17; // 26
 
-            for (int i = 0; i < Utils.songs.Length; i++) {
-                string keyValue = Utils.songs[i].ToString();
+            for (int i = 0; i < Utils.Songs.Length; i++) {
+                string keyValue = Utils.Songs[i].ToString();
                             
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum) {
-                    if (i == Utils.currentSongIndex) {
+                    if (i == Utils.CurrentSongIndex) {
                         // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
                         results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
                     }
-                    else if (i == Utils.currentPlaylistSongIndex) {
+                    else if (i == Utils.CurrentPlaylistSongIndex) {
                         // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
                         results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
                     }
-                    else if (Utils.currentPlaylistSongIndex <= 3) {
+                    else if (Utils.CurrentPlaylistSongIndex <= 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                         results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
-                    else if (i >= Utils.currentPlaylistSongIndex - 2 && i < Utils.currentPlaylistSongIndex + 3) {
+                    else if (i >= Utils.CurrentPlaylistSongIndex - 2 && i < Utils.CurrentPlaylistSongIndex + 3) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                         results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
-                    else if (i >= Utils.songs.Length - (maximum - results.Count)) {
+                    else if (i >= Utils.Songs.Length - (maximum - results.Count)) {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
                         results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
@@ -112,9 +112,9 @@ namespace Jammer {
         public static string[] GetAllSongsQueue() {
             int maximum = 10;
             List<string> results = new();
-            for (int i = 0; i < Utils.queueSongs.Count; i++) {
+            for (int i = 0; i < Utils.QueueSongs.Count; i++) {
                 if (results.Count != maximum) {
-                    results.Add(Utils.queueSongs[i]);
+                    results.Add(Utils.QueueSongs[i]);
                 }
             }
 
@@ -154,20 +154,20 @@ namespace Jammer {
             string prevSongString = longestSong.Key == Locale.Player.Previos ? Locale.Player.Previos : Locale.Player.Previos + new string(' ', longestSong.Value - Locale.Player.Previos.Length);
             string nextSongString = longestSong.Key == Locale.Player.Next ? Locale.Player.Next : Locale.Player.Next + new string(' ', longestSong.Value - Locale.Player.Next.Length);
 
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 currentSong = $"{Locale.Player.Current} : -";
                 currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
             }
             else
             {
-                currentSong = currentSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex])), songLength);
+                currentSong = currentSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex])), songLength);
                 currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
             }
 
-            if (Utils.currentSongIndex > 0)
+            if (Utils.CurrentSongIndex > 0)
             {
-                prevSong = prevSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex - 1])), songLength);
+                prevSong = prevSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1])), songLength);
                 prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor);
             }
             else
@@ -177,9 +177,9 @@ namespace Jammer {
             }
 
 
-            if (Utils.currentSongIndex < Utils.songs.Length - 1)
+            if (Utils.CurrentSongIndex < Utils.Songs.Length - 1)
             {
-                nextSong = $"{nextSongString} : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.songs[Utils.currentSongIndex + 1])), songLength);
+                nextSong = $"{nextSongString} : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1])), songLength);
                 nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NextSongColor);
             }
             else
@@ -285,7 +285,7 @@ namespace Jammer {
         // Delete current song from playlist
         public static void DeleteCurrentSongFromPlaylist()
         {
-            Play.DeleteSong(Utils.currentSongIndex, false);
+            Play.DeleteSong(Utils.CurrentSongIndex, false);
         }
 
         // Show songs in playlist
@@ -334,11 +334,11 @@ namespace Jammer {
 
         public static void SaveCurrentPlaylist()
         {
-            if (Utils.currentPlaylist == "") {
+            if (Utils.CurrentPlaylist == "") {
                 SaveReplacePlaylist();
             }
             // save playlist
-            Playlists.Save(Utils.currentPlaylist, true);
+            Playlists.Save(Utils.CurrentPlaylist, true);
         }
 
         public static void SaveAsPlaylist()
@@ -367,13 +367,13 @@ namespace Jammer {
         public static void ShufflePlaylist()
         {
             // get the name of the current song
-            string currentSong = Utils.songs[Utils.currentSongIndex];
+            string currentSong = Utils.Songs[Utils.CurrentSongIndex];
             // shuffle playlist
             Play.Shuffle();
 
-            Utils.currentSongIndex = Array.IndexOf(Utils.songs, currentSong);
+            Utils.CurrentSongIndex = Array.IndexOf(Utils.Songs, currentSong);
             // set new song from shuffle to the current song
-            Utils.currentSong = Utils.songs[Utils.currentSongIndex];
+            Utils.CurrentSongPath = Utils.Songs[Utils.CurrentSongIndex];
         }
 
         // Play single song
@@ -394,11 +394,11 @@ namespace Jammer {
             // if no songs left, return
             if (songsToPlay.Length == 0) { return; }
 
-            Utils.songs = songsToPlay;
-            Utils.currentSongIndex = 0;
-            Utils.currentPlaylist = "";
+            Utils.Songs = songsToPlay;
+            Utils.CurrentSongIndex = 0;
+            Utils.CurrentPlaylist = "";
             Play.StopSong();
-            Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+            Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
         }
 
         public static bool IsValidSong(string song) {

@@ -6,24 +6,24 @@ namespace Jammer
     {
         public static bool IsValidSoundcloudSong(string uri)
         {
-            Regex regex = new Regex(Utils.scSongPattern, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.SCSongPattern, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
 
         public static bool isValidSoundCloudPlaylist(string uri)
         {
-            Regex regex = new Regex(Utils.scPlaylistPattern, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.SCPlaylistPattern, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
 
         public static bool IsValidYoutubePlaylist(string uri)
         {
-            Regex regex = new Regex(Utils.ytPlaylistPattern, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.YTPlaylistPattern, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
         public static bool IsValidYoutubeSong(string uri)
         {
-            Regex regex = new Regex(Utils.ytSongPattern, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.YTSongPattern, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
 
@@ -35,13 +35,13 @@ namespace Jammer
 
         public static bool IsUrlHTTPS(string uri)
         {
-            Regex regex = new Regex(Utils.urlPatternHTTPS, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.UrlPatternHTTPS, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
 
         public static bool IsUrlHTTP(string uri)
         {
-            Regex regex = new Regex(Utils.urlPatternHTTP, RegexOptions.IgnoreCase);
+            Regex regex = new Regex(Utils.UrlPatternHTTP, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
     }

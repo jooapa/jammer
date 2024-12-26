@@ -21,13 +21,13 @@ namespace Jammer
                     {
                         File.Delete(playlistPath);
                     }
-                    Utils.currentPlaylist = playlistName;
+                    Utils.CurrentPlaylist = playlistName;
                     File.Create(playlistPath);
                 }
             }
             else
             {
-                Utils.currentPlaylist = playlistName;
+                Utils.CurrentPlaylist = playlistName;
                 File.Create(playlistPath);
             }
         }
@@ -36,11 +36,11 @@ namespace Jammer
         {
             if (URL.IsUrl(playlist))
             {
-                Utils.songs = new string[] { playlist };
+                Utils.Songs = new string[] { playlist };
                 if (fromCli) {
                     return;
                 } else {
-                    Jammer.Play.PlaySong(Utils.songs, 0);
+                    Jammer.Play.PlaySong(Utils.Songs, 0);
                     return;
                 }
             }
@@ -52,16 +52,16 @@ namespace Jammer
             if (File.Exists(playlistPath) || URL.IsUrl(playlist))
             {
 
-                Utils.currentSongIndex = 0;
-                Utils.songs = new string[] { GetJammerPlaylistPath(playlist) };
+                Utils.CurrentSongIndex = 0;
+                Utils.Songs = new string[] { GetJammerPlaylistPath(playlist) };
 
-                Utils.currentPlaylist = playlistName;
+                Utils.CurrentPlaylist = playlistName;
                 
                 if (fromCli)
                 {
-                    if (Utils.songs.Length == 0)
+                    if (Utils.Songs.Length == 0)
                     {
-                        Utils.currentSongIndex = 0;
+                        Utils.CurrentSongIndex = 0;
                         AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.PlaylistIsEmpty}[/]");
                     }
                     else {
@@ -71,7 +71,7 @@ namespace Jammer
                 else
                 {
                     Start.state = MainStates.play;
-                    Jammer.Play.PlaySong(Utils.songs, 0);
+                    Jammer.Play.PlaySong(Utils.Songs, 0);
                 }
             }
             else
@@ -284,8 +284,8 @@ namespace Jammer
 
                     if (extension == ".jammer")
                     {
-                        File.WriteAllLines(playlistPath, Utils.songs, System.Text.Encoding.UTF8);
-                        Utils.currentPlaylist = playlistName;
+                        File.WriteAllLines(playlistPath, Utils.Songs, System.Text.Encoding.UTF8);
+                        Utils.CurrentPlaylist = playlistName;
                     }
                     else if (extension == ".m3u" || extension == ".m3u8")
                     {
@@ -312,13 +312,13 @@ namespace Jammer
 
                         newContent += Environment.NewLine;
 
-                        foreach (string song in Utils.songs)
+                        foreach (string song in Utils.Songs)
                         {
                             newContent += SongExtensions.ToSong(song).ToSongM3UString() + Environment.NewLine;
                         }
 
                         File.WriteAllText(playlistPath, newContent, System.Text.Encoding.UTF8);
-                        Utils.currentPlaylist = playlistName;
+                        Utils.CurrentPlaylist = playlistName;
 
                         // Message.Data(newContent, "SAVE M3U");
                     }
@@ -332,8 +332,8 @@ namespace Jammer
             {
                 try
                 {
-                    File.WriteAllLines(playlistPath, Utils.songs, System.Text.Encoding.UTF8);
-                    Utils.currentPlaylist = playlistName;
+                    File.WriteAllLines(playlistPath, Utils.Songs, System.Text.Encoding.UTF8);
+                    Utils.CurrentPlaylist = playlistName;
                 }
                 catch (Exception ex)
                 {
@@ -346,10 +346,10 @@ namespace Jammer
             if (!Preferences.isAutoSave) {
                 return;
             }
-            if (Utils.currentPlaylist == "") {
+            if (Utils.CurrentPlaylist == "") {
                 return;
             }
-            Save(Utils.currentPlaylist, true);
+            Save(Utils.CurrentPlaylist, true);
         }
 
         public static void PrintList()

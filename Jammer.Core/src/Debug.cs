@@ -3,7 +3,7 @@ using System.IO;
 namespace Jammer {
     public class Debug {
         public static void dprint(string txt) {
-            if (Utils.isDebug) {
+            if (Utils.IsDebug) {
                 using (StreamWriter writer = new("debug.log", true))
                 {
                     var _method = new System.Diagnostics.StackTrace().GetFrame(1)?.GetMethod()?.Name;

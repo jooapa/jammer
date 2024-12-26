@@ -59,7 +59,7 @@ namespace Jammer
                 Log.Error("Error setting output encoding to UTF8");
             }
 
-            Utils.songs = args;
+            Utils.Songs = args;
             // Theme init
             Themes.Init();
             Log.Info("Themes initialized");
@@ -94,20 +94,20 @@ namespace Jammer
             InitializeSharpHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
-            if (Utils.songs.Length != 0)
+            if (Utils.Songs.Length != 0)
             {
-                Utils.songs = Absolute.Correctify(Utils.songs);
+                Utils.Songs = Absolute.Correctify(Utils.Songs);
                 //NOTE(ra) Correctify removes filenames from Utils.Songs. 
                 //If there is one file that doesn't exist this is a fix
-                if (Utils.songs.Length == 0) {
+                if (Utils.Songs.Length == 0) {
                     Debug.dprint("No songs found");
                     AnsiConsole.WriteLine("No songs found. Exiting..."); 
                     Environment.Exit(1);
                 }
-                Utils.currentSong = Utils.songs[0];
-                Utils.currentSongIndex = 0;
+                Utils.CurrentSongPath = Utils.Songs[0];
+                Utils.CurrentSongIndex = 0;
                 state = MainStates.playing; // Start in play state if songs are given
-                Play.PlaySong(Utils.songs, Utils.currentSongIndex);
+                Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
 
             Console.CancelKeyPress += new ConsoleCancelEventHandler(Exit.OnExit);
@@ -133,7 +133,7 @@ namespace Jammer
             lastSeconds = -1;
             treshhold = 1;
 
-            Utils.isInitialized = true;
+            Utils.IsInitialized = true;
 
             AnsiConsole.Clear();
             TUI.RefreshCurrentView();
@@ -142,10 +142,10 @@ namespace Jammer
             while (LoopRunning)
             {
                 AnsiConsole.Cursor.Hide();
-                if (Utils.songs.Length != 0)
+                if (Utils.Songs.Length != 0)
                 {
                     // if the first song is "" then there are more songs
-                    if (Utils.songs[0] == "" && Utils.songs.Length > 1)
+                    if (Utils.Songs[0] == "" && Utils.Songs.Length > 1)
                     {
                         state = MainStates.play;
                         Play.DeleteSong(0, false);
@@ -170,14 +170,14 @@ namespace Jammer
 
                     case MainStates.play:
                         Debug.dprint("Play");
-                        if (Utils.songs.Length > 0)
+                        if (Utils.Songs.Length > 0)
                         {
                             Debug.dprint("Play - len");
                             Play.PlaySong();
                             TUI.ClearScreen();
                             TUI.DrawPlayer();
 
-                            Utils.MusicTimePlayed = 0;
+                            Utils.TotalMusicDurationInSec = 0;
                             state = MainStates.playing;
                         }
                         else
@@ -190,24 +190,24 @@ namespace Jammer
                     case MainStates.playing:
                         // get current time
 
-                        Utils.preciseTime = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
+                        Utils.PreciseTime = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
                         // get current time in seconds
-                        Utils.MusicTimePlayed = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetPosition(Utils.currentMusic));
+                        Utils.TotalMusicDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
                         // get whole song length in seconds
                         //Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
-                        Utils.currentMusicLength = Bass.ChannelBytes2Seconds(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
+                        Utils.SongDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
 
-                        Utils.MusicTimePercentage = (float)(Utils.MusicTimePlayed / Utils.currentMusicLength * 100);
+                        Utils.MusicTimePercentage = (float)(Utils.TotalMusicDurationInSec / Utils.SongDurationInSec * 100);
 
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
-                        if (Utils.MusicTimePlayed - prevMusicTimePlayed >= 1)
+                        if (Utils.TotalMusicDurationInSec - prevMusicTimePlayed >= 1)
                         {
                             drawTime = true;
-                            prevMusicTimePlayed = Utils.MusicTimePlayed;
+                            prevMusicTimePlayed = Utils.TotalMusicDurationInSec;
                         }
 
                         // If the song is finished
-                        if (Bass.ChannelIsActive(Utils.currentMusic) == PlaybackState.Stopped && Utils.MusicTimePlayed > 0)
+                        if (Bass.ChannelIsActive(Utils.CurrentMusic) == PlaybackState.Stopped && Utils.TotalMusicDurationInSec > 0)
                         {
                             prevMusicTimePlayed = 0;
                             drawTime = true;
@@ -232,7 +232,7 @@ namespace Jammer
                         // AnsiConsole.Clear();
                         break;
                     case MainStates.previous:
-                        if(Utils.MusicTimePlayed > 3){ // if the song is played for more than 5 seconds, go to the beginning
+                        if(Utils.TotalMusicDurationInSec > 3){ // if the song is played for more than 5 seconds, go to the beginning
                             Play.SeekSong(0, false);
                             state = MainStates.playing;
                         } else {
@@ -242,9 +242,9 @@ namespace Jammer
                 }
 
                 // if no song is playing, set the current song to ""
-                if (Utils.songs.Length == 0) 
+                if (Utils.Songs.Length == 0) 
                 {
-                    Utils.currentSong = "";
+                    Utils.CurrentSongPath = "";
                 }
 
                 // If the view is changed, refresh the screen

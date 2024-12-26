@@ -43,17 +43,17 @@ namespace Jammer
             // delete all empty songs
             if (songs[Currentindex] == "")
             {
-                Utils.songs = Utils.songs.Where((source, i) => i != Currentindex).ToArray();
-                if (Utils.songs.Length == 0)
+                Utils.Songs = Utils.Songs.Where((source, i) => i != Currentindex).ToArray();
+                if (Utils.Songs.Length == 0)
                 {
                     Start.state = MainStates.pause;
                     return;
                 }
-                if (Currentindex == Utils.songs.Length)
+                if (Currentindex == Utils.Songs.Length)
                 {
                     Currentindex--;
                 }
-                PlaySong(Utils.songs, Currentindex);
+                PlaySong(Utils.Songs, Currentindex);
                 return;
             }
 
@@ -70,13 +70,13 @@ namespace Jammer
             }
             Debug.dprint("Play song");
 
-            Utils.currentSongIndex = Currentindex;
-            Utils.currentPlaylistSongIndex = Currentindex;
+            Utils.CurrentSongIndex = Currentindex;
+            Utils.CurrentPlaylistSongIndex = Currentindex;
             
             // get song details
             // Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
             Song song = new Song() {
-                URI = songs[Utils.currentSongIndex]
+                URI = songs[Utils.CurrentSongIndex]
             };
             string fullPath = "";
 
@@ -125,19 +125,19 @@ namespace Jammer
 
             // Message.Data(fullPath + " || " + song.Path, "path");
             // if the Utils.songs current is not the same as the song.Path
-            if (fullPath != Utils.songs[Utils.currentSongIndex])
+            if (fullPath != Utils.Songs[Utils.CurrentSongIndex])
             {
                 song.Title = ""; // TODO might break something :/
-                song.URI = Utils.songs[Utils.currentSongIndex];
+                song.URI = Utils.Songs[Utils.CurrentSongIndex];
             }
             // Message.Data(fullPath + " || " + song.Path, "path");
 
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
-            Utils.currentSong = fullPath;
+            Utils.CurrentSongPath = fullPath;
             Start.drawWhole = true;
 
-            Log.Info("Playing: " + Utils.songs[Utils.currentSongIndex]);
+            Log.Info("Playing: " + Utils.Songs[Utils.CurrentSongIndex]);
 
             // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
@@ -179,7 +179,7 @@ namespace Jammer
                 song.Genre = genre;
             }
 
-            Utils.songs[Utils.currentSongIndex] = song.ToSongString();
+            Utils.Songs[Utils.CurrentSongIndex] = song.ToSongString();
             // Concatenate all song strings
             // string allSongs = string.Join("\n", Utils.songs);
             //Message.Data(allSongs, "Current Playlist");
@@ -196,9 +196,9 @@ namespace Jammer
                 }
                 else if (extension == ".m3u" || extension == ".m3u8")
                 {
-                    Utils.songs = M3u.ParseM3u(fullPath);
+                    Utils.Songs = M3u.ParseM3u(fullPath);
 
-                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                    PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 }
                 else
                 {
@@ -223,7 +223,7 @@ namespace Jammer
             Debug.dprint("jammer");
 
             // get absolute path
-            Utils.currentPlaylist = Path.GetFullPath(fullPath);
+            Utils.CurrentPlaylist = Path.GetFullPath(fullPath);
 
             string[] playlist = System.IO.File.ReadAllLines(fullPath);
 
@@ -232,7 +232,7 @@ namespace Jammer
             bool isOldFormat = false;
             foreach (string s in playlist)
             {
-                if (s.Contains('½') && !s.Contains(Utils.jammerFileDelimeter))
+                if (s.Contains('½') && !s.Contains(Utils.JammerFileDelimeter))
                 {
                     isOldFormat = true;
 
@@ -284,13 +284,13 @@ namespace Jammer
                 AddSong(s, false);
             }
             // remove playlist from Utils.songs
-            Utils.songs = Utils.songs.Where((source, i) => i != Utils.currentSongIndex).ToArray();
-            if (Utils.currentSongIndex == Utils.songs.Length)
+            Utils.Songs = Utils.Songs.Where((source, i) => i != Utils.CurrentSongIndex).ToArray();
+            if (Utils.CurrentSongIndex == Utils.Songs.Length)
             {
-                Utils.currentSongIndex = Utils.songs.Length - 1;
+                Utils.CurrentSongIndex = Utils.Songs.Length - 1;
             }
             Start.state = MainStates.playing;
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            PlaySong(Utils.Songs, Utils.CurrentSongIndex);
         }
 
         public static bool EmptySpaces(string v)
@@ -309,63 +309,63 @@ namespace Jammer
 
         public static void PauseSong()
         {
-            Bass.ChannelPause(Utils.currentMusic);
+            Bass.ChannelPause(Utils.CurrentMusic);
         }
 
         public static void ResumeSong()
         {
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 return;
             }
-            Bass.ChannelPause(Utils.currentMusic);
+            Bass.ChannelPause(Utils.CurrentMusic);
         }
 
         public static void PlaySong()
         {
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 return;
             }
-            Bass.ChannelPlay(Utils.currentMusic);
+            Bass.ChannelPlay(Utils.CurrentMusic);
         }
 
         public static void StopSong()
         {
-            Bass.ChannelPause(Utils.currentMusic);
+            Bass.ChannelPause(Utils.CurrentMusic);
         }
 
         public static void ResetMusic()
         {
-            if (Utils.currentMusic != 0)
+            if (Utils.CurrentMusic != 0)
             {
-                Bass.StreamFree(Utils.currentMusic);    
+                Bass.StreamFree(Utils.CurrentMusic);    
             }
             Start.drawWhole = true;
         }
         public static void NextSong()
         {
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 Start.state = MainStates.pause;
                 return;
             }
 
-            if(Utils.queueSongs.Count > 0){
+            if(Utils.QueueSongs.Count > 0){
                 PlayDrawReset();
-                PlaySong(Utils.queueSongs.ToArray(), 0);
+                PlaySong(Utils.QueueSongs.ToArray(), 0);
                 PlaySong();
-                int index = Array.IndexOf(Utils.songs, Utils.queueSongs[0]);
-                Utils.previousSongIndex = Utils.currentSongIndex;
-                Utils.currentSongIndex = index;
-                Utils.queueSongs.RemoveAt(0);
+                int index = Array.IndexOf(Utils.Songs, Utils.QueueSongs[0]);
+                Utils.PreviousSongIndex = Utils.CurrentSongIndex;
+                Utils.CurrentSongIndex = index;
+                Utils.QueueSongs.RemoveAt(0);
             } else {
 
-                if (Utils.songs.Length >= 1) // no next song if only one song or less
+                if (Utils.Songs.Length >= 1) // no next song if only one song or less
                 {
-                    Utils.currentSongIndex = (Utils.currentSongIndex + 1) % Utils.songs.Length;
+                    Utils.CurrentSongIndex = (Utils.CurrentSongIndex + 1) % Utils.Songs.Length;
                     PlayDrawReset();
-                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                    PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 }
             }
         }
@@ -378,37 +378,37 @@ namespace Jammer
 
         public static void RandomSong()
         {
-            int lastSongIndex = Utils.currentSongIndex;
+            int lastSongIndex = Utils.CurrentSongIndex;
             Random rnd = new Random();
-            Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
+            Utils.CurrentSongIndex = rnd.Next(0, Utils.Songs.Length);
             // make sure we dont play the same song twice in a row
-            while (Utils.currentSongIndex == lastSongIndex)
+            while (Utils.CurrentSongIndex == lastSongIndex)
             {
-                Utils.currentSongIndex = rnd.Next(0, Utils.songs.Length);
+                Utils.CurrentSongIndex = rnd.Next(0, Utils.Songs.Length);
             }
             PlayDrawReset();
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            PlaySong(Utils.Songs, Utils.CurrentSongIndex);
         }
         public static void PrevSong()
         {
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 Start.state = MainStates.pause;
                 return;
             }
 
-            Utils.currentSongIndex = (Utils.currentSongIndex - 1) % Utils.songs.Length;
-            if (Utils.currentSongIndex < 0)
+            Utils.CurrentSongIndex = (Utils.CurrentSongIndex - 1) % Utils.Songs.Length;
+            if (Utils.CurrentSongIndex < 0)
             {
-                Utils.currentSongIndex = Utils.songs.Length - 1;
+                Utils.CurrentSongIndex = Utils.Songs.Length - 1;
             }
             PlayDrawReset();
-            PlaySong(Utils.songs, Utils.currentSongIndex);
+            PlaySong(Utils.Songs, Utils.CurrentSongIndex);
         }
         public static void SeekSong(float seconds, bool relative)
         {
             // Calculate the seek position based on the requested seconds
-            var pos = Bass.ChannelGetPosition(Utils.currentMusic);
+            var pos = Bass.ChannelGetPosition(Utils.CurrentMusic);
             
             // If seeking relative to the current position, adjust the seek position
             if (relative)
@@ -416,11 +416,11 @@ namespace Jammer
                 // if negative, move backwards
                 if (seconds < 0)
                 {
-                    pos = pos - Bass.ChannelSeconds2Bytes(Utils.currentMusic, Preferences.GetRewindSeconds());
+                    pos = pos - Bass.ChannelSeconds2Bytes(Utils.CurrentMusic, Preferences.GetRewindSeconds());
                 }
                 else
                 {
-                    pos = pos + Bass.ChannelSeconds2Bytes(Utils.currentMusic, Preferences.GetForwardSeconds());
+                    pos = pos + Bass.ChannelSeconds2Bytes(Utils.CurrentMusic, Preferences.GetForwardSeconds());
                 }
                 // Clamp again to ensure it's within the valid range
                 //pos = Math.Max(0, Math.Min(pos, Utils.audioStream.Length));
@@ -428,25 +428,25 @@ namespace Jammer
             else
             {
                 // Clamp the seek position to be within the valid range [0, Utils.audioStream.Length]
-                pos = Bass.ChannelSeconds2Bytes(Utils.currentMusic, seconds);
+                pos = Bass.ChannelSeconds2Bytes(Utils.CurrentMusic, seconds);
             }
 
             // Update the audio stream's position
             //if (Utils.audioStream.Length == pos)
             if (pos < 0)
             {
-                Bass.ChannelSetPosition(Utils.currentMusic, 0);
+                Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
             }
-            else if (pos >= Bass.ChannelGetLength(Utils.currentMusic))
+            else if (pos >= Bass.ChannelGetLength(Utils.CurrentMusic))
             {
-                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic) - 1);
+                Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic) - 1);
             }
             else
             {
-                Bass.ChannelSetPosition(Utils.currentMusic, pos);
+                Bass.ChannelSetPosition(Utils.CurrentMusic, pos);
             }
 
-            if (Bass.ChannelGetPosition(Utils.currentMusic) >= Bass.ChannelGetLength(Utils.currentMusic))
+            if (Bass.ChannelGetPosition(Utils.CurrentMusic) >= Bass.ChannelGetLength(Utils.CurrentMusic))
             {
                 MaybeNextSong();
             }
@@ -464,7 +464,7 @@ namespace Jammer
             if(volume > 0) {
                 Preferences.isMuted = false;
             }
-            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
+            Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.volume);
 
         }
         public static void ModifyVolume(float volume)
@@ -479,7 +479,7 @@ namespace Jammer
                 Preferences.volume = 0;
             }
 
-            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.volume);
+            Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.volume);
 
         }
 
@@ -489,14 +489,14 @@ namespace Jammer
             {
                 Preferences.isMuted = false;
                 //Utils.currentMusic.Volume = Preferences.oldVolume;
-                Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.oldVolume);
+                Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.oldVolume);
                 Preferences.volume = Preferences.oldVolume;
             }
             else
             {
                 Preferences.isMuted = true;
                 Preferences.oldVolume = Preferences.volume;
-                Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, 0);
+                Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, 0);
                 Preferences.volume = 0;
             }
         }
@@ -505,15 +505,15 @@ namespace Jammer
         {            
             if (Preferences.isLoop)
             {
-                Bass.ChannelSetPosition(Utils.currentMusic, 0);
-                Bass.ChannelPlay(Utils.currentMusic);
+                Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
+                Bass.ChannelPlay(Utils.CurrentMusic);
             }
-            else if (Utils.songs.Length == 1 && !Preferences.isLoop){
+            else if (Utils.Songs.Length == 1 && !Preferences.isLoop){
                 //Utils.audioStream.Position = Utils.audioStream.Length;
-                Bass.ChannelSetPosition(Utils.currentMusic, Bass.ChannelGetLength(Utils.currentMusic));
+                Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
                 Start.state = MainStates.pause;
                 //Utils.currentMusic.Pause();
-                Bass.ChannelPause(Utils.currentMusic);
+                Bass.ChannelPause(Utils.CurrentMusic);
             }
             else if (Preferences.isShuffle)
             {
@@ -527,10 +527,10 @@ namespace Jammer
 
         public static void ReDownloadSong()
         {
-            if (Utils.songs[Utils.currentSongIndex].Contains("https://") || Utils.songs[Utils.currentSongIndex].Contains("http://"))
+            if (Utils.Songs[Utils.CurrentSongIndex].Contains("https://") || Utils.Songs[Utils.CurrentSongIndex].Contains("http://"))
             {
-                System.IO.File.Delete(Utils.currentSong);
-                PlaySong(Utils.songs, Utils.currentSongIndex);
+                System.IO.File.Delete(Utils.CurrentSongPath);
+                PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 SeekSong(0, false);
                 return;
             }
@@ -539,27 +539,27 @@ namespace Jammer
         public static void AddSong(string song, bool AddNext = true )
         {
             if (AddNext)
-                Utils.songs = Utils.songs.Take(Utils.currentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.songs.Skip(Utils.currentSongIndex + 1)).ToArray();
+                Utils.Songs = Utils.Songs.Take(Utils.CurrentSongIndex + 1).Concat(new string[] { song }).Concat(Utils.Songs.Skip(Utils.CurrentSongIndex + 1)).ToArray();
             else {
                 // add song to current Utils.songs
-                Array.Resize(ref Utils.songs, Utils.songs.Length + 1);
-                Utils.songs[Utils.songs.Length - 1] = song;
+                Array.Resize(ref Utils.Songs, Utils.Songs.Length + 1);
+                Utils.Songs[Utils.Songs.Length - 1] = song;
             }
 
-            if (Utils.songs.Length == 1)
+            if (Utils.Songs.Length == 1)
             {
-                Utils.currentSongIndex = 0;
-                PlaySong(Utils.songs, Utils.currentSongIndex);
+                Utils.CurrentSongIndex = 0;
+                PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
         }
         public static void  DeleteSong(int index, bool isQueue, bool hardDelete = false)
         {
-            if (Utils.songs.Length == 0)
+            if (Utils.Songs.Length == 0)
             {
                 return;
             }
             // check if index is in range
-            if (index < 0 || index > Utils.songs.Length)
+            if (index < 0 || index > Utils.Songs.Length)
             {
                 AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.IndexOoR}[/]");
                 return;
@@ -567,67 +567,67 @@ namespace Jammer
             // delete song from disk
             if (hardDelete)
             {
-                System.IO.File.Delete(Utils.currentSong);
+                System.IO.File.Delete(Utils.CurrentSongPath);
             }
 
             // remove song from current Utils.songs
-            Utils.songs = Utils.songs.Where((source, i) => i != index).ToArray();
-            Utils.currentSongIndex--;
-            if(Utils.currentSongIndex == -1){
-                Utils.currentSongIndex = 0;
+            Utils.Songs = Utils.Songs.Where((source, i) => i != index).ToArray();
+            Utils.CurrentSongIndex--;
+            if(Utils.CurrentSongIndex == -1){
+                Utils.CurrentSongIndex = 0;
             }
             // PREV RESET
             // Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
-            if (index == Utils.songs.Length){
-                if (Utils.songs.Length == 0) {
-                    Utils.songs = new string[] { "" };
+            if (index == Utils.Songs.Length){
+                if (Utils.Songs.Length == 0) {
+                    Utils.Songs = new string[] { "" };
                     ResetMusic();
                     Start.state = MainStates.pause;
                 }
-                else if(index >= Utils.currentSongIndex){
-                    _ = Utils.currentSongIndex;
+                else if(index >= Utils.CurrentSongIndex){
+                    _ = Utils.CurrentSongIndex;
                 }
                 else {
-                    Utils.currentSongIndex = Utils.songs.Length - 1;
+                    Utils.CurrentSongIndex = Utils.Songs.Length - 1;
                     // Start.state = MainStates.playing;
                 }
             } else {
-                if(index < Utils.currentPlaylistSongIndex && index != Utils.currentPlaylistSongIndex){
-                    if(Utils.currentPlaylistSongIndex == Utils.songs.Length){
-                        Utils.currentPlaylistSongIndex--;
+                if(index < Utils.CurrentPlaylistSongIndex && index != Utils.CurrentPlaylistSongIndex){
+                    if(Utils.CurrentPlaylistSongIndex == Utils.Songs.Length){
+                        Utils.CurrentPlaylistSongIndex--;
                     } else {
-                        Utils.currentPlaylistSongIndex++;
+                        Utils.CurrentPlaylistSongIndex++;
                     }
                 } else {
-                    Utils.currentPlaylistSongIndex++;
+                    Utils.CurrentPlaylistSongIndex++;
                 }
             }
 
             // if no songs left, add "" to Utils.songs
             if (!isQueue)
             {
-                PlaySong(Utils.songs, Utils.currentSongIndex);
+                PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
             else
             {
-                if (Utils.currentSongIndex == index)
+                if (Utils.CurrentSongIndex == index)
                 {
-                    PlaySong(Utils.songs, Utils.currentSongIndex);
+                    PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 }
             }
         }
         public static void SetEffectsToChannel() {
             
             // Start playing from the same position
-            long pos = Bass.ChannelGetPosition(Utils.currentMusic);
+            long pos = Bass.ChannelGetPosition(Utils.CurrentMusic);
             StartPlaying();
-            Bass.ChannelSetPosition(Utils.currentMusic, pos);
+            Bass.ChannelSetPosition(Utils.CurrentMusic, pos);
         }
         public static void Shuffle()
         {
             // suffle songs
             Random rnd = new Random();
-            Utils.songs = Utils.songs.OrderBy(x => rnd.Next()).ToArray();
+            Utils.Songs = Utils.Songs.OrderBy(x => rnd.Next()).ToArray();
         }
 
         static public void StartPlaying()
@@ -642,15 +642,15 @@ namespace Jammer
             BassAac.AacSupportMp4 = true;
 
             ////
-            Utils.currentMusic = Bass.CreateStream(Utils.currentSong, 0, 0, flags);
+            Utils.CurrentMusic = Bass.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
-            if (Utils.currentMusic == 0)
-                Utils.currentMusic = BassAac.CreateStream(Utils.currentSong, 0, 0, flags);
+            if (Utils.CurrentMusic == 0)
+                Utils.CurrentMusic = BassAac.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
                 //Message.Data(Utils.currentMusic.ToString(), "Current Music");
-            if (Utils.currentMusic == 0)
-                Utils.currentMusic = BassAac.CreateMp4Stream(Utils.currentSong, 0, 0, flags);
+            if (Utils.CurrentMusic == 0)
+                Utils.CurrentMusic = BassAac.CreateMp4Stream(Utils.CurrentSongPath, 0, 0, flags);
                 //Message.Data(Utils.currentMusic.ToString(), "Current Music");
-            if (Utils.currentMusic == 0) {
+            if (Utils.CurrentMusic == 0) {
                 int newFont;
                 newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
 
@@ -674,32 +674,32 @@ namespace Jammer
                 {
                     throw new Exception("Can't set the SoundFont");
                 }
-                Utils.currentMusic = BassMidi.CreateStream(Utils.currentSong, 0, 0, flags);
+                Utils.CurrentMusic = BassMidi.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             }
             
             // create stream
-            if (Utils.currentMusic == 0)
+            if (Utils.CurrentMusic == 0)
             {
                 // Message.Data(Locale.OutsideItems.StartPlayingMessage1, $"{Locale.OutsideItems.StartPlayingMessage2}: " + Utils.currentSong);
 
                 // DeleteSong(Utils.currentSongIndex, false);
                 // return;
-                Utils.curSongError = true;
-                Log.Error(Bass.LastError.ToString() + " " + Utils.currentSong);
+                Utils.CurSongError = true;
+                Log.Error(Bass.LastError.ToString() + " " + Utils.CurrentSongPath);
             } 
             else {
-                Utils.curSongError = false;
-                Log.Info("Started playing: " + Utils.currentSong);
+                Utils.CurSongError = false;
+                Log.Info("Started playing: " + Utils.CurrentSongPath);
             }
 
             // set volume
-            Bass.ChannelSetAttribute(Utils.currentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
+            Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
             // set FXs
             SetFXs();
 
             // set sync
-            Bass.ChannelSetSync(Utils.currentMusic, SyncFlags.End, 0, (a, b, c, d) => {
+            Bass.ChannelSetSync(Utils.CurrentMusic, SyncFlags.End, 0, (a, b, c, d) => {
                 MaybeNextSong();
                 Start.drawWhole = true;
                 Start.prevMusicTimePlayed = -1;
@@ -710,7 +710,7 @@ namespace Jammer
             // play stream
             Start.prevMusicTimePlayed = -1;
             PlayDrawReset();
-            Bass.ChannelPlay(Utils.currentMusic);
+            Bass.ChannelPlay(Utils.CurrentMusic);
 
 
             // TUI.RefreshCurrentView();
@@ -719,7 +719,7 @@ namespace Jammer
 
         public static void SetSoundFont(string soundFontPath)
         {
-            BassMidi.FontFree(Utils.currentMusic);
+            BassMidi.FontFree(Utils.CurrentMusic);
             var newFont = BassMidi.FontInit(soundFontPath, FontInitFlags.Unicode);
             if (newFont == 0)
             {
@@ -762,7 +762,7 @@ namespace Jammer
                     fDelay = Effects.chorusDelay
                 };
 
-                int chorusHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Chorus, 1);
+                int chorusHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Chorus, 1);
                 Bass.FXSetParameters(chorusHandle, chorus);
             }
 
@@ -777,7 +777,7 @@ namespace Jammer
                     fPredelay = Effects.compressorPredelay
                 };
 
-                int compressorHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Compressor, 1);
+                int compressorHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Compressor, 1);
                 Bass.FXSetParameters(compressorHandle, compressor);
             }
 
@@ -789,7 +789,7 @@ namespace Jammer
                     fPostEQCenterFrequency = Effects.distortionPostEQCenterFrequency
                 };
 
-                int distortionHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Distortion, 1);
+                int distortionHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Distortion, 1);
                 Bass.FXSetParameters(distortionHandle, distortion);
             }
 
@@ -803,7 +803,7 @@ namespace Jammer
                     lPanDelay = Effects.echoPanDelay
                 };
 
-                int echoHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.Echo, 1);
+                int echoHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Echo, 1);
                 Bass.FXSetParameters(echoHandle, echo);
             }
 
@@ -817,7 +817,7 @@ namespace Jammer
                     fDelay = Effects.flangerDelay,
                 };
 
-                int flangerHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXFlanger, 1);
+                int flangerHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXFlanger, 1);
                 Bass.FXSetParameters(flangerHandle, flanger);
             }
 
@@ -827,7 +827,7 @@ namespace Jammer
                     dwRateHz = Effects.gargleRate,
                 };
 
-                int gargleHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXGargle, 1);
+                int gargleHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXGargle, 1);
                 Bass.FXSetParameters(gargleHandle, gargle);
             }
 
@@ -839,7 +839,7 @@ namespace Jammer
                     fGain = Effects.paramEQGain
                 };
 
-                int paramEqHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXParamEQ, 1);
+                int paramEqHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXParamEQ, 1);
                 Bass.FXSetParameters(paramEqHandle, paramEq);
             }
 
@@ -852,7 +852,7 @@ namespace Jammer
                     fHighFreqRTRatio = Effects.reverbHighFreqRTRatio
                 };
 
-                int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
+                int reverbHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXReverb, 1);
                 Bass.FXSetParameters(reverbHandle, reverb);
             }
         }

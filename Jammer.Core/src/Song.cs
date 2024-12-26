@@ -19,9 +19,9 @@ namespace Jammer
         /// </summary>
         public void ExtractSongDetails()
         {
-            if (URI != null && URI.Contains(Utils.jammerFileDelimeter))
+            if (URI != null && URI.Contains(Utils.JammerFileDelimeter))
             {
-                string[] parts = URI.Split(Utils.jammerFileDelimeter);
+                string[] parts = URI.Split(Utils.JammerFileDelimeter);
                 URI = parts[0];
                 string json = parts[1];
                 
@@ -70,7 +70,7 @@ namespace Jammer
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
 
-            string songString = song.URI + Utils.jammerFileDelimeter;
+            string songString = song.URI + Utils.JammerFileDelimeter;
             songString += JsonSerializer.Serialize(song, options);
             return songString;
         }
@@ -82,9 +82,9 @@ namespace Jammer
                 return new Song();
             }
 
-            if (songString.Contains(Utils.jammerFileDelimeter))
+            if (songString.Contains(Utils.JammerFileDelimeter))
             {
-                string[] parts = songString.Split(Utils.jammerFileDelimeter);
+                string[] parts = songString.Split(Utils.JammerFileDelimeter);
                 string uri = parts[0];
                 string json = parts[1];
                 Song song = JsonSerializer.Deserialize<Song>(json) ?? new Song();
@@ -119,7 +119,7 @@ namespace Jammer
                 return false;
             }
 
-            return song.URI.Contains(Utils.jammerFileDelimeter) && song.URI.Contains('{') && song.URI.Contains('}');
+            return song.URI.Contains(Utils.JammerFileDelimeter) && song.URI.Contains('{') && song.URI.Contains('}');
         }
 
         

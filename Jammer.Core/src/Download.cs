@@ -442,7 +442,7 @@ namespace Jammer {
             // }
             // Console.ReadLine();
             // remove the plurl from the songs array if it exists any where
-            Utils.songs = Utils.songs.Where(val => !val.Contains(plurl)).ToArray();
+            Utils.Songs = Utils.Songs.Where(val => !val.Contains(plurl)).ToArray();
 
 
             // Console.WriteLine("----Utils.songs----");
@@ -461,7 +461,7 @@ namespace Jammer {
             // Message.Data("last song: " + Utils.songs[Utils.songs.Length - 1], "Debug");
 
             // add all songs from playlist to Utils.songs but start adding at the currentSongIndex
-            Utils.songs = Utils.songs.Take(Utils.currentSongIndex).Concat(playlistSongs).Concat(Utils.songs.Skip(Utils.currentSongIndex)).ToArray();
+            Utils.Songs = Utils.Songs.Take(Utils.CurrentSongIndex).Concat(playlistSongs).Concat(Utils.Songs.Skip(Utils.CurrentSongIndex)).ToArray();
             // Message.Data(Utils.songs[0], "d1");
             // Console.WriteLine("----Utils.songs----");
             // foreach (var song in Utils.songs) {
@@ -476,7 +476,7 @@ namespace Jammer {
             // Console.ReadLine();
                         
 
-            return DownloadSong(Utils.songs[Utils.currentSongIndex]);
+            return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]);
         }
 
         public static string FormatUrlForFilename(string url, bool isCheck = false)

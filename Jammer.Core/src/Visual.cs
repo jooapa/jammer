@@ -60,11 +60,11 @@ PausingEffect = true
             var fftData = new float[_bufferSize]; // FFT data buffer
 
             // Retrieve FFT data from current music channel
-            int bytesRead = Bass.ChannelGetData(Utils.currentMusic, fftData, (int)GetFFTDataFlags());
+            int bytesRead = Bass.ChannelGetData(Utils.CurrentMusic, fftData, (int)GetFFTDataFlags());
             if (bytesRead <= 0)
             {
                 string songPath;
-                if (Utils.currentMusic == 0 && Utils.curSongError) {
+                if (Utils.CurrentMusic == 0 && Utils.CurSongError) {
                     songPath = "Error: cannot read FFT data";
                 } else {
                     songPath = "";
