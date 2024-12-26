@@ -514,7 +514,7 @@ HardDeleteCurrentSong = Shift + Delete
                 return;
             }
 
-            Message.Data(ScrollIndexLanguage.ToString(), ScrollIndexLanguage.ToString());
+            //Message.Data(ScrollIndexLanguage.ToString(), ScrollIndexLanguage.ToString());
 
             string country_code = "en";
             for(int i = 0; i < files?.Length; i++){
@@ -541,7 +541,12 @@ HardDeleteCurrentSong = Shift + Delete
         }
 
         public static void SetLocaleData(){
-            LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
+            try { 
+                LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
+            } catch(Exception) {
+                Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
+                return;
+            }
         }
 
         public static string? ReadIni_LocaleData(string section, string key){

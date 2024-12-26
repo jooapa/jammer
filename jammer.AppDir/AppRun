@@ -1,3 +1,14 @@
 #!/bin/bash
+# Add after the first line and before the exports
+
+# Set default config path if JAMMER_CONFIG_PATH is not set
+TARGET_PATH="${JAMMER_CONFIG_PATH:-$HOME/jammer}/locales"
+
+# Create target directory
+mkdir -p "$TARGET_PATH"
+
+# Copy locale files
+cp -rf "$APPDIR/usr/locales/"* "$TARGET_PATH/"
+
 export LD_LIBRARY_PATH=$APPDIR/usr/lib
 exec $APPDIR/usr/bin/Jammer "$@"

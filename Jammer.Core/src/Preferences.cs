@@ -67,8 +67,13 @@ namespace Jammer
                 Directory.CreateDirectory(songsPath);
             }
 
-            // load current locale
-            IniFileHandling.SetLocaleData();
+            // load if not folder empty
+            if (Directory.GetFiles(Path.Combine(JammerPath, "locales")).Length > 0)
+            {
+                // load current locale
+                IniFileHandling.SetLocaleData();
+            }
+
 
         }
 

@@ -134,61 +134,44 @@ namespace Jammer {
             return song;
         }
         public static string GetPrevCurrentNextSong() {
-            // return previous, current and next song in playlist
-            string prevSong;
-            string nextSong;
-            string currentSong;
             int songLength = Start.consoleWidth - 26;
 
-            // "Locale.Player."current previous and next song needs to be calculated which string is longer
-            Dictionary<string, int> songLengths = new() {
-                {Locale.Player.Current, Locale.Player.Current.Length},
-                {Locale.Player.Previos, Locale.Player.Previos.Length},
-                {Locale.Player.Next, Locale.Player.Next.Length}
-            };
+            // Find longest label length
+            int maxLabelLength = Math.Max(
+                Math.Max(Locale.Player.Current.Length, Locale.Player.Previos.Length),
+                Locale.Player.Next.Length
+            );
 
-            var longestSong = songLengths.Aggregate((x, y) => x.Value > y.Value ? x : y);
+            // Create padded labels
+            string currentLabel = Locale.Player.Current.PadRight(maxLabelLength);
+            string prevLabel = Locale.Player.Previos.PadRight(maxLabelLength); 
+            string nextLabel = Locale.Player.Next.PadRight(maxLabelLength);
 
-            // add spaces to the string to make them the same length
-            string currentSongString = longestSong.Key == Locale.Player.Current ? Locale.Player.Current : Locale.Player.Current + new string(' ', longestSong.Value - Locale.Player.Current.Length);
-            string prevSongString = longestSong.Key == Locale.Player.Previos ? Locale.Player.Previos : Locale.Player.Previos + new string(' ', longestSong.Value - Locale.Player.Previos.Length);
-            string nextSongString = longestSong.Key == Locale.Player.Next ? Locale.Player.Next : Locale.Player.Next + new string(' ', longestSong.Value - Locale.Player.Next.Length);
+            // Get song strings with consistent formatting
+            string currentSong = Utils.Songs.Length > 0
+                ? $"{currentLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex])), songLength)}"
+                : $"{currentLabel} : -";
 
-            if (Utils.Songs.Length == 0)
-            {
-                currentSong = $"{Locale.Player.Current} : -";
-                currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
-            }
-            else
-            {
-                currentSong = currentSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex])), songLength);
-                currentSong = Themes.sColor(currentSong, Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
-            }
+            string prevSong = Utils.CurrentSongIndex > 0  
+                ? $"{prevLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1])), songLength)}"
+                : $"{prevLabel} : -";
 
-            if (Utils.CurrentSongIndex > 0)
-            {
-                prevSong = prevSongString + " : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1])), songLength);
-                prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor);
-            }
-            else
-            {
-                prevSong = prevSongString + " : -";
-                prevSong = Themes.sColor(prevSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
-            }
+            string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
+                ? $"{nextLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1])), songLength)}"
+                : $"{nextLabel} : -";
 
+            // Apply colors
+            currentSong = Themes.sColor(currentSong, Utils.Songs.Length == 0 
+                ? Themes.CurrentTheme.GeneralPlaylist.NoneSongColor
+                : Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
+            prevSong = Themes.sColor(prevSong, Utils.CurrentSongIndex > 0
+                ? Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor 
+                : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+            nextSong = Themes.sColor(nextSong, Utils.CurrentSongIndex < Utils.Songs.Length - 1
+                ? Themes.CurrentTheme.GeneralPlaylist.NextSongColor
+                : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
 
-            if (Utils.CurrentSongIndex < Utils.Songs.Length - 1)
-            {
-                nextSong = $"{nextSongString} : " + GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1])), songLength);
-                nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NextSongColor);
-            }
-            else
-            {
-                nextSong = $"{nextSongString} : -";
-                nextSong = Themes.sColor(nextSong, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
-            }      
-            
-            return prevSong + $"\n[green]" + currentSong + "[/]\n" + nextSong;
+            return $"{prevSong}\n[green]{currentSong}[/]\n{nextSong}";
         }
 
         public static string CalculateTime(double time, bool getColor) {
