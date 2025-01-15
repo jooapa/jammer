@@ -1,5 +1,7 @@
-namespace Jammer{
-    public static class Locale{
+namespace Jammer
+{
+    public static class Locale
+    {
         /*
         Adding new Locale line:
         1. Create a new class or add to an existing class. Classname is the name for the keyarea
@@ -25,12 +27,14 @@ namespace Jammer{
         RefreshScreenErrorMessage1 = Error refreshing the screen
         ```
         */
-        public static class Country{
+        public static class Country
+        {
             public static string _Country = CheckValueLocale("Country", "Country", "United kingdom");
             public static string Language = CheckValueLocale("Country", "Language", "English");
             public static string CountryCode = CheckValueLocale("Country", "CountryCode", "GB");
         }
-        public static class Player{
+        public static class Player
+        {
             public static string Playlist = CheckValueLocale("Player", "Playlist", "playlist");
             public static string State = CheckValueLocale("Player", "State", "State");
             public static string Looping = CheckValueLocale("Player", "Looping", "Looping");
@@ -81,7 +85,8 @@ namespace Jammer{
             public static string AddSongToPlaylistError3 = CheckValueLocale("Player", "AddSongToPlaylistError3", "Error:");
             public static string AddSongToPlaylistError4 = CheckValueLocale("Player", "AddSongToPlaylistError4", "invalid song: Make sure you typed it correctly");
         }
-        public static class Help{
+        public static class Help
+        {
             public static string ToMainMenu = CheckValueLocale("Help", "ToMainMenu", "To Main Menu");
             public static string Controls = CheckValueLocale("Help", "Controls", "Controls");
             public static string Description = CheckValueLocale("Help", "Description", "Description");
@@ -120,7 +125,8 @@ namespace Jammer{
             public static string ChangeLanguage = CheckValueLocale("Help", "ChangeLanguage", "Change language");
         }
 
-        public static class Settings{
+        public static class Settings
+        {
             public static string _Settings = CheckValueLocale("Settings", "Settings", "Settings");
             public static string Value = CheckValueLocale("Settings", "Value", "Value");
             public static string ChangeValue = CheckValueLocale("Settings", "ChangeValue", "Change Value");
@@ -131,8 +137,9 @@ namespace Jammer{
             public static string ToChange = CheckValueLocale("Settings", "ToChange", "To Change");
             public static string ToToggle = CheckValueLocale("Settings", "ToToggle", "To Toggle");
         }
-        
-        public static class CliHelp{
+
+        public static class CliHelp
+        {
             public static string Commands = CheckValueLocale("CliHelp", "Commands", "Commands");
             public static string Description = CheckValueLocale("CliHelp", "Description", "Description");
             public static string PlaySongFromUrl = CheckValueLocale("CliHelp", "PlaySongFromUrl", "Play song(s) from url(s)");
@@ -161,7 +168,8 @@ namespace Jammer{
             public static string Name = CheckValueLocale("CliHelp", "Name", "name");
             public static string Song = CheckValueLocale("CliHelp", "Song", "song");
         }
-        public static class PlaylistOptions{
+        public static class PlaylistOptions
+        {
             public static string EnterPlayListCmd = CheckValueLocale("PlaylistOptions", "EnterPlayListCmd", "Enter playlist command:");
             public static string AddSongToPlaylist = CheckValueLocale("PlaylistOptions", "AddSongToPlaylist", "add song to playlist");
             public static string Deletesong = CheckValueLocale("PlaylistOptions", "Deletesong", "delete song current song from playlist");
@@ -174,7 +182,8 @@ namespace Jammer{
             public static string PlaySong = CheckValueLocale("PlaylistOptions", "PlaySong", "play song(s)");
             public static string Exit = CheckValueLocale("PlaylistOptions", "Exit", "exit");
         }
-        public static class Miscellaneous{
+        public static class Miscellaneous
+        {
             public static string SearchASongFromSoundcloudByName = CheckValueLocale("Miscellaneous", "SearchASongFromSoundcloudByName", "Search a song from SoundCloud by its name");
             public static string SearchForSongOnYoutubeorSoundcloud = CheckValueLocale("Miscellaneous", "SearchForSongOnYoutubeorSoundcloud", "Search for a song on Youtube or SoundCloud");
             public static string SearchASongFromYoutubeByName = CheckValueLocale("Miscellaneous", "SearchASongFromYoutubeByName", "Search a song from Youtube by its name");
@@ -190,11 +199,12 @@ namespace Jammer{
             public static string False = CheckValueLocale("Miscellaneous", "False", "False");
             public static string Version = CheckValueLocale("Miscellaneous", "Version", "version");
             public static string YesNo = CheckValueLocale("Miscellaneous", "YesNo", "(y/n),");
-            
+
 
         }
 
-        public static class OutsideItems{
+        public static class OutsideItems
+        {
             public static string LatestVersion = CheckValueLocale("OutsideItems", "LatestVersion", "Latest version");
             public static string OpeningFolder = CheckValueLocale("OutsideItems", "OpeningFolder", "Opening Jammer folder...");
             public static string RunUpdate = CheckValueLocale("OutsideItems", "RunUpdate", "Run the update command");
@@ -230,12 +240,12 @@ namespace Jammer{
             public static string Bytes = CheckValueLocale("OutsideItems", "Bytes", "bytes");
             public static string ErrorDownload = CheckValueLocale("OutsideItems", "ErrorDownload", "Error occurred during download: ");
             public static string NoPlaylistName = CheckValueLocale("OutsideItems", "NoPlaylistName", "No playlist name given");
-            public static string NoPlaylistNameSong =CheckValueLocale("OutsideItems", "NoPlaylistNameSong", "o playlist name or song given");
+            public static string NoPlaylistNameSong = CheckValueLocale("OutsideItems", "NoPlaylistNameSong", "o playlist name or song given");
             public static string IsValid = CheckValueLocale("OutsideItems", "IsValid", "is valid");
             public static string IsntValid = CheckValueLocale("OutsideItems", "IsntValid", "is not valid");
             public static string Checking = CheckValueLocale("OutsideItems", "Checking", "Checking");
             public static string File = CheckValueLocale("OutsideItems", "File", "File");
-            public static string NoTrackPlaylist= CheckValueLocale("OutsideItems", "NoTrackPlaylist", "o tracks in playlist");
+            public static string NoTrackPlaylist = CheckValueLocale("OutsideItems", "NoTrackPlaylist", "o tracks in playlist");
             public static string ToLocation = CheckValueLocale("OutsideItems", "ToLocation", "to");
             public static string NoAudioStream = CheckValueLocale("OutsideItems", "NoAudioStream", "This video has no audio stream");
             public static string YtFileExists = CheckValueLocale("OutsideItems", "YtFileExists", "Youtube file already exists");
@@ -268,7 +278,8 @@ namespace Jammer{
             public static string AddToQueue = CheckValueLocale("OutsideItems", "AddToQueue", "Add to queue with");
             public static string DownloadErrorSoundcloud = CheckValueLocale("OutsideItems", "DownloadErrorSoundcloud", "Soundcloud download error");
         }
-        public static class LocaleKeybind{
+        public static class LocaleKeybind
+        {
             public static string HardDeleteCurrentSong = CheckValueLocale("LocaleKeybind", "HardDeleteCurrentSong", "Delete song from playlist and PC");
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
             public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
@@ -286,17 +297,18 @@ namespace Jammer{
             public static string WriteIni_KeyDataError3 = CheckValueLocale("LocaleKeybind", "WriteIni_KeyDataError3", "Error: Keybind already exists");
             public static string GoToSongStart = CheckValueLocale("LocaleKeybind", "GoToSongStart", "Go to song start");
             public static string GoToSongEnd = CheckValueLocale("LocaleKeybind", "GoToSongEnd", "Go to song end");
-            public static string FOrwardSecAmount= CheckValueLocale("LocaleKeybind", "FOrwardSecAmount", "Forward second amount");
-            public static string BackwardSecAmount= CheckValueLocale("LocaleKeybind", "BackwardSecAmount", "Backward second amount");
+            public static string FOrwardSecAmount = CheckValueLocale("LocaleKeybind", "FOrwardSecAmount", "Forward second amount");
+            public static string BackwardSecAmount = CheckValueLocale("LocaleKeybind", "BackwardSecAmount", "Backward second amount");
             public static string ChangeVolume = CheckValueLocale("LocaleKeybind", "ChangeVolume", "Change volume by");
             public static string ToggleAutosave = CheckValueLocale("LocaleKeybind", "ToggleAutosave", "Toggle autosave");
             public static string CurrentState = CheckValueLocale("LocaleKeybind", "CurrentState", "Show current state");
             public static string KeybindResettedMessage1 = CheckValueLocale("LocaleKeybind", "KeybindResettedMessage1", "Keybinds resetted");
             public static string KeybindResettedMessage2 = CheckValueLocale("LocaleKeybind", "KeybindResettedMessage2", "Keybinds have been resetted");
         }
-        
-        
-        public static class EditKeysTexts{
+
+
+        public static class EditKeysTexts
+        {
             public static string ToMainMenu = CheckValueLocale("EditKeysTexts", "ToMainMenu", "To main menu");
             public static string PlayPause = CheckValueLocale("EditKeysTexts", "PlayPause", "Play/Pause");
             public static string Quit = CheckValueLocale("EditKeysTexts", "Quit", "Quit");
@@ -348,6 +360,7 @@ namespace Jammer{
             public static string ChangeSoundFont = CheckValueLocale("EditKeysTexts", "ChangeSoundFont", "Change soundfont");
             public static string ShowLog = CheckValueLocale("EditKeysTexts", "ShowLog", "Show log");
             public static string Search = CheckValueLocale("EditKeysTexts", "Search", "Search");
+            public static string HardDeleteCurrentSong = CheckValueLocale("EditKeysTexts", "HardDeleteCurrentSong", "Hard delete current song");
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
