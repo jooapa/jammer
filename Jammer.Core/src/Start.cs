@@ -348,7 +348,7 @@ namespace Jammer
         public static string Sanitize(string input)
         {
             // Remove [ ] from input
-            input = input.Replace("[", "[[]]");
+            input = input.Replace("[", "[[");
             input = input.Replace("]", "]]");
             input = input.Replace("\"", "\'");
             // input = input.Replace("\"", "");

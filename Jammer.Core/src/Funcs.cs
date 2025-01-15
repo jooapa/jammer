@@ -170,18 +170,25 @@ namespace Jammer
             string prevLabel = Locale.Player.Previos.PadRight(maxLabelLength);
             string nextLabel = Locale.Player.Next.PadRight(maxLabelLength);
 
+            // Console.WriteLine(Start.Sanitize(Utils.Songs[Utils.CurrentSongIndex]));
+            // Console.ReadLine();
+
             // Get song strings with consistent formatting
             string currentSong = Utils.Songs.Length > 0
-                ? $"{currentLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex])), songLength)}"
+                ? $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]), songLength)}"
                 : $"{currentLabel} : -";
 
             string prevSong = Utils.CurrentSongIndex > 0
-                ? $"{prevLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1])), songLength)}"
+                ? $"{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]), songLength)}"
                 : $"{prevLabel} : -";
 
             string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
-                ? $"{nextLabel} : {GetSongWithDots(Start.Sanitize(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1])), songLength)}"
+                ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]), songLength)}"
                 : $"{nextLabel} : -";
+
+            prevSong = Start.Sanitize(prevSong);
+            currentSong = Start.Sanitize(currentSong);
+            nextSong = Start.Sanitize(nextSong);
 
             // Apply colors
             currentSong = Themes.sColor(currentSong, Utils.Songs.Length == 0
@@ -193,6 +200,7 @@ namespace Jammer
             nextSong = Themes.sColor(nextSong, Utils.CurrentSongIndex < Utils.Songs.Length - 1
                 ? Themes.CurrentTheme.GeneralPlaylist.NextSongColor
                 : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+
 
             return $"{prevSong}\n[green]{currentSong}[/]\n{nextSong}";
         }
