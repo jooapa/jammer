@@ -5,8 +5,9 @@ using System.IO;
 
 namespace Jammer
 {
-    public class IniFileHandling {
-    private static readonly string FileContent = @"
+    public class IniFileHandling
+    {
+        private static readonly string FileContent = @"
 ;Do not use characters outside ascii, if you use it needs to use the same encoding as csharp uses by default. ö = oem7, ä = oem3 etc...
 ;See https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=net-8.0 for allowed characters.
 ;When using numbers, 'd' part is not needed
@@ -46,7 +47,6 @@ LoadEffects = 5
 ToggleMediaButtons = 6
 ToggleVisualizer = 7
 LoadVisualizer = 8
-SetSoundcloudClientID = Shift + Alt + 1
 CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete
@@ -88,58 +88,76 @@ HardDeleteCurrentSong = Shift + Delete
         public static bool isShiftCtrl = false;
         public static bool isShiftCtrlAlt = false;
 
-        public static void ReadNewKeybinds(){
+        public static void ReadNewKeybinds()
+        {
             // Read new keybinds from file
-            try {
+            try
+            {
                 KeyData = parser.ReadFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), System.Text.Encoding.UTF8);
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
-            } catch(Exception) {
-                try {
+            }
+            catch (Exception)
+            {
+                try
+                {
                     KeyData = parser.ReadFile("KeyData.ini", System.Text.Encoding.UTF8);
                     KeyDataFound = true;
                     KeybindAmount = KeyData["Keybinds"].Count;
-                } catch(Exception) {        
+                }
+                catch (Exception)
+                {
                     KeyData = new IniData();
                 }
-            } 
+            }
         }
-        public static void WriteIni_KeyData(){
+        public static void WriteIni_KeyData()
+        {
             // Write keypress to file
             // Previous clcik before enter
 
             string final = previousClick.ToString();
 
             // Add modifiers
-            if(isShiftCtrlAlt){
+            if (isShiftCtrlAlt)
+            {
                 final = "Shift + Ctrl + Alt + " + final;
             }
-            else if(isShiftCtrl){
+            else if (isShiftCtrl)
+            {
                 final = "Shift + Ctrl + " + final;
             }
-            else if(isShiftAlt){
+            else if (isShiftAlt)
+            {
                 final = "Shift + Alt + " + final;
             }
-            else if(isCtrlAlt){
+            else if (isCtrlAlt)
+            {
                 final = "Ctrl + Alt + " + final;
             }
-            else if(isShift){
+            else if (isShift)
+            {
                 final = "Shift + " + final;
             }
-            else if(isCtrl){
+            else if (isCtrl)
+            {
                 final = "Ctrl + " + final;
             }
-            else if(isAlt){
+            else if (isAlt)
+            {
                 final = "Alt + " + final;
             }
             // Check if keybinds exist
             bool isExisting = false;
             string isExistingKeyName;
             // Check if keybind exists
-            foreach (var section in KeyData.Sections){
-                foreach (var key in section.Keys){
+            foreach (var section in KeyData.Sections)
+            {
+                foreach (var key in section.Keys)
+                {
                     string current = key.Value;
-                    if(current.ToLower().Replace(" ", "").Equals(final.ToLower().Replace(" ", ""))){
+                    if (current.ToLower().Replace(" ", "").Equals(final.ToLower().Replace(" ", "")))
+                    {
                         isExisting = true;
                         isExistingKeyName = key.KeyName;
                         break;
@@ -148,57 +166,72 @@ HardDeleteCurrentSong = Shift + Delete
             }
 
             // Save if not
-            if(!isExisting){
+            if (!isExisting)
+            {
                 int i = 0;
-                foreach (var section in KeyData.Sections){
-                    foreach (var key in section.Keys){
-                        if(i == ScrollIndexKeybind){
+                foreach (var section in KeyData.Sections)
+                {
+                    foreach (var key in section.Keys)
+                    {
+                        if (i == ScrollIndexKeybind)
+                        {
                             KeyData["Keybinds"][key.KeyName] = final;
                             break;
                         }
                         i++;
                     }
                 }
-                try {
+                try
+                {
                     parser.WriteFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), KeyData);
-                } catch(Exception) {
+                }
+                catch (Exception)
+                {
                     Jammer.Message.Data(Locale.LocaleKeybind.WriteIni_KeyDataError1, $"{Locale.LocaleKeybind.WriteIni_KeyDataError2}");
                     return;
                 }
-            } else {
+            }
+            else
+            {
                 Jammer.Message.Data($"{Locale.LocaleKeybind.WriteIni_KeyDataError1} {final} {Locale.LocaleKeybind.WriteIni_KeyDataError2}", $"{Locale.LocaleKeybind.WriteIni_KeyDataError3}");
             }
 
         }
-        public static string ReadIni_KeyData(string section, string key){
+        public static string ReadIni_KeyData(string section, string key)
+        {
             string key_value = KeyData[section][key];
             return key_value;
         }
 
-       public static void Create_KeyDataIni(int hardReset){
+        public static void Create_KeyDataIni(int hardReset)
+        {
             string filePath = Path.Combine(Utils.JammerPath, "KeyData.ini");
 
             // Create if not existing
-            if(hardReset == 0){
+            if (hardReset == 0)
+            {
                 if (!File.Exists(filePath))
                 {
                     File.WriteAllText(filePath, FileContent, System.Text.Encoding.UTF8);
                 }
-            } 
+            }
             // Delete if exists and create
-            else if(hardReset == 1){
-                
+            else if (hardReset == 1)
+            {
+
                 // Check if the file exists, if so, delete it
-                if (File.Exists(filePath)){
+                if (File.Exists(filePath))
+                {
                     File.Delete(filePath);
                 }
                 // Create the file and write the content to it
                 File.WriteAllText(filePath, FileContent, System.Text.Encoding.UTF8);
             }
             // Add missing keys
-            else if(hardReset == 2 && File.Exists(filePath)){
+            else if (hardReset == 2 && File.Exists(filePath))
+            {
                 var parser_local_fun = new IniParser.Parser.IniDataParser();
-            
+
                 IniData iniDataFromString = parser_local_fun.Parse(FileContent);
                 // Extract keys from the string representation
                 HashSet<string> keysFromString = ExtractKeys(iniDataFromString);
@@ -211,7 +244,7 @@ HardDeleteCurrentSong = Shift + Delete
                 // Useless keys are the ones that are in the uselessKeysFromFile but not in the FileCOntent
                 HashSet<string> keysFromString2 = ExtractKeys(iniDataFromString);
                 uselessKeysFromFile.ExceptWith(keysFromString2);
-                
+
                 // log 
                 // foreach (string key in uselessKeysFromFile) {
                 //     Console.WriteLine(key);
@@ -219,7 +252,8 @@ HardDeleteCurrentSong = Shift + Delete
                 // Console.ReadKey();
 
                 // Remove useless keys from
-                foreach (string key in uselessKeysFromFile) {
+                foreach (string key in uselessKeysFromFile)
+                {
                     KeyData["Keybinds"].RemoveKey(key);
                 }
 
@@ -228,7 +262,8 @@ HardDeleteCurrentSong = Shift + Delete
                 HashSet<string> missingKeys = new HashSet<string>(keysFromString);
                 missingKeys.ExceptWith(keysFromFile);
                 // Append missing keys to the file
-                if (missingKeys.Count > 0){
+                if (missingKeys.Count > 0)
+                {
                     Type type = typeof(Keybindings);
                     using StreamWriter sw = File.AppendText(filePath);
                     foreach (string key in missingKeys)
@@ -251,7 +286,7 @@ HardDeleteCurrentSong = Shift + Delete
 
             ReadNewKeybinds();
         }
-            // Method to extract keys from IniData object
+        // Method to extract keys from IniData object
         static HashSet<string> ExtractKeys(IniData iniData)
         {
             HashSet<string> keys = new HashSet<string>();
@@ -284,13 +319,16 @@ HardDeleteCurrentSong = Shift + Delete
             string key_pressed_string = key_pressed.ToString();
             // Message.Data($"{key_pressed_string}", "Debug");
             // If number key. d0, d1, d2 etc ->
-            if(key_pressed_string[..1] == "D" && key_pressed_string.Length == 2){
-                key_pressed_string = key_pressed_string.Substring(1,1);
+            if (key_pressed_string[..1] == "D" && key_pressed_string.Length == 2)
+            {
+                key_pressed_string = key_pressed_string.Substring(1, 1);
             }
             string currentKeyPress = "";
 
-            foreach (var section in KeyData.Sections){
-                foreach (var key in section.Keys){
+            foreach (var section in KeyData.Sections)
+            {
+                foreach (var key in section.Keys)
+                {
                     // Parse key value
                     bool altModifier = false;
                     bool ctrlModifier = false;
@@ -306,10 +344,12 @@ HardDeleteCurrentSong = Shift + Delete
                     string[] parts = keyValue.Split(separator);
 
                     // Loop through parts in the value
-                    foreach (string part in parts){
+                    foreach (string part in parts)
+                    {
                         // Turn to lower case
                         string lowerCasePart = part.ToLower();
-                        switch(lowerCasePart){
+                        switch (lowerCasePart)
+                        {
                             case "shift":
                                 shiftModifier = true;
                                 break;
@@ -325,40 +365,50 @@ HardDeleteCurrentSong = Shift + Delete
                         }
                     }
                     // Message.Data($"{currentKeyPress} {key_pressed_string}", "Debug");
-                    if(currentKeyPress.Equals(key_pressed_string)){
+                    if (currentKeyPress.Equals(key_pressed_string))
+                    {
                         bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                         bool isShiftAltModifier = altModifier && shiftModifier;
                         bool isCtrlAltModifier = altModifier && ctrlModifier;
                         bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                         // Message.Data($"{isShiftCtrlModifier} {isShiftAltModifier} {isCtrlAltModifier} {isShiftAltCtrlModifier}", "Debug");
                         // Look through matches in modifiers
-                        if(isShiftAltCtrlModifier && isShiftCtrlAlt){ // Shift + Alt + Ctrl
+                        if (isShiftAltCtrlModifier && isShiftCtrlAlt)
+                        { // Shift + Alt + Ctrl
                             return key.KeyName;
                         }
-                        else if(isShiftCtrlModifier && isShiftCtrl){ // Shift + Ctrl
+                        else if (isShiftCtrlModifier && isShiftCtrl)
+                        { // Shift + Ctrl
                             return key.KeyName;
                         }
-                        else if(isShiftAltModifier && isShiftAlt){ // Shift + Alt
+                        else if (isShiftAltModifier && isShiftAlt)
+                        { // Shift + Alt
                             return key.KeyName;
                         }
-                        else if(isCtrlAltModifier && isCtrlAlt){ // Ctrl + Alt
+                        else if (isCtrlAltModifier && isCtrlAlt)
+                        { // Ctrl + Alt
                             return key.KeyName;
                         }
-                        else if(!isShiftAltModifier && altModifier && isAlt){ // Alt
+                        else if (!isShiftAltModifier && altModifier && isAlt)
+                        { // Alt
                             return key.KeyName;
                         }
-                        else if(!isShiftCtrlModifier && ctrlModifier && isCtrl){ // Ctrl 
+                        else if (!isShiftCtrlModifier && ctrlModifier && isCtrl)
+                        { // Ctrl 
                             return key.KeyName;
                         }
-                        else if(!isShiftAltModifier && 
-                        !isShiftCtrlModifier && shiftModifier && isShift){ // Shift
+                        else if (!isShiftAltModifier &&
+                        !isShiftCtrlModifier && shiftModifier && isShift)
+                        { // Shift
                             return key.KeyName;
-                        } else if (!isAlt && !isCtrl && !isShift
+                        }
+                        else if (!isAlt && !isCtrl && !isShift
                                     && !isShiftAlt && !isShiftCtrl &&
-                                    !altModifier && !ctrlModifier&& !shiftModifier){ // No modifiers
+                                    !altModifier && !ctrlModifier && !shiftModifier)
+                        { // No modifiers
                             return key.KeyName;
                         }
-                        
+
                     }
                 }
             }
@@ -366,7 +416,7 @@ HardDeleteCurrentSong = Shift + Delete
             // If no keypresses were found, resort to basics from the class
             Type type = typeof(Keybindings);
             FieldInfo[] properties = type.GetFields();
-            
+
             foreach (FieldInfo property in properties)
             {
                 // Parse key value
@@ -374,7 +424,7 @@ HardDeleteCurrentSong = Shift + Delete
                 bool ctrlModifier = false;
                 bool shiftModifier = false;
                 string? keyValue = property.GetValue(property.Name)?.ToString();
-                if(keyValue == null){continue;}
+                if (keyValue == null) { continue; }
                 // Parse spaces
                 keyValue = keyValue.Replace(" ", "");
 
@@ -382,10 +432,12 @@ HardDeleteCurrentSong = Shift + Delete
                 string[] parts = keyValue.Split(separator);
 
                 // Loop through parts in the value
-                foreach (string part in parts){
+                foreach (string part in parts)
+                {
                     // Turn to lower case
                     string lowerCasePart = part.ToLower();
-                    switch(lowerCasePart){
+                    switch (lowerCasePart)
+                    {
                         case "shift":
                             shiftModifier = true;
                             break;
@@ -400,36 +452,46 @@ HardDeleteCurrentSong = Shift + Delete
                             break;
                     }
                 }
-                if(currentKeyPress.Equals(key_pressed_string)){
+                if (currentKeyPress.Equals(key_pressed_string))
+                {
                     bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                     bool isShiftAltModifier = altModifier && shiftModifier;
                     bool isShiftAltCtrlModifier = altModifier && shiftModifier && ctrlModifier;
                     bool isCtrlAltModifier = altModifier && ctrlModifier;
 
                     // Look through matches in modifiers
-                    if(isShiftAltCtrlModifier && isShiftCtrlAlt){
+                    if (isShiftAltCtrlModifier && isShiftCtrlAlt)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(isShiftCtrlModifier && isShiftCtrl){
+                    else if (isShiftCtrlModifier && isShiftCtrl)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(isShiftAltModifier && isShiftAlt){
+                    else if (isShiftAltModifier && isShiftAlt)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(isCtrlAltModifier && isCtrlAlt){
+                    else if (isCtrlAltModifier && isCtrlAlt)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(!isShiftAltModifier && altModifier && isAlt){
+                    else if (!isShiftAltModifier && altModifier && isAlt)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(!isShiftCtrlModifier && ctrlModifier && isCtrl){
+                    else if (!isShiftCtrlModifier && ctrlModifier && isCtrl)
+                    {
                         return property.Name.ToString();
                     }
-                    else if(!isShiftAltModifier && !isShiftCtrlModifier && shiftModifier && isShift){
+                    else if (!isShiftAltModifier && !isShiftCtrlModifier && shiftModifier && isShift)
+                    {
                         return property.Name.ToString();
-                    } else if (!isAlt && !isCtrl && !isShift
+                    }
+                    else if (!isAlt && !isCtrl && !isShift
                                 && !isShiftAlt && !isShiftCtrl &&
-                                !altModifier && !ctrlModifier&& !shiftModifier){
+                                !altModifier && !ctrlModifier && !shiftModifier)
+                    {
                         return property.Name.ToString();
                     }
                 }
@@ -437,7 +499,7 @@ HardDeleteCurrentSong = Shift + Delete
             // Console.ReadKey();
             return "NULL"; // idk if possible?
         }
-        
+
         public static (string[], string[]) ReadAll_KeyData()
         {
             List<string> results = new();
@@ -445,21 +507,29 @@ HardDeleteCurrentSong = Shift + Delete
             int i = 0;
             int maximum = 15;
             Type type = typeof(Locale.EditKeysTexts);
-            foreach (var section in KeyData.Sections){
-                foreach (var key in section.Keys){
+            foreach (var section in KeyData.Sections)
+            {
+                foreach (var key in section.Keys)
+                {
                     string keyValue = key.Value;
-                    if(i >= ScrollIndexKeybind && results.Count != maximum){
+                    if (i >= ScrollIndexKeybind && results.Count != maximum)
+                    {
                         results.Add(keyValue);
                         var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
-                        if (field != null){
+                        if (field != null)
+                        {
                             var value = field?.GetValue(null)?.ToString();
-                            if(value!=null){
+                            if (value != null)
+                            {
                                 results_locale.Add(value);
-                            } else {
+                            }
+                            else
+                            {
                                 results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
-                        else{
+                        else
+                        {
                             results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                         }
                     }
@@ -468,21 +538,29 @@ HardDeleteCurrentSong = Shift + Delete
             }
 
             i = 0;
-            foreach (var section in KeyData.Sections){
-                foreach (var key in section.Keys){
+            foreach (var section in KeyData.Sections)
+            {
+                foreach (var key in section.Keys)
+                {
                     string keyValue = key.Value;
-                    if(i < ScrollIndexKeybind && results.Count != maximum){
+                    if (i < ScrollIndexKeybind && results.Count != maximum)
+                    {
                         results.Add(keyValue);
                         var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
-                        if (field != null){
+                        if (field != null)
+                        {
                             var value = field?.GetValue(null)?.ToString();
-                            if(value!=null){
+                            if (value != null)
+                            {
                                 results_locale.Add(value);
-                            } else {
+                            }
+                            else
+                            {
                                 results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
-                        else{
+                        else
+                        {
                             results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                         }
                     }
@@ -495,21 +573,28 @@ HardDeleteCurrentSong = Shift + Delete
 
 
 
-        
+
         // country code. en, fi, se, de etc...
-        public static void Ini_LoadNewLocale(){
+        public static void Ini_LoadNewLocale()
+        {
             DirectoryInfo? di;
-            try {
+            try
+            {
                 di = new DirectoryInfo(Path.Combine(Utils.JammerPath, "locales"));
-            } catch(Exception) {
+            }
+            catch (Exception)
+            {
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                 return;
             }
-            
+
             FileInfo[]? files = null;
-            try{
+            try
+            {
                 files = di.GetFiles("*.ini");
-            } catch {
+            }
+            catch
+            {
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                 return;
             }
@@ -517,52 +602,65 @@ HardDeleteCurrentSong = Shift + Delete
             //Message.Data(ScrollIndexLanguage.ToString(), ScrollIndexLanguage.ToString());
 
             string country_code = "en";
-            for(int i = 0; i < files?.Length; i++){
-                if(i==ScrollIndexLanguage){
+            for (int i = 0; i < files?.Length; i++)
+            {
+                if (i == ScrollIndexLanguage)
+                {
                     string filename = Path.GetFileName(files[i].ToString());
                     char c = '.';
                     int pos = filename.IndexOf(c);
-                    country_code = filename.Substring(0,pos);
+                    country_code = filename.Substring(0, pos);
 
                     // Message.Data(country_code, country_code);
                     break;
                 }
             }
-            try {
+            try
+            {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
-            } catch(Exception) {
+            }
+            catch (Exception)
+            {
                 Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                 return;
             }
 
         }
 
-        public static void SetLocaleData(){
-            try { 
+        public static void SetLocaleData()
+        {
+            try
+            {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
-            } catch(Exception) {
+            }
+            catch (Exception)
+            {
                 Jammer.Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleError1, Locale.LocaleKeybind.Ini_LoadNewLocaleError2);
                 return;
             }
         }
 
-        public static string? ReadIni_LocaleData(string section, string key){
-            if (LocaleData == null){
+        public static string? ReadIni_LocaleData(string section, string key)
+        {
+            if (LocaleData == null)
+            {
                 return null;
             }
             string key_value = LocaleData[section][key];
             return key_value;
         }
 
-        public static string[] ReadAll_Locales() {
+        public static string[] ReadAll_Locales()
+        {
             List<string> results = new();
             DirectoryInfo? di = null;
             string path = Path.Combine(Utils.JammerPath, "locales");
 
-            if (!Directory.Exists(path)) {
+            if (!Directory.Exists(path))
+            {
                 // Handle the situation when the directory does not exist
                 // For example, you can throw an exception or return an empty array
                 Jammer.Message.Data($"{Locale.OutsideItems.CouldntFindLocales1} '" + path + $"' {Locale.OutsideItems.CouldntFindLocales2}  ", Locale.OutsideItems.Error);
@@ -574,21 +672,26 @@ HardDeleteCurrentSong = Shift + Delete
             FileInfo[] files = di.GetFiles("*.ini");
             LocaleAmount = files.Length;
 
-            if (LocaleAmount == 0) {
+            if (LocaleAmount == 0)
+            {
                 throw new Exception(Locale.OutsideItems.NoLocaleInDir);
             }
 
             int maximum = 15;
-            for(int i = 0; i < files.Length; i++){
+            for (int i = 0; i < files.Length; i++)
+            {
                 string keyValue = files[i].ToString();
-                if(i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum){
+                if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum)
+                {
                     results.Add(keyValue);
                 }
             }
 
-            for(int i = 0; i < files.Length; i++){
+            for (int i = 0; i < files.Length; i++)
+            {
                 string keyValue = files[i].ToString();
-                if(i < IniFileHandling.ScrollIndexLanguage && results.Count != maximum){
+                if (i < IniFileHandling.ScrollIndexLanguage && results.Count != maximum)
+                {
                     results.Add(keyValue);
                 }
             }

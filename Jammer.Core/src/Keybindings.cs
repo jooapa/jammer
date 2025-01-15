@@ -1,4 +1,5 @@
-namespace Jammer{
+namespace Jammer
+{
     /*
     Adding new keybind:
 
@@ -44,7 +45,8 @@ namespace Jammer{
         RefreshConsole = Refresh console screen
         ```
     */
-    public static class Keybindings{
+    public static class Keybindings
+    {
         public static string ToMainMenu = CheckValue("ToMainMenu", "Escape");
         public static string PlayPause = CheckValue("PlayPause", "Spacebar");
         public static string CurrentState = CheckValue("CurrentState", "F12");
@@ -79,7 +81,6 @@ namespace Jammer{
         public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
         public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");
         public static string LoadVisualizer = CheckValue("LoadVisualizer", "8");
-        public static string SetSoundcloudClientID = CheckValue("SetSoundcloudClientID", "Shift + Alt + 1");
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");
@@ -99,7 +100,8 @@ namespace Jammer{
         public static string ShowLog = CheckValue("ShowLog", "Ctrl + L");
         public static string HardDeleteCurrentSong = CheckValue("HardDeleteCurrentSong", "Shift + Delete");
 
-        public static string CheckValue(string value, string defaultValue){
+        public static string CheckValue(string value, string defaultValue)
+        {
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);
             if (finalValue == null || finalValue.Equals(""))
             {

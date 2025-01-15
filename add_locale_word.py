@@ -5,7 +5,9 @@ Example:
     python.bat .\add_locale_word.py -s CliHelp -k ShowHelpMessage -v "k akkalol asdasd asd asd asd" 
 """
 
-import sys, os, argparse
+import sys
+import os
+import argparse
 
 # public static class Settings
 key_start_word = "        public static class "
@@ -57,17 +59,24 @@ def add_locale_word(key, value, default) -> None:
 
     print("New locale word added successfully!")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="This script is used to add a new locale word to the project.")
-                
+    if len(sys.argv) == 1:
+        print("Please run the script with the following arguments:")
+        print("python add_locale_word.py -s <section> -k <key> -v <value>")
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(
+        description="This script is used to add a new locale word to the project.")
+
     parser.add_argument(
-        "--section", "-s", 
+        "--section", "-s",
         help="The key for the new locale word")
     parser.add_argument(
-        "--key", "-k", 
+        "--key", "-k",
         help="The value for the new locale word")
     parser.add_argument(
-        "--value", "-v", nargs='?', default="Temp Wordings", 
+        "--value", "-v", nargs='?', default="Temp Wordings",
         help="The default value for the new locale word (optional)")
 
     args = parser.parse_args()
