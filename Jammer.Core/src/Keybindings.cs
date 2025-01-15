@@ -73,14 +73,15 @@ namespace Jammer
         public static string ToggleInfo = CheckValue("ToggleInfo", "I");
         public static string SearchInPlaylist = CheckValue("SearchInPlaylist", "F3");
         // public static string RenameSong = CheckValue("RenameSong", "F2");
-        public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
-        public static string BackwardSecondAmount = CheckValue("BackwardSecondAmount", "2");
-        public static string ChangeVolumeAmount = CheckValue("ChangeVolumeAmount", "3");
-        public static string Autosave = CheckValue("Autosave", "4");
-        public static string LoadEffects = CheckValue("LoadEffects", "5");
-        public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
-        public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");
-        public static string LoadVisualizer = CheckValue("LoadVisualizer", "8");
+
+        // public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
+        // public static string BackwardSecondAmount = CheckValue("BackwardSecondAmount", "2");
+        // public static string ChangeVolumeAmount = CheckValue("ChangeVolumeAmount", "3");
+        // public static string Autosave = CheckValue("Autosave", "4");
+        // public static string LoadEffects = CheckValue("LoadEffects", "5");
+        // public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
+        // public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");
+        // public static string LoadVisualizer = CheckValue("LoadVisualizer", "8");
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");
@@ -111,6 +112,20 @@ namespace Jammer
             {
                 return finalValue;
             }
+        }
+
+        public static class SettingsKeys
+        {
+            public const ConsoleKey ForwardSecondAmount = ConsoleKey.A;
+            public const ConsoleKey BackwardSecondAmount = ConsoleKey.B;
+            public const ConsoleKey ChangeVolumeAmount = ConsoleKey.C;
+            public const ConsoleKey Autosave = ConsoleKey.D;
+            public const ConsoleKey LoadEffects = ConsoleKey.E;
+            public const ConsoleKey ToggleMediaButtons = ConsoleKey.F;
+            public const ConsoleKey ToggleVisualizer = ConsoleKey.G;
+            public const ConsoleKey LoadVisualizer = ConsoleKey.H;
+            public const ConsoleKey SoundCloudClientID = ConsoleKey.I;
+
         }
     }
 }

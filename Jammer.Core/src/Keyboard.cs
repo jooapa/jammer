@@ -239,332 +239,346 @@ namespace Jammer
                     }
 
                 }
-                switch (Action)
+
+                if (playerView.Equals("settings"))
                 {
-                    case "ToMainMenu":
-                        playerView = "default";
-                        break;
-                    case "PlayPause":
-                        PauseSong();
-                        Play.PlayDrawReset();
-                        break;
-                    case "CurrentState":
-                        Console.WriteLine("CurrentState: " + state);
-                        break;
-                    case "Quit":
-                        Start.state = MainStates.pause;
-                        Environment.Exit(0);
-                        break;
-                    case "NextSong":
-                        state = MainStates.next; // next song
-                        break;
-                    case "PreviousSong":
-                        state = MainStates.previous; // previous song
-                        break;
-                    case "PlaySongs":
-                        Funcs.PlaySingleSong();
-                        break;
-                    case "Forward5s": // move forward 5 seconds
-                        Play.SeekSong(Preferences.forwardSeconds, true);
-                        drawTime = true;
-                        break;
-                    case "Backwards5s": // move backward 5 seconds
-                        Play.SeekSong(-Preferences.rewindSeconds, true);
-                        drawTime = true;
-                        break;
-                    case "VolumeUp": // volume up
-                        if (Preferences.isMuted)
-                        {
-                            Play.ToggleMute();
-                        }
-                        Play.ModifyVolume(Preferences.GetChangeVolumeBy());
-                        Preferences.SaveSettings();
-                        drawTime = true;
-                        break;
-                    case "VolumeDown": // volume down
-                        if (Preferences.isMuted)
-                        {
-                            Play.ToggleMute();
-                        }
-                        Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
-                        Preferences.SaveSettings();
-                        drawTime = true;
-                        break;
-                    case "Shuffle": // suffle or save
-                        Preferences.isShuffle = !Preferences.isShuffle;
-                        Preferences.SaveSettings();
-                        drawTime = true;
-                        break;
-                    case "SaveAsPlaylist":
-                        Funcs.SaveAsPlaylist();
-                        drawWhole = true;
-                        break;
-                    case "SaveCurrentPlaylist":
-                        Funcs.SaveCurrentPlaylist();
-                        drawWhole = true;
-                        break;
-                    case "ShufflePlaylist":
-                        Funcs.ShufflePlaylist();
-                        drawWhole = true;
-                        break;
-                    case "Loop": // loop
-                        Preferences.isLoop = !Preferences.isLoop;
-                        Preferences.SaveSettings();
-                        drawTime = true;
-                        break;
-                    case "Mute": // mute
-                        Play.ToggleMute();
-                        Preferences.SaveSettings();
-                        drawTime = true;
-                        break;
-                    case "ShowHidePlaylist": // show all view
-                        if (playerView == "default")
-                        {
-                            playerView = "all";
-                        }
-                        else
-                        {
-                            playerView = "default";
-                        }
-                        break;
-                    case "ListAllPlaylists":
-                        Funcs.ListAllPlaylists();
-                        drawWhole = true;
-                        break;
-                    case "Help": // show help
-                        AnsiConsole.Clear();
-                        if (playerView == "help")
-                        {
-                            playerView = "default";
-                            break;
-                        }
-                        playerView = "help";
-                        break;
-                    case "Settings": // show settings
-                        AnsiConsole.Clear();
-                        if (playerView == "settings")
-                        {
-                            playerView = "default";
-                            break;
-                        }
-                        playerView = "settings";
-                        break;
+                    switch (key.Key)
+                    {
+                        case Keybindings.SettingsKeys.ForwardSecondAmount:
+                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
+                            if (int.TryParse(forwardSecondsString, out int forwardSeconds))
+                            {
+                                Preferences.forwardSeconds = forwardSeconds;
+                                Preferences.SaveSettings();
+                            }
+                            else
+                            {
 
-                    case "Autosave": // autosave or not
-                        Preferences.isAutoSave = !Preferences.isAutoSave;
-                        Preferences.SaveSettings();
-                        drawWhole = true;
-                        break;
-                    case "LoadEffects": // reset effects
-                        Effects.ReadEffects();
-                        if (Utils.Songs.Length > 0)
-                        {
-                            Play.SetEffectsToChannel();
-                        }
-                        break;
-                    case "ToggleMediaButtons": // toggle media buttons
-                        Preferences.isMediaButtons = !Preferences.isMediaButtons;
-                        Preferences.SaveSettings();
-                        drawWhole = true;
-                        break;
-                    case "ToggleVisualizer": // toggle visualizer
-                        Preferences.isVisualizer = !Preferences.isVisualizer;
-                        Preferences.SaveSettings();
-                        drawWhole = true;
-                        break;
-                    case "LoadVisualizer":
-                        Visual.Read();
-                        break;
-                    case "ToSongStart": // goto song start
-                        Play.SeekSong(0, false);
-                        break;
-                    case "ToSongEnd": // goto song end
-                        Play.MaybeNextSong();
-                        break;
-                    case "ToggleInfo": // toggle info
-                        Message.Data("Info", "Info is toggled");
-                        drawWhole = true;
-                        break;
-                    case "SearchInPlaylist": // playlist options
-                        Search.SearchForSongInPlaylistAsync();
-                        drawWhole = true;
-                        break;
-                    //case "RenameSong": // rename song
-                    //    string newName = Message.Input("Enter the new name:", "New name");
-                    //    drawWhole = true;
-                    //    break;
-                    case "ForwardSecondAmount": // set forward seek to 1 second
-                        string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
-                        if (int.TryParse(forwardSecondsString, out int forwardSeconds))
-                        {
-                            Preferences.forwardSeconds = forwardSeconds;
-                            Preferences.SaveSettings();
-                        }
-                        else
-                        {
+                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                            }
 
-                            Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                        }
-
-                        drawWhole = true;
-                        break;
-                    case "BackwardSecondAmount": // set rewind seek to 2 seconds
-
-                        string rewindSecondsString = Jammer.Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
-                        if (int.TryParse(rewindSecondsString, out int rewindSeconds))
-                        {
-                            Preferences.rewindSeconds = rewindSeconds;
-                            Preferences.SaveSettings();
-                        }
-                        else
-                        {
-                            Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                        }
-                        drawWhole = true;
-                        break;
-                    case "ChangeVolumeAmount": // set volume change to 3
-                        string volumeChangeString = Jammer.Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
-                        if (int.TryParse(volumeChangeString, out int volumeChange))
-                        {
-                            float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
-                            Preferences.changeVolumeBy = changeVolumeByFloat;
-                            Preferences.SaveSettings();
-                        }
-                        else
-                        {
-                            Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                        }
-                        drawWhole = true;
-                        break;
-                    // case "SetSoundcloudClientID":
-                    //     if (Preferences.clientID == "")
-                    //     {
-
-                    //     }
-                    //     SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
-
-                    //     string soundcloudClientID = Jammer.Message.Input(
-                    //         "Enter your Soundcloud Client ID:", 
-                    //         "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" + 
-                    //         "type 'cancel' to cancel" + "\n" + 
-                    //         "type 'reset' to reset to default"
-                    //     );
-
-                    //     if (soundcloudClientID == "cancel")
-                    //     {
-                    //         drawWhole = true;
-                    //         break;
-                    //     }
-
-                    //     if (soundcloudClientID == "reset")
-                    //     {
-                    //         Preferences.clientID = "";
-                    //         Preferences.SaveSettings();
-                    //         drawWhole = true;                                
-                    //         break;
-                    //     }
-
-                    //     Preferences.clientID = soundcloudClientID;
-
-                    //     Preferences.SaveSettings();
-
-                    //     drawWhole = true;
-                    //     break;
-                    case "CommandHelpScreen":
-                        TUI.CliHelp();
-
-                        AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
-                        Console.ReadKey(true);
-                        drawWhole = true;
-                        break;
-                    case "DeleteCurrentSong":
-                        Play.DeleteSong(Utils.CurrentSongIndex, false);
-                        drawWhole = true;
-                        break;
-                    case "HardDeleteCurrentSong":
-                        Play.DeleteSong(Utils.CurrentSongIndex, false, true);
-                        drawWhole = true;
-                        break;
-                    // Case For A
-                    case "AddSongToPlaylist":
-                        Funcs.AddSongToPlaylist();
-                        drawWhole = true;
-                        break;
-                    // Case For ?
-                    case "ShowSongsInPlaylists":
-                        Funcs.ShowSongsInPlaylist();
-                        drawWhole = true;
-                        break;
-                    case "PlayOtherPlaylist":
-                        Funcs.PlayOtherPlaylist();
-                        drawWhole = true;
-                        break;
-                    case "RedownloadCurrentSong":
-                        Play.ReDownloadSong();
-                        break;
-                    case "EditKeybindings":
-                        AnsiConsole.Clear();
-                        IniFileHandling.ScrollIndexKeybind = 0;
-
-                        if (playerView == "default")
-                        {
-                            playerView = "editkeybindings";
-                        }
-                        else
-                        {
-                            playerView = "default";
-                        }
-                        break;
-                    case "ChangeLanguage":
-                        AnsiConsole.Clear();
-                        IniFileHandling.ScrollIndexLanguage = 0;
-
-                        if (playerView == "default")
-                        {
-                            playerView = "changelanguage";
-                        }
-                        else
-                        {
-                            playerView = "default";
-                        }
-                        break;
-                    case "ChangeTheme":
-                        AnsiConsole.Clear();
-                        string[] themes = Themes.GetAllThemes();
-                        // move that first element is "Create a new theme" and "Jammer Default"
-                        string[] newThemes = new string[themes.Length + 2];
-                        newThemes[0] = "Create a new theme";
-                        newThemes[1] = "Jammer Default";
-                        for (int i = 0; i < themes.Length; i++)
-                        {
-                            newThemes[i + 2] = themes[i];
-                        }
-                        themes = newThemes;
-                        string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
-
-
-                        if (chosen == "Jammer Default")
-                        {
-                            Preferences.theme = chosen;
-                            Preferences.SaveSettings();
-                            Themes.SetTheme(Preferences.theme);
                             drawWhole = true;
                             break;
-                        }
+                        case Keybindings.SettingsKeys.BackwardSecondAmount:
 
-                        // if the user wants to create a new theme
-                        if (chosen == "Create a new theme")
-                        {
-                            AnsiConsole.Clear();
-                            string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
-                            if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
+                            string rewindSecondsString = Jammer.Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
+                            if (int.TryParse(rewindSecondsString, out int rewindSeconds))
+                            {
+                                Preferences.rewindSeconds = rewindSeconds;
+                                Preferences.SaveSettings();
+                            }
+                            else
+                            {
+                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                            }
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.ChangeVolumeAmount:
+                            string volumeChangeString = Jammer.Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
+                            if (int.TryParse(volumeChangeString, out int volumeChange))
+                            {
+                                float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
+                                Preferences.changeVolumeBy = changeVolumeByFloat;
+                                Preferences.SaveSettings();
+                            }
+                            else
+                            {
+                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                            }
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.SoundCloudClientID:
+                            if (Preferences.clientID == "")
+                            {
+
+                            }
+                            SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
+
+                            string soundcloudClientID = Jammer.Message.Input(
+                                "Enter your Soundcloud Client ID:",
+                                "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" +
+                                "type 'cancel' to cancel" + "\n" +
+                                "type 'reset' to reset to default"
+                            );
+
+                            if (soundcloudClientID == "cancel")
                             {
                                 drawWhole = true;
                                 break;
                             }
-                            Themes.CreateTheme(themeName);
-                            Message.Input(Locale.Miscellaneous.GoEditThemeFile, Locale.Miscellaneous.ThemeFileCreatedInJammerFolder);
-                            // If windows, open with notepad
+
+                            if (soundcloudClientID == "reset")
+                            {
+                                Preferences.clientID = "";
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            }
+
+                            Preferences.clientID = soundcloudClientID;
+
+                            Preferences.SaveSettings();
+
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.Autosave:
+                            Preferences.isAutoSave = !Preferences.isAutoSave;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.LoadEffects:
+                            Effects.ReadEffects();
+                            if (Utils.Songs.Length > 0)
+                            {
+                                Play.SetEffectsToChannel();
+                            }
+                            break;
+                        case Keybindings.SettingsKeys.ToggleMediaButtons:
+                            Preferences.isMediaButtons = !Preferences.isMediaButtons;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.ToggleVisualizer:
+                            Preferences.isVisualizer = !Preferences.isVisualizer;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.LoadVisualizer:
+                            Visual.Read();
+                            break;
+                    }
+
+                    // able to return to default view
+                    if (Action == "ToMainMenu")
+                    {
+                        playerView = "default";
+                        drawWhole = true;
+                    }
+                }
+                else
+                    switch (Action)
+                    {
+                        case "ToMainMenu":
+                            playerView = "default";
+                            break;
+                        case "PlayPause":
+                            PauseSong();
+                            Play.PlayDrawReset();
+                            break;
+                        case "CurrentState":
+                            Console.WriteLine("CurrentState: " + state);
+                            break;
+                        case "Quit":
+                            Start.state = MainStates.pause;
+                            Environment.Exit(0);
+                            break;
+                        case "NextSong":
+                            state = MainStates.next; // next song
+                            break;
+                        case "PreviousSong":
+                            state = MainStates.previous; // previous song
+                            break;
+                        case "PlaySongs":
+                            Funcs.PlaySingleSong();
+                            break;
+                        case "Forward5s": // move forward 5 seconds
+                            Play.SeekSong(Preferences.forwardSeconds, true);
+                            drawTime = true;
+                            break;
+                        case "Backwards5s": // move backward 5 seconds
+                            Play.SeekSong(-Preferences.rewindSeconds, true);
+                            drawTime = true;
+                            break;
+                        case "VolumeUp": // volume up
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
+                            Play.ModifyVolume(Preferences.GetChangeVolumeBy());
+                            Preferences.SaveSettings();
+                            drawTime = true;
+                            break;
+                        case "VolumeDown": // volume down
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
+                            Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
+                            Preferences.SaveSettings();
+                            drawTime = true;
+                            break;
+                        case "Shuffle": // suffle or save
+                            Preferences.isShuffle = !Preferences.isShuffle;
+                            Preferences.SaveSettings();
+                            drawTime = true;
+                            break;
+                        case "SaveAsPlaylist":
+                            Funcs.SaveAsPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "SaveCurrentPlaylist":
+                            Funcs.SaveCurrentPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "ShufflePlaylist":
+                            Funcs.ShufflePlaylist();
+                            drawWhole = true;
+                            break;
+                        case "Loop": // loop
+                            Preferences.isLoop = !Preferences.isLoop;
+                            Preferences.SaveSettings();
+                            drawTime = true;
+                            break;
+                        case "Mute": // mute
+                            Play.ToggleMute();
+                            Preferences.SaveSettings();
+                            drawTime = true;
+                            break;
+                        case "ShowHidePlaylist": // show all view
+                            if (playerView == "default")
+                            {
+                                playerView = "all";
+                            }
+                            else
+                            {
+                                playerView = "default";
+                            }
+                            break;
+                        case "ListAllPlaylists":
+                            Funcs.ListAllPlaylists();
+                            drawWhole = true;
+                            break;
+                        case "Help": // show help
+                            AnsiConsole.Clear();
+                            if (playerView == "help")
+                            {
+                                playerView = "default";
+                                break;
+                            }
+                            playerView = "help";
+                            break;
+                        case "Settings": // show settings
+                            AnsiConsole.Clear();
+                            if (playerView == "settings")
+                            {
+                                playerView = "default";
+                                break;
+                            }
+                            playerView = "settings";
+                            break;
+                        case "ToSongStart": // goto song start
+                            Play.SeekSong(0, false);
+                            break;
+                        case "ToSongEnd": // goto song end
+                            Play.MaybeNextSong();
+                            break;
+                        case "ToggleInfo": // toggle info
+                            Message.Data("Info", "Info is toggled");
+                            drawWhole = true;
+                            break;
+                        case "SearchInPlaylist": // playlist options
+                            Search.SearchForSongInPlaylistAsync();
+                            drawWhole = true;
+                            break;
+                        //case "RenameSong": // rename song
+                        //    string newName = Message.Input("Enter the new name:", "New name");
+                        //    drawWhole = true;
+                        //    break;
+                        case "CommandHelpScreen":
+                            TUI.CliHelp();
+
+                            AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
+                            Console.ReadKey(true);
+                            drawWhole = true;
+                            break;
+                        case "DeleteCurrentSong":
+                            Play.DeleteSong(Utils.CurrentSongIndex, false);
+                            drawWhole = true;
+                            break;
+                        case "HardDeleteCurrentSong":
+                            Play.DeleteSong(Utils.CurrentSongIndex, false, true);
+                            drawWhole = true;
+                            break;
+                        // Case For A
+                        case "AddSongToPlaylist":
+                            Funcs.AddSongToPlaylist();
+                            drawWhole = true;
+                            break;
+                        // Case For ?
+                        case "ShowSongsInPlaylists":
+                            Funcs.ShowSongsInPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "PlayOtherPlaylist":
+                            Funcs.PlayOtherPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "RedownloadCurrentSong":
+                            Play.ReDownloadSong();
+                            break;
+                        case "EditKeybindings":
+                            AnsiConsole.Clear();
+                            IniFileHandling.ScrollIndexKeybind = 0;
+
+                            if (playerView == "default")
+                            {
+                                playerView = "editkeybindings";
+                            }
+                            else
+                            {
+                                playerView = "default";
+                            }
+                            break;
+                        case "ChangeLanguage":
+                            AnsiConsole.Clear();
+                            IniFileHandling.ScrollIndexLanguage = 0;
+
+                            if (playerView == "default")
+                            {
+                                playerView = "changelanguage";
+                            }
+                            else
+                            {
+                                playerView = "default";
+                            }
+                            break;
+                        case "ChangeTheme":
+                            AnsiConsole.Clear();
+                            string[] themes = Themes.GetAllThemes();
+                            // move that first element is "Create a new theme" and "Jammer Default"
+                            string[] newThemes = new string[themes.Length + 2];
+                            newThemes[0] = "Create a new theme";
+                            newThemes[1] = "Jammer Default";
+                            for (int i = 0; i < themes.Length; i++)
+                            {
+                                newThemes[i + 2] = themes[i];
+                            }
+                            themes = newThemes;
+                            string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
+
+
+                            if (chosen == "Jammer Default")
+                            {
+                                Preferences.theme = chosen;
+                                Preferences.SaveSettings();
+                                Themes.SetTheme(Preferences.theme);
+                                drawWhole = true;
+                                break;
+                            }
+
+                            // if the user wants to create a new theme
+                            if (chosen == "Create a new theme")
+                            {
+                                AnsiConsole.Clear();
+                                string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
+                                if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
+                                Themes.CreateTheme(themeName);
+                                Message.Input(Locale.Miscellaneous.GoEditThemeFile, Locale.Miscellaneous.ThemeFileCreatedInJammerFolder);
+                                // If windows, open with notepad
 #if WINDOWS
                                     System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Utils.JammerPath, "themes"));
 #elif LINUX
@@ -572,95 +586,95 @@ namespace Jammer
 #elif MAC
                                     System.Diagnostics.Process.Start("open", Path.Combine(Utils.JammerPath, "themes"));
 #endif
-                            Preferences.theme = themeName;
-                        }
-                        else
-                        {
-                            Preferences.theme = chosen;
-                        }
+                                Preferences.theme = themeName;
+                            }
+                            else
+                            {
+                                Preferences.theme = chosen;
+                            }
 
-                        Preferences.SaveSettings();
-                        Themes.SetTheme(Preferences.theme);
-                        drawWhole = true;
-                        break;
-                    case "Search":
-                        Search.SearchSongOnMediaPlatform();
-                        drawWhole = true;
-                        break;
-                    case "PlayRandomSong":
-                        Play.RandomSong();
-                        break;
-                    case "ShowLog":
-                        AnsiConsole.Clear();
-                        Message.Data(Log.GetLog(), "Log");
-                        drawWhole = true;
-                        break;
-                    case "ChangeSoundFont":
-                        AnsiConsole.Clear();
-                        string[] soundFonts = SoundFont.GetSoundFonts();
-                        string[] newSoundFonts = new string[soundFonts.Length + 3];
-                        newSoundFonts[0] = "Cancel";
-                        newSoundFonts[1] = "Link to a soundfont by path";
-                        newSoundFonts[2] = "Import soundfont by path";
+                            Preferences.SaveSettings();
+                            Themes.SetTheme(Preferences.theme);
+                            drawWhole = true;
+                            break;
+                        case "Search":
+                            Search.SearchSongOnMediaPlatform();
+                            drawWhole = true;
+                            break;
+                        case "PlayRandomSong":
+                            Play.RandomSong();
+                            break;
+                        case "ShowLog":
+                            AnsiConsole.Clear();
+                            Message.Data(Log.GetLog(), "Log");
+                            drawWhole = true;
+                            break;
+                        case "ChangeSoundFont":
+                            AnsiConsole.Clear();
+                            string[] soundFonts = SoundFont.GetSoundFonts();
+                            string[] newSoundFonts = new string[soundFonts.Length + 3];
+                            newSoundFonts[0] = "Cancel";
+                            newSoundFonts[1] = "Link to a soundfont by path";
+                            newSoundFonts[2] = "Import soundfont by path";
 
-                        for (int i = 0; i < soundFonts.Length; i++)
-                        {
-                            newSoundFonts[i + 3] = soundFonts[i];
-                        }
+                            for (int i = 0; i < soundFonts.Length; i++)
+                            {
+                                newSoundFonts[i + 3] = soundFonts[i];
+                            }
 
-                        soundFonts = newSoundFonts;
+                            soundFonts = newSoundFonts;
 
-                        string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+                            string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
 
-                        switch (chosenSoundFont)
-                        {
-                            case "Cancel":
-                                drawWhole = true;
-                                chosenSoundFont = Preferences.currentSf2;
-                                break;
-                            case "Link to a soundfont by path":
-                                string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
-                                if (File.Exists(path))
-                                {
-                                    SoundFont.MakeAbsoluteSfFile(path);
-                                    chosenSoundFont = path;
-                                }
-                                else
-                                {
-                                    Message.Data("The file does not exist", ":(", true);
+                            switch (chosenSoundFont)
+                            {
+                                case "Cancel":
                                     drawWhole = true;
                                     chosenSoundFont = Preferences.currentSf2;
-                                }
-                                break;
-                            case "Import soundfont by path":
-                                string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
-                                if (File.Exists(importPath))
-                                {
-                                    chosenSoundFont = Preferences.currentSf2;
-                                    string importAf = SoundFont.ImportSoundFont(importPath);
-                                    if (importAf != string.Empty)
+                                    break;
+                                case "Link to a soundfont by path":
+                                    string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    if (File.Exists(path))
                                     {
-                                        chosenSoundFont = importAf;
+                                        SoundFont.MakeAbsoluteSfFile(path);
+                                        chosenSoundFont = path;
                                     }
-                                }
-                                else
-                                {
-                                    Message.Data("The file does not exist", ":(", true);
-                                    drawWhole = true;
-                                    chosenSoundFont = Preferences.currentSf2;
-                                }
-                                break;
-                        }
+                                    else
+                                    {
+                                        Message.Data("The file does not exist", ":(", true);
+                                        drawWhole = true;
+                                        chosenSoundFont = Preferences.currentSf2;
+                                    }
+                                    break;
+                                case "Import soundfont by path":
+                                    string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    if (File.Exists(importPath))
+                                    {
+                                        chosenSoundFont = Preferences.currentSf2;
+                                        string importAf = SoundFont.ImportSoundFont(importPath);
+                                        if (importAf != string.Empty)
+                                        {
+                                            chosenSoundFont = importAf;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Message.Data("The file does not exist", ":(", true);
+                                        drawWhole = true;
+                                        chosenSoundFont = Preferences.currentSf2;
+                                    }
+                                    break;
+                            }
 
-                        Preferences.currentSf2 = chosenSoundFont;
-                        Preferences.SaveSettings();
-                        long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
-                        Play.StartPlaying();
-                        // goto the position
-                        Bass.ChannelSetPosition(Utils.CurrentMusic, position);
-                        drawWhole = true;
-                        break;
-                }
+                            Preferences.currentSf2 = chosenSoundFont;
+                            Preferences.SaveSettings();
+                            long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
+                            Play.StartPlaying();
+                            // goto the position
+                            Bass.ChannelSetPosition(Utils.CurrentMusic, position);
+                            drawWhole = true;
+                            break;
+                    }
                 Action = "";
                 if (playerView == "all")
                 {

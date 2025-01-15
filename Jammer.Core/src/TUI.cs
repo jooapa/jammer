@@ -507,10 +507,10 @@ namespace Jammer
         }
         static public void DrawSettings()
         {
-            string ForwardSecondAmount = (Keybindings.ForwardSecondAmount);
-            string BackwardSecondAmount = (Keybindings.BackwardSecondAmount);
-            string ChangeVolumeAmount = (Keybindings.ChangeVolumeAmount);
-            string Autosave = (Keybindings.Autosave);
+            string ForwardSecondAmount = (Keybindings.SettingsKeys.ForwardSecondAmount).ToString();
+            string BackwardSecondAmount = (Keybindings.SettingsKeys.BackwardSecondAmount).ToString();
+            string ChangeVolumeAmount = (Keybindings.SettingsKeys.ChangeVolumeAmount).ToString();
+            string Autosave = (Keybindings.SettingsKeys.Autosave).ToString();
 
             var table = new Table();
             table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
@@ -523,16 +523,31 @@ namespace Jammer
             table.AddRow(Themes.sColor(Locale.Settings.Rewindseconds, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.rewindSeconds + " sec", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{BackwardSecondAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             table.AddRow(Themes.sColor(Locale.Settings.ChangeVolumeBy, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.changeVolumeBy * 100 + " %", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{ChangeVolumeAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             table.AddRow(Themes.sColor(Locale.Settings.AutoSave, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Autosave} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToToggle}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Load Effects", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.LoadEffects} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Effects settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Media Buttons", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.ToggleMediaButtons} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Media Buttons"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.ToggleVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Load Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.LoadVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Visualizer settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            // table.AddRow(Themes.sColor("Set Soundcloud Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor)     , ""                                                                                                                                                            , Themes.sColor($"{Keybindings.SetSoundcloudClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Set Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Load Effects", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.LoadEffects} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Effects settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Toggle Media Buttons", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.ToggleMediaButtons} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Media Buttons"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Toggle Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.ToggleVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Load Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.LoadVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Visualizer settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Set Soundcloud Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.SoundCloudClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Set Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
 
 
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
-            DrawHelpSettingInfo();
+            var table2 = new Table();
+            table2.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
+            table2.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
+
+            // go back text with keybinds tomainmenu
+            table2.AddColumn(
+                Locale.Help.ToMainMenu
+                + ": " +
+                Themes.sColor(
+                    Keybindings.ToMainMenu,
+                    Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor
+                )
+            );
+
+            AnsiConsole.Write(table2);
+
         }
 
         private static void DrawHelpSettingInfo()
