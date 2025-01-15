@@ -37,12 +37,13 @@ namespace Jammer
             if (oneChar)
             {
                 ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
-                return keyInfo.KeyChar.ToString(); // Return the character as a string
+                return Start.Sanitize(keyInfo.KeyChar.ToString());
             }
             else
             {
                 string input = ReadLine.Read(inputSaying + " ");
                 ReadLine.AddHistory(input);
+                Start.Sanitize(input, true);
                 return input;
             }
         }

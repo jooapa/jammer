@@ -345,14 +345,19 @@ namespace Jammer
         /// string sanitized = Sanitize("Hello world [lol]");
         /// Output: "Hello world lol"
         /// </code>        
-        public static string Sanitize(string input)
+        public static string Sanitize(string input, bool removeBrakets = false)
         {
-            // Remove [ ] from input
-            input = input.Replace("[", "[[");
-            input = input.Replace("]", "]]");
+            if (removeBrakets)
+            {
+                input = input.Replace("[", "");
+                input = input.Replace("]", "");
+            }
+            else
+            {
+                input = input.Replace("[", "[[");
+                input = input.Replace("]", "]]");
+            }
             input = input.Replace("\"", "\'");
-            // input = input.Replace("\"", "");
-            // input = input.Replace("\'", "");
             return input;
         }
 
