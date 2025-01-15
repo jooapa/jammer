@@ -5,8 +5,10 @@ using IniParser.Model;
 using Spectre.Console;
 using System.Globalization;
 
-namespace Jammer {
-    public class Visual {
+namespace Jammer
+{
+    public class Visual
+    {
         public static string FileContent = @"[Audio Visualizer]
 ; Refresh time in milliseconds
 RefreshTime = 35
@@ -64,9 +66,12 @@ PausingEffect = true
             if (bytesRead <= 0)
             {
                 string songPath;
-                if (Utils.CurrentMusic == 0 && Utils.CurSongError) {
+                if (Utils.CurrentMusic == 0 && Utils.CurSongError)
+                {
                     songPath = "Error: cannot read FFT data";
-                } else {
+                }
+                else
+                {
                     songPath = "";
                 }
 
@@ -83,7 +88,7 @@ PausingEffect = true
             frequencyCount = Math.Min(frequencyCount, fftData.Length);
 
             // Calculate this value once before the loop
-            int maxLength = Math.Max(length - 43 , 1);
+            int maxLength = Math.Max(length - 43, 1);
 
             StringBuilder frequencyBuilder = new StringBuilder(frequencyCount);
 
@@ -126,9 +131,12 @@ PausingEffect = true
 
             string str = frequencyBuilder.ToString();
 
-            if (isPlaying) {
+            if (isPlaying)
+            {
                 return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PlayingColor);
-            } else {
+            }
+            else
+            {
                 return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PausedColor);
             }
         }
@@ -138,8 +146,10 @@ PausingEffect = true
             if (Themes.CurrentTheme == null || Themes.CurrentTheme.Visualizer == null || Themes.CurrentTheme.Visualizer.UnicodeMap == null)
             {
                 return new string[] { " ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" };
-            } else {
-                return Themes.CurrentTheme.Visualizer.UnicodeMap; 
+            }
+            else
+            {
+                return Themes.CurrentTheme.Visualizer.UnicodeMap;
             }
         }
 
@@ -168,29 +178,36 @@ PausingEffect = true
             }
         }
 
-        public static void Write() {
+        public static void Write()
+        {
             string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
-            
+
             // Create the file if it doesn't exist
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 Log.Info("Creating Visualizer.ini file");
                 File.WriteAllText(path, FileContent, Encoding.UTF8);
             }
-            else {
+            else
+            {
                 Log.Info("Visualizer.ini file already exists");
             }
         }
 
-        public static void Read() {
+        public static void Read()
+        {
             Log.Info("Reading Visualizer.ini file");
             string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
             var parser = new FileIniDataParser();
             IniData data;
 
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 Write();
                 data = parser.ReadFile(path);
-            } else {
+            }
+            else
+            {
                 data = parser.ReadFile(path);
                 bool changed = false;
                 // Check if the desired entries exist, and add them if they don't
@@ -241,7 +258,7 @@ PausingEffect = true
                 }
             }
 
-            refreshTime = int.Parse(data["Audio Visualizer"]["RefreshTime"], CultureInfo.InvariantCulture);   
+            refreshTime = int.Parse(data["Audio Visualizer"]["RefreshTime"], CultureInfo.InvariantCulture);
             bufferSize = int.Parse(data["Audio Visualizer"]["BufferSize"], CultureInfo.InvariantCulture);
             dataFlags = data["Audio Visualizer"]["DataFlags"];
             minFrequency = int.Parse(data["Audio Visualizer"]["MinFrequency"], CultureInfo.InvariantCulture);

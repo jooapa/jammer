@@ -8,9 +8,11 @@ using System.Globalization;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
-namespace Jammer {
-    public static class Themes {
-        public static readonly string comments = 
+namespace Jammer
+{
+    public static class Themes
+    {
+        public static readonly string comments =
 @"// Colours: https://spectreconsole.net/appendix/colors and https://spectreconsole.net/appendix/styles
 // or see jammer\docs\console_styling.html
 
@@ -149,39 +151,49 @@ namespace Jammer {
 
         public static Theme? CurrentTheme { get; private set; }
         static readonly string themePath = Path.Combine(Utils.JammerPath, "themes");
-        public static void Init() {
+        public static void Init()
+        {
             int returne = 0;
-            if (Preferences.GetTheme() == null || Preferences.GetTheme() == "" || Preferences.GetTheme() == "Jammer Default") {
+            if (Preferences.GetTheme() == null || Preferences.GetTheme() == "" || Preferences.GetTheme() == "Jammer Default")
+            {
                 SetDefaultTheme();
                 returne = 1;
-            }            
+            }
 
-            if (!SetThemeUsingPreferences() && returne == 0) {
-                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]"+Preferences.GetTheme()+"[/] does not exist");
+            if (!SetThemeUsingPreferences() && returne == 0)
+            {
+                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]" + Preferences.GetTheme() + "[/] does not exist");
                 AnsiConsole.MarkupLine("[red]Error:[/] Setting theme to [yellow]Jammer Default[/]");
                 SetDefaultTheme();
             }
-            if (Preferences.theme != "Jammer Default") {
+            if (Preferences.theme != "Jammer Default")
+            {
                 AddAllMissingPropertiesInJsonFileIfMissing(Path.Combine(themePath, Preferences.GetTheme() + ".json"));
             }
         }
-        public static void CreateTheme(string themeName) {
-            if (!Directory.Exists(themePath)) {
+        public static void CreateTheme(string themeName)
+        {
+            if (!Directory.Exists(themePath))
+            {
                 Directory.CreateDirectory(themePath);
             }
-            if (!File.Exists(Path.Combine(themePath, themeName + ".json"))) {
+            if (!File.Exists(Path.Combine(themePath, themeName + ".json")))
+            {
                 File.WriteAllText(Path.Combine(themePath, themeName + ".json"), comments + fileContent, System.Text.Encoding.UTF8);
             }
         }
 
-        public static string[] GetAllThemes() {
-            if (!Directory.Exists(themePath)) {
+        public static string[] GetAllThemes()
+        {
+            if (!Directory.Exists(themePath))
+            {
                 Directory.CreateDirectory(themePath);
             }
 
             string[] themes = Directory.GetFiles(themePath, "*.json");
 
-            for (int i = 0; i < themes.Length; i++) {
+            for (int i = 0; i < themes.Length; i++)
+            {
                 themes[i] = Path.GetFileNameWithoutExtension(themes[i]);
             }
 
@@ -189,7 +201,8 @@ namespace Jammer {
             return themes;
         }
 
-        public static void SetDefaultTheme() {
+        public static void SetDefaultTheme()
+        {
             Preferences.theme = "Jammer Default";
             // read fileContent
             string jsonWithoutComments = Regex.Replace(fileContent, @"//.*$", "", RegexOptions.Multiline);
@@ -197,7 +210,8 @@ namespace Jammer {
             CurrentTheme = theme;
         }
 
-        public static void AddAllMissingPropertiesInJsonFileIfMissing(string pathToTheme) {
+        public static void AddAllMissingPropertiesInJsonFileIfMissing(string pathToTheme)
+        {
             // loop through all properties in default theme and add them to the theme if they are missing in the theme
             // if missing, add the property with the value from the default theme
             string json = File.ReadAllText(pathToTheme);
@@ -205,18 +219,23 @@ namespace Jammer {
             var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
             var defaultThemeWithoutComments = Regex.Replace(fileContent, @"//.*$", "", RegexOptions.Multiline);
             var defaultThemeJson = System.Text.Json.JsonSerializer.Deserialize<Theme>(defaultThemeWithoutComments);
-            
+
             // loop through all properties in default theme
-            foreach (var property in defaultThemeJson.GetType().GetProperties()) {
+            foreach (var property in defaultThemeJson.GetType().GetProperties())
+            {
                 // if the property is null in the theme, add it
-                if (property.GetValue(theme) == null) {
+                if (property.GetValue(theme) == null)
+                {
                     property.SetValue(theme, property.GetValue(defaultThemeJson));
                 }
                 // if the property is a class, loop through all properties in the class
-                else if (property.GetValue(theme) != null) {
-                    foreach (var subProperty in property.GetValue(defaultThemeJson).GetType().GetProperties()) {
+                else if (property.GetValue(theme) != null)
+                {
+                    foreach (var subProperty in property.GetValue(defaultThemeJson).GetType().GetProperties())
+                    {
                         // if the subProperty is null in the theme, add it
-                        if (subProperty.GetValue(property.GetValue(theme)) == null) {
+                        if (subProperty.GetValue(property.GetValue(theme)) == null)
+                        {
                             subProperty.SetValue(property.GetValue(theme), subProperty.GetValue(property.GetValue(defaultThemeJson)));
                         }
                     }
@@ -231,15 +250,18 @@ namespace Jammer {
             CurrentTheme = theme;
 
         }
-        
-        public static bool SetTheme(string themeName) {
 
-            if (themeName == "Jammer Default") {
+        public static bool SetTheme(string themeName)
+        {
+
+            if (themeName == "Jammer Default")
+            {
                 SetDefaultTheme();
             }
 
             string path = Path.Combine(themePath, themeName + ".json");
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] does not exist", themeName);
                 return false;
             }
@@ -250,7 +272,8 @@ namespace Jammer {
             string jsonWithoutComments = Regex.Replace(json, @"//.*$", "", RegexOptions.Multiline);
             var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
 
-            if (theme == null) {
+            if (theme == null)
+            {
                 AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] is not valid", themeName);
                 return false;
             }
@@ -259,19 +282,23 @@ namespace Jammer {
             return true;
         }
 
-        public static bool SetThemeUsingPreferences() {
+        public static bool SetThemeUsingPreferences()
+        {
             string themeName = Preferences.GetTheme();
 
-            if (themeName == "Jammer Default") {
+            if (themeName == "Jammer Default")
+            {
                 SetDefaultTheme();
                 return true;
             }
-            
-            if (themeName == null) {
+
+            if (themeName == null)
+            {
                 return false;
             }
 
-            if (SetTheme(themeName)) {
+            if (SetTheme(themeName))
+            {
                 return true;
             }
 
@@ -279,21 +306,25 @@ namespace Jammer {
             return false;
         }
 
-        public static string sColor(string str, string color) {
-            if (Play.EmptySpaces(str) || color == "") {
+        public static string sColor(string str, string color)
+        {
+            if (Play.EmptySpaces(str) || color == "")
+            {
                 return str;
             }
             return $"[{color}]{str}[/]";
         }
 
-        public static Color bColor(int[] color) {
+        public static Color bColor(int[] color)
+        {
             return new Color((byte)color[0], (byte)color[1], (byte)color[2]);
         }
 
-        public static TableBorder bStyle(string style) {
+        public static TableBorder bStyle(string style)
+        {
             // to lowercase
             style = style.ToLower();
-            
+
             if (style == "ascii")
                 return TableBorder.Ascii;
             if (style == "ascii2")
@@ -330,13 +361,13 @@ namespace Jammer {
                 return TableBorder.Markdown;
             if (style == "none")
                 return TableBorder.None;
-                
+
             throw new Exception("Invalid Border Style");
         }
 
         public class Theme
         {
-            public PlaylistTheme? Playlist { get; set; } 
+            public PlaylistTheme? Playlist { get; set; }
             public GeneralPlaylistTheme? GeneralPlaylist { get; set; }
             public WholePlaylistTheme? WholePlaylist { get; set; }
             public TimeTheme? Time { get; set; }

@@ -36,7 +36,7 @@ namespace Jammer
         private static Thread loopThread = new(() => { });
         private static Thread visualizerThread = new(() => { });
         public static int consoleWidth = Console.WindowWidth;
-        public static int consoleHeight = Console.WindowHeight;        
+        public static int consoleHeight = Console.WindowHeight;
         public static bool CLI = false;
         public static double lastSeconds = -1;
         public static double lastPlaybackTime = -1;
@@ -51,10 +51,13 @@ namespace Jammer
         public static void Run(string[] args)
         {
             Log.Info("Starting Jammer...");
-            try{
+            try
+            {
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
                 Log.Info("Output encoding set to UTF8");
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
                 Log.Error("Error setting output encoding to UTF8");
             }
@@ -64,25 +67,31 @@ namespace Jammer
             Themes.Init();
             Log.Info("Themes initialized");
             Debug.dprint("Run");
-            if (args.Length > 0) {
+            if (args.Length > 0)
+            {
                 CheckArgs(args);
             }
-            
+
             Preferences.CheckJammerFolderExists();
             IniFileHandling.Create_KeyDataIni(0);
             IniFileHandling.Create_KeyDataIni(2);
             StartUp();
         }
 
-        public static void StartUp() {
-            try {
-                if (!Bass.Init()) {   
+        public static void StartUp()
+        {
+            try
+            {
+                if (!Bass.Init())
+                {
                     /* Message.Data(Locale.OutsideItems.InitializeError, Locale.OutsideItems.Error, true); */
                     Log.Error("BASS initialization failed");
                     return;
                 }
                 // Additional code if initialization is successful
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 // Log the exception message and stack trace
                 Console.WriteLine($"Exception during BASS initialization: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
@@ -99,9 +108,10 @@ namespace Jammer
                 Utils.Songs = Absolute.Correctify(Utils.Songs);
                 //NOTE(ra) Correctify removes filenames from Utils.Songs. 
                 //If there is one file that doesn't exist this is a fix
-                if (Utils.Songs.Length == 0) {
+                if (Utils.Songs.Length == 0)
+                {
                     Debug.dprint("No songs found");
-                    AnsiConsole.WriteLine("No songs found. Exiting..."); 
+                    AnsiConsole.WriteLine("No songs found. Exiting...");
                     Environment.Exit(1);
                 }
                 Utils.CurrentSongPath = Utils.Songs[0];
@@ -181,7 +191,7 @@ namespace Jammer
                             state = MainStates.playing;
                         }
                         else
-                        {   
+                        {
                             drawWhole = true;
                             state = MainStates.idle;
                         }
@@ -232,17 +242,20 @@ namespace Jammer
                         // AnsiConsole.Clear();
                         break;
                     case MainStates.previous:
-                        if(Utils.TotalMusicDurationInSec > 3){ // if the song is played for more than 5 seconds, go to the beginning
+                        if (Utils.TotalMusicDurationInSec > 3)
+                        { // if the song is played for more than 5 seconds, go to the beginning
                             Play.SeekSong(0, false);
                             state = MainStates.playing;
-                        } else {
+                        }
+                        else
+                        {
                             Play.PrevSong();
                         }
                         break;
                 }
 
                 // if no song is playing, set the current song to ""
-                if (Utils.Songs.Length == 0) 
+                if (Utils.Songs.Length == 0)
                 {
                     Utils.CurrentSongPath = "";
                 }
@@ -255,18 +268,26 @@ namespace Jammer
 
                 if (playerView == "default" || playerView == "all")
                 {
-                    if (drawVisualizer && Preferences.isVisualizer) {
-                        if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop || state == MainStates.idle) {
+                    if (drawVisualizer && Preferences.isVisualizer)
+                    {
+                        if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop || state == MainStates.idle)
+                        {
                             TUI.DrawVisualizer();
                         }
-                    } if (drawTime) {
+                    }
+                    if (drawTime)
+                    {
                         TUI.DrawTime();
-                    } if (drawWhole) {
+                    }
+                    if (drawWhole)
+                    {
                         TUI.RefreshCurrentView();
                     }
                 }
-                else {
-                    if (drawWhole) {
+                else
+                {
+                    if (drawWhole)
+                    {
                         TUI.RefreshCurrentView();
                     }
                 }
@@ -276,9 +297,11 @@ namespace Jammer
                 drawTime = false;
                 drawWhole = false;
 
-                if (playerView == "default" || playerView == "all") {
+                if (playerView == "default" || playerView == "all")
+                {
                     Thread.Sleep(1);
-                } else
+                }
+                else
                     Thread.Sleep(5);
             }
         }
@@ -288,10 +311,14 @@ namespace Jammer
         {
             while (true)
             {
-                if (Preferences.isVisualizer) {
-                    if (playerView == "default" || playerView == "all") {
+                if (Preferences.isVisualizer)
+                {
+                    if (playerView == "default" || playerView == "all")
+                    {
                         canVisualize = true;
-                    } else {
+                    }
+                    else
+                    {
                         canVisualize = false;
                     }
 
@@ -303,7 +330,7 @@ namespace Jammer
                 Thread.Sleep(Visual.refreshTime);
             }
         }
-        
+
 
         /// <summary>
         /// Removes "[" and "]" from a string to prevent Spectre.Console from blowing up.
@@ -321,8 +348,8 @@ namespace Jammer
         public static string Sanitize(string input)
         {
             // Remove [ ] from input
-            input = input.Replace("[", "");
-            input = input.Replace("]", "");
+            input = input.Replace("[", "[[]]");
+            input = input.Replace("]", "]]");
             input = input.Replace("\"", "\'");
             // input = input.Replace("\"", "");
             // input = input.Replace("\'", "");
@@ -359,4 +386,4 @@ namespace Jammer
         }
     }
 }
-        
+

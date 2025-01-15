@@ -34,15 +34,18 @@ namespace Jammer
                 Log.Error("Jammer folder does not exist, creating one...");
                 Directory.CreateDirectory(JammerPath);
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "playlists"))){
+            if (!Directory.Exists(Path.Combine(JammerPath, "playlists")))
+            {
                 Log.Error("Playlists folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "playlists"));
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts"))){
+            if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts")))
+            {
                 Log.Error("Soundfonts folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "soundfonts"));
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "locales"))){
+            if (!Directory.Exists(Path.Combine(JammerPath, "locales")))
+            {
                 Log.Error("Soundfonts folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "locales"));
             }
@@ -55,7 +58,7 @@ namespace Jammer
             // Effects.ini
             Effects.WriteEffects();
             Effects.ReadEffects();
-            
+
             Log.Info("Loading Visualizer.ini");
             // Visualizer.ini
             Visual.Write();
@@ -98,7 +101,7 @@ namespace Jammer
             settings.theme = theme;
             settings.currentSf2 = currentSf2;
             settings.clientID = clientID;
-            
+
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
             if (File.Exists(JammerPath))
@@ -247,7 +250,8 @@ namespace Jammer
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
             if (File.Exists(JammerPath))
             {
-                try {
+                try
+                {
                     string jsonString = File.ReadAllText(JammerPath);
                     Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
                     return settings?.changeVolumeBy ?? 0.05f;
@@ -257,7 +261,7 @@ namespace Jammer
                     Console.WriteLine(e);
 
                     return 0.05f;
-                }   
+                }
             }
             else
             {
@@ -374,22 +378,24 @@ namespace Jammer
             }
         }
 
-	public static long DirSize(System.IO.DirectoryInfo d)
-	{
+        public static long DirSize(System.IO.DirectoryInfo d)
+        {
 
-	    long size = 0;
-	    // Add file sizes.
-	    FileInfo[] fis = d.GetFiles();
-	    foreach (FileInfo fi in fis) {
-	        size += fi.Length;
-	    }
-	    // Add subdirectory sizes.
-	    System.IO.DirectoryInfo[] dis = d.GetDirectories();
-	    foreach (DirectoryInfo di in dis) {
-	        size += DirSize(di);
-	    }
-	    return size;
-	}
+            long size = 0;
+            // Add file sizes.
+            FileInfo[] fis = d.GetFiles();
+            foreach (FileInfo fi in fis)
+            {
+                size += fi.Length;
+            }
+            // Add subdirectory sizes.
+            System.IO.DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+            {
+                size += DirSize(di);
+            }
+            return size;
+        }
 
         public static double ToKilobytes(long bytes) => bytes / 1024d;
         public static double ToMegabytes(long bytes) => ToKilobytes(bytes) / 1024d;

@@ -24,7 +24,7 @@ namespace Jammer
                 string[] parts = URI.Split(Utils.JammerFileDelimeter);
                 URI = parts[0];
                 string json = parts[1];
-                
+
                 if (string.IsNullOrEmpty(json))
                 {
                     return;
@@ -59,7 +59,7 @@ namespace Jammer
             {
                 return song.URI;
             }
-            
+
             if (song == null || string.IsNullOrEmpty(song.URI))
             {
                 return string.Empty; // or handle it as needed
@@ -103,12 +103,12 @@ namespace Jammer
             }
 
             string dur = song.Duration ?? "0";
-            
+
             string songINF = "#EXTINF:" + dur + "," + song.Title;
 
             string songString = songINF
-            + "\n" + 
-            song.URI; 
+            + "\n" +
+            song.URI;
             return songString;
         }
 
@@ -122,7 +122,7 @@ namespace Jammer
             return song.URI.Contains(Utils.JammerFileDelimeter) && song.URI.Contains('{') && song.URI.Contains('}');
         }
 
-        
+
         /// <summary>
         /// Get the title of the song
         /// </summary>

@@ -37,14 +37,17 @@ namespace Jammer
             if (URL.IsUrl(playlist))
             {
                 Utils.Songs = new string[] { playlist };
-                if (fromCli) {
+                if (fromCli)
+                {
                     return;
-                } else {
+                }
+                else
+                {
                     Jammer.Play.PlaySong(Utils.Songs, 0);
                     return;
                 }
             }
-            
+
             // AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
             string playlistPath = GetJammerPlaylistPath(playlistName);
@@ -56,7 +59,7 @@ namespace Jammer
                 Utils.Songs = new string[] { GetJammerPlaylistPath(playlist) };
 
                 Utils.CurrentPlaylist = playlistName;
-                
+
                 if (fromCli)
                 {
                     if (Utils.Songs.Length == 0)
@@ -64,7 +67,8 @@ namespace Jammer
                         Utils.CurrentSongIndex = 0;
                         AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.PlaylistIsEmpty}[/]");
                     }
-                    else {
+                    else
+                    {
                         AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Playing} " + Start.Sanitize(playlistName) + "[/]");
                     }
                 }
@@ -87,7 +91,7 @@ namespace Jammer
                 }
             }
         }
-        
+
         /// <summary>
         /// Returns the path of the playlist
         /// </summary>
@@ -164,7 +168,7 @@ namespace Jammer
                     // check if song is already in playlist
                     if (songs.Contains(song))
                     {
-                        AnsiConsole.MarkupLine("[red]" + song + $" {Locale.OutsideItems.IsALreadyInPlaylist}[/]"); 
+                        AnsiConsole.MarkupLine("[red]" + song + $" {Locale.OutsideItems.IsALreadyInPlaylist}[/]");
                     }
                     else
                     {
@@ -175,7 +179,7 @@ namespace Jammer
             }
             else
             {
-                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: "+ playlistName + $" {Locale.OutsideItems.DoesntExist}[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Playlist}: " + playlistName + $" {Locale.OutsideItems.DoesntExist}[/]");
             }
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.Done}![/]");
             Environment.Exit(0);
@@ -266,19 +270,21 @@ namespace Jammer
         static public void Save(string playlistName, bool force = false, string type = "auto")
         {
             string playlistPath = GetJammerPlaylistPath(playlistName);
-            
+
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))
             {
-                if (!force) {
-                    string input = Message.Input(Locale.Miscellaneous.YesNo,Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
+                if (!force)
+                {
+                    string input = Message.Input(Locale.Miscellaneous.YesNo, Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
                     // y/n prompt
                     if (input != "y")
                     {
                         return;
                     }
                 }
-                try {
+                try
+                {
 
                     string extension = Path.GetExtension(playlistPath);
 
@@ -342,11 +348,14 @@ namespace Jammer
             }
         }
 
-        static public void AutoSave() {
-            if (!Preferences.isAutoSave) {
+        static public void AutoSave()
+        {
+            if (!Preferences.isAutoSave)
+            {
                 return;
             }
-            if (Utils.CurrentPlaylist == "") {
+            if (Utils.CurrentPlaylist == "")
+            {
                 return;
             }
             Save(Utils.CurrentPlaylist, true);
@@ -358,7 +367,8 @@ namespace Jammer
             Console.WriteLine(GetList());
         }
 
-        public static string GetList() {
+        public static string GetList()
+        {
             string playlistDir = Path.Combine(Utils.JammerPath, "playlists");
             string[] playlists = Directory.GetFiles(playlistDir);
             string playlistList = "";

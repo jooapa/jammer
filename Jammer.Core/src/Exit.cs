@@ -1,7 +1,8 @@
 using Spectre.Console;
 using ManagedBass;
 
-namespace Jammer {
+namespace Jammer
+{
     public static class Exit
     {
         public static void OnExit(object? sender, ConsoleCancelEventArgs args)

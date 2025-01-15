@@ -48,17 +48,21 @@ namespace Jammer
         public static float MusicTimePercentage = 0;
 
         // Class to hold Util related Functions
-        public static class UtilFuncs {
+        public static class UtilFuncs
+        {
             // Return user preferred path for JammerPath
-            public static string GetJammerPath() {
+            public static string GetJammerPath()
+            {
                 string defaultJammerFolderName = "jammer";
                 // use xdg_config_home if it is set
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"))) {
+                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
+                {
                     return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), defaultJammerFolderName);
                 }
 
                 // use JAMMER_CONFIG_PATH if it is set
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH"))) {
+                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH")))
+                {
                     return Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH");
                 }
 

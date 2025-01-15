@@ -20,18 +20,18 @@ namespace Jammer
             mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
             messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
-            AnsiConsole.Cursor.SetPosition(0,0);
+            AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Show();
             AnsiConsole.Write(mainTable);
-            
+
             // replace inputSaying every character inside of [] @"\[.*?\]
             //int len = Start.Purge(inputSaying).Length;
             //len += 6;
- 
+
             // count how many \n are in the inputSaying
             int count = Regex.Matches(title, @"\n").Count;
             count += Regex.Matches(inputSaying, @"\n").Count;
-            
+
             AnsiConsole.Cursor.SetPosition(5, 5 + count);
 
             if (oneChar)
@@ -47,7 +47,8 @@ namespace Jammer
             }
         }
 
-        public static void Data(string data, string title, bool isError = false, bool readKey = true) {
+        public static void Data(string data, string title, bool isError = false, bool readKey = true)
+        {
             var mainTable = new Table();
             var messageTable = new Table();
             mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
@@ -66,10 +67,10 @@ namespace Jammer
                 messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
                 messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
             }
-            
+
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.Show();
-            AnsiConsole.Cursor.SetPosition(0,0);
+            AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(mainTable);
             if (readKey)
             {
@@ -81,8 +82,8 @@ namespace Jammer
         {
 
             AnsiConsole.Cursor.Show();
-            AnsiConsole.Cursor.SetPosition(0,0);
-            
+            AnsiConsole.Cursor.SetPosition(0, 0);
+
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title(title)
                 .PageSize(10)
@@ -91,7 +92,7 @@ namespace Jammer
 
             return selection;
         }
-        
-           
+
+
     }
 }

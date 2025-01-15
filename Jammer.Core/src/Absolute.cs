@@ -13,7 +13,7 @@ namespace Jammer
 
                 // split title by ###@@@###
                 string[] detailSplit = args[i].Split(Utils.JammerFileDelimeter);
-    
+
                 if (detailSplit.Length > 1)
                 {
                     details = detailSplit[1];
@@ -55,7 +55,8 @@ namespace Jammer
                         // AnsiConsole.MarkupLine($"[green]URL {item} {Locale.OutsideItems.IsValid}[/]");
                         Log.Info($"URL {item} {Locale.OutsideItems.IsValid}");
                     }
-                    else {
+                    else
+                    {
                         // AnsiConsole.MarkupLine($"[red]URL {item} {Locale.OutsideItems.IsntValid}[/]");
                         Log.Error($"URL {item} {Locale.OutsideItems.IsntValid}");
                         // delete item from args
@@ -68,7 +69,8 @@ namespace Jammer
                 // if folder exists, convert to absolute path
                 else if (Directory.Exists(item))
                 {
-                    if (IsRelativePath(item)) {
+                    if (IsRelativePath(item))
+                    {
                         args[i] = ConvertToAbsolutePath(item);
                     }
                     // Message.Data(Start.Sanitize(JsonSerializer.Serialize(args)), "12");
@@ -82,7 +84,7 @@ namespace Jammer
 
                     foreach (string file in files)
                     {
-                        args = args.Take(i + 1).Concat(new string[] { IsRelativePath(file) ? ConvertToAbsolutePath(file): file}).Concat(args.Skip(i + 1)).ToArray();
+                        args = args.Take(i + 1).Concat(new string[] { IsRelativePath(file) ? ConvertToAbsolutePath(file) : file }).Concat(args.Skip(i + 1)).ToArray();
                         i++;
                     }
 
@@ -91,7 +93,8 @@ namespace Jammer
                 // if exits, convert to absolute path
                 else if (File.Exists(item))
                 {
-                    if (IsRelativePath(item)) {
+                    if (IsRelativePath(item))
+                    {
                         args[i] = ConvertToAbsolutePath(item);
                     }
                 }

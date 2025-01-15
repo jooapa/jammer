@@ -7,8 +7,10 @@ using ManagedBass.DirectX8;
 using System.Globalization;
 using Spectre.Console;
 
-namespace Jammer {
-    public static class Effects {
+namespace Jammer
+{
+    public static class Effects
+    {
 
         public static bool isChorus = false;
         public static float chorusFrequency = 1.1f;
@@ -16,7 +18,7 @@ namespace Jammer {
         public static float chorusDepth = 10;
         public static float chorusFeedback = 25;
         public static float chorusDelay = 16;
-        
+
         public static bool isCompressor = false;
         public static float compressorGain = 1.0f;
         public static float compressorAttack = 0.1f;
@@ -167,15 +169,18 @@ HighFreqRTRatio = 0.001
 ";
 
 
-        public static void WriteEffects() {
+        public static void WriteEffects()
+        {
             string path = Path.Combine(Utils.JammerPath, "Effects.ini");
-            
+
             // Create the file if it doesn't exist
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 Log.Info("Creating the Effects.ini file");
                 File.WriteAllText(path, FileContent, System.Text.Encoding.UTF8);
             }
-            else {
+            else
+            {
                 Log.Info("Effects.ini file already exists");
             }
             // else {
@@ -204,8 +209,10 @@ HighFreqRTRatio = 0.001
             // }
         }
 
-       public static void ReadEffects() {
-            try {
+        public static void ReadEffects()
+        {
+            try
+            {
                 Log.Info("Reading the Effects.ini file");
                 var parser = new FileIniDataParser();
                 IniData data = new();
@@ -258,7 +265,8 @@ HighFreqRTRatio = 0.001
                 reverbReverbTime = float.Parse(data["Reverb"]["ReverbTime"], CultureInfo.InvariantCulture);
                 reverbHighFreqRTRatio = float.Parse(data["Reverb"]["HighFreqRTRatio"], CultureInfo.InvariantCulture);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 AnsiConsole.MarkupLine("[red]Error parsing the Effects.ini file. Please check the file for errors.[/]");
                 AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
                 Environment.Exit(1);

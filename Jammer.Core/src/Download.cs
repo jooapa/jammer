@@ -9,27 +9,40 @@ using System.Text.RegularExpressions;
 using YoutubeExplode.Videos.Streams;
 using System.Runtime.InteropServices;
 
-namespace Jammer {
-    public class Download {
+namespace Jammer
+{
+    public class Download
+    {
         public static string songPath = "";
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
 
-        public static string DownloadSong(string url) {
+        public static string DownloadSong(string url)
+        {
             songPath = "";
 
             Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url.ToString());
-            if (URL.IsValidSoundcloudSong(url)) {
+            if (URL.IsValidSoundcloudSong(url))
+            {
                 DownloadSoundCloudTrackAsync(url).Wait();
-            } else if (URL.IsValidYoutubeSong(url)) {
+            }
+            else if (URL.IsValidYoutubeSong(url))
+            {
                 DownloadYoutubeTrackAsync(url).Wait();
-            } else if (URL.IsUrl(url)) {
-                if (url.EndsWith(".jammer")) {
+            }
+            else if (URL.IsUrl(url))
+            {
+                if (url.EndsWith(".jammer"))
+                {
                     DownloadJammerFile(url).Wait();
-                } else {
+                }
+                else
+                {
                     GeneralDownload(url).Wait();
                 }
-            } else {
+            }
+            else
+            {
                 Console.WriteLine(Locale.OutsideItems.InvalidUrl);
                 Debug.dprint("Invalid url");
             }
@@ -38,25 +51,29 @@ namespace Jammer {
             return songPath;
         }
 
-        private static async Task GeneralDownload(string url) {
+        private static async Task GeneralDownload(string url)
+        {
             string formattedUrl = FormatUrlForFilename(url, true);
             songPath = Path.Combine(
                 Preferences.songsPath,
                 formattedUrl
             );
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
-            if (System.IO.File.Exists(songPath)) {
+            if (System.IO.File.Exists(songPath))
+            {
                 return;
             }
-            
-            try {
-                using (var httpClient = new HttpClient()) {
+
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
                     httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
                     httpClient.Timeout = TimeSpan.FromMinutes(10);
 
                     var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
-                    
+
                     using (var stream = await response.Content.ReadAsStreamAsync())
                     using (var fileStream = new FileStream(songPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                     {
@@ -78,28 +95,35 @@ namespace Jammer {
                         }
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload}" + ex.Message);
             }
         }
 
-        private static string GetDownloadedJammerFileName(string url) {
+        private static string GetDownloadedJammerFileName(string url)
+        {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", url);
             return downloadedPath.LastIndexOf("/") > 0 ? downloadedPath.Substring(downloadedPath.LastIndexOf("/") + 1) : downloadedPath;
-        }  
+        }
 
-        private static async Task DownloadJammerFile(string url) {
+        private static async Task DownloadJammerFile(string url)
+        {
             string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
 
-            if (System.IO.File.Exists(downloadedPath)) {
+            if (System.IO.File.Exists(downloadedPath))
+            {
                 string input = Message.Input(Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " (y/n)", "Warning", true);
-                if (input != "y" && input != "yes") {
+                if (input != "y" && input != "yes")
+                {
                     songPath = downloadedPath;
                     return;
                 }
             }
 
-            try {
+            try
+            {
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
                 httpClient.Timeout = TimeSpan.FromMinutes(10);
@@ -127,7 +151,9 @@ namespace Jammer {
                         }
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error");
             }
 
@@ -152,8 +178,9 @@ namespace Jammer {
             AnsiConsole.Cursor.SetPosition(3, 2);
             var theText = "Getting track. please wait...";
             var tmpstr = theText;
-            var spaces = Start.consoleWidth - theText.Length-3;
-            for (int i = 0; i < spaces; i++) {
+            var spaces = Start.consoleWidth - theText.Length - 3;
+            for (int i = 0; i < spaces; i++)
+            {
                 tmpstr += " ";
             }
             AnsiConsole.MarkupLine(tmpstr);
@@ -163,14 +190,15 @@ namespace Jammer {
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
                 var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
                 var video = await youtube.Videos.GetAsync(url);
-                
+
                 if (streamInfo != null)
                 {
                     var progress = new Progress<double>(data =>
                     {
                         AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
-                        if (data == 1) {
+                        if (data == 1)
+                        {
                             Start.drawWhole = true;
                         }
                     });
@@ -181,7 +209,7 @@ namespace Jammer {
                         // If using Linux
                         //Message.Data(songPath, "Debug");
                         await FFMPEGConvert(songPath);
-                    
+
                     // TagLib
                     var file = TagLib.File.Create(songPath);
                     file.Tag.Title = Start.Sanitize(video.Title);
@@ -223,7 +251,7 @@ namespace Jammer {
                 return false;
             }
         }
-        
+
         private static Task FFMPEGConvert(string songPath)
         {
             return Task.Run(() =>
@@ -275,14 +303,17 @@ namespace Jammer {
             });
         }
 
-        public static SoundCloudClient ReturnSoundCloudClient() {
-            if (Preferences.clientID == "") {
+        public static SoundCloudClient ReturnSoundCloudClient()
+        {
+            if (Preferences.clientID == "")
+            {
                 return new SoundCloudClient();
             }
             return new SoundCloudClient(Preferences.clientID);
-        }  
+        }
 
-        public static async Task DownloadSoundCloudTrackAsync(string url) {
+        public static async Task DownloadSoundCloudTrackAsync(string url)
+        {
             // if already downloaded, don't download again
             string formattedUrl = FormatUrlForFilename(url);
 
@@ -291,15 +322,17 @@ namespace Jammer {
                 formattedUrl
             );
 
-            if (System.IO.File.Exists(songPath)) {
+            if (System.IO.File.Exists(songPath))
+            {
                 return;
             }
 
             AnsiConsole.Cursor.SetPosition(3, 2);
             var theText = "Getting track. please wait...";
             var tmpstr = theText;
-            var spaces = Start.consoleWidth - theText.Length-3;
-            for (int i = 0; i < spaces; i++) {
+            var spaces = Start.consoleWidth - theText.Length - 3;
+            for (int i = 0; i < spaces; i++)
+            {
                 tmpstr += " ";
             }
 
@@ -307,43 +340,54 @@ namespace Jammer {
 
             var soundcloud = ReturnSoundCloudClient();
 
-            try {
+            try
+            {
                 var track = await soundcloud.Tracks.GetAsync(url);
 
-                if (track != null) {
+                if (track != null)
+                {
 
-                    if(track.Title != null){
+                    if (track.Title != null)
+                    {
 
-                        var progress = new Progress<double>(data => {
+                        var progress = new Progress<double>(data =>
+                        {
                             AnsiConsole.Clear();
                             Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} {songPath}");
-                            if (data == 1) {
+                            if (data == 1)
+                            {
                                 Start.drawWhole = true;
                             }
                         });
-                        
+
                         await soundcloud.DownloadAsync(track, songPath, progress);
-                        
+
                         var file = TagLib.File.Create(songPath);
                         file.Tag.Title = Start.Sanitize(track.Title);
                         file.Tag.Description = track.Description;
-                        if (track.User != null && track.User.Username != null) {
+                        if (track.User != null && track.User.Username != null)
+                        {
                             file.Tag.Performers = new string[] { track.User.Username };
-                        }           
+                        }
                         file.Save();
                         if (track.ArtworkUrl != null)
                             await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
 
-                    } else {
+                    }
+                    else
+                    {
                         Debug.dprint("track title returns null");
                     }
-                } else {
+                }
+                else
+                {
                     Debug.dprint("track returns null");
                 }
 
             }
-            catch (Exception ex) { 
-                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message +": "+ url
+            catch (Exception ex)
+            {
+                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message + ": " + url
                 , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
                 songPath = "";
             }
@@ -353,30 +397,34 @@ namespace Jammer {
         {
             var file = TagLib.File.Create(songPath);
             WebClient webClient = new WebClient();
-            byte[] imageBytes = webClient.DownloadData(imageUrl);            
-            Picture picture = new Picture(imageBytes);  
+            byte[] imageBytes = webClient.DownloadData(imageUrl);
+            Picture picture = new Picture(imageBytes);
             file.Tag.Pictures = Array.Empty<IPicture>();
             file.Tag.Pictures = new IPicture[] { picture };
             file.Save();
         }
 
-        public static async Task GetPlaylist(string plurl) {
+        public static async Task GetPlaylist(string plurl)
+        {
 
             var soundcloud = ReturnSoundCloudClient();
 
             // Get all playlist tracks
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine("Getting playlist tracks...");
-            try {
+            try
+            {
                 var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
 
-                if (playlist == null) {
+                if (playlist == null)
+                {
                     Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                     Message.Data("Maybe your Client ID is invalid or the playlist is private", "Error");
                     return;
                 }
 
-                if (playlist.Tracks.Count() == 0 || playlist.Tracks == null) {
+                if (playlist.Tracks.Count() == 0 || playlist.Tracks == null)
+                {
                     Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                     Console.ReadLine();
                     return;
@@ -385,29 +433,34 @@ namespace Jammer {
                 // add all tracks permalinkUrl to songs array
                 playlistSongs = new string[playlist.Tracks.Count()];
                 int i = 0;
-                foreach (var track in playlist.Tracks) {
+                foreach (var track in playlist.Tracks)
+                {
                     playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
                     i++;
                 }
 
                 // debug
-                foreach (var song in playlistSongs) {
+                foreach (var song in playlistSongs)
+                {
                     Console.WriteLine(song);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error");
                 Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }
         }
-        public static async Task GetPlaylistYoutube(string plurl) {
+        public static async Task GetPlaylistYoutube(string plurl)
+        {
             // Get all playlist tracks
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine("Getting playlist tracks...");
             var playlist = await youtube.Playlists.GetVideosAsync(plurl);
             Console.WriteLine(playlist[0]);
-            if (playlist.Count() == 0 || playlist == null) {
+            if (playlist.Count() == 0 || playlist == null)
+            {
                 Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
                 Console.ReadLine();
                 return;
@@ -416,10 +469,12 @@ namespace Jammer {
             // add all tracks permalinkUrl to songs array
             playlistSongs = new string[playlist.Count()];
             int i = 0;
-            foreach (var track in playlist) {
+            foreach (var track in playlist)
+            {
                 var _url = track.Url?.ToString() ?? string.Empty;
                 var index = _url.IndexOf('&');
-                if (index != -1) {
+                if (index != -1)
+                {
                     _url = _url.Substring(0, index);
                 }
                 playlistSongs[i] = _url;
@@ -427,15 +482,18 @@ namespace Jammer {
             }
         }
 
-        public static string GetSongsFromPlaylist(string plurl, string service) {
-            if(service == "soundcloud"){
+        public static string GetSongsFromPlaylist(string plurl, string service)
+        {
+            if (service == "soundcloud")
+            {
                 GetPlaylist(plurl).Wait();
             }
-            else if( service == "youtube"){
+            else if (service == "youtube")
+            {
                 GetPlaylistYoutube(plurl).Wait();
 
             }
-            
+
             // print all the songs in the playlist
             // foreach (var song in Utils.songs) {
             //     Console.WriteLine(song);
@@ -474,14 +532,15 @@ namespace Jammer {
             // }
             // Console.WriteLine("--------");
             // Console.ReadLine();
-                        
+
 
             return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]);
         }
 
         public static string FormatUrlForFilename(string url, bool isCheck = false)
         {
-            if (URL.isValidSoundCloudPlaylist(url)) {
+            if (URL.isValidSoundCloudPlaylist(url))
+            {
                 return "Soundcloud Playlist";
             }
             else if (URL.IsValidSoundcloudSong(url))
@@ -512,7 +571,9 @@ namespace Jammer {
                 {
                     url = url.Substring(0, index);
                 }
-            } else {
+            }
+            else
+            {
                 // remove every thing that cant be in filename
                 url = url.Replace("https://", "")
                             .Replace("/", " ")
@@ -523,7 +584,7 @@ namespace Jammer {
                                      .Replace("/", " ")
                                      .Replace("?", " ");
 
-                            
+
 
             if (isCheck)
             {
