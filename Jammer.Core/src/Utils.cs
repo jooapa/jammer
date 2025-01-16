@@ -43,7 +43,7 @@ namespace Jammer
         public static string CurrentPlaylist = "";
         public static string JammerFileDelimeter = "?|";
         public static bool IsInitialized = false;
-        public static string Version = "3.0.0.0";
+        public static string Version = "3.3.2.3";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
         public static float MusicTimePercentage = 0;
 
