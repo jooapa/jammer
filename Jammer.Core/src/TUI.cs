@@ -387,6 +387,18 @@ namespace Jammer
             return progressBar;
         }
 
+        public static void PrintToTopOfPlayer(string theText)
+        {
+            var tmpstr = theText;
+            var spaces = Start.consoleWidth - theText.Length - 4;
+            for (int i = 0; i < spaces; i++)
+            {
+                tmpstr += " ";
+            }
+
+            // AnsiConsole.Cursor.SetPosition(2, 2);
+            AnsiConsole.Write($"\x1b[2;3H{tmpstr}");
+        }
         static public void DrawHelp()
         {
             var table = new Table();

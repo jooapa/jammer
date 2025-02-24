@@ -175,15 +175,10 @@ namespace Jammer
                 return;
             }
 
-            AnsiConsole.Cursor.SetPosition(3, 2);
+            // AnsiConsole.Cursor.SetPosition(3, 2);
             var theText = "Getting track. please wait...";
-            var tmpstr = theText;
-            var spaces = Start.consoleWidth - theText.Length - 3;
-            for (int i = 0; i < spaces; i++)
-            {
-                tmpstr += " ";
-            }
-            AnsiConsole.MarkupLine(tmpstr);
+
+            TUI.PrintToTopOfPlayer(theText);
 
             try
             {
@@ -193,14 +188,10 @@ namespace Jammer
 
                 if (streamInfo != null)
                 {
+                    // int lastPercentage = -1;  // Track last printed percentage
                     var progress = new Progress<double>(data =>
                     {
-                        // AnsiConsole.Clear();
-                        Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
-                        // if (data == 1)
-                        // {
-                        //     Start.drawWhole = true;
-                        // }
+                        TUI.PrintToTopOfPlayer(theText + $" {data:P}");
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
@@ -208,14 +199,26 @@ namespace Jammer
                     // if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     // If using Linux
                     //Message.Data(songPath, "Debug");
+                    TUI.PrintToTopOfPlayer("Using FFMPEG to convert to OGG");
+
                     await FFMPEGConvert(songPath);
 
+                    TUI.PrintToTopOfPlayer("Trying to Tag song");
                     // TagLib
-                    // var file = TagLib.File.Create(songPath);
-                    // file.Tag.Title = Start.Sanitize(video.Title);
-                    // file.Tag.Performers = new string[] { video.Author.ChannelTitle };
-                    // file.Tag.Album = video.Author.ChannelTitle;
-                    // file.Save();
+                    try
+                    {
+
+                        var file = TagLib.File.Create(songPath);
+                        file.Tag.Title = Start.Sanitize(video.Title);
+                        file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                        file.Tag.Album = video.Author.ChannelTitle;
+                        file.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:234234");
+                        Log.Error(ex.Message);
+                    }
                 }
                 else
                 {
@@ -329,16 +332,8 @@ namespace Jammer
                 return;
             }
 
-            AnsiConsole.Cursor.SetPosition(3, 2);
             var theText = "Getting track. please wait...";
-            var tmpstr = theText;
-            var spaces = Start.consoleWidth - theText.Length - 3;
-            for (int i = 0; i < spaces; i++)
-            {
-                tmpstr += " ";
-            }
-
-            AnsiConsole.MarkupLine(tmpstr);
+            TUI.PrintToTopOfPlayer(theText);
 
             var soundcloud = ReturnSoundCloudClient();
 
@@ -354,26 +349,30 @@ namespace Jammer
 
                         var progress = new Progress<double>(data =>
                         {
-                            AnsiConsole.Clear();
-                            Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P} {songPath}");
-                            if (data == 1)
-                            {
-                                Start.drawWhole = true;
-                            }
+                            TUI.PrintToTopOfPlayer(theText + $" {data:P}");
                         });
 
                         await soundcloud.DownloadAsync(track, songPath, progress);
 
-                        var file = TagLib.File.Create(songPath);
-                        file.Tag.Title = Start.Sanitize(track.Title);
-                        file.Tag.Description = track.Description;
-                        if (track.User != null && track.User.Username != null)
+                        TUI.PrintToTopOfPlayer("Trying to Tag song");
+
+                        try
                         {
-                            file.Tag.Performers = new string[] { track.User.Username };
+                            var file = TagLib.File.Create(songPath);
+                            file.Tag.Title = Start.Sanitize(track.Title);
+                            file.Tag.Description = track.Description;
+                            if (track.User != null && track.User.Username != null)
+                            {
+                                file.Tag.Performers = new string[] { track.User.Username };
+                            }
+                            file.Save();
+                            if (track.ArtworkUrl != null)
+                                await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
                         }
-                        file.Save();
-                        if (track.ArtworkUrl != null)
-                            await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex.Message);
+                        }
 
                     }
                     else
