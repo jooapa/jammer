@@ -88,7 +88,9 @@ File "LICENSE"
 File "bass.dll"
 File "bass_aac.dll"
 File "bassmidi.dll"
+File "bassopus.dll"
 File "uiohook.dll"
+File "ffmpeg.exe"
 
 CreateDirectory $PROFILE\Jammer\locales
 SetOutPath $PROFILE\Jammer\locales
@@ -182,7 +184,9 @@ Delete "$SENDTO\Jammer.lnk"
 Delete "$INSTDIR\bass.dll"
 Delete "$INSTDIR\bass_aac.dll"
 Delete "$INSTDIR\bassmidi.dll"
+Delete "$INSTDIR\bassopus.dll"
 Delete "$INSTDIR\uiohook.dll"
+Delete "$INSTDIR\ffmpeg.exe"
 
 ; Remove the installation directory if it still exists
 RMDir /r $INSTDIR

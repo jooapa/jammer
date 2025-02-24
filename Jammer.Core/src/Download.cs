@@ -154,7 +154,7 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error");
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.ErrorDownload} " + ex.Message, "Error id:1");
             }
 
 
@@ -188,34 +188,34 @@ namespace Jammer
             try
             {
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
-                var streamInfo = streamManifest.GetAudioStreams().FirstOrDefault();
+                var streamInfo = streamManifest.GetAudioStreams().TryGetWithHighestBitrate();
                 var video = await youtube.Videos.GetAsync(url);
 
                 if (streamInfo != null)
                 {
                     var progress = new Progress<double>(data =>
                     {
-                        AnsiConsole.Clear();
+                        // AnsiConsole.Clear();
                         Console.WriteLine($"{Locale.OutsideItems.Downloading} {url}: {data:P}");
-                        if (data == 1)
-                        {
-                            Start.drawWhole = true;
-                        }
+                        // if (data == 1)
+                        // {
+                        //     Start.drawWhole = true;
+                        // }
                     });
 
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
 
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                        // If using Linux
-                        //Message.Data(songPath, "Debug");
-                        await FFMPEGConvert(songPath);
+                    // if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    // If using Linux
+                    //Message.Data(songPath, "Debug");
+                    await FFMPEGConvert(songPath);
 
                     // TagLib
-                    var file = TagLib.File.Create(songPath);
-                    file.Tag.Title = Start.Sanitize(video.Title);
-                    file.Tag.Performers = new string[] { video.Author.ChannelTitle };
-                    file.Tag.Album = video.Author.ChannelTitle;
-                    file.Save();
+                    // var file = TagLib.File.Create(songPath);
+                    // file.Tag.Title = Start.Sanitize(video.Title);
+                    // file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                    // file.Tag.Album = video.Author.ChannelTitle;
+                    // file.Save();
                 }
                 else
                 {
@@ -224,7 +224,7 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error");
+                Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:4");
                 songPath = "";
             }
         }
@@ -259,11 +259,11 @@ namespace Jammer
                 // detect if ffmpeg is installed on the system in the path
                 if (!IsFFmpegInstalled())
                 {
-                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error", true);
+                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
                     return;
                 }
 
-                string tempSongPath = songPath + ".aac";
+                string tempSongPath = songPath + ".ogg";
 
                 string ffmpegPath = "ffmpeg";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -271,8 +271,10 @@ namespace Jammer
                     ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
                 }
 
-                string arguments = $"-i \"{songPath}\" -vn -acodec copy \"{tempSongPath}\"";
+                // Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
 
+                string arguments = $"-i \"{songPath}\" -vn -acodec libvorbis -q:a 4 \"{tempSongPath}\"";
+                // Message.Data(arguments, "Debug");
                 //Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
                 {
@@ -419,7 +421,7 @@ namespace Jammer
                 if (playlist == null)
                 {
                     Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
-                    Message.Data("Maybe your Client ID is invalid or the playlist is private", "Error");
+                    Message.Data("Maybe your Client ID is invalid or the playlist is private", "Error id:5");
                     return;
                 }
 
@@ -447,7 +449,7 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error");
+                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error id:3");
                 Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }

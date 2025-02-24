@@ -35,8 +35,16 @@ ECHO \bass_aac.dll"
 COPY /B /Y "../libs\win\x64\bass_aac.dll" "%targetFolder%" 1>NUL
 ECHO.
 
-ECHO \dll.dll"
+ECHO \bass.dll"
 COPY /B /Y "../libs\win\x64\bass.dll" %targetFolder% 1>NUL
+ECHO.
+
+ECHO \bassopus.dll"
+COPY /B /Y "../libs\win\x64\bassopus.dll" %targetFolder% 1>NUL
+ECHO.
+
+ECHO \ffmepg.exer"
+COPY /B /Y "../libs\win\x64\ffmpeg.exe" %targetFolder% 1>NUL
 ECHO.
 
 cd ..

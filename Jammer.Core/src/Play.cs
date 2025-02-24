@@ -2,6 +2,7 @@ using ManagedBass;
 using ManagedBass.Aac;
 using ManagedBass.DirectX8;
 using ManagedBass.Midi;
+using ManagedBass.Opus;
 // using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
@@ -542,9 +543,11 @@ namespace Jammer
 
         public static void ReDownloadSong()
         {
-            if (Utils.Songs[Utils.CurrentSongIndex].Contains("https://") || Utils.Songs[Utils.CurrentSongIndex].Contains("http://"))
+            if (URL.IsUrl(Utils.Songs[Utils.CurrentSongIndex]))
             {
-                System.IO.File.Delete(Utils.CurrentSongPath);
+                if (System.IO.File.Exists(Utils.CurrentSongPath))
+                    System.IO.File.Delete(Utils.CurrentSongPath);
+
                 PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 SeekSong(0, false);
                 return;
@@ -680,6 +683,9 @@ namespace Jammer
             if (Utils.CurrentMusic == 0)
                 Utils.CurrentMusic = BassAac.CreateMp4Stream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
+            if (Utils.CurrentMusic == 0)
+                Utils.CurrentMusic = BassOpus.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+
             if (Utils.CurrentMusic == 0)
             {
                 int newFont;
