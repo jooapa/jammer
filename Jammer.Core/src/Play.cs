@@ -585,7 +585,8 @@ namespace Jammer
             // delete song from disk
             if (hardDelete)
             {
-                System.IO.File.Delete(Utils.CurrentSongPath);
+                if (System.IO.File.Exists(Utils.CurrentSongPath))
+                    System.IO.File.Delete(Utils.CurrentSongPath);
             }
 
             // remove song from current Utils.songs
