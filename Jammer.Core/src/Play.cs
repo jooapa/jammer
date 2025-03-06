@@ -459,6 +459,7 @@ namespace Jammer
             {
                 MaybeNextSong();
             }
+
             Start.prevMusicTimePlayed = -1;
             // PlayDrawReset();
             return;

@@ -198,17 +198,6 @@ namespace Jammer
                         break;
 
                     case MainStates.playing:
-                        // get current time
-
-                        Utils.PreciseTime = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
-                        // get current time in seconds
-                        Utils.TotalMusicDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
-                        // get whole song length in seconds
-                        //Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
-                        Utils.SongDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
-
-                        Utils.MusicTimePercentage = (float)(Utils.TotalMusicDurationInSec / Utils.SongDurationInSec * 100);
-
                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
                         if (Utils.TotalMusicDurationInSec - prevMusicTimePlayed >= 1)
                         {
@@ -254,6 +243,15 @@ namespace Jammer
                         break;
                 }
 
+                Utils.PreciseTime = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
+                // get current time in seconds
+                Utils.TotalMusicDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
+                // get whole song length in seconds
+                //Utils.currentMusicLength = Utils.audioStream.Length / Utils.audioStream.WaveFormat.AverageBytesPerSecond;
+                Utils.SongDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
+
+                Utils.MusicTimePercentage = (float)(Utils.TotalMusicDurationInSec / Utils.SongDurationInSec * 100);
+
                 // if no song is playing, set the current song to ""
                 if (Utils.Songs.Length == 0)
                 {
@@ -286,6 +284,11 @@ namespace Jammer
                 }
                 else
                 {
+                    if (drawTime)
+                    {
+                        TUI.DrawTime();
+                    }
+
                     if (drawWhole)
                     {
                         TUI.RefreshCurrentView();

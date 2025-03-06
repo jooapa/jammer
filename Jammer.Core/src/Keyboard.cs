@@ -211,7 +211,7 @@ namespace Jammer
                         {
                             Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true, true);
                         }
-                        catch (System.Exception e)
+                        catch (Exception e)
                         {
                             Console.WriteLine(e);
                             Console.ReadKey();
@@ -239,7 +239,6 @@ namespace Jammer
                     }
 
                 }
-
                 if (playerView.Equals("settings"))
                 {
                     switch (key.Key)
@@ -254,14 +253,14 @@ namespace Jammer
                             else
                             {
 
-                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
 
                             drawWhole = true;
                             break;
                         case Keybindings.SettingsKeys.BackwardSecondAmount:
 
-                            string rewindSecondsString = Jammer.Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
+                            string rewindSecondsString = Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
@@ -269,7 +268,7 @@ namespace Jammer
                             }
                             else
                             {
-                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             drawWhole = true;
                             break;
@@ -283,7 +282,7 @@ namespace Jammer
                             }
                             else
                             {
-                                Jammer.Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                             }
                             drawWhole = true;
                             break;
@@ -384,10 +383,12 @@ namespace Jammer
                         case "Forward5s": // move forward 5 seconds
                             Play.SeekSong(Preferences.forwardSeconds, true);
                             drawTime = true;
+                            drawWhole = true;
                             break;
                         case "Backwards5s": // move backward 5 seconds
-                            Play.SeekSong(-Preferences.rewindSeconds, true);
+                            Play.SeekSong(-Math.Abs(Preferences.rewindSeconds), true);
                             drawTime = true;
+                            drawWhole = true;
                             break;
                         case "VolumeUp": // volume up
                             if (Preferences.isMuted)
@@ -681,7 +682,7 @@ namespace Jammer
                     drawWhole = true;
                 }
 
-                Playlists.AutoSave(); // TODO BEST WAY TO DO IT
+                Playlists.AutoSave(); // TODO: BEST WAY TO DO IT
             }
         }
 
