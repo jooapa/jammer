@@ -32,8 +32,8 @@
     <PackageReference Include="ReadLine" Version="2.0.1" />
     <PackageReference Include="SoundCloudExplode" Version="1.6.4" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
-    <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.5.3" />
     <PackageReference Include="SharpHook" Version="5.3.2" />
+    <PackageReference Include="z440.atl.core" Version="6.18.0" />
   </ItemGroup>
 </Project>
