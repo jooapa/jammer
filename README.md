@@ -233,6 +233,8 @@ You can change the client id by going to the settings and changing the client id
  </picture>
 </a>
 
+---
+
 # Developing
 
 ## Build / Run yourself
