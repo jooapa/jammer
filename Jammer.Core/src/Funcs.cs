@@ -5,7 +5,6 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using ATL;
 
 namespace Jammer
 {
@@ -26,16 +25,16 @@ namespace Jammer
 
                 string fullPath = Path.GetFullPath(song.URI);
 
-                Track tagFile;
+                TagLib.File? tagFile;
                 string title = "", author = "", album = "", year = "", genre = "";
                 try
                 {
-                    tagFile = new Track(fullPath);
-                    title = tagFile.Title;
-                    author = tagFile.Artist;
-                    album = tagFile.Album;
-                    year = tagFile.Year.ToString();
-                    genre = tagFile.Genre;
+                    tagFile = TagLib.File.Create(fullPath);
+                    title = tagFile.Tag.Title;
+                    author = tagFile.Tag.FirstPerformer;
+                    album = tagFile.Tag.Album;
+                    year = tagFile.Tag.Year.ToString();
+                    genre = tagFile.Tag.FirstGenre;
                 }
                 catch (Exception)
                 {

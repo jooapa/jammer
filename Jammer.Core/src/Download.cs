@@ -3,7 +3,7 @@ using YoutubeExplode;
 using YoutubeExplode.Common;
 using Spectre.Console;
 using System.IO;
-using ATL;
+using TagLib;
 using System.Net;
 using System.Text.RegularExpressions;
 using YoutubeExplode.Videos.Streams;
@@ -208,12 +208,10 @@ namespace Jammer
                     try
                     {
 
-                        var file = new Track(songPath)
-                        {
-                            Title = Start.Sanitize(video.Title),
-                            Composer = video.Author.ChannelTitle,
-                            Album = video.Author.ChannelTitle,
-                        };
+                        var file = TagLib.File.Create(songPath);
+                        file.Tag.Title = Start.Sanitize(video.Title);
+                        file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                        file.Tag.Album = video.Author.ChannelTitle;
                         file.Save();
                     }
                     catch (Exception ex)
@@ -360,18 +358,16 @@ namespace Jammer
 
                         try
                         {
-                            var file = new Track(songPath)
-                            {
-                                Title = Start.Sanitize(track.Title),
-                                Description = track.Description
-                            };
+                            var file = TagLib.File.Create(songPath);
+                            file.Tag.Title = Start.Sanitize(track.Title);
+                            file.Tag.Description = track.Description;
                             if (track.User != null && track.User.Username != null)
                             {
-                                file.Composer = track.User.Username;
+                                file.Tag.Performers = new string[] { track.User.Username };
                             }
                             file.Save();
-                            // if (track.ArtworkUrl != null)
-                            //     await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
+                            if (track.ArtworkUrl != null)
+                                await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
                         }
                         catch (Exception ex)
                         {
@@ -398,18 +394,16 @@ namespace Jammer
             }
         }
 
-        // static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
-        // {
-        //     var file = new Track(songPath);
-        //     WebClient webClient = new WebClient();
-        //     byte[] imageBytes = webClient.DownloadData(imageUrl);
-        //     Picture picture = new Picture(imageBytes);
-        //     file.Picture = Array.Empty<IPicture>();
-        //     file.Picture = new IPicture[] { picture };
-
-        //     file.
-        //     file.Save();
-        // }
+        static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
+        {
+            var file = TagLib.File.Create(songPath);
+            WebClient webClient = new WebClient();
+            byte[] imageBytes = webClient.DownloadData(imageUrl);
+            Picture picture = new Picture(imageBytes);
+            file.Tag.Pictures = Array.Empty<IPicture>();
+            file.Tag.Pictures = new IPicture[] { picture };
+            file.Save();
+        }
 
         public static async Task GetPlaylist(string plurl)
         {

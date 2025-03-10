@@ -10,7 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using ATL;
+using TagLib;
+
 
 namespace Jammer
 {
@@ -145,16 +146,16 @@ namespace Jammer
             // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
 
-            Track tagFile;
+            TagLib.File? tagFile;
             string title = "", author = "", album = "", year = "", genre = "";
             try
             {
-                tagFile = new Track(fullPath);
-                title = tagFile.Title;
-                author = tagFile.Artist;
-                album = tagFile.Album;
-                year = tagFile.Year.ToString();
-                genre = tagFile.Genre;
+                tagFile = TagLib.File.Create(fullPath);
+                title = tagFile.Tag.Title;
+                author = tagFile.Tag.FirstPerformer;
+                album = tagFile.Tag.Album;
+                year = tagFile.Tag.Year.ToString();
+                genre = tagFile.Tag.FirstGenre;
             }
             catch (Exception)
             {
