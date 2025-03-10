@@ -259,19 +259,20 @@ namespace Jammer
         {
             return Task.Run(() =>
             {
-                // detect if ffmpeg is installed on the system in the path
-                if (!IsFFmpegInstalled())
-                {
-                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
-                    return;
-                }
 
                 string tempSongPath = songPath + ".ogg";
 
-                string ffmpegPath = "ffmpeg";
+                string ffmpegPath = "";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
+                }
+
+                // detect if ffmpeg is installed on the system in the path
+                if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
+                {
+                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
+                    return;
                 }
 
                 // Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
