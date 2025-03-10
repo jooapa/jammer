@@ -207,7 +207,6 @@ namespace Jammer
                     // TagLib
                     try
                     {
-
                         var file = TagLib.File.Create(songPath);
                         file.Tag.Title = Start.Sanitize(video.Title);
                         file.Tag.Performers = new string[] { video.Author.ChannelTitle };
@@ -218,6 +217,8 @@ namespace Jammer
                     {
                         // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:234234");
                         Log.Error(ex.Message);
+                        Log.Error("doing the dumb ://: title convert bullshit");
+                        songPath += "://:" + video.Title + "://:" + video.Author.ChannelTitle;
                     }
                 }
                 else
@@ -373,6 +374,8 @@ namespace Jammer
                         catch (Exception ex)
                         {
                             Log.Error(ex.Message);
+                            Log.Error("doing the dumb ://: title convert bullshit");
+                            songPath += "://:" + track.Title + "://:" + track.User.Username;
                         }
 
                     }
