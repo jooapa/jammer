@@ -128,15 +128,25 @@ namespace Jammer
             // fail safe if the song title is empty, because it should be if it comes from the yt or sc
             // so lets say that is the full path has a random string of chars like "://:" then after that theres the title
             // uri -> title -> author
-            if (song.Title == null || song.Title == "")
             {
                 if (fullPath.Contains("://:"))
                 {
-                    Log.Info("Song title is empty, trying to get it from the path");
-                    string[] split = fullPath.Split("://:");
-                    fullPath = split[0];
-                    song.Title = split[1];
-                    song.Author = split[2];
+                    // making sure that if the song already has a proper title, it doesn't get overwritten
+                    if (song.Title != "")
+                    {
+                        Log.Info("Song title is not empty '" + song.Title + "'" + (song.Title != ""));
+                        string[] split = fullPath.Split("://:");
+                        fullPath = split[0];
+                    }
+                    else
+                    {
+                        Log.Info("Song title is empty, trying to get it from the path");
+                        Log.Info("fullpath: " + fullPath);
+                        string[] split = fullPath.Split("://:");
+                        fullPath = split[0];
+                        song.Title = split[1];
+                        song.Author = split[2];
+                    }
                 }
             }
 
@@ -146,9 +156,9 @@ namespace Jammer
             // if the Utils.songs current is not the same as the song.Path
             if (fullPath != Utils.Songs[Utils.CurrentSongIndex])
             {
-                Log.Info("Song path is different from the current song path");
+                Log.Info("Song path is different from the current song path: " + fullPath + " != " + Utils.Songs[Utils.CurrentSongIndex]);
                 // song.Title = ""; // TODO might break something :/ // TODO: This might just break something else :OO
-                song.URI = Utils.Songs[Utils.CurrentSongIndex];
+                song.URI = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]).URI;
             }
             // Message.Data(fullPath + " || " + song.Path, "path");
 
