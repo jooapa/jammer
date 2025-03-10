@@ -263,7 +263,7 @@ namespace Jammer
 
                 string tempSongPath = songPath + ".ogg";
 
-                string ffmpegPath = "";
+                string ffmpegPath = "ffmpeg";
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
