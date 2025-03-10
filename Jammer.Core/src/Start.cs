@@ -284,11 +284,6 @@ namespace Jammer
                 }
                 else
                 {
-                    if (drawTime)
-                    {
-                        TUI.DrawTime();
-                    }
-
                     if (drawWhole)
                     {
                         TUI.RefreshCurrentView();
