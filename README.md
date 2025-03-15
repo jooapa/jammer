@@ -110,7 +110,7 @@ Select 'Create a New Theme' and write the theme's name. Go to `<jammer/themes>`,
 ### Visualizer
 
 You can change the visualizer style in custom Themes.
-To change the visualizer settings, go to `<jammer/Visualizer.ini>` and change the settings.
+To change the visualizer settings and looks, you can change the `Visualizer` section in the theme file.
 
 ### Effects
 
