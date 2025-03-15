@@ -146,6 +146,7 @@ namespace Jammer
                         fullPath = split[0];
                         song.Title = split[1];
                         song.Author = split[2];
+                        // Log.Info("new song" + song.Title + " " + song.Author);
                     }
                 }
             }
@@ -193,6 +194,7 @@ namespace Jammer
             // append title to song
             if (song.Title == null || song.Title == "")
             {
+                // Log.Info("______trying to get it from the path");
                 song.Title = title;
             }
             if (song.Author == null || song.Author == "")
@@ -212,6 +214,7 @@ namespace Jammer
                 song.Genre = genre;
             }
 
+            // Log.Info("setting current song to: " + song.ToSongString());
             Utils.Songs[Utils.CurrentSongIndex] = song.ToSongString();
             // Concatenate all song strings
             // string allSongs = string.Join("\n", Utils.songs);

@@ -201,25 +201,30 @@ namespace Jammer
                     //Message.Data(songPath, "Debug");
                     TUI.PrintToTopOfPlayer("Using FFMPEG to convert to OGG");
 
-                    await FFMPEGConvert(songPath);
+                    await FFMPEGConvert(songPath, new Song
+                    {
+                        Title = video.Title,
+                        Author = video.Author.ChannelTitle,
+                        Album = video.Author.ChannelTitle
+                    });
 
                     TUI.PrintToTopOfPlayer("Trying to Tag song");
                     // TagLib
-                    try
-                    {
-                        var file = TagLib.File.Create(songPath);
-                        file.Tag.Title = Start.Sanitize(video.Title);
-                        file.Tag.Performers = new string[] { video.Author.ChannelTitle };
-                        file.Tag.Album = video.Author.ChannelTitle;
-                        file.Save();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:234234");
-                        Log.Error(ex.Message);
-                        Log.Error("doing the dumb ://: title convert bullshit");
-                        songPath += "://:" + video.Title + "://:" + video.Author.ChannelTitle;
-                    }
+                    // try
+                    // {
+                    //     var file = TagLib.File.Create(songPath);
+                    //     file.Tag.Title = Start.Sanitize(video.Title);
+                    //     file.Tag.Performers = new string[] { video.Author.ChannelTitle };
+                    //     file.Tag.Album = video.Author.ChannelTitle;
+                    //     file.Save();
+                    // }
+                    // catch (Exception ex)
+                    // {
+                    //     // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:234234");
+                    //     Log.Error(ex.Message);
+                    //     Log.Error("doing the dumb ://: title convert bullshit");
+                    //     songPath += "://:" + video.Title + "://:" + video.Author.ChannelTitle;
+                    // }
                 }
                 else
                 {
@@ -256,7 +261,7 @@ namespace Jammer
             }
         }
 
-        private static Task FFMPEGConvert(string songPath)
+        private static Task FFMPEGConvert(string songPath, Song? metadata = null)
         {
             return Task.Run(() =>
             {
@@ -278,10 +283,20 @@ namespace Jammer
 
                 // Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
 
-                string arguments = $"-i \"{songPath}\" -vn -acodec libvorbis -q:a 4 \"{tempSongPath}\"";
+                string arguments;
+                if (metadata != null)
+                {
+                    arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 -metadata title=\"{metadata.Title}\" -metadata artist=\"{metadata.Author}\" -metadata album=\"{metadata.Album}\" -c:a libvorbis \"{tempSongPath}\"";
+                    Log.Info("Converting to OGG with metadata" + arguments);
+                }
+                else
+                {
+                    Log.Info("Converting to OGG");
+                    arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 \"{tempSongPath}\"";
+                }
                 // Message.Data(arguments, "Debug");
                 //Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                System.Diagnostics.ProcessStartInfo startInfo = new()
                 {
                     FileName = ffmpegPath,
                     Arguments = arguments,
@@ -296,16 +311,24 @@ namespace Jammer
                     StartInfo = startInfo
                 };
 
-                process.Start();
-                process.WaitForExit();
-                process.Close();
+                try
+                {
+                    process.Start();
+                    process.WaitForExit();
+                    process.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    Log.Error("FFMPEG failed to convert the file");
+                    Message.Data(ex.ToString(), "Error id:323");
+                }
 
                 //Message.Data($"Conversion complete: {tempSongPath} to {songPath}", "Debug");
 
                 // Replace the original file with the temporary file
                 System.IO.File.Delete(songPath);
                 System.IO.File.Move(tempSongPath, songPath);
-
                 //Message.Data($"Conversion complete: {songPath}", "Debug");
             });
         }
@@ -486,7 +509,6 @@ namespace Jammer
                 i++;
             }
         }
-
         public static string GetSongsFromPlaylist(string plurl, string service)
         {
             if (service == "soundcloud")
@@ -541,7 +563,6 @@ namespace Jammer
 
             return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]);
         }
-
         public static string FormatUrlForFilename(string url, bool isCheck = false)
         {
             if (URL.isValidSoundCloudPlaylist(url))
@@ -597,10 +618,7 @@ namespace Jammer
             }
             else
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    return formattedYTUrl + ".aac";
-                else
-                    return formattedYTUrl + ".mp4";
+                return formattedYTUrl + ".ogg";
             }
         }
     }
