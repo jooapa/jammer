@@ -258,9 +258,6 @@ namespace Jammer
         {
             Debug.dprint("jammer");
 
-            // get absolute path
-            Utils.CurrentPlaylist = Path.GetFullPath(fullPath);
-
             string[] playlist = System.IO.File.ReadAllLines(fullPath);
 
             // MARK: - Detect if playlist is using the old format
