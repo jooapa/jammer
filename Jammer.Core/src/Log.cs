@@ -15,10 +15,10 @@ namespace Jammer
 
             if (isErr)
             {
-                log = log.Append("[red]" + time + "[/]" + ";ERROR;[cyan]" + curPlaylist + "[/]: " + txt).ToArray();
+                log = log.Append("[red]" + time + "[/]" + ";ERROR;[cyan]" + Start.Sanitize(curPlaylist) + "[/]: " + Start.Sanitize(txt)).ToArray();
                 return;
             }
-            log = log.Append("[green3_1]" + time + "[/]" + ";INFO;[cyan]" + curPlaylist + "[/]: " + txt).ToArray();
+            log = log.Append("[green3_1]" + time + "[/]" + ";INFO;[cyan]" + Start.Sanitize(curPlaylist) + "[/]: " + Start.Sanitize(txt)).ToArray();
         }
 
         public static void Info(string txt)
