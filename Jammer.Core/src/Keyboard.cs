@@ -185,13 +185,28 @@ namespace Jammer
                     {
                         Action = "";
                         int new_value = Utils.CurrentPlaylistSongIndex;
-                        if (Utils.CurrentPlaylistSongIndex <= Utils.Songs.Length
-                        && Utils.CurrentPlaylistSongIndex != 0)
+
+                        // Message.Data(Utils.CurrentPlaylistSongIndex.ToString() + " " + Utils.CurrentSongIndex.ToString(), "Deleting song", true);
+                        // If deleting a song before the currently playing song
+                        if (Utils.CurrentPlaylistSongIndex < Utils.CurrentSongIndex)
                         {
-                            new_value--;
+                            // Message.Data("[red]You are deleting a song before the current song..[/]", "Deleting song", true);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
                         }
-                        Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
-                        Utils.CurrentPlaylistSongIndex = new_value;
+                        // If deleting the currently playing song
+                        else if (Utils.CurrentPlaylistSongIndex == Utils.CurrentSongIndex)
+                        {
+                            // Message.Data("[red]You are deleting the current song.[/]", "Deleting current song", true);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, false);
+                        }
+                        else if (Utils.CurrentPlaylistSongIndex > Utils.CurrentSongIndex)
+                        {
+                            // Message.Data("[red]You are deleting a song after the current song.[/]", "Deleting song", true);
+                            Utils.CurrentSongIndex++;
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
+                        }
+
+                        Utils.CurrentPlaylistSongIndex = Utils.CurrentSongIndex;
                     }
                     else if (Action == "AddSongToQueue")
                     {
