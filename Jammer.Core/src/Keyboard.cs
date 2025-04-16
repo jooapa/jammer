@@ -181,8 +181,12 @@ namespace Jammer
                         Utils.CurrentSongIndex = Utils.CurrentPlaylistSongIndex;
                         Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                     }
-                    else if (Action == "DeleteCurrentSong")
+                    else if (Action == "DeleteCurrentSong" || Action == "HardDeleteCurrentSong")
                     {
+                        bool hardDelete = false;
+                        if (Action == "HardDeleteCurrentSong")
+                            hardDelete = true;
+
                         Action = "";
                         int new_value = Utils.CurrentPlaylistSongIndex;
 
@@ -191,19 +195,19 @@ namespace Jammer
                         if (Utils.CurrentPlaylistSongIndex < Utils.CurrentSongIndex)
                         {
                             // Message.Data("[red]You are deleting a song before the current song..[/]", "Deleting song", true);
-                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true, hardDelete);
                         }
                         // If deleting the currently playing song
                         else if (Utils.CurrentPlaylistSongIndex == Utils.CurrentSongIndex)
                         {
                             // Message.Data("[red]You are deleting the current song.[/]", "Deleting current song", true);
-                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, false);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, false, hardDelete);
                         }
                         else if (Utils.CurrentPlaylistSongIndex > Utils.CurrentSongIndex)
                         {
                             // Message.Data("[red]You are deleting a song after the current song.[/]", "Deleting song", true);
                             Utils.CurrentSongIndex++;
-                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true);
+                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true, hardDelete);
                         }
 
                         Utils.CurrentPlaylistSongIndex = Utils.CurrentSongIndex;
@@ -211,46 +215,6 @@ namespace Jammer
                     else if (Action == "AddSongToQueue")
                     {
                         // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
-                    }
-                    else if (Action == "HardDeleteCurrentSong")
-                    {
-                        Action = "";
-
-                        int new_value = Utils.CurrentPlaylistSongIndex;
-                        if (Utils.CurrentPlaylistSongIndex < Utils.Songs.Length && Utils.CurrentPlaylistSongIndex > 0)
-                        {
-                            new_value--;
-                        }
-
-                        try
-                        {
-                            Play.DeleteSong(Utils.CurrentPlaylistSongIndex, true, true);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            Console.ReadKey();
-                        }
-                        //Play.DeleteSong(Utils.currentPlaylistSongIndex, true, true);
-
-                        // Debugging output to verify indices and array state
-                        // Console.WriteLine($"Current Index: {Utils.currentPlaylistSongIndex}, New Value: {new_value}, Total Songs: {Utils.songs.Length}, Current Song Index: {Utils.currentSongIndex}");
-                        // Console.ReadKey();
-
-                        if (Utils.Songs.Length > 0)
-                        {
-                            if (Utils.CurrentPlaylistSongIndex == Utils.CurrentSongIndex + 2
-                                || Utils.CurrentPlaylistSongIndex == Utils.Songs.Length)
-                            {
-                                Play.NextSong();
-                            }
-                        }
-                        else
-                        {
-                            PauseSong(true);
-                        }
-
-                        Utils.CurrentPlaylistSongIndex = Math.Clamp(new_value + 1, 0, Math.Max(Utils.Songs.Length - 1, 0));
                     }
 
                 }
@@ -508,7 +472,8 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "DeleteCurrentSong":
-                            Play.DeleteSong(Utils.CurrentSongIndex, false);
+                            Play.DeleteSong(Utils.CurrentSongIndex, false, false, true);
+
                             drawWhole = true;
                             break;
                         case "HardDeleteCurrentSong":

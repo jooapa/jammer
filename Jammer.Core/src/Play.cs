@@ -598,7 +598,7 @@ namespace Jammer
                 PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
         }
-        public static void DeleteSong(int index, bool isQueue, bool hardDelete = false)
+        public static void DeleteSong(int index, bool isQueue, bool hardDelete = false, bool goForward = false)
         {
             if (Utils.Songs.Length == 0)
             {
@@ -619,13 +619,25 @@ namespace Jammer
 
             // remove song from current Utils.songs
             Utils.Songs = Utils.Songs.Where((source, i) => i != index).ToArray();
-            Utils.CurrentSongIndex--;
-            if (Utils.CurrentSongIndex == -1)
+
+            if (goForward)
             {
-                Utils.CurrentSongIndex = 0;
+                // Don't decrement index when going forward
+                if (Utils.CurrentSongIndex >= Utils.Songs.Length)
+                {
+                    Utils.CurrentSongIndex = 0;
+                }
             }
-            // PREV RESET
-            // Console.WriteLine((index < Utils.currentSongIndex   ) + " " + Utils.currentPlaylistSongIndex);
+            else
+            {
+                Utils.CurrentSongIndex--;
+                if (Utils.CurrentSongIndex == -1)
+                {
+                    Utils.CurrentSongIndex = 0;
+                }
+            }
+
+            // Handle playlist index updates
             if (index == Utils.Songs.Length)
             {
                 if (Utils.Songs.Length == 0)
@@ -641,25 +653,6 @@ namespace Jammer
                 else
                 {
                     Utils.CurrentSongIndex = Utils.Songs.Length - 1;
-                    // Start.state = MainStates.playing;
-                }
-            }
-            else
-            {
-                if (index < Utils.CurrentPlaylistSongIndex && index != Utils.CurrentPlaylistSongIndex)
-                {
-                    if (Utils.CurrentPlaylistSongIndex == Utils.Songs.Length)
-                    {
-                        Utils.CurrentPlaylistSongIndex--;
-                    }
-                    else
-                    {
-                        Utils.CurrentPlaylistSongIndex++;
-                    }
-                }
-                else
-                {
-                    Utils.CurrentPlaylistSongIndex++;
                 }
             }
 
@@ -668,12 +661,9 @@ namespace Jammer
             {
                 PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
-            else
+            else if (Utils.CurrentSongIndex == index)
             {
-                if (Utils.CurrentSongIndex == index)
-                {
-                    PlaySong(Utils.Songs, Utils.CurrentSongIndex);
-                }
+                PlaySong(Utils.Songs, Utils.CurrentSongIndex);
             }
         }
         public static void SetEffectsToChannel()
