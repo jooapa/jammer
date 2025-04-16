@@ -95,7 +95,8 @@ namespace Jammer
             else if (Directory.Exists(song.URI))
             {
                 // skip if folder
-                NextSong();
+                // NextSong();
+                Start.state = MainStates.next;
                 return;
             }
             else if (URL.isValidSoundCloudPlaylist(song.URI))
@@ -378,6 +379,11 @@ namespace Jammer
         }
         public static void NextSong()
         {
+            Start.prevMusicTimePlayed = -1;
+            Start.lastSeconds = -1;
+            Start.drawTime = true;
+
+
             if (Utils.Songs.Length == 0)
             {
                 Start.state = MainStates.pause;
@@ -427,6 +433,9 @@ namespace Jammer
         }
         public static void PrevSong()
         {
+            Start.prevMusicTimePlayed = -1;
+            Start.lastSeconds = -1;
+
             if (Utils.Songs.Length == 0)
             {
                 Start.state = MainStates.pause;
@@ -564,7 +573,7 @@ namespace Jammer
             }
             else
             {
-                NextSong();
+                Start.state = MainStates.next;
             }
         }
 

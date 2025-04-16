@@ -228,7 +228,6 @@ namespace Jammer
                     case MainStates.next:
                         Debug.dprint("next");
                         Play.NextSong();
-                        // AnsiConsole.Clear();
                         break;
                     case MainStates.previous:
                         if (Utils.TotalMusicDurationInSec > 3)
