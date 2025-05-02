@@ -132,6 +132,13 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 This can be changed by an environment variable `JAMMER_CONFIG_PATH`
 
+### Jammer songs Folder Location
+
+- **Windows**: `C:\Users\username\jammer\songs`
+- **Linux**: `~/jammer/songs`
+
+This can be changed by an environment variable `JAMMER_SONGS_PATH`
+
 ### M3U and M3U8 Support
 
 Jammer supports m3u and m3u8 playlists. You can play them but with pretty limited functionality.

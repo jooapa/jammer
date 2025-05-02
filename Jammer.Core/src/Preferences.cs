@@ -83,7 +83,6 @@ namespace Jammer
         static public void SaveSettings()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
-            // wirte hello world to a file
             Settings settings = new Settings();
             settings.IsLoop = isLoop;
             settings.Volume = volume;
@@ -96,7 +95,7 @@ namespace Jammer
             settings.isMediaButtons = isMediaButtons;
             settings.isAutoSave = isAutoSave;
             settings.localeLanguage = localeLanguage;
-            settings.songsPath = songsPath;
+            // settings.songsPath = songsPath;
             settings.isVisualizer = isVisualizer;
             settings.theme = theme;
             settings.currentSf2 = currentSf2;
@@ -113,17 +112,42 @@ namespace Jammer
 
         static public string GetSongsPath()
         {
+
+            // check if environment variable JAMMER_SONGS_PATH exists
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_SONGS_PATH")))
+            {
+                return Environment.GetEnvironmentVariable("JAMMER_SONGS_PATH") ?? Path.Combine(Utils.JammerPath, "songs");
+            }
+
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
+            {
+                return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), "jammer", "songs");
+            }
+
+            // check if settings.json exists
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            var value = "";
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.songsPath ?? Path.Combine(Utils.JammerPath, "songs");
+                value = settings?.songsPath;
             }
-            else
+
+            // Show a message box and as k the user if they want to change the path to the new Environment variable version
+            if (!string.IsNullOrEmpty(value) && value != Path.Combine(Utils.JammerPath, "songs"))
             {
-                return Path.Combine(Utils.JammerPath, "songs");
+                var val = Message.Input("Jammer songs path has moved from the settings.json to the Environment variable JAMMER_SONGS_PATH. Do you want to change the path to the new Environment variable version? (y/n).", "Jammer, " + value, true);
+                val = val.ToLower();
+                if (val == "y")
+                {
+                    Environment.SetEnvironmentVariable("JAMMER_SONGS_PATH", value);
+                    return value;
+                }
             }
+
+            // return the normal path
+            return Path.Combine(Utils.JammerPath, "songs");
         }
         static public bool GetIsLoop()
         {
@@ -414,6 +438,7 @@ namespace Jammer
             public bool? isMediaButtons { get; set; }
             public bool isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
+            // old songs path, used in the migration process, if its set already
             public string? songsPath { get; set; }
             public bool isVisualizer { get; set; }
             public string? theme { get; set; }
