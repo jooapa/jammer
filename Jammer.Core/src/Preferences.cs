@@ -23,7 +23,22 @@ namespace Jammer
         public static string theme = GetTheme();
         public static string currentSf2 = GetCurrentSf2();
         public static string clientID = GetClientId();
+        public static bool isModifierKeyHelper = GetModifierKeyHelper();
 
+        private static bool GetModifierKeyHelper()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.modifierKeyHelper ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         static public void CheckJammerFolderExists()
         {
@@ -100,6 +115,7 @@ namespace Jammer
             settings.theme = theme;
             settings.currentSf2 = currentSf2;
             settings.clientID = clientID;
+            settings.modifierKeyHelper = isModifierKeyHelper;
 
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -444,6 +460,7 @@ namespace Jammer
             public string? theme { get; set; }
             public string? currentSf2 { get; set; }
             public string? clientID { get; set; }
+            public bool? modifierKeyHelper { get; set; }
         }
     }
 }

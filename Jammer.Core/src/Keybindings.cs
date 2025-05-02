@@ -103,15 +103,47 @@ namespace Jammer
 
         public static string CheckValue(string value, string defaultValue)
         {
+
             string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);
-            if (finalValue == null || finalValue.Equals(""))
+            if (Preferences.isModifierKeyHelper)
+            {
+                if (finalValue == null || finalValue.Equals(""))
+                {
+                    return defaultValue;
+                }
+                else
+                {
+                    return finalValue;
+                }
+            }
+
+            if (string.IsNullOrEmpty(finalValue))
             {
                 return defaultValue;
             }
-            else
+
+            var parts = finalValue.Split('+')
+                .Select(p => p.Trim())
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .ToList();
+
+            if (parts.Count > 0)
             {
-                return finalValue;
+                string lastPart = parts[parts.Count - 1];
+                bool hasShift = parts.Contains("Shift");
+
+                // If last part is a single letter, handle casing based on Shift
+                if (lastPart.Length == 1 && char.IsLetter(lastPart[0]))
+                {
+                    parts[parts.Count - 1] = hasShift ? lastPart.ToUpper() : lastPart.ToLower();
+                    if (hasShift)
+                    {
+                        parts = parts.Where(p => p != "Shift").ToList();
+                    }
+                }
             }
+
+            return string.Join(" + ", parts);
         }
 
         public static class SettingsKeys
@@ -125,6 +157,7 @@ namespace Jammer
             public const ConsoleKey ToggleVisualizer = ConsoleKey.G;
             public const ConsoleKey LoadVisualizer = ConsoleKey.H;
             public const ConsoleKey SoundCloudClientID = ConsoleKey.I;
+            public const ConsoleKey KeyModifierHelper = ConsoleKey.J;
 
         }
     }

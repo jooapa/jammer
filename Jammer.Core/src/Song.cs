@@ -54,7 +54,6 @@ namespace Jammer
         /// </remarks>
         public static string ToSongString(this Song song)
         {
-            // Message.Data(song.URI + " " + song.Title + " " + song.Author + " " + song.Album + " " + song.Year + " " + song.Genre, "ToSongString");
             if (IsAlreadyInString(song))
             {
                 return song.URI;
@@ -62,16 +61,28 @@ namespace Jammer
 
             if (song == null || string.IsNullOrEmpty(song.URI))
             {
-                return string.Empty; // or handle it as needed
+                return string.Empty;
             }
 
             var options = new JsonSerializerOptions
             {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                WriteIndented = false,
+                IgnoreReadOnlyProperties = true
             };
 
+            // Create a new anonymous object with only defined properties
+            var definedProperties = new Dictionary<string, string>();
+
+            if (!string.IsNullOrEmpty(song.Title)) definedProperties.Add("Title", song.Title);
+            if (!string.IsNullOrEmpty(song.Author)) definedProperties.Add("Author", song.Author);
+            if (!string.IsNullOrEmpty(song.Album)) definedProperties.Add("Album", song.Album);
+            if (!string.IsNullOrEmpty(song.Year)) definedProperties.Add("Year", song.Year);
+            if (!string.IsNullOrEmpty(song.Genre)) definedProperties.Add("Genre", song.Genre);
+            if (!string.IsNullOrEmpty(song.Duration)) definedProperties.Add("Duration", song.Duration);
+
             string songString = song.URI + Utils.JammerFileDelimeter;
-            songString += JsonSerializer.Serialize(song, options);
+            songString += JsonSerializer.Serialize(definedProperties, options);
             return songString;
         }
 

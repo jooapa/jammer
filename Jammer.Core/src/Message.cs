@@ -87,7 +87,6 @@ namespace Jammer
 
             var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title(title)
-                .PageSize(10)
                 .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
                 .AddChoices(options));
 

@@ -324,6 +324,11 @@ namespace Jammer
                         case Keybindings.SettingsKeys.LoadVisualizer:
                             Visual.Read();
                             break;
+                        case Keybindings.SettingsKeys.KeyModifierHelper:
+                            Preferences.isModifierKeyHelper = !Preferences.isModifierKeyHelper;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
                     }
 
                     // able to return to default view
@@ -347,7 +352,7 @@ namespace Jammer
                             Console.WriteLine("CurrentState: " + state);
                             break;
                         case "Quit":
-                            Start.state = MainStates.pause;
+                            state = MainStates.pause;
                             Environment.Exit(0);
                             break;
                         case "NextSong":
