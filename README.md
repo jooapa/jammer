@@ -64,7 +64,6 @@ jammer -s, --show       <name>                # show songs in playlist
 jammer -l, --list                             # list all playlists
 
 jammer -f, --flush                            # deletes all the songs in songs folder
-jammer -sp, --set-path  <path>, <default>     # set path for songs folder
 jammer -gp, --get-path                        # get the path to the <jammer/songs> folder
 jammer -hm, --home                            # play all songs from the <jammer/songs> folder
 jammer -so, --songs                           # open <jammer/songs> folder
@@ -93,7 +92,7 @@ Jammer supports playing ***.mid***, ***.midi***, ***.rmi***, ***.kar*** files. T
 
 Here is one sf2 file you can use [ChoriumRevA.SF2](https://www.un4seen.com/download.php?x/ChoriumRevA), *This is BASS's recommended SoundFont file.*
 
-To change the SoundFont file, press `Shift + G` (default keybind).
+To change the SoundFont file, press `G` (default keybind).
 
 `Link to a soundFont by path`: This will link the SoundFont file by path. **This will not copy the SoundFont file to the <jammer/soundfonts>.**
 
@@ -103,7 +102,7 @@ Will show all the SoundFont files in the `<jammer/soundfonts>` folder.
 
 ### Themes
 
-You can create your own theme by pressing `Shift + T` (default keybind)
+You can create your own theme by pressing `T` (default keybind)
 
 Select 'Create a New Theme' and write the theme's name. Go to `<jammer/themes>`, you should see `name.json`. It will contain all the information needed for creating a theme.
 
@@ -143,7 +142,7 @@ This can be changed by an environment variable `JAMMER_SONGS_PATH`
 
 Jammer supports m3u and m3u8 playlists. You can play them but with pretty limited functionality.
 
-m3u files can be played just by opening them with Jammer. But cannot be opened with the `--play`, `-p` command from the `<jammer/playlists>` folder. You can `Save as` (default keybind `Shift + Alt + S`) the m3u file, Thus creating a JAMMER playlist to `<jammer/playlists>` folder.
+m3u files can be played just by opening them with Jammer. But cannot be opened with the `--play`, `-p` command from the `<jammer/playlists>` folder. You can `Save as` (default keybind `Alt + S`) the m3u file, Thus creating a JAMMER playlist to `<jammer/playlists>` folder.
 
 Starting the m3u or m3u8 file with `#EXTM3U` and example of the m3u of all the features that are supported.
 
@@ -163,46 +162,46 @@ https://www.youtube.com/watch?v=Zwnvgz3ey78
 
 | Key | Action |
 |  --------  |  -------  |
-| `H` | Show/hide help |
-| `C` | Show/hide settings |
-| `F` | Show/hide playlist view |
-| `Shift + E` | Edit keybindings|
-| `Shift + L` | Change language|
+| `h` | Show/hide help |
+| `c` | Show/hide settings |
+| `f` | Show/hide playlist view |
+| `E` | Edit keybindings|
+| `L` | Change language|
 | `Space` | Play/pause |
-| `Q` | Quit |
+| `q` | Quit |
 | `→` | Forward |
 | `←` | Backward |
 | `↑` | Volume up |
 | `↓` | Volume down |
-| `M` | Mute/unmute |
-| `L` | Toggle loop |
-| `S` | Toggle shuffle |
-| `R` | Play in random song |
-| `N` | Next song in playlist |
-| `P` | Previous song in playlist |
+| `m` | Mute/unmute |
+| `l` | Toggle loop |
+| `s` | Toggle shuffle |
+| `r` | Play in random song |
+| `n` | Next song in playlist |
+| `p` | Previous song in playlist |
 | `Delete` | Delete current song from playlist |
 | `Shift + Delete` | Delete current song from playlist and PC |
 | `F3` | Search song in playlist |
 | `Tab` | Show CMD help screen|
 | `0` | Goto start of the song|
 | `9` | Goto end of the song|
-| `Shift + T` | Change Theme|
-| `Shift + G`| Change SoundFont |
+| `T` | Change Theme|
+| `G`| Change SoundFont |
 
 ### Default Playlist Controls
 
 | Key | Action |
 | ------ | ----------- |
-| `Shift + A`| Add song to playlist |
-| `Shift + D`| Show songs in other playlist |
-| `Shift + F`| List all playlists |
-| `Shift + O`| Play other playlist |
-| `Shift + S`| Save playlist |
-| `Shift + Alt + S`| Save as |
+| `A`| Add song to playlist |
+| `D`| Show songs in other playlist |
+| `F`| List all playlists |
+| `O`| Play other playlist |
+| `S`| Save playlist |
+| `Alt + S`| Save as |
 | `Alt + S`| Shuffle playlist |
-| `Shift + P`| Play song(s) |
-| `Shift + B`| Redownload current song |
-| `Shift + Y`| Search YouTube for songs |
+| `P`| Play song(s) |
+| `B`| Redownload current song |
+| `Y`| Search YouTube for songs |
 
 ## Language support
 

@@ -153,12 +153,12 @@ namespace Jammer
             // Show a message box and as k the user if they want to change the path to the new Environment variable version
             if (!string.IsNullOrEmpty(value) && value != Path.Combine(Utils.JammerPath, "songs"))
             {
-                var val = Message.Input("Jammer songs path has moved from the settings.json to the Environment variable JAMMER_SONGS_PATH. Do you want to change the path to the new Environment variable version? (y/n).", "Jammer, " + value, true);
+                var val =
+                    Message.Input("Jammer songs path has moved from the settings.json to the Environment variable JAMMER_SONGS_PATH. Now would be a good time to set the variable. Exit by pressing 'n', or if you want to use the default location press 'y'.", "Current songs Path " + Path.Combine(value, "songs"), true);
                 val = val.ToLower();
-                if (val == "y")
+                if (val == "n")
                 {
-                    Environment.SetEnvironmentVariable("JAMMER_SONGS_PATH", value);
-                    return value;
+                    Environment.Exit(0);
                 }
             }
 

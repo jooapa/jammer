@@ -163,42 +163,6 @@ namespace Jammer
                         Songs.Flush();
                         Environment.Exit(0);
                         return;
-                    case "--set-path":
-                    case "-sp": // TODO ADD LOCALE :)) https://www.youtube.com/watch?v=thPv_v7890g
-                        if (args.Length > i + 1)
-                        {
-                            if (Directory.Exists(args[i + 1]))
-                            {
-                                Preferences.songsPath = Path.GetFullPath(Path.Combine(args[i + 1], "songs"));
-                                AnsiConsole.MarkupLine("[green]Songs path set to: " + Preferences.songsPath + "[/]");
-
-                            }
-                            else if (args[i + 1] == "")
-                            {
-                                AnsiConsole.MarkupLine("No path given.");
-
-                                return;
-                            }
-                            else if (args[i + 1] == "default")
-                            {
-                                Preferences.songsPath = Path.Combine(Utils.JammerPath, "songs");
-                                AnsiConsole.MarkupLine("[green]Songs path set to default.[/]"); // TODO ADD LOCALE
-
-                            }
-                            else
-                            {
-                                AnsiConsole.MarkupLine($"[red]Path [grey]'[/][white]{args[i + 1]}[/][grey]'[/] does not exist.[/]"); // TODO ADD LOCALE
-
-                            }
-
-                            Preferences.SaveSettings();
-                        }
-                        else
-                        {
-                            AnsiConsole.MarkupLine("[red]No songs path given.[/]"); // TODO ADD LOCALE
-                        }
-                        Environment.Exit(0);
-                        return;
                     case "--get-path":
                     case "-gp":
                         AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
