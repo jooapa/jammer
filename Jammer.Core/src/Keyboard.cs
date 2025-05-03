@@ -339,7 +339,7 @@ namespace Jammer
                             }
                             Preferences.clientID = clientID;
                             Preferences.SaveSettings();
-                            Message.Data("Client ID fetched: " + clientID, "Success!", false, false);
+                            Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
                             drawWhole = true;
                             break;
                     }
