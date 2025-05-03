@@ -52,37 +52,45 @@ namespace Jammer
             int max = 10;
             async Task loopedidoo()
             {
-                if (type == "playlist")
+                try
                 {
-                    await foreach (var result in Download.youtube.Search.GetPlaylistsAsync(search))
+                    if (type == "playlist")
                     {
-                        var id = result.Id;
-                        var title = Markup.Escape(result.Title);
-                        string type = "playlist";
-                        results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
-
-                        if (indexer == max - 1)
+                        await foreach (var result in Download.youtube.Search.GetPlaylistsAsync(search))
                         {
-                            break;
+                            var id = result.Id;
+                            var title = Markup.Escape(result.Title);
+                            string type = "playlist";
+                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
+
+                            if (indexer == max - 1)
+                            {
+                                break;
+                            }
+                            indexer++;
                         }
-                        indexer++;
+                    }
+                    else if (type == "video")
+                    {
+                        await foreach (var result in Download.youtube.Search.GetVideosAsync(search))
+                        {
+                            var id = result.Id;
+                            var title = Markup.Escape(result.Title);
+                            string type = "video";
+                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
+
+                            if (indexer == max - 1)
+                            {
+                                break;
+                            }
+                            indexer++;
+                        }
                     }
                 }
-                else if (type == "video")
+                catch (Exception ex)
                 {
-                    await foreach (var result in Download.youtube.Search.GetVideosAsync(search))
-                    {
-                        var id = result.Id;
-                        var title = Markup.Escape(result.Title);
-                        string type = "video";
-                        results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
-
-                        if (indexer == max - 1)
-                        {
-                            break;
-                        }
-                        indexer++;
-                    }
+                    Message.Data("Error: " + ex.Message, ":(");
+                    return;
                 }
             }
             loopedidoo().Wait();
@@ -165,39 +173,47 @@ namespace Jammer
             async Task loopedidoo()
             {
 
-                if (type == "playlist")
+                try
                 {
-                    await foreach (var result in Download.ReturnSoundCloudClient().Search.GetPlaylistsAsync(search))
+                    if (type == "playlist")
                     {
-                        var url = result.Url;
-                        if (url == null || url == "" || result.Title == null || result.Title == "")
+                        await foreach (var result in Download.ReturnSoundCloudClient().Search.GetPlaylistsAsync(search))
                         {
-                            continue;
-                        }
-                        var title = Markup.Escape(result.Title);
-                        results.Add(new SCSearchResult { Url = url, Title = title });
+                            var url = result.Url;
+                            if (url == null || url == "" || result.Title == null || result.Title == "")
+                            {
+                                continue;
+                            }
+                            var title = Markup.Escape(result.Title);
+                            results.Add(new SCSearchResult { Url = url, Title = title });
 
-                        if (indexer == max - 1)
-                        {
-                            break;
+                            if (indexer == max - 1)
+                            {
+                                break;
+                            }
+                            indexer++;
                         }
-                        indexer++;
+                    }
+                    else if (type == "track")
+                    {
+                        await foreach (var result in Download.ReturnSoundCloudClient().Search.GetTracksAsync(search))
+                        {
+                            var url = result.Url;
+                            var title = Markup.Escape(result.Title);
+                            results.Add(new SCSearchResult { Url = url, Title = title });
+
+                            if (indexer == max - 1)
+                            {
+                                break;
+                            }
+                            indexer++;
+                        }
                     }
                 }
-                else if (type == "track")
+                catch (Exception ex)
                 {
-                    await foreach (var result in Download.ReturnSoundCloudClient().Search.GetTracksAsync(search))
-                    {
-                        var url = result.Url;
-                        var title = Markup.Escape(result.Title);
-                        results.Add(new SCSearchResult { Url = url, Title = title });
-
-                        if (indexer == max - 1)
-                        {
-                            break;
-                        }
-                        indexer++;
-                    }
+                    Message.Data("Error: " + ex.Message, ":( maybe clientId has changed or is invalid?");
+                    return;
                 }
             }
             loopedidoo().Wait();
