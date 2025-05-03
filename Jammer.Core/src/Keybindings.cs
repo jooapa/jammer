@@ -158,7 +158,7 @@ namespace Jammer
             public const ConsoleKey LoadVisualizer = ConsoleKey.H;
             public const ConsoleKey SoundCloudClientID = ConsoleKey.I;
             public const ConsoleKey KeyModifierHelper = ConsoleKey.J;
-
+            public const ConsoleKey FetchClientID = ConsoleKey.K;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Jammer
     {
         public static string Action = "";
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
-        public static void CheckKeyboardAsync()
+        public static async Task CheckKeyboardAsync()
         {
             if (Console.KeyAvailable || Action != "")
             {
@@ -327,6 +327,19 @@ namespace Jammer
                         case Keybindings.SettingsKeys.KeyModifierHelper:
                             Preferences.isModifierKeyHelper = !Preferences.isModifierKeyHelper;
                             Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.FetchClientID:
+                            string clientID = await SCClientIdFetcher.GetClientId();
+                            if (string.IsNullOrEmpty(clientID))
+                            {
+                                Message.Data("Client ID not found", "Error :(", true, false);
+                                drawWhole = true;
+                                break;
+                            }
+                            Preferences.clientID = clientID;
+                            Preferences.SaveSettings();
+                            Message.Data("Client ID fetched: " + clientID, "Success!", false, false);
                             drawWhole = true;
                             break;
                     }

@@ -18,8 +18,6 @@ namespace Jammer
                     webClient.DownloadProgressChanged += (sender, e) =>
                     {
                         Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
-
-
                     };
 
                     webClient.DownloadFile(downloadUrl, downloadPath);
