@@ -405,6 +405,22 @@ namespace Jammer
                             Preferences.SaveSettings();
                             drawTime = true;
                             break;
+                        case "VolumeUpAlt":
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
+                            Play.ModifyVolume(0.01f);
+                            drawTime = true;
+                            break;
+                        case "VolumeDownAlt":
+                            if (Preferences.isMuted)
+                            {
+                                Play.ToggleMute();
+                            }
+                            Play.ModifyVolume(-0.01f);
+                            drawTime = true;
+                            break;
                         case "Shuffle": // suffle or save
                             Preferences.isShuffle = !Preferences.isShuffle;
                             Preferences.SaveSettings();

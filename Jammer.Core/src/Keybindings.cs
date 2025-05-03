@@ -100,6 +100,8 @@ namespace Jammer
         public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ShowLog = CheckValue("ShowLog", "Ctrl + L");
         public static string HardDeleteCurrentSong = CheckValue("HardDeleteCurrentSong", "Shift + Delete");
+        public static string VolumeUpAlt = CheckValue("VolumeUpAlt", "Shift + UpArrow");
+        public static string VolumeDownAlt = CheckValue("VolumeDownAlt", "Shift + DownArrow");
 
         public static string CheckValue(string value, string defaultValue)
         {
@@ -157,8 +159,8 @@ namespace Jammer
             public const ConsoleKey ToggleVisualizer = ConsoleKey.G;
             public const ConsoleKey LoadVisualizer = ConsoleKey.H;
             public const ConsoleKey SoundCloudClientID = ConsoleKey.I;
-            public const ConsoleKey KeyModifierHelper = ConsoleKey.J;
-            public const ConsoleKey FetchClientID = ConsoleKey.K;
+            public const ConsoleKey FetchClientID = ConsoleKey.J;
+            public const ConsoleKey KeyModifierHelper = ConsoleKey.K;
         }
     }
 }

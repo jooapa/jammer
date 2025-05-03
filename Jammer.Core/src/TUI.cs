@@ -442,6 +442,8 @@ namespace Jammer
             string[] ToSongEnd = (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
             string[] ShowLog = (Keybindings.ShowLog).Replace(" ", "").Split(separator);
             string[] HardDeleteCurrentSong = (Keybindings.HardDeleteCurrentSong).Replace(" ", "").Split(separator);
+            string[] VolumeUpAlt = (Keybindings.VolumeUpAlt).Replace(" ", "").Split(separator);
+            string[] VolumeDownAlt = (Keybindings.VolumeDownAlt).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
 
@@ -469,6 +471,9 @@ namespace Jammer
             table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(HardDeleteCurrentSong), Themes.sColor(Locale.LocaleKeybind.HardDeleteCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             //table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(VolumeUpAlt), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(VolumeDownAlt), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+
 
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(table);
@@ -540,6 +545,7 @@ namespace Jammer
             table.AddRow(Themes.sColor("Toggle Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.ToggleVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             table.AddRow(Themes.sColor("Load Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.LoadVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Visualizer settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             table.AddRow(Themes.sColor("Set Soundcloud Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.SoundCloudClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Set Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            table.AddRow(Themes.sColor("Fetch Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.FetchClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Fetch Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             table.AddRow(Themes.sColor("Toggle Key Mofifier Helpers", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.KeyModifierHelper} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Key Modifier Helpers ie. E -> Shift + E. (restart required)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
 
             AnsiConsole.Cursor.SetPosition(0, 0);
