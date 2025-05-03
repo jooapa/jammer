@@ -361,8 +361,8 @@ namespace Jammer
             public static string ShowLog = CheckValueLocale("EditKeysTexts", "ShowLog", "Show log");
             public static string Search = CheckValueLocale("EditKeysTexts", "Search", "Search");
             public static string HardDeleteCurrentSong = CheckValueLocale("EditKeysTexts", "HardDeleteCurrentSong", "Hard delete current song");
-            public static string VolumeUpAlt = CheckValueLocale("EditKeysTexts", "VolumeUpAlt", "Increase volume by 1%");
-            public static string VolumeDownAlt = CheckValueLocale("EditKeysTexts", "VolumeDownAlt", "Decrease volume by 1%");
+            public static string VolumeUpByOne = CheckValueLocale("EditKeysTexts", "VolumeUpByOne", "Increase volume by 1%");
+            public static string VolumeDownByOne = CheckValueLocale("EditKeysTexts", "VolumeDownByOne", "Decrease volume by 1%");
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {

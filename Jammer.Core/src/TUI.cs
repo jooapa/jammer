@@ -442,8 +442,8 @@ namespace Jammer
             string[] ToSongEnd = (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
             string[] ShowLog = (Keybindings.ShowLog).Replace(" ", "").Split(separator);
             string[] HardDeleteCurrentSong = (Keybindings.HardDeleteCurrentSong).Replace(" ", "").Split(separator);
-            string[] VolumeUpAlt = (Keybindings.VolumeUpAlt).Replace(" ", "").Split(separator);
-            string[] VolumeDownAlt = (Keybindings.VolumeDownAlt).Replace(" ", "").Split(separator);
+            string[] VolumeUpByOne = (Keybindings.VolumeUpByOne).Replace(" ", "").Split(separator);
+            string[] VolumeDownByOne = (Keybindings.VolumeDownByOne).Replace(" ", "").Split(separator);
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
 
@@ -471,8 +471,8 @@ namespace Jammer
             table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(HardDeleteCurrentSong), Themes.sColor(Locale.LocaleKeybind.HardDeleteCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             //table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeUpAlt), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeDownAlt), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(VolumeUpByOne), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(VolumeDownByOne), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
 
 
             AnsiConsole.Cursor.SetPosition(0, 0);

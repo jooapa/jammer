@@ -100,8 +100,8 @@ namespace Jammer
         public static string Search = CheckValue("Search", "Ctrl + Y");
         public static string ShowLog = CheckValue("ShowLog", "Ctrl + L");
         public static string HardDeleteCurrentSong = CheckValue("HardDeleteCurrentSong", "Shift + Delete");
-        public static string VolumeUpAlt = CheckValue("VolumeUpAlt", "Shift + UpArrow");
-        public static string VolumeDownAlt = CheckValue("VolumeDownAlt", "Shift + DownArrow");
+        public static string VolumeUpByOne = CheckValue("VolumeUpByOne", "Shift + UpArrow");
+        public static string VolumeDownByOne = CheckValue("VolumeDownByOne", "Shift + DownArrow");
 
         public static string CheckValue(string value, string defaultValue)
         {

@@ -405,7 +405,7 @@ namespace Jammer
                             Preferences.SaveSettings();
                             drawTime = true;
                             break;
-                        case "VolumeUpAlt":
+                        case "VolumeUpByOne":
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -413,7 +413,7 @@ namespace Jammer
                             Play.ModifyVolume(0.01f);
                             drawTime = true;
                             break;
-                        case "VolumeDownAlt":
+                        case "VolumeDownByOne":
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
