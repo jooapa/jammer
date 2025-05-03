@@ -158,51 +158,6 @@ https://www.youtube.com/watch?v=Zwnvgz3ey78
 /tmp/secret_klinoff.mp3
 ```
 
-### Default Player Controls
-
-| Key | Action |
-|  --------  |  -------  |
-| `h` | Show/hide help |
-| `c` | Show/hide settings |
-| `f` | Show/hide playlist view |
-| `E` | Edit keybindings|
-| `L` | Change language|
-| `Space` | Play/pause |
-| `q` | Quit |
-| `→` | Forward |
-| `←` | Backward |
-| `↑` | Volume up |
-| `↓` | Volume down |
-| `m` | Mute/unmute |
-| `l` | Toggle loop |
-| `s` | Toggle shuffle |
-| `r` | Play in random song |
-| `n` | Next song in playlist |
-| `p` | Previous song in playlist |
-| `Delete` | Delete current song from playlist |
-| `Shift + Delete` | Delete current song from playlist and PC |
-| `F3` | Search song in playlist |
-| `Tab` | Show CMD help screen|
-| `0` | Goto start of the song|
-| `9` | Goto end of the song|
-| `T` | Change Theme|
-| `G`| Change SoundFont |
-
-### Default Playlist Controls
-
-| Key | Action |
-| ------ | ----------- |
-| `A`| Add song to playlist |
-| `D`| Show songs in other playlist |
-| `F`| List all playlists |
-| `O`| Play other playlist |
-| `S`| Save playlist |
-| `Alt + S`| Save as |
-| `Alt + S`| Shuffle playlist |
-| `P`| Play song(s) |
-| `B`| Redownload current song |
-| `Y`| Search YouTube for songs |
-
 ## Language support
 
 Translations may not be up-to-date
