@@ -72,12 +72,12 @@ namespace Jammer
         public static string ToSongEnd = CheckValue("ToSongEnd", "9");
         public static string ToggleInfo = CheckValue("ToggleInfo", "I");
         public static string SearchInPlaylist = CheckValue("SearchInPlaylist", "F3");
-        // public static string RenameSong = CheckValue("RenameSong", "F2");
+        public static string RenameSong = CheckValue("RenameSong", "F2");
 
         // public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
         // public static string BackwardSecondAmount = CheckValue("BackwardSecondAmount", "2");
         // public static string ChangeVolumeAmount = CheckValue("ChangeVolumeAmount", "3");
-        // public static string Autosave = CheckValue("Autosave", "4");
+        // public static string Autosave = CheckValue("Autosave", "4");pp
         // public static string LoadEffects = CheckValue("LoadEffects", "5");
         // public static string ToggleMediaButtons = CheckValue("ToggleMediaButtons", "6");
         // public static string ToggleVisualizer = CheckValue("ToggleVisualizer", "7");

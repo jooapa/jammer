@@ -494,10 +494,26 @@ namespace Jammer
                             Search.SearchForSongInPlaylistAsync();
                             drawWhole = true;
                             break;
-                        //case "RenameSong": // rename song
-                        //    string newName = Message.Input("Enter the new name:", "New name");
-                        //    drawWhole = true;
-                        //    break;
+                        case "RenameSong": // rename song
+                            // Song song = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                            // debug json output
+                            string name = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
+                            string newName = Message.Input("New name: ", $"Go up in History to see current name: [i]{name}[/]\nLeave empty to keep current name", false, name);
+
+                            if (string.IsNullOrEmpty(newName) || newName == name)
+                            {
+                                drawWhole = true;
+                                break;
+                            }
+
+                            Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                            newRenamedSong.Title = newName;
+                            newRenamedSong.ToSongString();
+
+                            Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+
+                            drawWhole = true;
+                            break;
                         case "CommandHelpScreen":
                             TUI.CliHelp();
 

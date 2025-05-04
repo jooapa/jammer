@@ -8,14 +8,15 @@ namespace Jammer
     {
         public static async Task<string> MonitorNetwork(string url)
         {
-            Message.Data("Starting Puppeteer...", "...", false, false);
+            Message.Data("Starting Puppeteer...", "Please wait.", false, false);
             await new BrowserFetcher().DownloadAsync();
-            Message.Data("Puppeteer started.", "...", false, false);
+            Message.Data("Puppeteer started.", "Please wait..", false, false);
             using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true
             });
 
+            Message.Data("Opening page...", "Please wait...", false, false);
             using var page = await browser.NewPageAsync();
             var tcs = new TaskCompletionSource<string>();
             var clientIdFound = false;
@@ -44,7 +45,7 @@ namespace Jammer
 
         public static async Task<string> GetClientId()
         {
-            const string targetUrl = "https://soundcloud.com/rick-astley-official/never-gonna-give-you-up-4";
+            const string targetUrl = "https://soundcloud.com/";
             return await MonitorNetwork(targetUrl);
         }
     }

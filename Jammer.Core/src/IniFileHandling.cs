@@ -59,6 +59,7 @@ AddSongToQueue = G
 Search = Ctrl + Y
 ShowLog = Ctrl + L
 HardDeleteCurrentSong = Shift + Delete
+RenameSong = F2
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();

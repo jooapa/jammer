@@ -431,7 +431,7 @@ namespace Jammer
             string[] PlayRandomSong = (Keybindings.PlayRandomSong).Replace(" ", "").Split(separator);
             string[] DeleteCurrentSong = (Keybindings.DeleteCurrentSong).Replace(" ", "").Split(separator);
             string[] SearchInPlaylist = (Keybindings.SearchInPlaylist).Replace(" ", "").Split(separator);
-            //string[] RenameSong =              (Keybindings.RenameSong).Replace(" ", "").Split(separator);
+            string[] RenameSong = (Keybindings.RenameSong).Replace(" ", "").Split(separator);
             string[] CommandHelpScreen = (Keybindings.CommandHelpScreen).Replace(" ", "").Split(separator);
             string[] EditKeybindings = (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
             string[] ChangeLanguage = (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
@@ -470,7 +470,7 @@ namespace Jammer
             table.AddRow(DrawHelpTextColouring(ToSongStart), Themes.sColor(Locale.LocaleKeybind.GoToSongStart, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(HardDeleteCurrentSong), Themes.sColor(Locale.LocaleKeybind.HardDeleteCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            //table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(VolumeUpByOne), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(VolumeDownByOne), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
 
