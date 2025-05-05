@@ -498,7 +498,7 @@ namespace Jammer
                             // Song song = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
                             // debug json output
                             string name = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
-                            string newName = Message.Input("New name: ", $"Go up in History to see current name: [i]{name}[/]\nLeave empty to keep current name", false, name);
+                            string newName = Message.Input("New name: ", $"Go up in History to see current name: [i]{Sanitize(name)}[/]\nLeave empty to keep current name", false, name);
 
                             if (string.IsNullOrEmpty(newName) || newName == name)
                             {
