@@ -217,8 +217,7 @@ namespace Jammer
                     await FFMPEGConvert(songPath, new Song
                     {
                         Title = video.Title,
-                        Author = video.Author.ChannelTitle,
-                        Album = video.Author.ChannelTitle
+                        Author = video.Author.ChannelTitle
                     });
 
                     TUI.PrintToTopOfPlayer("Trying to Tag song");

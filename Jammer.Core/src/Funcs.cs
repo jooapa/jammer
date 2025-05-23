@@ -140,6 +140,31 @@ namespace Jammer
             return Start.Sanitize(results.ToArray());
         }
 
+        public static string PadAuthorToRight(string author, string title, int consoleWidth, int strpadding)
+        {
+            if (string.IsNullOrEmpty(author)) return string.Empty;
+
+            int GetVisualWidth(string text)
+            {
+                int width = 0;
+                var textElementEnumerator = StringInfo.GetTextElementEnumerator(text);
+                while (textElementEnumerator.MoveNext())
+                {
+                    width++;
+                }
+                return width;
+            }
+
+            int titleWidth = GetVisualWidth(title);
+            int authorWidth = GetVisualWidth(author);
+            int remainingSpace = consoleWidth - (strpadding + titleWidth + 12);
+
+            if (remainingSpace <= 0) return string.Empty;
+            if (authorWidth > remainingSpace) return string.Empty;
+
+            return new string(' ', remainingSpace - authorWidth) + author;
+        }
+
         public static string GetSongWithDots(string song, int length = 80)
         {
             var textElementEnumerator = StringInfo.GetTextElementEnumerator(song);
@@ -176,15 +201,24 @@ namespace Jammer
             // Get song strings with consistent formatting
             string currentSong = Utils.Songs.Length > 0
                 ? $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]), songLength)}"
+                + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex]),
+                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]),
+                            Start.consoleWidth, currentLabel.Length)
                 : $"{currentLabel} : -";
 
             string prevSong = Utils.CurrentSongIndex > 0
                 ? $"{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]), songLength)}"
+                + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex - 1]),
+                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]),
+                            Start.consoleWidth, prevLabel.Length)
                 : $"{prevLabel} : -";
 
             string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
                 ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]), songLength)}"
-                : $"{nextLabel} : -";
+                + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex + 1]),
+                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]),
+                            Start.consoleWidth, nextLabel.Length)
+            : $"{nextLabel} : -";
 
             prevSong = Start.Sanitize(prevSong);
             currentSong = Start.Sanitize(currentSong);
@@ -458,6 +492,67 @@ namespace Jammer
             return false;
         }
 
+        /// <summary>
+        /// Really fkn smart rename tool that will take in consideration all the possibilities
+        /// things this does
+        ///  - if author has " - Topic", it means that song title is correct, but just remove the " - Topic"
+        ///  - check for the "-" and split (author - title)
+        ///  - for each spit will take the element and split remove from the result if "[", "]", "(", ")", "{", "}", "ft.", "feat." in lower case
+        ///  - if none of the above works, just return the original song
+        /// </summary>
+        /// <param name="song"></param>
+        /// <returns></returns>
+        public static Song SmartRename(Song song)
+        {
+            if (song == null || string.IsNullOrEmpty(song.URI))
+            {
+                return song ?? new Song();
+            }
+            string author = song.Author ?? "";
+            string title = song.Title ?? "";
+
+            if (author?.EndsWith(" - Topic") == true)
+            {
+                author = author.Replace(" - Topic", "").Trim();
+                song.Author = author;
+
+                return song;
+            }
+
+            if (!string.IsNullOrEmpty(title) && title.Contains("-"))
+            {
+                var parts = title.Split(new[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 2)
+                {
+                    author = parts[0].Trim();
+                    title = parts[1].Trim();
+                }
+            }
+
+            string[] patternsToRemove = new[]
+            {
+                @"\[(?>[^\[\]]+|\[(?<depth>)|\](?<-depth>))*(?(depth)(?!))\]",
+                @"\((?>[^\(\)]+|\((?<depth>)|\)(?<-depth>))*(?(depth)(?!))\)",
+                @"\{(?>[^\{\}]+|\{(?<depth>)|\}(?<-depth>))*(?(depth)(?!))\}",
+                @"(?i)\s*ft\..*$",
+                @"(?i)\s*feat\..*$"
+            };
+
+            foreach (var pattern in patternsToRemove)
+            {
+                title = System.Text.RegularExpressions.Regex.Replace(title, pattern, "").Trim();
+                author = System.Text.RegularExpressions.Regex.Replace(author, pattern, "").Trim();
+            }
+
+            // Remove multiple spaces
+            title = System.Text.RegularExpressions.Regex.Replace(title, @"\s+", " ");
+            author = System.Text.RegularExpressions.Regex.Replace(author, @"\s+", " ");
+
+            song.Title = title;
+            song.Author = author;
+
+            return song;
+        }
     }
 
     public class YTSearchResult
@@ -466,11 +561,13 @@ namespace Jammer
         public string Title { get; set; }
         public TimeSpan? Duration { get; set; }
         public string Type { get; set; }
+        public string Author { get; set; }
     }
 
     public class SCSearchResult
     {
         public string Url { get; set; }
         public string Title { get; set; }
+        public string Author { get; set; }
     }
 }

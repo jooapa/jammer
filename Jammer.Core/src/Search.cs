@@ -60,8 +60,9 @@ namespace Jammer
                         {
                             var id = result.Id;
                             var title = Markup.Escape(result.Title);
+                            var author = Markup.Escape(result.Author.ToString());
                             string type = "playlist";
-                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
+                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type, Author = author });
 
                             if (indexer == max - 1)
                             {
@@ -76,8 +77,9 @@ namespace Jammer
                         {
                             var id = result.Id;
                             var title = Markup.Escape(result.Title);
+                            var author = Markup.Escape(result.Author.ToString());
                             string type = "video";
-                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type });
+                            results.Add(new YTSearchResult { Id = id, Title = title, Type = type, Author = author });
 
                             if (indexer == max - 1)
                             {
@@ -97,7 +99,7 @@ namespace Jammer
 
             if (results.Count() > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title)).ToArray();
+                string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title + " by " + r.Author)).ToArray();
                 // add cancel to the list
                 resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
 
@@ -200,7 +202,8 @@ namespace Jammer
                         {
                             var url = result.Url;
                             var title = Markup.Escape(result.Title);
-                            results.Add(new SCSearchResult { Url = url, Title = title });
+                            var author = Markup.Escape(result.User.ToString());
+                            results.Add(new SCSearchResult { Url = url, Title = title, Author = author });
 
                             if (indexer == max - 1)
                             {
@@ -220,7 +223,7 @@ namespace Jammer
 
             if (results.Count > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape(r.Title)).ToArray();
+                string[] resultsString = results.Select(r => Markup.Escape(r.Title + " by " + r.Author)).ToArray();
                 resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
 
                 // Display the MultiSelect prompt after the loop completes

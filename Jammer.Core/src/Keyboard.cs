@@ -495,22 +495,74 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "RenameSong": // rename song
-                            // Song song = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
-                            // debug json output
-                            string name = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
-                            string newName = Message.Input("New name: ", $"Go up in History to see current name: [i]{Sanitize(name)}[/]\nLeave empty to keep current name", false, name);
 
-                            if (string.IsNullOrEmpty(newName) || newName == name)
+                            // Message.Data(
+
+                            // Funcs.SmartRename(
+                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
+                            // ).Author
+                            // + " - " +
+                            // Funcs.SmartRename(
+                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
+                            // ).Title
+                            // , "Renamed song");
+
+                            var smartTitle = Funcs.SmartRename(
+                                SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
+                            ).Title;
+
+                            var smartAuthor = Funcs.SmartRename(
+                                SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
+                            ).Author;
+
+                            var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
+
+                            string[] name = new[] {
+                                ogSongTitle,
+                                smartAuthor + " - " + smartTitle,
+                                smartTitle + " - " + smartAuthor,
+                            };
+
+                            // remove duplicates
+                            name = name.Distinct().ToArray();
+
+                            string newName = Message.Input(
+                                "New name: ", $"Go up in History to see current name and Jammer's Smart Renames\nLeave empty to keep current name\nSeperating with 'author - title' will set the author and title",
+                                false, name
+                            );
+
+                            if (string.IsNullOrEmpty(newName))
                             {
                                 drawWhole = true;
                                 break;
                             }
 
-                            Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
-                            newRenamedSong.Title = newName;
-                            newRenamedSong.ToSongString();
+                            // if -
+                            // newNameTitle
+                            // newNameAuthor
+                            var newNewName = newName.Split(" - ");
+                            string newNameAuthor = "";
+                            string newNameTitle = "";
+                            if (newNewName.Length > 1)
+                            {
+                                newNameAuthor = newNewName[0];
+                                newNameTitle = newNewName[1];
 
-                            Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                                Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                                newRenamedSong.Author = newNameAuthor;
+                                newRenamedSong.Title = newNameTitle;
+                                newRenamedSong.ToSongString();
+                                Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                            }
+                            else
+                            {
+                                Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                                newRenamedSong.Title = newName;
+                                newRenamedSong.ToSongString();
+
+                                Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                            }
+
 
                             drawWhole = true;
                             break;
@@ -527,7 +579,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "HardDeleteCurrentSong":
-                            Play.DeleteSong(Utils.CurrentSongIndex, false, true);
+                            Play.DeleteSong(Utils.CurrentSongIndex, false, true, true);
                             drawWhole = true;
                             break;
                         // Case For A

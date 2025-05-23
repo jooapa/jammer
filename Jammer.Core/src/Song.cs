@@ -152,5 +152,24 @@ namespace Jammer
                 return song1.URI;
             }
         }
+
+        /// <summary>
+        /// Get the author of the song
+        /// </summary>
+        /// <param name="author">author</param>
+        /// <returns></returns>
+        public static string Author(string song)
+        {
+            Song song1 = new Song() { URI = song };
+            song1.ExtractSongDetails();
+            if (song1.Author != null && song1.Author != "")
+            {
+                return song1.Author;
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 }

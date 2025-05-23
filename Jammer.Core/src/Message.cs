@@ -7,7 +7,7 @@ namespace Jammer
 {
     public static class Message
     {
-        public static string Input(string inputSaying, string title, bool oneChar = false, string setText = "")
+        public static string Input(string inputSaying, string title, bool oneChar = false, string[]? setText = null)
         {
             var mainTable = new Table();
             mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
@@ -39,11 +39,11 @@ namespace Jammer
                 ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
                 return Start.Sanitize(keyInfo.KeyChar.ToString());
             }
-            else if (setText != "")
+            else if (setText != null && setText.Length > 0)
             {
                 var oldHistory = ReadLine.GetHistory();
                 ReadLine.ClearHistory();
-                ReadLine.AddHistory(setText);
+                ReadLine.AddHistory(setText.Reverse().ToArray());
                 string input = ReadLine.Read(inputSaying);
                 ReadLine.ClearHistory();
                 foreach (var item in oldHistory)
