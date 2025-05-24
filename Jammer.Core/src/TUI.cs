@@ -24,6 +24,7 @@ namespace Jammer
             try
             {
                 var ansiConsoleSettings = new AnsiConsoleSettings();
+                AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
                 var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
                 if (Start.playerView == "help" || Start.playerView == "settings")
                 {

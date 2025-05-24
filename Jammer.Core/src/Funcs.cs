@@ -5,6 +5,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using AngleSharp.Text;
+using System.Text.RegularExpressions;
 
 namespace Jammer
 {
@@ -140,23 +142,45 @@ namespace Jammer
             return Start.Sanitize(results.ToArray());
         }
 
+        public static int GetTerminalWidth(string text)
+        {
+            int width = 0;
+            foreach (var c in text.Normalize(System.Text.NormalizationForm.FormKC))
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(c);
+                // CJK Unified Ideographs, Hangul, Hiragana, Katakana, Fullwidth forms
+                if (IsFullWidth(c))
+                    width += 2;
+                else
+                    width += 1;
+            }
+            return width;
+        }
+
+        // Helper to check if a char is fullwidth
+        public static bool IsFullWidth(char c)
+        {
+            int code = (int)c;
+            // CJK Unified Ideographs
+            if ((code >= 0x4E00 && code <= 0x9FFF) ||
+                (code >= 0x3400 && code <= 0x4DBF) ||
+                (code >= 0xF900 && code <= 0xFAFF) ||
+                (code >= 0xFF01 && code <= 0xFF60) || // Fullwidth ASCII variants
+                (code >= 0xFFE0 && code <= 0xFFE6) || // Fullwidth symbol variants
+                (code >= 0x1100 && code <= 0x11FF) || // Hangul Jamo
+                (code >= 0x3040 && code <= 0x309F) || // Hiragana
+                (code >= 0x30A0 && code <= 0x30FF))   // Katakana
+                return true;
+            return false;
+        }
+
         public static string PadAuthorToRight(string author, string title, int consoleWidth, int strpadding)
         {
             if (string.IsNullOrEmpty(author)) return string.Empty;
 
-            int GetVisualWidth(string text)
-            {
-                int width = 0;
-                var textElementEnumerator = StringInfo.GetTextElementEnumerator(text);
-                while (textElementEnumerator.MoveNext())
-                {
-                    width++;
-                }
-                return width;
-            }
+            int titleWidth = GetTerminalWidth(title);
+            int authorWidth = GetTerminalWidth(author);
 
-            int titleWidth = GetVisualWidth(title);
-            int authorWidth = GetVisualWidth(author);
             int remainingSpace = consoleWidth - (strpadding + titleWidth + 12);
 
             if (remainingSpace <= 0) return string.Empty;
@@ -215,9 +239,9 @@ namespace Jammer
 
             string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
                 ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]), songLength)}"
-                + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex + 1]),
-                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]),
-                            Start.consoleWidth, nextLabel.Length)
+            + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex + 1]),
+                        SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]),
+                        Start.consoleWidth, nextLabel.Length)
             : $"{nextLabel} : -";
 
             prevSong = Start.Sanitize(prevSong);
@@ -235,8 +259,18 @@ namespace Jammer
                 ? Themes.CurrentTheme.GeneralPlaylist.NextSongColor
                 : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
 
+            prevSong = RemoveControlChars(prevSong);
+            currentSong = RemoveControlChars(currentSong);
+            nextSong = RemoveControlChars(nextSong);
 
-            return $"{prevSong}\n[green]{currentSong}[/]\n{nextSong}";
+            var text = $"{prevSong}\n{currentSong}\n{nextSong}";
+            string normalized = text.Normalize(System.Text.NormalizationForm.FormC);
+            return normalized;
+        }
+
+        public static string RemoveControlChars(string input)
+        {
+            return new string(input.Where(c => !char.IsControl(c)).ToArray());
         }
 
         public static string CalculateTime(double time, bool getColor)
