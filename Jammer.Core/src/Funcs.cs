@@ -274,7 +274,7 @@ namespace Jammer
             {
                 return "";
             }
-            string[] splitters = { ",", " & ", " and ", " + ", " / ", " | ", "x", "X" };
+            string[] splitters = { ", ", " & ", " and ", " + ", " / ", " | ", " x ", " X " };
             string[] parts = artists.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 0)
             {
