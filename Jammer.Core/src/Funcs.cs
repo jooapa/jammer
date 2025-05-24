@@ -177,16 +177,16 @@ namespace Jammer
         public static string PadAuthorToRight(string author, string title, int consoleWidth, int strpadding)
         {
             if (string.IsNullOrEmpty(author)) return string.Empty;
-
+            string realAuthor = ArtistsToArtist(author);
             int titleWidth = GetTerminalWidth(title);
-            int authorWidth = GetTerminalWidth(author);
+            int authorWidth = GetTerminalWidth(realAuthor);
 
             int remainingSpace = consoleWidth - (strpadding + titleWidth + 12);
 
             if (remainingSpace <= 0) return string.Empty;
             if (authorWidth > remainingSpace) return string.Empty;
 
-            return new string(' ', remainingSpace - authorWidth) + author;
+            return new string(' ', remainingSpace - authorWidth) + realAuthor;
         }
 
         public static string GetSongWithDots(string song, int length = 80)
@@ -266,6 +266,27 @@ namespace Jammer
             var text = $"{prevSong}\n{currentSong}\n{nextSong}";
             string normalized = text.Normalize(System.Text.NormalizationForm.FormC);
             return normalized;
+        }
+
+        public static string ArtistsToArtist(string artists)
+        {
+            if (artists == null || artists == "")
+            {
+                return "";
+            }
+            string[] splitters = { ",", " & ", " and ", " + ", " / ", " | ", "x", "X" };
+            string[] parts = artists.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0)
+            {
+                return artists;
+            }
+            // get the first partq
+            string firstPart = parts[0].Trim();
+            if (firstPart == "")
+            {
+                return artists;
+            }
+            return firstPart;
         }
 
         public static string RemoveControlChars(string input)
@@ -569,18 +590,19 @@ namespace Jammer
                 @"\((?>[^\(\)]+|\((?<depth>)|\)(?<-depth>))*(?(depth)(?!))\)",
                 @"\{(?>[^\{\}]+|\{(?<depth>)|\}(?<-depth>))*(?(depth)(?!))\}",
                 @"(?i)\s*ft\..*$",
-                @"(?i)\s*feat\..*$"
+                @"(?i)\s*feat\..*$",
+                @"(?i)\s*\|.*$",
             };
 
             foreach (var pattern in patternsToRemove)
             {
-                title = System.Text.RegularExpressions.Regex.Replace(title, pattern, "").Trim();
-                author = System.Text.RegularExpressions.Regex.Replace(author, pattern, "").Trim();
+                title = Regex.Replace(title, pattern, "").Trim();
+                author = Regex.Replace(author, pattern, "").Trim();
             }
 
             // Remove multiple spaces
-            title = System.Text.RegularExpressions.Regex.Replace(title, @"\s+", " ");
-            author = System.Text.RegularExpressions.Regex.Replace(author, @"\s+", " ");
+            title = Regex.Replace(title, @"\s+", " ");
+            author = Regex.Replace(author, @"\s+", " ");
 
             song.Title = title;
             song.Author = author;
