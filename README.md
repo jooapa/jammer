@@ -19,6 +19,24 @@ for the playlist feature across different platforms***
   downloaded songs, playlists, settings, keybinds, locales and effects modification.
 - Jammer uses [Bass](https://www.un4seen.com/bass.html) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
+## Table of Contents
+
+- [Install/Update](#installupdate)
+- [Usage](#usage)
+- [Supported formats](#supported-formats)
+- [MIDI support](#midi-support)
+- [Themes](#themes)
+- [Visualizer](#visualizer)
+- [Effects](#effects)
+- [Jammer Location](#jammer-location)
+- [Environment Variables](#environment-variables)
+- [M3U and M3U8 Support](#m3u-and-m3u8-support)
+- [Language support](#language-support)
+- [Soundcloud Client ID](#soundcloud-client-id)
+- [Developing](#developing)
+- [Build / Run yourself](#build--run-yourself)
+- [Known Issues](#known-issues)
+
 ## Install/Update
 
 ### Install
@@ -109,7 +127,7 @@ Select 'Create a New Theme' and write the theme's name. Go to `<jammer/themes>`,
 ### Visualizer
 
 You can change the visualizer style in custom Themes.
-To change the visualizer settings and looks, you can change the `Visualizer` section in the theme file.
+To change the visualizer settings, you can change the `Visualizer.ini` file in the root folder.
 
 ### Effects
 
@@ -124,12 +142,12 @@ To change the visualizer settings and looks, you can change the `Visualizer` sec
 
 These can be changed in the Effects.ini file in the jammer folder.
 
-### Jammer Locations
+### Jammer Location
 
 - **Windows**: `C:\Users\username\jammer`
 - **Linux**: `~/jammer`
 
-#### Environment Variables
+### Environment Variables
 
 - `JAMMER_CONFIG_PATH`
 - `JAMMER_SONGS_PATH`
@@ -145,7 +163,6 @@ Starting the m3u or m3u8 file with `#EXTM3U` and example of the m3u of all the f
 
 ```m3u
 #EXTM3U
-#EXT-X-VERSION:3
 
 #EXTINF:0,Lady Gaga - Telephone ft. Beyoncé
 https://www.youtube.com/watch?v=Zwnvgz3ey78
@@ -162,10 +179,8 @@ Translations may not be up-to-date
 Currently supported languages:
 
 - English
-
-- Finnish
-
-- Portuguese :: [Natanaelfelixx](https://github.com/jooapa/jammer/pull/93)
+- Finnish (*[antonako1](https://github.com/antonako1)*)
+- Portuguese (*[Natanaelfelixx](https://github.com/Natanaelfelixx)*)
 
 Create new translation by copying already existing .ini file from /locales and translating it.
 
@@ -180,6 +195,8 @@ You can change the client id by going to the settings and changing the client id
 - open the inspect element -> Network tab
 - start playing some random song
 - you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
+
+or you can use the automatic client id fetcher, that is located in the settings menu. *(Might crash on linux)*
 
 ## Star History
 
