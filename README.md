@@ -124,19 +124,16 @@ To change the visualizer settings and looks, you can change the `Visualizer` sec
 
 These can be changed in the Effects.ini file in the jammer folder.
 
-### Jammer Folder Location
+### Jammer Locations
 
 - **Windows**: `C:\Users\username\jammer`
 - **Linux**: `~/jammer`
 
-This can be changed by an environment variable `JAMMER_CONFIG_PATH`
+#### Environment Variables
 
-### Jammer songs Folder Location
-
-- **Windows**: `C:\Users\username\jammer\songs`
-- **Linux**: `~/jammer/songs`
-
-This can be changed by an environment variable `JAMMER_SONGS_PATH`
+- `JAMMER_CONFIG_PATH`
+- `JAMMER_SONGS_PATH`
+- `JAMMER_PLAYLISTS_PATH`
 
 ### M3U and M3U8 Support
 

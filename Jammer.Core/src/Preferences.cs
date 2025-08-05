@@ -49,10 +49,10 @@ namespace Jammer
                 Log.Error("Jammer folder does not exist, creating one...");
                 Directory.CreateDirectory(JammerPath);
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "playlists")))
+            if (!Directory.Exists(GetPlaylistsPath()))
             {
                 Log.Error("Playlists folder does not exist, creating one...");
-                Directory.CreateDirectory(Path.Combine(JammerPath, "playlists"));
+                Directory.CreateDirectory(GetPlaylistsPath());
             }
             if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts")))
             {
@@ -165,6 +165,19 @@ namespace Jammer
             // return the normal path
             return Path.Combine(Utils.JammerPath, "songs");
         }
+
+        static public string GetPlaylistsPath()
+        {
+            // check if environment variable JAMMER_PLAYLISTS_PATH exists
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_PLAYLISTS_PATH")))
+            {
+                return Environment.GetEnvironmentVariable("JAMMER_PLAYLISTS_PATH") ?? Path.Combine(Utils.JammerPath, "playlists");
+            }
+
+            // return the normal path
+            return Path.Combine(Utils.JammerPath, "playlists");
+        }
+        
         static public bool GetIsLoop()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");

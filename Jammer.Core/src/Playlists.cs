@@ -102,11 +102,7 @@ namespace Jammer
             // if playlist is not a path, return the path
             if (!playlist.Contains(Path.DirectorySeparatorChar))
             {
-                return Path.Combine(
-                    Utils.JammerPath,
-                    "playlists",
-                    playlist + ".jammer"
-                );
+                return Path.Combine(Preferences.GetPlaylistsPath(), playlist + ".jammer");
             }
             return Path.GetFullPath(playlist);
         }
@@ -119,8 +115,7 @@ namespace Jammer
         public static string GetJammerPlaylistVisualPath(string playlist)
         {
             // playlist var is a path
-            // return the name of the file, if its in the jammer folder
-            if (playlist.Contains(Utils.JammerPath))
+            if (playlist.Contains(Preferences.GetPlaylistsPath()))
             {
                 return Path.GetFileNameWithoutExtension(playlist);
             }
@@ -369,7 +364,7 @@ namespace Jammer
 
         public static string GetList()
         {
-            string playlistDir = Path.Combine(Utils.JammerPath, "playlists");
+            string playlistDir = Preferences.GetPlaylistsPath();
             string[] playlists = Directory.GetFiles(playlistDir);
             string playlistList = "";
             foreach (string playlist in playlists)
