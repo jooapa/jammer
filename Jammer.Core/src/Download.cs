@@ -245,6 +245,12 @@ namespace Jammer
             }
             catch (Exception ex)
             {
+                if (Preferences.isSkipErrors)
+                {
+                    Log.Error("Skipping song due to error: " + ex.Message);
+                    return;
+                }
+
                 Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:4");
                 songPath = "";
             }
@@ -333,6 +339,13 @@ namespace Jammer
                 {
                     Log.Error(ex.Message);
                     Log.Error("FFMPEG failed to convert the file");
+
+                    if (Preferences.isSkipErrors)
+                    {
+                        Log.Error("Skipping song due to error: " + ex.Message);
+                        return;
+                    }
+                    
                     Message.Data(ex.ToString(), "Error id:323");
                 }
 
@@ -427,6 +440,11 @@ namespace Jammer
             }
             catch (Exception ex)
             {
+                if (Preferences.isSkipErrors)
+                {
+                    Log.Error("Skipping song due to error: " + ex.Message);
+                    return;
+                }
                 Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message + ": " + url
                 , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
                 songPath = "";

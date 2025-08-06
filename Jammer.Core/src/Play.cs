@@ -748,6 +748,15 @@ namespace Jammer
 
                 // DeleteSong(Utils.currentSongIndex, false);
                 // return;
+
+                // skip to next song if skiperrors is enabled
+                if (Preferences.isSkipErrors)
+                {
+                    Log.Error("Skipping song");
+                    NextSong();
+                    return;
+                }
+
                 Utils.CurSongError = true;
                 Log.Error(Bass.LastError.ToString() + " " + Utils.CurrentSongPath);
             }

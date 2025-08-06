@@ -342,6 +342,11 @@ namespace Jammer
                             Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
                             drawWhole = true;
                             break;
+                        case Keybindings.SettingsKeys.SkipErrors:
+                            Preferences.isSkipErrors = !Preferences.isSkipErrors;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
                     }
 
                     // able to return to default view

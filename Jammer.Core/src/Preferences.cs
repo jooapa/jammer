@@ -24,6 +24,7 @@ namespace Jammer
         public static string currentSf2 = GetCurrentSf2();
         public static string clientID = GetClientId();
         public static bool isModifierKeyHelper = GetModifierKeyHelper();
+        public static bool isSkipErrors = GetIsSkipErrors();
 
         private static bool GetModifierKeyHelper()
         {
@@ -33,6 +34,21 @@ namespace Jammer
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
                 return settings?.modifierKeyHelper ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static bool GetIsSkipErrors()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.isIgnoreErrors ?? false;
             }
             else
             {
@@ -116,6 +132,7 @@ namespace Jammer
             settings.currentSf2 = currentSf2;
             settings.clientID = clientID;
             settings.modifierKeyHelper = isModifierKeyHelper;
+            settings.isIgnoreErrors = isSkipErrors;
 
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -150,7 +167,7 @@ namespace Jammer
                 value = settings?.songsPath;
             }
 
-            // Show a message box and as k the user if they want to change the path to the new Environment variable version
+            // Show a message box and ask the user if they want to change the path to the new Environment variable version
             if (!string.IsNullOrEmpty(value) && value != Path.Combine(Utils.JammerPath, "songs"))
             {
                 var val =
@@ -474,6 +491,7 @@ namespace Jammer
             public string? currentSf2 { get; set; }
             public string? clientID { get; set; }
             public bool? modifierKeyHelper { get; set; }
+            public bool? isIgnoreErrors { get; set; }
         }
     }
 }
