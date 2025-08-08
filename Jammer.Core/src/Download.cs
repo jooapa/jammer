@@ -251,7 +251,9 @@ namespace Jammer
                     return;
                 }
 
-                Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:4");
+                // Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:4");
+                Utils.CustomTopErrorMessage = "Error: Maybe the song is private or the URL is invalid. (check log)";
+                Log.Error(ex.Message);
                 songPath = "";
             }
         }
@@ -382,6 +384,13 @@ namespace Jammer
                 return;
             }
 
+            if (Utils.SCClientIdAlreadyLookedAndItsIncorrect)
+            {
+                Utils.CustomTopErrorMessage = "Error: Client ID is incorrect, please check your Client ID in Preferences.";
+                songPath = "";
+                return;
+            }
+
             var theText = "Getting track. please wait...";
             TUI.PrintToTopOfPlayer(theText);
 
@@ -440,13 +449,17 @@ namespace Jammer
             }
             catch (Exception ex)
             {
+                Utils.SCClientIdAlreadyLookedAndItsIncorrect = true;
+
                 if (Funcs.DontShowErrorWhenSongNotFound())
                 {
                     Log.Error("Skipping song due to error: " + ex.Message);
                     return;
                 }
-                Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message + ": " + url
-                , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
+                // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message + ": " + url
+                // , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
+                Utils.CustomTopErrorMessage = "Error: Maybe your Client ID is invalid or the song is private. (check log)";
+                Log.Error(ex.Message);
                 songPath = "";
             }
         }

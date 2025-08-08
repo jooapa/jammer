@@ -67,7 +67,14 @@ namespace Jammer
                 string songPath;
                 if (Utils.CurrentMusic == 0 && Utils.CurSongError)
                 {
-                    songPath = "Error: cannot play the song";
+                    if (Utils.CustomTopErrorMessage != "")
+                    {
+                        songPath = Utils.CustomTopErrorMessage;
+                    }
+                    else
+                    {
+                        songPath = "Error: cannot play the song";
+                    }
                 }
                 else if (Utils.CurrentMusic == 0)
                 {
@@ -77,6 +84,8 @@ namespace Jammer
                 {
                     songPath = Utils.CurrentSongPath;
                 }
+
+                Utils.CustomTopErrorMessage = "";
 
                 // render maintable with tables in it
                 mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(

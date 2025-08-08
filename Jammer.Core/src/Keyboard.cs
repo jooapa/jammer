@@ -294,6 +294,7 @@ namespace Jammer
                             }
 
                             Preferences.clientID = soundcloudClientID;
+                            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
 
                             Preferences.SaveSettings();
 
@@ -338,6 +339,7 @@ namespace Jammer
                                 break;
                             }
                             Preferences.clientID = clientID;
+                            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
                             Preferences.SaveSettings();
                             Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
                             drawWhole = true;
