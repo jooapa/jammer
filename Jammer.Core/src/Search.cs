@@ -99,7 +99,7 @@ namespace Jammer
 
             if (results.Count() > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape(r.Type + ": " + r.Title + " by " + r.Author)).ToArray();
+                string[] resultsString = results.Select(r => Markup.Escape($"{r.Type}: {r.Title} [{r.Author}]")).ToArray();
                 // add cancel to the list
                 resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
 
@@ -223,7 +223,7 @@ namespace Jammer
 
             if (results.Count > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape(r.Title + " by " + r.Author)).ToArray();
+                string[] resultsString = results.Select(r => Markup.Escape(r.Title + (r.Author != null ? $" [{r.Author}]" : ""))).ToArray();
                 resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
 
                 // Display the MultiSelect prompt after the loop completes
