@@ -245,7 +245,7 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                if (Preferences.isSkipErrors)
+                if (Funcs.DontShowErrorWhenSongNotFound())
                 {
                     Log.Error("Skipping song due to error: " + ex.Message);
                     return;
@@ -340,7 +340,7 @@ namespace Jammer
                     Log.Error(ex.Message);
                     Log.Error("FFMPEG failed to convert the file");
 
-                    if (Preferences.isSkipErrors)
+                    if (Funcs.DontShowErrorWhenSongNotFound())
                     {
                         Log.Error("Skipping song due to error: " + ex.Message);
                         return;
@@ -440,7 +440,7 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                if (Preferences.isSkipErrors)
+                if (Funcs.DontShowErrorWhenSongNotFound())
                 {
                     Log.Error("Skipping song due to error: " + ex.Message);
                     return;
@@ -454,11 +454,11 @@ namespace Jammer
         static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
         {
             var file = TagLib.File.Create(songPath);
-            WebClient webClient = new WebClient();
+            using WebClient webClient = new();
             byte[] imageBytes = webClient.DownloadData(imageUrl);
-            Picture picture = new Picture(imageBytes);
+            Picture picture = new(imageBytes);
             file.Tag.Pictures = Array.Empty<IPicture>();
-            file.Tag.Pictures = new IPicture[] { picture };
+            file.Tag.Pictures = new[] { picture };
             file.Save();
         }
 

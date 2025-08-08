@@ -36,6 +36,8 @@ namespace Jammer
         public static bool MainLoop = true;
         public static string JammerPath = UtilFuncs.GetJammerPath();
         public static bool IsDebug = false;
+        public static bool SCClientIdAlreadyLookedAndItWasNotFound = false;
+        public static bool PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound = false;
 
         /// <summary>
         /// path to current playlist

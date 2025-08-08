@@ -127,6 +127,25 @@ namespace Jammer
             return results.ToArray();
         }
 
+        public static bool DontShowErrorWhenSongNotFound()
+        {
+            if (Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound)
+            {
+                // Message.Data("a","a");
+                return false;
+            }
+
+            if (Preferences.isSkipErrors)
+            {
+                // Message.Data("b", "b");
+                return true;
+            }
+
+            // Message.Data("c", "c");
+
+            return false;
+        }
+
         public static string[] GetAllSongsQueue()
         {
             int maximum = 10;

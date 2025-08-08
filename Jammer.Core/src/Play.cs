@@ -24,6 +24,8 @@ namespace Jammer
         public static string[] aacExtensions = { ".aac", ".m4a", ".adts", ".m4b" };
         public static string[] mp4Extensions = { ".mp4" };
         public static string[] midiExtensions = { ".mid", ".midi", ".rmi", ".kar" };
+        public static int songsThatWereNotFound = 0;
+        public static bool showNoSongsFoundMessage = true;
 
         public static bool isValidExtension(string checkingExt, string[] exts)
         {
@@ -692,6 +694,7 @@ namespace Jammer
 
         static public void StartPlaying()
         {
+            // MARK: StartPlaying
             ResetMusic();
 
             // Message.Data(Utils.currentSong, "Playing: ");
@@ -750,9 +753,25 @@ namespace Jammer
                 // return;
 
                 // skip to next song if skiperrors is enabled
-                if (Preferences.isSkipErrors)
+                if (Preferences.isSkipErrors && !Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound)
                 {
                     Log.Error("Skipping song");
+
+                    songsThatWereNotFound++;
+                    // Message.Data("Song not found", Utils.Songs.Length.ToString(), true);
+
+                    if (songsThatWereNotFound >= Utils.Songs.Length) // to not show it all the time
+                    {
+                        if (showNoSongsFoundMessage)
+                        {
+                            Message.Data("All songs were not found, please check your playlist or add new songs.", "No songs found", true);
+                            showNoSongsFoundMessage = false;
+                        }
+                        songsThatWereNotFound = 0;
+                        Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound = true;
+                        return;
+                    }
+
                     NextSong();
                     return;
                 }
@@ -764,7 +783,11 @@ namespace Jammer
             {
                 Utils.CurSongError = false;
                 Log.Info("Started playing: " + Utils.CurrentSongPath);
+                songsThatWereNotFound = 0;
+                Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound = false;
+                showNoSongsFoundMessage = true;
             }
+
 
             // set volume
             Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
