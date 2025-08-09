@@ -514,13 +514,11 @@ namespace Jammer
                             // ).Title
                             // , "Renamed song");
 
-                            var smartTitle = Funcs.SmartRename(
+                            var smartSong = Funcs.SmartRename(
                                 SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            ).Title;
-
-                            var smartAuthor = Funcs.SmartRename(
-                                SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            ).Author;
+                            );
+                            var smartTitle = smartSong.Title;
+                            var smartAuthor = smartSong.Author;
 
                             var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
 
