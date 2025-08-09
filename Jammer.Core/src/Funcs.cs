@@ -447,6 +447,9 @@ namespace Jammer
                 return;
             }
 
+            // when playing another playlist inside the player need to reset this, without it will not check all the songs again and will not work right in the DontShowErrorWhenSongNotFound()
+            Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound = false;
+            
             // play other playlist
             Playlists.Play(playlistNameToPlay, false);
         }
