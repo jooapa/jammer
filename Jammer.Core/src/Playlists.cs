@@ -232,7 +232,6 @@ namespace Jammer
         static public string GetShow(string playlist)
         {
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.ShowingPlaylist} [red]" + playlist + "[/]");
-            playlist = playlist + ".jammer";
             string playlistPath = GetJammerPlaylistPath(playlist);
 
             string playlistList = "";
@@ -250,6 +249,7 @@ namespace Jammer
             }
             else
             {
+                Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}:" + playlist, $"{Locale.OutsideItems.ErrorPlaying}", true);
                 playlistList = $"[red]{Locale.OutsideItems.PlaylistDoesntExist}[/]";
             }
 
