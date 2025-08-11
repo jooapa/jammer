@@ -30,6 +30,10 @@ namespace Jammer
             {
                 DownloadYoutubeTrackAsync(url).Wait();
             }
+            else if (URL.IsValidRssFeed(url))
+            {
+                DownloadRssFeed(url).Wait();
+            }
             else if (URL.IsUrl(url))
             {
                 if (url.EndsWith(".jammer"))
@@ -49,6 +53,17 @@ namespace Jammer
 
             Start.drawWhole = true;
             return songPath;
+        }
+
+        private static async Task DownloadRssFeed(string url)
+        {
+            var rssData = await Rss.GetRssData(url);
+
+            Debug.dprint($"RSS Title: {rssData.Title}");
+            Debug.dprint($"RSS Author: {rssData.Author}");
+
+            songPath = url + "://:" + rssData.Title + "://:" + rssData.Author;
+            return;
         }
 
         private static async Task GeneralDownload(string url)

@@ -122,6 +122,27 @@ namespace Jammer
                 // id related to url, download and convert to absolute path
                 fullPath = Download.DownloadSong(song.URI);
             }
+            else if (URL.IsValidRssFeed(song.URI))
+            {
+                if (song.Title == null || song.Title == "")
+                {
+
+                    fullPath = Download.DownloadSong(song.URI);
+                    // if there are ://:
+                    if (fullPath.Contains("://:"))
+                    {
+                        // if the song title is empty, then set it to the full path
+                        if (song.Title == null || song.Title == "")
+                        {
+                            string[] split = fullPath.Split("://:");
+                            fullPath = split[0];
+                            song.URI = split[0];
+                            song.Title = split[1];
+                            song.Author = split[2];
+                        }
+                    }
+                }
+            }
             else if (URL.IsUrl(song.URI))
             {
                 fullPath = Download.DownloadSong(song.URI);
@@ -752,8 +773,13 @@ namespace Jammer
                 // DeleteSong(Utils.currentSongIndex, false);
                 // return;
 
+                if (Funcs.IsCurrentSongARssFeed())
+                {
+                    Utils.CurSongError = false;
+                    Utils.CustomTopErrorMessage = "RSS feed can be opened, that will open a new view";
+                }
                 // skip to next song if skiperrors is enabled
-                if (Preferences.isSkipErrors && !Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound)
+                else if (Preferences.isSkipErrors && !Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound)
                 {
                     Log.Error("Skipping song");
 
@@ -772,6 +798,7 @@ namespace Jammer
                         return;
                     }
 
+                    Message.Data("Song not found: " + Utils.CurrentSongPath, "Error", true);
                     NextSong();
                     return;
                 }

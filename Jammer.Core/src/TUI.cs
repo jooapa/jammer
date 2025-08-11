@@ -454,6 +454,8 @@ namespace Jammer
             string[] HardDeleteCurrentSong = (Keybindings.HardDeleteCurrentSong).Replace(" ", "").Split(separator);
             string[] VolumeUpByOne = (Keybindings.VolumeUpByOne).Replace(" ", "").Split(separator);
             string[] VolumeDownByOne = (Keybindings.VolumeDownByOne).Replace(" ", "").Split(separator);
+            string[] ChooseSong = (Keybindings.Choose).Replace(" ", "").Split(separator);
+
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
 
@@ -483,6 +485,8 @@ namespace Jammer
             table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(VolumeUpByOne), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(VolumeDownByOne), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(ChooseSong), Themes.sColor("Choose or open a Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+
 
 
             AnsiConsole.Cursor.SetPosition(0, 0);

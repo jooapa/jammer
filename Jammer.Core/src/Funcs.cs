@@ -223,6 +223,21 @@ namespace Jammer
             }
             return song;
         }
+
+        public static bool IsCurrentSongARssFeed()
+        {
+            if (Utils.Songs.Length == 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
+            {
+                return false;
+            }
+
+            var currentSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+            if (currentSong.URI != null && URL.IsValidRssFeed(currentSong.URI))
+            {
+                return true;
+            }
+            return false;
+        }
         public static string GetPrevCurrentNextSong()
         {
             int songLength = Start.consoleWidth - 26;
@@ -242,10 +257,18 @@ namespace Jammer
             // Console.ReadLine();
 
             // Get song strings with consistent formatting
+
+            // if the current song is a rrs feed then add a open text to the end of the title
+            string openString = "";
+            if (IsCurrentSongARssFeed())
+            {
+                openString += " (Open with " + Keybindings.Choose + ")";
+            }
+
             string currentSong = Utils.Songs.Length > 0
-                ? $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]), songLength)}"
+                ? $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]) + openString, songLength)}"
                 + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex]),
-                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]),
+                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]) + openString,
                             Start.consoleWidth, currentLabel.Length)
                 : $"{currentLabel} : -";
 

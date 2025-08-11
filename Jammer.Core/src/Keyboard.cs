@@ -697,6 +697,12 @@ namespace Jammer
                             Message.Data(Log.GetLog(), "Log");
                             drawWhole = true;
                             break;
+                        case "Choose":
+                            if (Funcs.IsCurrentSongARssFeed())
+                            {
+                                Message.Data("This song is a RSS feed, you can open it in your browser.", "Open Song");
+                            }
+                            break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();

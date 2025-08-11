@@ -1,6 +1,6 @@
 namespace Jammer
 {
-    public static class Playback
+    public static class PlaybackSettings
     {
         
     }

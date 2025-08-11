@@ -44,5 +44,13 @@ namespace Jammer
             Regex regex = new Regex(Utils.UrlPatternHTTP, RegexOptions.IgnoreCase);
             return regex.IsMatch(uri);
         }
+
+        /// <summary>
+        /// Checks if the given URI is a valid RSS feed URL.
+        /// </summary>
+        public static bool IsValidRssFeed(string uri)
+        {
+            return IsUrl(uri) && uri.EndsWith(".rss", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
