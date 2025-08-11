@@ -599,6 +599,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "PlayOtherPlaylist":
+                            Funcs.ResetRssExitVariables();
                             Funcs.PlayOtherPlaylist();
                             drawWhole = true;
                             break;
