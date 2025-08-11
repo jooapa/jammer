@@ -49,6 +49,11 @@ namespace Jammer
         public static string Version = "3.49";
         public static string? AppDirMount = Environment.GetEnvironmentVariable("APPDIR");
         public static float MusicTimePercentage = 0;
+        public static Song RssFeedSong = new Song();
+        public static int lastPositionInPreviousPlaylist = -1;
+        public static string[]? BackUpSongs = null;
+        public static string? BackUpPlaylistNames = null;
+
 
         // Class to hold Util related Functions
         public static class UtilFuncs

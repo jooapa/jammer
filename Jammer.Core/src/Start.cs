@@ -263,7 +263,7 @@ namespace Jammer
                     drawWhole = true;
                 }
 
-                if (playerView == "default" || playerView == "all")
+                if (playerView == "default" || playerView == "all" || playerView == "rss")
                 {
                     if (drawVisualizer && Preferences.isVisualizer)
                     {
@@ -294,7 +294,7 @@ namespace Jammer
                 drawTime = false;
                 drawWhole = false;
 
-                if (playerView == "default" || playerView == "all")
+                if (playerView == "default" || playerView == "all" || playerView == "rss")
                 {
                     Thread.Sleep(1);
                 }

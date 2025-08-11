@@ -82,10 +82,14 @@ namespace Jammer
                     foreach (XmlNode itemNode in itemNodes)
                     {
                         var itemTitle = itemNode.SelectSingleNode("title")?.InnerText ?? "Unknown Title";
-                        var itemLink = itemNode.SelectSingleNode("link")?.InnerText ?? "Unknown Link";
                         var itemDescription = itemNode.SelectSingleNode("description")?.InnerText ?? "No Description";
                         var itemPubDate = itemNode.SelectSingleNode("pubDate")?.InnerText ?? "Unknown Date";
                         var itemAuthor = itemNode.SelectSingleNode("author")?.InnerText ?? "Unknown Author";
+
+                        // Find the media file
+                        var itemLink = itemNode.SelectSingleNode("enclosure")?.Attributes["url"]?.Value ??
+                                       itemNode.SelectSingleNode("media:content")?.Attributes["url"]?.Value ??
+                                       itemNode.SelectSingleNode("link")?.InnerText ?? "Unknown Link";
 
                         items.Add(new IndividualRssData
                         {

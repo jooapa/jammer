@@ -698,10 +698,49 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Choose":
-                            if (Funcs.IsCurrentSongARssFeed())
+                            if (!Funcs.IsCurrentSongARssFeed())
                             {
-                                Message.Data("This song is a RSS feed, you can open it in your browser.", "Open Song");
+                                break;
                             }
+
+                            // when opening the new view its actually gonna save the playlist aand come back to it to the same position it left.
+                            Utils.lastPositionInPreviousPlaylist = Utils.CurrentSongIndex;
+                            Utils.BackUpSongs = Utils.Songs;
+                            Utils.RssFeedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]);
+                            Utils.BackUpPlaylistNames = Utils.CurrentPlaylist;
+                            Utils.CurrentPlaylist = "";
+
+
+                            if (Utils.CurrentPlaylist != "")
+                            {
+                                Funcs.SaveCurrentPlaylist();
+                            }
+
+                            // convert all the rssfeeds to songs
+                            RootRssData rssFeed = await Rss.GetRssData(Utils.RssFeedSong.URI);
+                            Utils.Songs = Array.Empty<string>();
+                            Utils.CurrentPlaylistSongIndex = 0;
+                            Utils.CurrentSongIndex = 0;
+
+                            foreach (var i in rssFeed.Content)
+                            {
+                                // Convert each RSS feed item to a song
+                                Song song = new Song
+                                {
+                                    Title = i.Title,
+                                    Author = i.Author,
+                                    URI = i.Link,
+                                    Description = i.Description,
+                                    PubDate = i.PubDate
+                                };
+
+                                song.ExtractSongDetails();
+                                Utils.Songs = Utils.Songs.Concat(new[] { song.ToSongString() }).ToArray();
+                            }
+
+                            playerView = "rss";
+                            drawWhole = true;
+                            Play.PlaySong(Utils.Songs, Utils.CurrentPlaylistSongIndex);
                             break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();

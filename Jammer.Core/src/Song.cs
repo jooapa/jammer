@@ -14,6 +14,8 @@ namespace Jammer
         public string? Year { get; set; }
         public string? Genre { get; set; }
         public string? Duration { get; set; }
+        public string? Description { get; set; }
+        public string? PubDate { get; set; }
         /// <summary>
         /// Extracts song details from the Path property if it contains metadata.
         /// </summary>
@@ -38,6 +40,8 @@ namespace Jammer
                 Year = metadata.Year;
                 Genre = metadata.Genre;
                 Duration = metadata.Duration;
+                Description = metadata.Description;
+                PubDate = metadata.PubDate;
             }
         }
     }

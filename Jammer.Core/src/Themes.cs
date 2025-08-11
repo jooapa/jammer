@@ -146,6 +146,16 @@ namespace Jammer
         ],
         ""PlayingColor"": ""white"",
         ""PausedColor"": ""yellow""
+    },
+    ""Rss"": {
+        ""BorderColor"": [255,255,255],
+        ""BorderStyle"": ""Rounded"",
+        ""TitleColor"": ""white"",
+        ""AuthorColor"": ""grey"",
+        ""DescriptionColor"": ""grey"",
+        ""LinkColor"": ""blue"",
+        ""DetailBorderStyle"": ""Rounded"",
+        ""DetailBorderColor"": [255,255,255]
     }
 }";
 
@@ -377,6 +387,7 @@ namespace Jammer
             public LanguageChangeTheme? LanguageChange { get; set; }
             public InputBoxTheme? InputBox { get; set; }
             public VisualizerTheme? Visualizer { get; set; }
+            public RssTheme? Rss { get; set; }
         }
 
         public class PlaylistTheme
@@ -511,6 +522,18 @@ namespace Jammer
             public string[]? UnicodeMap { get; set; }
             public string? PlayingColor { get; set; }
             public string? PausedColor { get; set; }
+        }
+
+        public class RssTheme
+        {
+            public int[]? BorderColor { get; set; }
+            public string? BorderStyle { get; set; }
+            public string? TitleColor { get; set; }
+            public string? AuthorColor { get; set; }
+            public string? DescriptionColor { get; set; }
+            public string? LinkColor { get; set; }
+            public string? DetailBorderStyle { get; set; }
+            public int[]? DetailBorderColor { get; set; }
         }
     }
 }
