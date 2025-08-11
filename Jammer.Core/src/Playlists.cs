@@ -271,7 +271,7 @@ namespace Jammer
             {
                 if (!force)
                 {
-                    string input = Message.Input(Locale.Miscellaneous.YesNo, Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite);
+                    string input = Message.Input(Locale.Miscellaneous.YesNo, Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite, true);
                     // y/n prompt
                     if (input != "y")
                     {

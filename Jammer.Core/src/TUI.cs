@@ -288,9 +288,7 @@ namespace Jammer
                     table.AddColumn(
                         Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
                         Themes.sColor(
-                            Funcs.GetSongWithDots(
-                                Utils.BackUpPlaylistName
-                            , Start.consoleWidth - 20),
+                            Utils.BackUpPlaylistName,
                             Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
                         Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
                         Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
@@ -345,13 +343,22 @@ namespace Jammer
                     table.AddColumn(
                         Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
                         Themes.sColor(
-                            Funcs.GetSongWithDots(
-                                Utils.BackUpPlaylistName
-                            , Start.consoleWidth - 20),
+                            Utils.BackUpPlaylistName,
                             Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
                         Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
                         Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
+                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]" +
+
+                        (Utils.CurrentPlaylist != "" ?
+                        Themes.sColor(
+                            " saved as: ",
+                            Themes.CurrentTheme.Rss.DescriptionColor
+                        ) +
+                        Themes.sColor(
+                            Utils.CurrentPlaylist,
+                            Themes.CurrentTheme.Rss.DescriptionColor
+                        )
+                        : "")
                     );
                 }
                 table.AddRow(Funcs.GetPrevCurrentNextSong());

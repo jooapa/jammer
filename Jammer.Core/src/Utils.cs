@@ -53,6 +53,7 @@ namespace Jammer
         public static int lastPositionInPreviousPlaylist = -1;
         public static string[]? BackUpSongs = null;
         public static string? BackUpPlaylistName = null;
+        public static string? RssFeedSavedName = null;
 
 
         // Class to hold Util related Functions

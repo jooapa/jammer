@@ -762,7 +762,7 @@ namespace Jammer
                                 // do the oppisite of what it does when going in
                                 Utils.Songs = Utils.BackUpSongs;
                                 Utils.BackUpSongs = null;
-                                
+
                                 Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
                                 Utils.BackUpPlaylistName = null;
 
@@ -770,6 +770,8 @@ namespace Jammer
 
                                 Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
                                 Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
+
+                                Utils.RssFeedSavedName = null;
 
                                 Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                             }
