@@ -714,12 +714,6 @@ namespace Jammer
                             Utils.CurrentPlaylist = "";
                             // Message.Data(Utils.BackUpPlaylistName, "a");
 
-
-                            if (Utils.CurrentPlaylist != "")
-                            {
-                                Funcs.SaveCurrentPlaylist();
-                            }
-
                             
                             // convert all the rssfeeds to songs
                             RootRssData rssFeed = Rss.GetRssData(Utils.RssFeedSong.URI).GetAwaiter().GetResult();
