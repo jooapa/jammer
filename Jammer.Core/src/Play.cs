@@ -124,9 +124,7 @@ namespace Jammer
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
-                if (song.Title == null || song.Title == "")
                 {
-
                     fullPath = Download.DownloadSong(song.URI);
                     // if there are ://:
                     if (fullPath.Contains("://:"))

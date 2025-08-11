@@ -224,6 +224,14 @@ namespace Jammer
             return song;
         }
 
+        public static bool IsInsideOfARssFeed() {
+            if (Utils.RssFeedSong.URI != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static bool IsCurrentSongARssFeed()
         {
             if (Utils.Songs.Length == 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
@@ -238,20 +246,22 @@ namespace Jammer
             }
             return false;
         }
-        public static string GetPrevCurrentNextSong()
+        public static string GetPrevCurrentNextSong(
+            string? currentLabel = null,
+            string? prevLabel = null,
+            string? nextLabel = null)
         {
             int songLength = Start.consoleWidth - 26;
 
-            // Find longest label length
+            // Always pad the labels to the maximum length
             int maxLabelLength = Math.Max(
-                Math.Max(Locale.Player.Current.Length, Locale.Player.Previos.Length),
-                Locale.Player.Next.Length
+            Math.Max(Locale.Player.Current.Length, Locale.Player.Previos.Length),
+            Locale.Player.Next.Length
             );
 
-            // Create padded labels
-            string currentLabel = Locale.Player.Current.PadRight(maxLabelLength);
-            string prevLabel = Locale.Player.Previos.PadRight(maxLabelLength);
-            string nextLabel = Locale.Player.Next.PadRight(maxLabelLength);
+            currentLabel = (currentLabel ?? Locale.Player.Current).PadRight(maxLabelLength);
+            prevLabel = (prevLabel ?? Locale.Player.Previos).PadRight(maxLabelLength);
+            nextLabel = (nextLabel ?? Locale.Player.Next).PadRight(maxLabelLength);
 
             // Console.WriteLine(Start.Sanitize(Utils.Songs[Utils.CurrentSongIndex]));
             // Console.ReadLine();
@@ -334,6 +344,47 @@ namespace Jammer
         public static string RemoveControlChars(string input)
         {
             return new string(input.Where(c => !char.IsControl(c)).ToArray());
+        }
+
+        public static async Task ContinueToRss() {
+            // when opening the new view its actually gonna save the playlist aand come back to it to the same position it left.
+            Utils.lastPositionInPreviousPlaylist = Utils.CurrentSongIndex;
+            Utils.BackUpSongs = Utils.Songs;
+            Utils.RssFeedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]);
+            Utils.BackUpPlaylistName = Utils.CurrentPlaylist;
+            Utils.CurrentPlaylist = "";
+            // Message.Data(Utils.BackUpPlaylistName, "a");
+
+
+            if (Utils.CurrentPlaylist != "")
+            {
+                Funcs.SaveCurrentPlaylist();
+            }
+
+
+            // convert all the rssfeeds to songs
+            RootRssData rssFeed = await Rss.GetRssData(Utils.RssFeedSong.URI);
+            // state = MainStates.next;
+            // break;
+            Utils.Songs = Array.Empty<string>();
+            Utils.CurrentPlaylistSongIndex = 0;
+            Utils.CurrentSongIndex = 0;
+
+            foreach (var i in rssFeed.Content)
+            {
+                // Convert each RSS feed item to a song
+                Song song = new Song
+                {
+                    Title = i.Title,
+                    Author = i.Author,
+                    URI = i.Link,
+                    Description = i.Description,
+                    PubDate = i.PubDate
+                };
+
+                song.ExtractSongDetails();
+                Utils.Songs = Utils.Songs.Concat(new[] { song.ToSongString() }).ToArray();
+            }
         }
 
         public static string CalculateTime(double time, bool getColor)

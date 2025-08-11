@@ -138,6 +138,7 @@ namespace Jammer
         public static bool drawWhole = false;
 
         public static string previousView = "default";
+        public static bool debug = false;
         public static void Loop()
         {
             lastSeconds = -1;
@@ -211,7 +212,8 @@ namespace Jammer
                             prevMusicTimePlayed = 0;
                             drawTime = true;
                         }
-
+                        if (debug)
+                            Message.Data("asd", "asd");
                         CheckKeyboardAsync();
                         break;
 
@@ -242,6 +244,10 @@ namespace Jammer
                         break;
                 }
 
+                if (debug)
+                    // print the call stack
+                    Message.Data(Environment.StackTrace, "Call Stack", true);
+
                 Utils.PreciseTime = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
                 // get current time in seconds
                 Utils.TotalMusicDurationInSec = Bass.ChannelBytes2Seconds(Utils.CurrentMusic, Bass.ChannelGetPosition(Utils.CurrentMusic));
@@ -265,6 +271,9 @@ namespace Jammer
 
                 if (playerView == "default" || playerView == "all" || playerView == "rss")
                 {
+                    if (debug)
+                        Message.Data(drawWhole.ToString(), "22");
+
                     if (drawVisualizer && Preferences.isVisualizer)
                     {
                         if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop || state == MainStates.idle)

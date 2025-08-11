@@ -52,7 +52,7 @@ namespace Jammer
         public static Song RssFeedSong = new Song();
         public static int lastPositionInPreviousPlaylist = -1;
         public static string[]? BackUpSongs = null;
-        public static string? BackUpPlaylistNames = null;
+        public static string? BackUpPlaylistName = null;
 
 
         // Class to hold Util related Functions

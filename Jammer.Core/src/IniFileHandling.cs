@@ -60,6 +60,7 @@ Search = Ctrl + Y
 ShowLog = Ctrl + L
 HardDeleteCurrentSong = Shift + Delete
 RenameSong = F2
+ExitRssFeed = E
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();

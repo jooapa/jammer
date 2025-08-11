@@ -100,7 +100,9 @@ namespace Jammer
                 if (Start.playerView == "default")
                 {
                     magicIndex = 18;
-                    if (Utils.CurrentPlaylist == "")
+                    if (
+                        (Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed())
+                    )
                     {
                         magicIndex -= 2;
                     }
@@ -123,6 +125,7 @@ namespace Jammer
                         magicIndex -= 5;
                     }
                 }
+
 
                 tableRowCount = Start.consoleHeight - magicIndex;
 
@@ -177,94 +180,6 @@ namespace Jammer
 
         }
 
-        static public void DrawRssPlayer()
-        {
-            // same as the default but the layout might be different
-            try
-            {
-                var ansiConsoleSettings = new AnsiConsoleSettings();
-                AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
-                var ansiConsole = AnsiConsole.Create(ansiConsoleSettings);
-
-                var mainTable = new Table
-                {
-                    Border = Themes.bStyle(Themes.CurrentTheme.Playlist.BorderStyle)
-                };
-                mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme.Playlist.BorderColor));
-
-
-
-                // näyttää aina ne tiedot eikä mitään url hommaa
-                Funcs.UpdateSongListCorrectly();
-
-
-                var songsTable = UIComponent_RssMain();
-                var songDetailsTable = new Table();
-                var timeTable = new Table();
-                
-                if (cls)
-                {
-                    cls = false;
-                }
-                // if (Start.playerView == "default" || Start.playerView == "fake") {
-                //     AnsiConsole.Cursor.SetPosition(0, 0);
-                // }
-                string songPath;
-                if (Utils.CurrentMusic == 0 && Utils.CurSongError)
-                {
-                    if (Utils.CustomTopErrorMessage != "")
-                    {
-                        songPath = Utils.CustomTopErrorMessage;
-                    }
-                    else
-                    {
-                        songPath = "Error: cannot play the song";
-                    }
-                }
-                else if (Utils.CurrentMusic == 0)
-                {
-                    songPath = "No song is playing";
-                }
-                else
-                {
-                    songPath = Utils.CurrentSongPath;
-                }
-
-                Utils.CustomTopErrorMessage = "";
-
-                // render maintable with tables in it
-                mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(
-                    songPath
-                ), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
-                mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
-
-                var rssDetailTable = new Table();
-                rssDetailTable.Border = Themes.bStyle(Themes.CurrentTheme.Rss.DetailBorderStyle);
-                rssDetailTable.BorderColor(Themes.bColor(Themes.CurrentTheme.Rss.DetailBorderColor));
-
-                rssDetailTable.AddColumn("Title");
-                rssDetailTable.AddColumn("Author");
-                rssDetailTable.AddColumn("Description");
-                // rssDetailTable.AddRow(
-                //     Themes.sColor(SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]).Title, Themes.CurrentTheme.Rss.TitleColor),
-                //     Themes.sColor(SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]).Author, Themes.CurrentTheme.Rss.AuthorColor),
-                //     Themes.sColor(SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]).Description, Themes.CurrentTheme.Rss.DescriptionColor)
-                // );
-
-                mainTable.AddRow(UIComponent_Time(timeTable));
-
-                AnsiConsole.Cursor.SetPosition(0, 0);
-                AnsiConsole.Write(mainTable);
-            }
-            catch (Exception e)
-            {
-                AnsiConsole.Cursor.SetPosition(0, 0);
-                AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
-                AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
-                AnsiConsole.MarkupLine("[red]" + e + "[/]");
-                AnsiConsole.WriteLine(Utils.Songs.Length);
-            }
-        }
 
         static public void DrawVisualizer()
         {
@@ -358,20 +273,48 @@ namespace Jammer
             // string[] queueLines = Funcs.GetAllSongsQueue();
             string[] lines = Funcs.GetAllSongs();
 
-
-            if (Utils.CurrentPlaylist == "")
+            if (Funcs.IsInsideOfARssFeed())
             {
-                table.AddColumn("No Specific Playlist Name");
+                if (Utils.BackUpPlaylistName == "")
+                {
+                    table.AddColumn(
+                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
+                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
+                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
+                    );
+                }
+                else
+                {
+                    table.AddColumn(
+                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
+                        Themes.sColor(
+                            Funcs.GetSongWithDots(
+                                Utils.BackUpPlaylistName
+                            , Start.consoleWidth - 20),
+                            Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
+                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
+                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
+                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
+                    );
+                }
+                table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
             else
             {
-                table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " "
-                    + Themes.sColor(
-                        Funcs.GetSongWithDots(
-                            Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
-                        , Start.consoleWidth - 20),
-                    Themes.CurrentTheme.Playlist.PlaylistNameColor)
-                );
+                if (Utils.CurrentPlaylist == "")
+                {
+                    table.AddColumn("No Specific Playlist Name");
+                }
+                else
+                {
+                    table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " "
+                        + Themes.sColor(
+                            Funcs.GetSongWithDots(
+                                Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
+                            , Start.consoleWidth - 20),
+                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                    );
+                }
             }
 
             // table.AddColumn(Locale.OutsideItems.CurrentQueue);
@@ -387,53 +330,52 @@ namespace Jammer
             table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralPlaylist.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralPlaylist.BorderColor));
 
-            if (Utils.CurrentPlaylist == "")
+            if (Funcs.IsInsideOfARssFeed())
             {
-                table.AddColumn(Funcs.GetPrevCurrentNextSong());
-            }
-            else
-            {
-                table.AddColumn(
-                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
+                if (Utils.BackUpPlaylistName == "")
+                {
+                    table.AddColumn(
+                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
+                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
+                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
+                        );
+                }
+                else
+                {
+                    table.AddColumn(
+                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
                         Themes.sColor(
                             Funcs.GetSongWithDots(
-                                Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
+                                Utils.BackUpPlaylistName
                             , Start.consoleWidth - 20),
-                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
-                );
-                table.AddRow(Funcs.GetPrevCurrentNextSong());
-            }
-        }
-
-        public static Table UIComponent_RssMain()
-        {
-            Table table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.Rss.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Rss.BorderColor));
-
-            if (Utils.CurrentPlaylist == "")
-            {
-                table.AddColumn(
-                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor)
+                            Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
+                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
+                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
+                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
                     );
+                }
+                table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
             else
             {
-                table.AddColumn(
-                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(
-                        Funcs.GetSongWithDots(
-                            Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
-                        , Start.consoleWidth - 20),
-                        Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
-                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor)
-                );
+                if (Utils.CurrentPlaylist == "")
+                {
+                    table.AddColumn(Funcs.GetPrevCurrentNextSong());
+                }
+                else
+                {
+                    table.AddColumn(
+                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
+                            Themes.sColor(
+                                Funcs.GetSongWithDots(
+                                    Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
+                                , Start.consoleWidth - 20),
+                            Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                    );
+                    table.AddRow(Funcs.GetPrevCurrentNextSong());
+                }   
             }
-            table.AddRow(Funcs.GetPrevCurrentNextSong());
 
-            return table;
         }
 
         public static Table UIComponent_Time(Table table)
@@ -575,6 +517,7 @@ namespace Jammer
             string[] VolumeUpByOne = (Keybindings.VolumeUpByOne).Replace(" ", "").Split(separator);
             string[] VolumeDownByOne = (Keybindings.VolumeDownByOne).Replace(" ", "").Split(separator);
             string[] ChooseSong = (Keybindings.Choose).Replace(" ", "").Split(separator);
+            string[] ExitRssFeed = (Keybindings.ExitRssFeed).Replace(" ", "").Split(separator);
 
 
             table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
@@ -606,6 +549,7 @@ namespace Jammer
             table.AddRow(DrawHelpTextColouring(VolumeUpByOne), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(VolumeDownByOne), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
             table.AddRow(DrawHelpTextColouring(ChooseSong), Themes.sColor("Choose or open a Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
+            table.AddRow(DrawHelpTextColouring(ExitRssFeed), Themes.sColor("Exit RSS Feed", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
 
 
 
@@ -911,14 +855,6 @@ namespace Jammer
             else if (Start.playerView == "changelanguage")
             {
                 ChangeLanguage();
-            }
-            else if (Start.playerView == "rss")
-            {
-                DrawRssPlayer();
-            }
-            else
-            {
-                DrawPlayer();
             }
         }
     }

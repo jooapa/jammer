@@ -155,7 +155,8 @@ namespace Jammer
         ""DescriptionColor"": ""grey"",
         ""LinkColor"": ""blue"",
         ""DetailBorderStyle"": ""Rounded"",
-        ""DetailBorderColor"": [255,255,255]
+        ""DetailBorderColor"": [255,255,255],
+        ""ExitRssFeedColor"": ""red""
     }
 }";
 
@@ -524,7 +525,7 @@ namespace Jammer
             public string? PausedColor { get; set; }
         }
 
-        public class RssTheme
+        public class    RssTheme
         {
             public int[]? BorderColor { get; set; }
             public string? BorderStyle { get; set; }
@@ -534,6 +535,8 @@ namespace Jammer
             public string? LinkColor { get; set; }
             public string? DetailBorderStyle { get; set; }
             public int[]? DetailBorderColor { get; set; }
+            public string? ExitRssFeedColor { get; set; }
+
         }
     }
 }

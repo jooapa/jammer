@@ -73,11 +73,11 @@ namespace Jammer
                 Preferences.songsPath,
                 formattedUrl
             );
-            AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
             if (System.IO.File.Exists(songPath))
             {
                 return;
             }
+            AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
 
             try
             {

@@ -337,6 +337,7 @@ namespace Jammer
                                 Message.Data("Client ID not found", "Error :(", true, false);
                                 drawWhole = true;
                                 break;
+       
                             }
                             Preferences.clientID = clientID;
                             Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
@@ -698,6 +699,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Choose":
+
                             if (!Funcs.IsCurrentSongARssFeed())
                             {
                                 break;
@@ -707,8 +709,9 @@ namespace Jammer
                             Utils.lastPositionInPreviousPlaylist = Utils.CurrentSongIndex;
                             Utils.BackUpSongs = Utils.Songs;
                             Utils.RssFeedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]);
-                            Utils.BackUpPlaylistNames = Utils.CurrentPlaylist;
+                            Utils.BackUpPlaylistName = Utils.CurrentPlaylist;
                             Utils.CurrentPlaylist = "";
+                            // Message.Data(Utils.BackUpPlaylistName, "a");
 
 
                             if (Utils.CurrentPlaylist != "")
@@ -716,8 +719,11 @@ namespace Jammer
                                 Funcs.SaveCurrentPlaylist();
                             }
 
+                            
                             // convert all the rssfeeds to songs
-                            RootRssData rssFeed = await Rss.GetRssData(Utils.RssFeedSong.URI);
+                            RootRssData rssFeed = Rss.GetRssData(Utils.RssFeedSong.URI).GetAwaiter().GetResult();
+                            // state = MainStates.next;
+                            // break;
                             Utils.Songs = Array.Empty<string>();
                             Utils.CurrentPlaylistSongIndex = 0;
                             Utils.CurrentSongIndex = 0;
@@ -738,9 +744,35 @@ namespace Jammer
                                 Utils.Songs = Utils.Songs.Concat(new[] { song.ToSongString() }).ToArray();
                             }
 
-                            playerView = "rss";
-                            drawWhole = true;
-                            Play.PlaySong(Utils.Songs, Utils.CurrentPlaylistSongIndex);
+                            // Start.state = MainStates.play;
+                            // Play.PlayDrawReset();
+                            // Play.PlaySong(Utils.Songs, Utils.Songs.Length - 1);
+                            // TUI.RefreshCurrentView();
+                            // lastPlaybackTime = -1;
+                            // lastSeconds = -1;
+                            // Play.PlayDrawReset();
+                            // Play.PlaySong(Utils.Songs, 0);
+                            // AnsiConsole.Clear();
+                            Play.PlaySong(Utils.Songs, 0);
+                            // debug = true;
+                            break;
+                        case "ExitRssFeed":
+                            if (Funcs.IsInsideOfARssFeed())
+                            {
+                                // do the oppisite of what it does when going in
+                                Utils.Songs = Utils.BackUpSongs;
+                                Utils.BackUpSongs = null;
+                                
+                                Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
+                                Utils.BackUpPlaylistName = null;
+
+                                Utils.RssFeedSong = new Song();
+
+                                Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
+                                Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
+
+                                Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
+                            }
                             break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
@@ -815,6 +847,9 @@ namespace Jammer
                 }
 
                 Playlists.AutoSave(); // TODO: BEST WAY TO DO IT
+
+                if (debug)
+                    Message.Data(Environment.StackTrace, "sd");
             }
         }
 

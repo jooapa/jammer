@@ -88,9 +88,9 @@ namespace Jammer
         public static class Help
         {
             public static string ToMainMenu = CheckValueLocale("Help", "ToMainMenu", "To Main Menu");
-            public static string Controls = CheckValueLocale("Help", "Controls", "Controls");
+            public static string Controls = CheckValueLocale("Help", "Controls", "Keybinds");
             public static string Description = CheckValueLocale("Help", "Description", "Description");
-            public static string ModControls = CheckValueLocale("Help", "ModControls", "Mod Controls");
+            public static string ModControls = CheckValueLocale("Help", "ModControls", "Keybinds");
             public static string PlayPause = CheckValueLocale("Help", "PlayPause", "Play/Pause");
             public static string Quit = CheckValueLocale("Help", "Quit", "Quit");
             public static string Rewind = CheckValueLocale("Help", "Rewind", "Rewind");
