@@ -757,24 +757,27 @@ namespace Jammer
                             // debug = true;
                             break;
                         case "ExitRssFeed":
-                            if (Funcs.IsInsideOfARssFeed())
+                            if (!Funcs.IsInsideOfARssFeed())
                             {
-                                // do the oppisite of what it does when going in
-                                Utils.Songs = Utils.BackUpSongs;
-                                Utils.BackUpSongs = null;
-
-                                Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
-                                Utils.BackUpPlaylistName = null;
-
-                                Utils.RssFeedSong = new Song();
-
-                                Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
-                                Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
-
-                                Utils.RssFeedSavedName = null;
-
-                                Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
+                                break;
                             }
+                            
+                            // do the oppisite of what it does when going in
+                            Utils.Songs = Utils.BackUpSongs;
+                            Utils.BackUpSongs = null;
+
+                            Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
+                            Utils.BackUpPlaylistName = null;
+
+                            Utils.RssFeedSong = new Song();
+
+                            Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
+                            Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
+
+                            Utils.RssFeedSavedName = null;
+
+                            Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
+
                             break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
