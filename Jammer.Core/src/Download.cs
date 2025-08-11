@@ -77,7 +77,7 @@ namespace Jammer
             {
                 return;
             }
-            AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
+            // AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
 
             try
             {
@@ -105,7 +105,9 @@ namespace Jammer
                             if (totalBytes > 0)
                             {
                                 double progressPercentage = (double)totalBytesRead / totalBytes * 100;
-                                Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
+                                // Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
+
+                                TUI.PrintToTopOfPlayer($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
                             }
                         }
                     }
@@ -162,7 +164,8 @@ namespace Jammer
                         if (totalBytes > 0)
                         {
                             double progressPercentage = (double)totalBytesRead / totalBytes * 100;
-                            Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
+                            // Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
+                            TUI.PrintToTopOfPlayer($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
                         }
                     }
                 }
