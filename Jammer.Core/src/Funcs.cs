@@ -223,8 +223,16 @@ namespace Jammer
             }
             return song;
         }
+        
+        public static void ResetRssExitVariables() {
+            Utils.BackUpSongs = null;
+            Utils.BackUpPlaylistName = null;
+            Utils.RssFeedSong = new Song();
+            Utils.RssFeedSavedName = null;
+        }
 
-        public static bool IsInsideOfARssFeed() {
+        public static bool IsInsideOfARssFeed()
+        {
             if (Utils.RssFeedSong.URI != null)
             {
                 return true;

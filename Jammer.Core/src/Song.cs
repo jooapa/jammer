@@ -84,6 +84,8 @@ namespace Jammer
             if (!string.IsNullOrEmpty(song.Year)) definedProperties.Add("Year", song.Year);
             if (!string.IsNullOrEmpty(song.Genre)) definedProperties.Add("Genre", song.Genre);
             if (!string.IsNullOrEmpty(song.Duration)) definedProperties.Add("Duration", song.Duration);
+            if (!string.IsNullOrEmpty(song.Description)) definedProperties.Add("Description", song.Description);
+            if (!string.IsNullOrEmpty(song.PubDate)) definedProperties.Add("PubDate", song.PubDate);
 
             string songString = song.URI + Utils.JammerFileDelimeter;
             songString += JsonSerializer.Serialize(definedProperties, options);

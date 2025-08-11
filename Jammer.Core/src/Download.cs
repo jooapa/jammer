@@ -14,12 +14,14 @@ namespace Jammer
     public class Download
     {
         public static string songPath = "";
+        public static Song? constructedSong = null;
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
 
-        public static string DownloadSong(string url)
+        public static (string, Song?) DownloadSong(string url)
         {
             songPath = "";
+            constructedSong = null;
 
             Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url.ToString());
             if (URL.IsValidSoundcloudSong(url))
@@ -52,17 +54,22 @@ namespace Jammer
             }
 
             Start.drawWhole = true;
-            return songPath;
+            return (songPath, constructedSong);
         }
 
         private static async Task DownloadRssFeed(string url)
         {
-            var rssData = await Rss.GetRssData(url);
+            RootRssData rssData = await Rss.GetRssData(url);
 
             Debug.dprint($"RSS Title: {rssData.Title}");
             Debug.dprint($"RSS Author: {rssData.Author}");
 
-            songPath = url + "://:" + rssData.Title + "://:" + rssData.Author;
+            songPath = url;
+            constructedSong = new Song
+            {
+                Title = rssData.Title,
+                Author = rssData.Author
+            };
             return;
         }
 
@@ -255,6 +262,12 @@ namespace Jammer
                     //     Log.Error("doing the dumb ://: title convert bullshit");
                     //     songPath += "://:" + video.Title + "://:" + video.Author.ChannelTitle;
                     // }
+                    constructedSong = new Song
+                    {
+                        URI = songPath,
+                        Title = video.Title,
+                        Author = video.Author.ChannelTitle
+                    };
                 }
                 else
                 {
@@ -273,6 +286,7 @@ namespace Jammer
                 Utils.CustomTopErrorMessage = "Error: Maybe the song is private or the URL is invalid. (check log)";
                 Log.Error(ex.Message);
                 songPath = "";
+                constructedSong = null;
             }
         }
         private static bool IsFFmpegInstalled()
@@ -406,6 +420,7 @@ namespace Jammer
             {
                 Utils.CustomTopErrorMessage = "Error: Client ID is incorrect, please check your Client ID in Preferences.";
                 songPath = "";
+                constructedSong = null;
                 return;
             }
 
@@ -450,7 +465,13 @@ namespace Jammer
                         {
                             Log.Error(ex.Message);
                             Log.Error("doing the dumb ://: title convert bullshit");
-                            songPath += "://:" + track.Title + "://:" + track.User.Username;
+                            // songPath += "://:" + track.Title + "://:" + track.User.Username;
+                            constructedSong = new Song
+                            {
+                                URI = songPath,
+                                Title = track.Title,
+                                Author = track.User?.Username ?? null
+                            };
                         }
 
                     }
@@ -479,6 +500,7 @@ namespace Jammer
                 Utils.CustomTopErrorMessage = "Error: Maybe your Client ID is invalid or the song is private. (check log)";
                 Log.Error(ex.Message);
                 songPath = "";
+                constructedSong = null;
             }
         }
 
@@ -622,7 +644,7 @@ namespace Jammer
             // Console.ReadLine();
 
 
-            return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]);
+            return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]).Item1;
         }
         public static string FormatUrlForFilename(string url, bool isCheck = false)
         {

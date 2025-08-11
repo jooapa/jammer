@@ -761,20 +761,14 @@ namespace Jammer
                             {
                                 break;
                             }
-                            
+
                             // do the oppisite of what it does when going in
                             Utils.Songs = Utils.BackUpSongs;
-                            Utils.BackUpSongs = null;
-
                             Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
-                            Utils.BackUpPlaylistName = null;
-
-                            Utils.RssFeedSong = new Song();
-
                             Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
                             Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
 
-                            Utils.RssFeedSavedName = null;
+                            Funcs.ResetRssExitVariables();
 
                             Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
 

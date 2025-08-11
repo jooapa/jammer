@@ -83,7 +83,7 @@ namespace Jammer
             {
                 URI = songs[Utils.CurrentSongIndex]
             };
-            string fullPath = "";
+            string fullPathToFile = "";
 
             song.ExtractSongDetails();
 
@@ -91,7 +91,7 @@ namespace Jammer
             if (System.IO.File.Exists(song.URI))
             {
                 // id related to local file path, convert to absolute path
-                fullPath = Path.GetFullPath(song.URI);
+                fullPathToFile = Path.GetFullPath(song.URI);
             }
             // if folder
             else if (Directory.Exists(song.URI))
@@ -105,89 +105,55 @@ namespace Jammer
             {
                 // id related to url, download and convert to absolute path
                 Debug.dprint("Soundcloud playlist.");
-                fullPath = Download.GetSongsFromPlaylist(song.URI, "soundcloud");
+                fullPathToFile = Download.GetSongsFromPlaylist(song.URI, "soundcloud");
             }
             else if (URL.IsValidSoundcloudSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.DownloadSong(song.URI);
+                (fullPathToFile, song) = Download.DownloadSong(song.URI);
             }
             else if (URL.IsValidYoutubePlaylist(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.GetSongsFromPlaylist(song.URI, "youtube");
+                fullPathToFile = Download.GetSongsFromPlaylist(song.URI, "youtube");
             }
             else if (URL.IsValidYoutubeSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                fullPath = Download.DownloadSong(song.URI);
+                (fullPathToFile, song) = Download.DownloadSong(song.URI);
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
-                {
-                    fullPath = Download.DownloadSong(song.URI);
-                    // if there are ://:
-                    if (fullPath.Contains("://:"))
-                    {
-                        // if the song title is empty, then set it to the full path
-                        if (song.Title == null || song.Title == "")
-                        {
-                            string[] split = fullPath.Split("://:");
-                            fullPath = split[0];
-                            song.URI = split[0];
-                            song.Title = split[1];
-                            song.Author = split[2];
-                        }
-                    }
-                }
+                (fullPathToFile, song) = Download.DownloadSong(song.URI);
             }
             else if (URL.IsUrl(song.URI))
             {
-                fullPath = Download.DownloadSong(song.URI);
+                (fullPathToFile, song) = Download.DownloadSong(song.URI);
                 // Message.Data(path, song);
             }
 
-            // fail safe if the song title is empty, because it should be if it comes from the yt or sc
-            // so lets say that is the full path has a random string of chars like "://:" then after that theres the title
-            // uri -> title -> author
+            if (song == null)
             {
-                if (fullPath.Contains("://:"))
-                {
-                    // making sure that if the song already has a proper title, it doesn't get overwritten
-                    if (song.Title != "")
-                    {
-                        Log.Info("Song title is not empty '" + song.Title + "'" + (song.Title != ""));
-                        string[] split = fullPath.Split("://:");
-                        fullPath = split[0];
-                    }
-                    else
-                    {
-                        Log.Info("Song title is empty, trying to get it from the path");
-                        Log.Info("fullpath: " + fullPath);
-                        string[] split = fullPath.Split("://:");
-                        fullPath = split[0];
-                        song.Title = split[1];
-                        song.Author = split[2];
-                        // Log.Info("new song" + song.Title + " " + song.Author);
-                    }
-                }
+                song = new Song();
             }
+            song.URI = songs[Utils.CurrentSongIndex];
 
-            // Message.Data(fullPath, "path");
+            // Message.Data(songs[Utils.CurrentSongIndex], "path");
+            // Message.Data(SongExtensions.ToSongString(song), "33");
 
             // Message.Data(fullPath + " || " + song.Path, "path");
             // if the Utils.songs current is not the same as the song.Path
-            if (fullPath != Utils.Songs[Utils.CurrentSongIndex])
-            {
-                Log.Info("Song path is different from the current song path: " + fullPath + " != " + Utils.Songs[Utils.CurrentSongIndex]);
-                // song.Title = ""; // TODO might break something :/ // TODO: This might just break something else :OO
-                song.URI = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]).URI;
-            }
+            // if (fullPathToFile != Utils.Songs[Utils.CurrentSongIndex])
+            // {
+            //     Log.Info("Song path is different from the current song path: " + fullPathToFile + " != " + Utils.Songs[Utils.CurrentSongIndex]);
+            //     // song.Title = ""; // TODO might break something :/ // TODO: This might just break something else :OO
+            //     song.URI = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]).URI;
+            // }
             // Message.Data(fullPath + " || " + song.Path, "path");
 
             Start.prevMusicTimePlayed = -1;
             Start.lastSeconds = -1;
-            Utils.CurrentSongPath = fullPath;
+            Utils.CurrentSongPath = fullPathToFile;
             Start.drawWhole = true;
 
             Log.Info("Playing: " + Utils.Songs[Utils.CurrentSongIndex]);
@@ -197,21 +163,29 @@ namespace Jammer
 
             TagLib.File? tagFile;
             string title = "", author = "", album = "", year = "", genre = "";
-            try
+            if (song.Title == null || song.Title == "" ||
+                song.Author == null || song.Author == "" ||
+                song.Album == null || song.Album == "" ||
+                song.Year == null || song.Year == "" ||
+                song.Genre == null || song.Genre == "")
             {
-                tagFile = TagLib.File.Create(fullPath);
-                title = tagFile.Tag.Title;
-                author = tagFile.Tag.FirstPerformer;
-                album = tagFile.Tag.Album;
-                year = tagFile.Tag.Year.ToString();
-                genre = tagFile.Tag.FirstGenre;
-            }
-            catch (Exception)
-            {
-                tagFile = null;
-                Log.Error("Error getting title of the song");
+                try
+                {
+                    tagFile = TagLib.File.Create(fullPathToFile);
+                    title = tagFile.Tag.Title;
+                    author = tagFile.Tag.FirstPerformer;
+                    album = tagFile.Tag.Album;
+                    year = tagFile.Tag.Year.ToString();
+                    genre = tagFile.Tag.FirstGenre;
+                }
+                catch (Exception)
+                {
+                    tagFile = null;
+                    Log.Error("Error getting title of the song");
+                }
             }
 
+            // Message.Data(SongExtensions.ToSongString(song), "22");
 
             // append title to song
             if (song.Title == null || song.Title == "")
@@ -236,6 +210,9 @@ namespace Jammer
                 song.Genre = genre;
             }
 
+
+            // Message.Data(SongExtensions.ToSongString(song), "11");
+
             // Log.Info("setting current song to: " + song.ToSongString());
             Utils.Songs[Utils.CurrentSongIndex] = song.ToSongString();
             // Concatenate all song strings
@@ -246,15 +223,15 @@ namespace Jammer
 
             try
             {
-                string extension = Path.GetExtension(fullPath).ToLower();
+                string extension = Path.GetExtension(fullPathToFile).ToLower();
 
                 if (extension == ".jammer")
                 {
-                    HandleJammerPlaylist(fullPath);
+                    HandleJammerPlaylist(fullPathToFile);
                 }
                 else if (extension == ".m3u" || extension == ".m3u8")
                 {
-                    Utils.Songs = M3u.ParseM3u(fullPath);
+                    Utils.Songs = M3u.ParseM3u(fullPathToFile);
 
                     PlaySong(Utils.Songs, Utils.CurrentSongIndex);
                 }
