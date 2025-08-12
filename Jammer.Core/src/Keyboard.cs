@@ -449,8 +449,8 @@ namespace Jammer
                         case "Loop": // loop
                             Preferences.loopType = Preferences.loopType switch
                             {
-                                LoopType.None => LoopType.Once,
-                                LoopType.Once => LoopType.Always,
+                                LoopType.None => LoopType.Always,
+                                LoopType.Always => LoopType.Once,
                                 _ => LoopType.None
                             };
                             
