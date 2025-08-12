@@ -558,26 +558,47 @@ namespace Jammer
 
         public static void MaybeNextSong()
         {
-            if (Preferences.isLoop)
+            switch (Preferences.loopType)
             {
-                Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
-                Bass.ChannelPlay(Utils.CurrentMusic);
-            }
-            else if (Utils.Songs.Length == 1 && !Preferences.isLoop)
-            {
-                //Utils.audioStream.Position = Utils.audioStream.Length;
-                Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
-                Start.state = MainStates.pause;
-                //Utils.currentMusic.Pause();
-                Bass.ChannelPause(Utils.CurrentMusic);
-            }
-            else if (Preferences.isShuffle)
-            {
-                RandomSong();
-            }
-            else
-            {
-                Start.state = MainStates.next;
+                case LoopType.Always:
+                    PlayDrawReset();
+                    Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
+                    Bass.ChannelPlay(Utils.CurrentMusic);
+                    break;
+                    
+                case LoopType.Once:
+                    if (Utils.Songs.Length == 1)
+                    {
+                        Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
+                        Start.state = MainStates.idle;
+                        Bass.ChannelPause(Utils.CurrentMusic);
+                    }
+                    else if (Preferences.isShuffle)
+                    {
+                        RandomSong();
+                    }
+                    else
+                    {
+                        Start.state = MainStates.idle;
+                    }
+                    break;
+
+                case LoopType.None:
+                    if (Utils.Songs.Length == 1)
+                    {
+                        Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
+                        Start.state = MainStates.pause;
+                        Bass.ChannelPause(Utils.CurrentMusic);
+                    }
+                    else if (Preferences.isShuffle)
+                    {
+                        RandomSong();
+                    }
+                    else
+                    {
+                        Start.state = MainStates.next;
+                    }
+                    break;
             }
         }
 

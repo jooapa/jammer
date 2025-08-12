@@ -205,21 +205,6 @@ namespace Jammer
         {
             cls = true;
         }
-        // "Components" of the Funcs
-        static public void UIComponent_Controls(Table table)
-        {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
-
-            table.Alignment(Justify.Center);
-            table.AddColumn(Locale.Player.Looping);
-            table.AddColumn(Locale.Player.Shuffle);
-            table.AddColumn(Locale.Player.Volume);
-            string volume = Preferences.isMuted ? "[grey][strikethrough]" + Math.Round(Preferences.oldVolume * 100) + "%[/][/]" : Math.Round(Preferences.volume * 100) + "%";
-
-            table.AddRow(new Markup(Preferences.isLoop ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered(),
-                        new Markup(Preferences.isShuffle ? $"[green]{Locale.Miscellaneous.On}[/]" : $"[red]{Locale.Miscellaneous.Off}[/]").Centered());
-        }
 
         static public string GetStateLogo(bool getColor)
         {
@@ -409,11 +394,23 @@ namespace Jammer
                     Themes.CurrentTheme.Time.ShuffleOnLetter :
                     Themes.CurrentTheme.Time.ShuffleOffLetter;
 
-            string loopMark = Preferences.isLoop ? Themes.sColor(Themes.CurrentTheme.Time.LoopOnLetter, Themes.CurrentTheme.Time.LoopLetterOnColor) : Themes.sColor(Themes.CurrentTheme.Time.LoopOffLetter, Themes.CurrentTheme.Time.LoopLetterOffColor);
-            string loopString =
-                Preferences.isLoop ?
-                    Themes.CurrentTheme.Time.LoopOnLetter :
-                    Themes.CurrentTheme.Time.LoopOffLetter;
+            string loopMark, loopString;
+            switch (Preferences.loopType)
+            {
+                case LoopType.Always:
+                    loopString = Themes.CurrentTheme.Time.LoopOnLetter;
+                    loopMark = Themes.sColor(loopString, Themes.CurrentTheme.Time.LoopLetterOnColor);
+                    break;
+                case LoopType.Once:
+                    loopString = Themes.CurrentTheme.Time.LoopOnceLetter;
+                    loopMark = Themes.sColor(loopString, Themes.CurrentTheme.Time.LoopLetterOnceColor);
+                    break;
+                case LoopType.None:
+                default:
+                    loopString = Themes.CurrentTheme.Time.LoopOffLetter;
+                    loopMark = Themes.sColor(loopString, Themes.CurrentTheme.Time.LoopLetterOffColor);
+                    break;
+            }
 
             string progressBar = GetStateLogo(true) + shuffleMark + loopMark +
                 Funcs.CalculateTime(value, true) + Themes.sColor(" |", Themes.CurrentTheme.Time.TimebarColor);

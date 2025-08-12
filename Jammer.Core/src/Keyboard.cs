@@ -447,7 +447,13 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Loop": // loop
-                            Preferences.isLoop = !Preferences.isLoop;
+                            Preferences.loopType = Preferences.loopType switch
+                            {
+                                LoopType.None => LoopType.Once,
+                                LoopType.Once => LoopType.Always,
+                                _ => LoopType.None
+                            };
+                            
                             Preferences.SaveSettings();
                             drawTime = true;
                             break;

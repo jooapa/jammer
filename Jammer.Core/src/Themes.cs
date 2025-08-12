@@ -87,6 +87,8 @@ namespace Jammer
         ""LoopOffLetter"": "" ↻  "",
         ""LoopLetterOnColor"": ""green"",
         ""LoopOnLetter"": "" ⟳  "",
+        ""LoopLetterOnceColor"": ""yellow"",
+        ""LoopOnceLetter"": "" 1  "",
         ""TimeColor"": """",
         ""VolumeColorNotMuted"": """",
         ""VolumeColorMuted"": ""grey strikethrough"",
@@ -454,6 +456,9 @@ namespace Jammer
             public string? LoopOffLetter { get; set; }
             public string? LoopLetterOnColor { get; set; }
             public string? LoopOnLetter { get; set; }
+            public string? LoopOnceLetter { get; set; }
+            public string? LoopLetterOnceColor { get; set; }
+
             public string? TimeColor { get; set; }
             public string? VolumeColorNotMuted { get; set; }
             public string? VolumeColorMuted { get; set; }

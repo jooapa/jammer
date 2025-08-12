@@ -5,6 +5,12 @@ using System.Runtime.InteropServices;
 
 namespace Jammer
 {
+    public enum LoopType
+    {
+        None,
+        Once,
+        Always
+    }
     public class Preferences
     {
         public static int rewindSeconds = GetRewindSeconds();
@@ -12,7 +18,7 @@ namespace Jammer
         public static float volume = GetVolume();
         public static float changeVolumeBy = GetChangeVolumeBy();
         public static float oldVolume = GetOldVolume();
-        public static bool isLoop = GetIsLoop();
+        public static LoopType loopType = GetLoopType();
         public static bool isMuted = GetIsMuted();
         public static bool isShuffle = GetIsShuffle();
         public static bool isAutoSave = GetIsAutoSave();
@@ -115,7 +121,7 @@ namespace Jammer
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
             Settings settings = new Settings();
-            settings.IsLoop = isLoop;
+            settings.LoopType = loopType;
             settings.Volume = volume;
             settings.isMuted = isMuted;
             settings.OldVolume = oldVolume;
@@ -194,19 +200,19 @@ namespace Jammer
             // return the normal path
             return Path.Combine(Utils.JammerPath, "playlists");
         }
-        
-        static public bool GetIsLoop()
+
+        static public LoopType GetLoopType()
         {
             string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.IsLoop ?? false;
+                return settings?.LoopType ?? LoopType.None;
             }
             else
             {
-                return false;
+                return LoopType.None;
             }
         }
 
@@ -473,7 +479,7 @@ namespace Jammer
 
         public class Settings
         {
-            public bool IsLoop { get; set; }
+            public LoopType LoopType { get; set; }
             public float Volume { get; set; }
             public float OldVolume { get; set; }
             public bool isMuted { get; set; }
