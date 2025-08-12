@@ -121,6 +121,7 @@ namespace Jammer
             {
                 // id related to url, download and convert to absolute path
                 (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                // Message.Data(SongExtensions.ToSongString(song), "123");
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
@@ -137,6 +138,8 @@ namespace Jammer
                 song = new Song();
             }
             song.URI = songs[Utils.CurrentSongIndex];
+            song.ExtractSongDetails();
+
 
             // Message.Data(songs[Utils.CurrentSongIndex], "path");
             // Message.Data(SongExtensions.ToSongString(song), "33");
@@ -161,14 +164,16 @@ namespace Jammer
             // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
 
-            TagLib.File? tagFile;
             string title = "", author = "", album = "", year = "", genre = "";
+            TagLib.File? tagFile;
             if (song.Title == null || song.Title == "" ||
                 song.Author == null || song.Author == "" ||
                 song.Album == null || song.Album == "" ||
                 song.Year == null || song.Year == "" ||
                 song.Genre == null || song.Genre == "")
             {
+            // Message.Data(SongExtensions.ToSongString(song), "44");
+
                 try
                 {
                     tagFile = TagLib.File.Create(fullPathToFile);
@@ -191,6 +196,7 @@ namespace Jammer
             if (song.Title == null || song.Title == "")
             {
                 // Log.Info("______trying to get it from the path");
+                // Message.Data(SongExtensions.ToSongString(song), "55" + title);
                 song.Title = title;
             }
             if (song.Author == null || song.Author == "")

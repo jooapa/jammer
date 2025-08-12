@@ -65,7 +65,7 @@ namespace Jammer
 
             if (song == null || string.IsNullOrEmpty(song.URI))
             {
-                return string.Empty;
+                return "";
             }
 
             var options = new JsonSerializerOptions
