@@ -30,13 +30,11 @@ namespace Jammer.Core.Components
             char separator = '+';
             var keybindings = ParseKeybindings(separator);
 
-            // Add table headers with page indicator
-            table.AddColumns(
-                Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor($"{Locale.Help.Description} (Page {_currentPage}/{_totalPages})", Themes.CurrentTheme.GeneralHelp.HeaderTextColor)
-            );
+            // Add table headers with fixed column widths
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(25));
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
+            table.AddColumn(new TableColumn(Themes.sColor($"{Locale.Help.Description} ({_currentPage}/{_totalPages})", Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(30));
 
             // Add help rows based on current page
             if (_currentPage == 1)
@@ -182,6 +180,10 @@ namespace Jammer.Core.Components
             // Page navigation hint
             table.AddRow(
                 "",
+                ""
+            );
+            table.AddRow(
+                "",
                 "",
                 Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
                 Themes.sColor("Next page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
@@ -287,6 +289,10 @@ namespace Jammer.Core.Components
             );
 
             // Page navigation hint
+            table.AddRow(
+                "",
+                ""
+            );
             table.AddRow(
                 Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
                 Themes.sColor("Previous page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),

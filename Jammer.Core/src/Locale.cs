@@ -106,22 +106,22 @@ namespace Jammer
             public static string PreviousSong = CheckValueLocale("Help", "PreviousSong", "Previous song");
             public static string NextSong = CheckValueLocale("Help", "NextSong", "Next song");
             public static string PlayRandomSong = CheckValueLocale("Help", "PlayRandomSong", "Play random song");
-            public static string DeleteCurrentSongFromPlaylist = CheckValueLocale("Help", "DeleteCurrentSongFromPlaylist", "Delete current song from playlist");
+            public static string DeleteCurrentSongFromPlaylist = CheckValueLocale("Help", "DeleteCurrentSongFromPlaylist", "Delete from playlist");
             public static string ShowPlaylistOptions = CheckValueLocale("Help", "ShowPlaylistOptions", "Show playlist options");
             public static string ShowCmdHelp = CheckValueLocale("Help", "ShowCmdHelp", "Show cmd Help");
             public static string Press = CheckValueLocale("Help", "Press", "Press");
             public static string ToHideHelp = CheckValueLocale("Help", "ToHideHelp", "to hide/show help");
             public static string ForSettings = CheckValueLocale("Help", "ForSettings", "for settings");
             public static string ToShowPlaylist = CheckValueLocale("Help", "ToShowPlaylist", "to show playlist");
-            public static string AddsongToPlaylist = CheckValueLocale("Help", "AddsongToPlaylist", "Add song to playlist");
-            public static string ListAllSongsInOtherPlaylist = CheckValueLocale("Help", "ListAllSongsInOtherPlaylist", "List all songs in other playlist");
+            public static string AddsongToPlaylist = CheckValueLocale("Help", "AddsongToPlaylist", "Add to playlist");
+            public static string ListAllSongsInOtherPlaylist = CheckValueLocale("Help", "ListAllSongsInOtherPlaylist", "Show playlist songs");
             public static string ListAllPlaylists = CheckValueLocale("Help", "ListAllPlaylists", "List all playlists");
             public static string PlayOtherPlaylist = CheckValueLocale("Help", "PlayOtherPlaylist", "Play other playlist");
             public static string SavePlaylist = CheckValueLocale("Help", "SavePlaylist", "Save playlist");
             public static string SaveAs = CheckValueLocale("Help", "SaveAs", "Save as");
             public static string ShufflePlaylist = CheckValueLocale("Help", "ShufflePlaylist", "Suffle playlist");
             public static string PlaySongs = CheckValueLocale("Help", "PlaySongs", "Play song(s)");
-            public static string RedownloadCurrentSong = CheckValueLocale("Help", "RedownloadCurrentSong", "Redownload current song");
+            public static string RedownloadCurrentSong = CheckValueLocale("Help", "RedownloadCurrentSong", "Redownload song");
             public static string ChangeLanguage = CheckValueLocale("Help", "ChangeLanguage", "Change language");
         }
 
@@ -282,7 +282,7 @@ namespace Jammer
         {
             public static string HardDeleteCurrentSong = CheckValueLocale("LocaleKeybind", "HardDeleteCurrentSong", "Delete song from playlist and PC");
             public static string Description = CheckValueLocale("LocaleKeybind", "Description", "Language file");
-            public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Current control");
+            public static string CurrentControl = CheckValueLocale("LocaleKeybind", "CurrentControl", "Keybind");
             public static string EditKeyBindMessage1 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage1", "Press 'Escape' to cancel. Save with");
             public static string EditKeyBindMessage2 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage2", "Allowed modifiers: ctrl, alt, shift and their combinations");
             public static string EditKeyBindMessage3 = CheckValueLocale("LocaleKeybind", "EditKeyBindMessage3", "Press Enter to edit highlighted keybind, move up and down with:");
