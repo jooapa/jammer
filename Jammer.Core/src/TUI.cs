@@ -1,5 +1,7 @@
 using SharpHook.Native;
 using Spectre.Console;
+using Jammer.Core;
+using Jammer.Core.Components;
 #pragma warning disable CS8604
 #pragma warning disable CS8602
 #pragma warning disable CS8600
@@ -21,6 +23,7 @@ namespace Jammer
         /// <returns></returns>
         static public void DrawPlayer()
         {
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
             try
             {
                 var ansiConsoleSettings = new AnsiConsoleSettings();
@@ -45,11 +48,11 @@ namespace Jammer
 
                 if (Start.playerView == "default")
                 {
-                    UIComponent_Normal(songsTable);
+                    songsTable = PlaylistComponent.CreateNormalPlaylistTable(layout);
                 }
                 else if (Start.playerView == "all")
                 {
-                    UIComponent_Songs(songsTable);
+                    songsTable = PlaylistComponent.CreateAllSongsPlaylistTable(layout);
                 }
 
                 if (cls)
@@ -90,49 +93,19 @@ namespace Jammer
                 // render maintable with tables in it
                 mainTable.AddColumns(Themes.sColor(Funcs.GetSongWithDots(Start.Sanitize(
                     songPath
-                ), Start.consoleWidth - 8), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
+                ), layout.CalculateMainTableWidth()), Themes.CurrentTheme.Playlist.PathColor)).Width(Start.consoleWidth);
                 mainTable.AddRow(songsTable.Centered().Width(Start.consoleWidth));
 
-                // add \n to the end of the maintable until the end of the console by height
-                int tableRowCount = 0;
-                int magicIndex;
-
-                if (Start.playerView == "default")
-                {
-                    magicIndex = 18;
-                    if (
-                        (Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed())
-                    )
-                    {
-                        magicIndex -= 2;
-                    }
-                    if (Preferences.isVisualizer)
-                    {
-                        magicIndex++;
-                    }
-                }
-                else
-                {
-                    magicIndex = 22;
-                    if (Preferences.isVisualizer)
-                    {
-                        magicIndex++;
-                    }
-                    // there is not 5 songs in the playlist
-                    if (Utils.Songs.Length < 5)
-                    {
-                        magicIndex += Utils.Songs.Length;
-                        magicIndex -= 5;
-                    }
-                }
-
-
-                tableRowCount = Start.consoleHeight - magicIndex;
-
-                if (tableRowCount < 0)
-                {
-                    tableRowCount = 0;
-                }
+                // Calculate table row count using LayoutCalculator
+                ViewType viewType = LayoutCalculator.GetViewType(Start.playerView);
+                bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                int tableRowCount = LayoutCalculator.CalculateTableRowCount(
+                    layout.ConsoleHeight, 
+                    viewType, 
+                    Preferences.isVisualizer, 
+                    hasPlaylist, 
+                    Utils.Songs.Length
+                );
 
                 for (int i = 0; i < tableRowCount; i++)
                 {
@@ -164,7 +137,7 @@ namespace Jammer
                     mainTable.AddEmptyRow();
                 }
 
-                mainTable.AddRow(UIComponent_Time(timeTable));
+                mainTable.AddRow(PlayerTimeComponent.CreateTimeTable(layout));
 
                 AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.Write(mainTable);
@@ -183,22 +156,14 @@ namespace Jammer
 
         static public void DrawVisualizer()
         {
-            AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 5);
-
-            if (Start.state == MainStates.playing || Start.state == MainStates.play)
-            {
-                AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth + 35, true));
-            }
-            else
-            {
-                AnsiConsole.MarkupLine(Visual.GetSongVisual(Start.consoleWidth + 35, false));
-            }
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            VisualizerComponent.DrawVisualizerToConsole(layout);
         }
 
         static public void DrawTime()
         {
-            AnsiConsole.Cursor.SetPosition(5, Start.consoleHeight - 3);
-            AnsiConsole.MarkupLine(ProgressBar(Utils.TotalMusicDurationInSec, Utils.SongDurationInSec));
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            PlayerTimeComponent.DrawTimeToConsole(layout);
         }
 
         static public void ClearScreen()
@@ -250,141 +215,15 @@ namespace Jammer
             return state;
         }
 
-        static public void UIComponent_Songs(Table table)
-        {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.WholePlaylist.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.WholePlaylist.BorderColor));
-            // AnsiConsole.Clear();
-            // string[] queueLines = Funcs.GetAllSongsQueue();
-            string[] lines = Funcs.GetAllSongs();
+        // Old UIComponent methods have been replaced by component classes
 
-            if (Funcs.IsInsideOfARssFeed())
-            {
-                if (Utils.BackUpPlaylistName == "")
-                {
-                    table.AddColumn(
-                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
-                    );
-                }
-                else
-                {
-                    table.AddColumn(
-                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                        Themes.sColor(
-                            Utils.BackUpPlaylistName,
-                            Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
-                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
-                    );
-                }
-                table.AddRow(Funcs.GetPrevCurrentNextSong());
-            }
-            else
-            {
-                if (Utils.CurrentPlaylist == "")
-                {
-                    table.AddColumn("No Specific Playlist Name");
-                }
-                else
-                {
-                    table.AddColumn(Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " "
-                        + Themes.sColor(
-                            Funcs.GetSongWithDots(
-                                Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
-                            , Start.consoleWidth - 20),
-                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
-                    );
-                }
-            }
-
-            // table.AddColumn(Locale.OutsideItems.CurrentQueue);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                // table.AddRow(lines[i], queueLines.Length > i ? queueLines[i] : "");
-                table.AddRow(lines[i]);
-            }
-        }
-
-        static public void UIComponent_Normal(Table table)
-        {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralPlaylist.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralPlaylist.BorderColor));
-
-            if (Funcs.IsInsideOfARssFeed())
-            {
-                if (Utils.BackUpPlaylistName == "")
-                {
-                    table.AddColumn(
-                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
-                        );
-                }
-                else
-                {
-                    table.AddColumn(
-                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                        Themes.sColor(
-                            Utils.BackUpPlaylistName,
-                            Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
-                        Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                        Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                        " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]" +
-
-                        (Utils.CurrentPlaylist != "" ?
-                        Themes.sColor(
-                            " saved as: ",
-                            Themes.CurrentTheme.Rss.DescriptionColor
-                        ) +
-                        Themes.sColor(
-                            Utils.CurrentPlaylist,
-                            Themes.CurrentTheme.Rss.DescriptionColor
-                        )
-                        : "")
-                    );
-                }
-                table.AddRow(Funcs.GetPrevCurrentNextSong());
-            }
-            else
-            {
-                if (Utils.CurrentPlaylist == "")
-                {
-                    table.AddColumn(Funcs.GetPrevCurrentNextSong());
-                }
-                else
-                {
-                    table.AddColumn(
-                        Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                            Themes.sColor(
-                                Funcs.GetSongWithDots(
-                                    Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist)
-                                , Start.consoleWidth - 20),
-                            Themes.CurrentTheme.Playlist.PlaylistNameColor)
-                    );
-                    table.AddRow(Funcs.GetPrevCurrentNextSong());
-                }   
-            }
-
-        }
-
-        public static Table UIComponent_Time(Table table)
-        {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
-            table.AddColumn(ProgressBar(Utils.TotalMusicDurationInSec, Utils.SongDurationInSec));
-            return table;
-        }
-
-        public static string ProgressBar(double value, double max)
+        public static string ProgressBar(double value, double max, LayoutConfig layout)
         {
             // if (length == null) {
             //     length = 100;
             // }
 
-            int length = Start.consoleWidth - 10;
+            int length = layout.CalculateProgressBarWidth();
 
             string volumeMark = Preferences.isMuted ? Themes.sColor(Math.Round(Preferences.oldVolume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorMuted) : Themes.sColor(Math.Round(Preferences.volume * 100) + "%", Themes.CurrentTheme.Time.VolumeColorNotMuted);
             string volumeString = Preferences.isMuted ? Math.Round(Preferences.oldVolume * 100) + "%" : Math.Round(Preferences.volume * 100) + "%";
@@ -465,8 +304,9 @@ namespace Jammer
 
         public static void PrintToTopOfPlayer(string theText)
         {
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
             var tmpstr = theText;
-            var spaces = Start.consoleWidth - theText.Length - 4;
+            var spaces = layout.CalculateTopMessageWidth(theText.Length);
             for (int i = 0; i < spaces; i++)
             {
                 tmpstr += " ";
@@ -477,89 +317,8 @@ namespace Jammer
         }
         static public void DrawHelp()
         {
-            var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralHelp.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralHelp.BorderColor));
-            table.Width = Start.consoleWidth;
-
-            char separator = '+';
-            string[] ToMainMenu = (Keybindings.ToMainMenu).Replace(" ", "").Split(separator);
-            string[] AddSongToPlaylist = (Keybindings.AddSongToPlaylist).Replace(" ", "").Split(separator);
-            string[] ShowSongsInPlaylists = (Keybindings.ShowSongsInPlaylists).Replace(" ", "").Split(separator);
-            string[] ListAllPlaylists = (Keybindings.ListAllPlaylists).Replace(" ", "").Split(separator);
-            string[] PlayOtherPlaylist = (Keybindings.PlayOtherPlaylist).Replace(" ", "").Split(separator);
-            string[] SaveCurrentPlaylist = (Keybindings.SaveCurrentPlaylist).Replace(" ", "").Split(separator);
-            string[] SaveAsPlaylist = (Keybindings.SaveAsPlaylist).Replace(" ", "").Split(separator);
-            string[] ShufflePlaylist = (Keybindings.ShufflePlaylist).Replace(" ", "").Split(separator);
-            string[] PlaySong = (Keybindings.PlaySong).Replace(" ", "").Split(separator);
-            string[] RedownloadCurrentSong = (Keybindings.RedownloadCurrentSong).Replace(" ", "").Split(separator);
-            string[] PlayPause = (Keybindings.PlayPause).Replace(" ", "").Split(separator);
-            string[] Quit = (Keybindings.Quit).Replace(" ", "").Split(separator);
-            string[] Backwards5s = (Keybindings.Backwards5s).Replace(" ", "").Split(separator);
-            string[] Forward5s = (Keybindings.Forward5s).Replace(" ", "").Split(separator);
-            string[] VolumeUp = (Keybindings.VolumeUp).Replace(" ", "").Split(separator);
-            string[] VolumeDown = (Keybindings.VolumeDown).Replace(" ", "").Split(separator);
-            string[] Loop = (Keybindings.Loop).Replace(" ", "").Split(separator);
-            string[] Mute = (Keybindings.Mute).Replace(" ", "").Split(separator);
-            string[] Shuffle = (Keybindings.Shuffle).Replace(" ", "").Split(separator);
-            string[] NextSong = (Keybindings.NextSong).Replace(" ", "").Split(separator);
-            string[] PreviousSong = (Keybindings.PreviousSong).Replace(" ", "").Split(separator);
-            string[] PlayRandomSong = (Keybindings.PlayRandomSong).Replace(" ", "").Split(separator);
-            string[] DeleteCurrentSong = (Keybindings.DeleteCurrentSong).Replace(" ", "").Split(separator);
-            string[] SearchInPlaylist = (Keybindings.SearchInPlaylist).Replace(" ", "").Split(separator);
-            string[] RenameSong = (Keybindings.RenameSong).Replace(" ", "").Split(separator);
-            string[] CommandHelpScreen = (Keybindings.CommandHelpScreen).Replace(" ", "").Split(separator);
-            string[] EditKeybindings = (Keybindings.EditKeybindings).Replace(" ", "").Split(separator);
-            string[] ChangeLanguage = (Keybindings.ChangeLanguage).Replace(" ", "").Split(separator);
-            string[] ChangeTheme = (Keybindings.ChangeTheme).Replace(" ", "").Split(separator);
-            string[] Search = (Keybindings.Search).Replace(" ", "").Split(separator);
-            string[] ChangeSoundFont = (Keybindings.ChangeSoundFont).Replace(" ", "").Split(separator);
-            string[] ToSongStart = (Keybindings.ToSongStart).Replace(" ", "").Split(separator);
-            string[] ToSongEnd = (Keybindings.ToSongEnd).Replace(" ", "").Split(separator);
-            string[] ShowLog = (Keybindings.ShowLog).Replace(" ", "").Split(separator);
-            string[] HardDeleteCurrentSong = (Keybindings.HardDeleteCurrentSong).Replace(" ", "").Split(separator);
-            string[] VolumeUpByOne = (Keybindings.VolumeUpByOne).Replace(" ", "").Split(separator);
-            string[] VolumeDownByOne = (Keybindings.VolumeDownByOne).Replace(" ", "").Split(separator);
-            string[] ChooseSong = (Keybindings.Choose).Replace(" ", "").Split(separator);
-            string[] ExitRssFeed = (Keybindings.ExitRssFeed).Replace(" ", "").Split(separator);
-
-
-            table.AddColumns(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor));
-
-            table.AddRow(DrawHelpTextColouring(PlayPause), Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(AddSongToPlaylist), Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Quit), Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ShowSongsInPlaylists), Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Backwards5s), $"{Themes.sColor(Locale.Help.Rewind + " " + $"{Preferences.GetRewindSeconds()}", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)} {Themes.sColor(Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)}",
-                                                                                                                                                                                                     DrawHelpTextColouring(ListAllPlaylists), Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Forward5s), $"{Themes.sColor(Locale.Help.Forward + " " + $"{Preferences.GetForwardSeconds()}", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)} {Themes.sColor(Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)}",
-                                                                                                                                                                                                     DrawHelpTextColouring(PlayOtherPlaylist), Themes.sColor(Locale.Help.PlayOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeUp), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(SaveCurrentPlaylist), Themes.sColor(Locale.Help.SavePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeDown), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(SaveAsPlaylist), Themes.sColor(Locale.Help.SaveAs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Loop), Themes.sColor(Locale.Help.ToggleLooping, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ShufflePlaylist), Themes.sColor(Locale.Help.ShufflePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Mute), Themes.sColor(Locale.Help.ToggleMute, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(PlaySong), Themes.sColor(Locale.Help.PlaySongs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(Shuffle), Themes.sColor(Locale.Help.ToggleShuffle, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(RedownloadCurrentSong), Themes.sColor(Locale.Help.RedownloadCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-
-            table.AddRow(Themes.sColor(Locale.Help.Playlist, Themes.CurrentTheme.GeneralHelp.HeaderTextColor), "", DrawHelpTextColouring(EditKeybindings), Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(NextSong), Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ChangeLanguage), Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(PreviousSong), Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ChangeTheme), Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(PlayRandomSong), Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(Search), Themes.sColor("Search from YT/SC", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(DeleteCurrentSong), Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ChangeSoundFont), Themes.sColor("Change SoundFont", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(SearchInPlaylist), Themes.sColor("Search songs in playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor), DrawHelpTextColouring(ShowLog), Themes.sColor("Show Session Log", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(CommandHelpScreen), Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(ToMainMenu), Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(ToSongStart), Themes.sColor(Locale.LocaleKeybind.GoToSongStart, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(ToSongEnd), Themes.sColor(Locale.LocaleKeybind.GoToSongEnd, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(HardDeleteCurrentSong), Themes.sColor(Locale.LocaleKeybind.HardDeleteCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(RenameSong), Themes.sColor("Rename current song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeUpByOne), Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Increase volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(VolumeDownByOne), Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor) + " " + Themes.sColor("Decrease volume by 1%", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(ChooseSong), Themes.sColor("Choose or open a Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-            table.AddRow(DrawHelpTextColouring(ExitRssFeed), Themes.sColor("Exit RSS Feed", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor));
-
-
-
-            AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Write(table);
-            DrawHelpSettingInfo();
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            HelpMenuComponent.DrawHelpToConsole(layout);
         }
 
         static private string DrawHelpTextColouring(string[] textArray)
@@ -606,49 +365,8 @@ namespace Jammer
         }
         static public void DrawSettings()
         {
-            string ForwardSecondAmount = (Keybindings.SettingsKeys.ForwardSecondAmount).ToString();
-            string BackwardSecondAmount = (Keybindings.SettingsKeys.BackwardSecondAmount).ToString();
-            string ChangeVolumeAmount = (Keybindings.SettingsKeys.ChangeVolumeAmount).ToString();
-            string Autosave = (Keybindings.SettingsKeys.Autosave).ToString();
-
-            var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
-            table.Width = Start.consoleWidth;
-
-            table.AddColumns(Themes.sColor(Locale.Settings._Settings, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme.GeneralSettings.HeaderTextColor), Themes.sColor(Locale.Settings.ChangeValue, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
-
-            table.AddRow(Themes.sColor(Locale.Settings.Forwardseconds, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.forwardSeconds + " sec", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{ForwardSecondAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor(Locale.Settings.Rewindseconds, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.rewindSeconds + " sec", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{BackwardSecondAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor(Locale.Settings.ChangeVolumeBy, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.changeVolumeBy * 100 + " %", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{ChangeVolumeAmount} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToChange}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor(Locale.Settings.AutoSave, Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Autosave} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{Locale.Settings.ToToggle}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Load Effects", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.LoadEffects} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Effects settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Media Buttons", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.ToggleMediaButtons} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Media Buttons"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.ToggleVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Visualizer (change visualizer settings in Visualizer.ini)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Load Visualizer", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.LoadVisualizer} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Load Visualizer settings"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Set Soundcloud Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.SoundCloudClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Set Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Fetch Client ID", Themes.CurrentTheme.GeneralSettings.SettingTextColor), "", Themes.sColor($"{Keybindings.SettingsKeys.FetchClientID} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Fetch and Set Soundcloud Client ID"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Key Mofifier Helpers", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.KeyModifierHelper} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Key Modifier Helpers ie. E -> Shift + E. (restart required) (not recommended on windows)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-            table.AddRow(Themes.sColor("Toggle Skip Errors", Themes.CurrentTheme.GeneralSettings.SettingTextColor), Themes.sColor(Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False + "", Themes.CurrentTheme.GeneralSettings.SettingValueColor), Themes.sColor($"{Keybindings.SettingsKeys.SkipErrors} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) + Themes.sColor($"{"To Toggle Skip Errors (goes to new song if error in playing)"}", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
-
-            AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Write(table);
-            var table2 = new Table();
-            table2.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
-            table2.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
-
-            // go back text with keybinds tomainmenu
-            table2.AddColumn(
-                Locale.Help.ToMainMenu
-                + ": " +
-                Themes.sColor(
-                    Keybindings.ToMainMenu,
-                    Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor
-                )
-            );
-
-            AnsiConsole.Write(table2);
-
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            SettingsComponent.DrawSettingsToConsole(layout);
         }
 
         private static void DrawHelpSettingInfo()

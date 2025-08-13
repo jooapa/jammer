@@ -3,6 +3,7 @@ using Spectre.Console;
 using System.IO;
 using SharpHook;
 using System.Diagnostics.CodeAnalysis;
+using Jammer.Core.Components;
 
 namespace Jammer
 {
@@ -217,6 +218,28 @@ namespace Jammer
                         // Utils.queueSongs.Add(Utils.songs[Utils.currentPlaylistSongIndex]);
                     }
 
+                }
+                else if (playerView.Equals("help"))
+                {
+                    // Handle help page navigation
+                    if (key.Key == ConsoleKey.PageDown || key.Key == ConsoleKey.RightArrow)
+                    {
+                        HelpMenuComponent.NextHelpPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (key.Key == ConsoleKey.PageUp || key.Key == ConsoleKey.LeftArrow)
+                    {
+                        HelpMenuComponent.PreviousHelpPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (Action == "ToMainMenu" || Action == "Help")
+                    {
+                        playerView = "default";
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
                 }
                 if (playerView.Equals("settings"))
                 {
@@ -484,6 +507,7 @@ namespace Jammer
                                 break;
                             }
                             playerView = "help";
+                            HelpMenuComponent.SetHelpPage(1); // Reset to page 1 when opening help
                             break;
                         case "Settings": // show settings
                             AnsiConsole.Clear();
