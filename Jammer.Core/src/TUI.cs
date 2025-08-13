@@ -447,8 +447,14 @@ namespace Jammer
             table.Border = Themes.bStyle(Themes.CurrentTheme.EditKeybinds.BorderStyle);
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.EditKeybinds.BorderColor));
 
-            table.AddColumn(Locale.Help.Description);
-            table.AddColumn(Locale.LocaleKeybind.CurrentControl);
+            // Calculate responsive column widths for consistent display
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            int totalWidth = layout.ConsoleWidth - 8; // Account for borders and padding
+            int descriptionWidth = (int)(totalWidth * 0.6); // 60% for description
+            int keybindWidth = (int)(totalWidth * 0.4);     // 40% for keybind
+            
+            table.AddColumn(new TableColumn(Locale.Help.Description).Width(descriptionWidth));
+            table.AddColumn(new TableColumn(Locale.LocaleKeybind.CurrentControl).Width(keybindWidth));
             (string[] _elements, string[] _description) = IniFileHandling.ReadAll_KeyData();
 
             // Counter to track the index for the description array
