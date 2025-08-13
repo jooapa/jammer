@@ -47,7 +47,7 @@ namespace Jammer.Components
             AddSettingRow(table, "Load Visualizer", "", Keybindings.SettingsKeys.LoadVisualizer.ToString(), "To Load Visualizer settings");
             AddSettingRow(table, "Set Soundcloud Client ID", "", Keybindings.SettingsKeys.SoundCloudClientID.ToString(), "To Set Soundcloud Client ID");
             AddSettingRow(table, "Fetch Client ID", "", Keybindings.SettingsKeys.FetchClientID.ToString(), "To Fetch and Set Soundcloud Client ID");
-            AddSettingRow(table, "Toggle Key Mofifier Helpers", Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.KeyModifierHelper.ToString(), "To Toggle Key Modifier Helpers ie. E -> Shift + E. (restart required) (not recommended on windows)");
+            AddSettingRow(table, "Toggle Key Mofifier Helpers", Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.KeyModifierHelper.ToString(), "To Toggle Key Modifier Helpers ie. E -> Shift + E. (restart required)");
             AddSettingRow(table, "Toggle Skip Errors", Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.SkipErrors.ToString(), "To Toggle Skip Errors (goes to new song if error in playing)");
         }
 
