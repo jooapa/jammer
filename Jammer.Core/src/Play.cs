@@ -79,10 +79,14 @@ namespace Jammer
 
             // get song details
             // Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
+
+            // if the songs[Utils.CurrentSongIndex] has the JammerFile Delimeter in the order it should be removed
+
             Song song = new Song()
             {
                 URI = songs[Utils.CurrentSongIndex]
             };
+
             string fullPathToFile = "";
 
             song.ExtractSongDetails();
@@ -126,6 +130,8 @@ namespace Jammer
             else if (URL.IsValidRssFeed(song.URI))
             {
                 (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                // Message.Data(SongExtensions.ToSongString(song), "33");
+
             }
             else if (URL.IsUrl(song.URI))
             {
@@ -137,12 +143,44 @@ namespace Jammer
             {
                 song = new Song();
             }
-            song.URI = songs[Utils.CurrentSongIndex];
-            song.ExtractSongDetails();
+            else
+            {
 
+            }
+            // Message.Data(song.URI, "111");
+            // {
+            //     string tmpstr = SongExtensions.ToSongString(song);
+
+            //     Message.Data(tmpstr, "22");
+
+            //     Song tempSong = SongExtensions.ToSong(tmpstr);
+
+            //     if (tempSong.URI != null)
+            //         Message.Data(tempSong.URI, "a");
+            //     if (tempSong.Title != null)
+            //         Message.Data(tempSong.Title, "b");
+            //     if (tempSong.Author != null)
+            //         Message.Data(tempSong.Author, "c");
+
+            //     song = tempSong;
+            // }
+
+            // if the song has the URI and no other properties check for them in the songs[Utils.CurrentSongIndex],
+            if (song.URI != null && (song.Title == null || song.Author == null || song.Album == null || song.Year == null || song.Genre == null))
+            {
+                Song tempSong = SongExtensions.ToSong(songs[Utils.CurrentSongIndex]);
+                song.Title ??= tempSong.Title;
+                song.Author ??= tempSong.Author;
+                song.Album ??= tempSong.Album;
+                song.Year ??= tempSong.Year;
+                song.Genre ??= tempSong.Genre;
+                song.Duration ??= tempSong.Duration;
+                song.Description ??= tempSong.Description;
+                song.PubDate ??= tempSong.PubDate;
+            }
 
             // Message.Data(songs[Utils.CurrentSongIndex], "path");
-            // Message.Data(SongExtensions.ToSongString(song), "33");
+            // Message.Data(SongExtensions.ToSongString(song), "11");
 
             // Message.Data(fullPath + " || " + song.Path, "path");
             // if the Utils.songs current is not the same as the song.Path
@@ -207,7 +245,7 @@ namespace Jammer
             {
                 song.Album = album;
             }
-            if (song.Year == null || song.Year == "" || song.Year == "0")
+            if (song.Year == null || song.Year == "")
             {
                 song.Year = year;
             }

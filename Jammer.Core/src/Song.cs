@@ -58,8 +58,10 @@ namespace Jammer
         /// </remarks>
         public static string ToSongString(this Song song)
         {
+
             if (IsAlreadyInString(song))
             {
+                Message.Data(song.URI, "Already in string");
                 return song.URI;
             }
 
