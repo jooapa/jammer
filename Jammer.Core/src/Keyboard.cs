@@ -13,6 +13,9 @@ namespace Jammer
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
         public static async Task CheckKeyboardAsync()
         {
+            // Increment keyboard check counter for performance monitoring
+            PerformanceMonitor.IncrementKeyboardChecks();
+            
             if (Console.KeyAvailable || Action != "")
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -727,6 +730,15 @@ namespace Jammer
                         case "ShowLog":
                             AnsiConsole.Clear();
                             Message.Data(Log.GetLog(), "Log");
+                            drawWhole = true;
+                            break;
+                        case "ShowPerformanceLog": // New performance log action
+                            AnsiConsole.Clear();
+                            Message.Data(PerformanceMonitor.GetPerformanceLog(), "Performance Log");
+                            drawWhole = true;
+                            break;
+                        case "ExportPerformanceLog": // New performance log export action
+                            PerformanceMonitor.WritePerformanceLogToFile();
                             drawWhole = true;
                             break;
                         case "Choose":

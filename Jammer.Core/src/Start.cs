@@ -152,6 +152,10 @@ namespace Jammer
 
             while (LoopRunning)
             {
+                // Start performance monitoring for this loop iteration
+                PerformanceMonitor.IncrementLoopIterations();
+                PerformanceMonitor.StartLoopTiming();
+                
                 AnsiConsole.Cursor.Hide();
                 if (Utils.Songs.Length != 0)
                 {
@@ -303,9 +307,15 @@ namespace Jammer
                 drawTime = false;
                 drawWhole = false;
 
+                // Log performance metrics periodically
+                PerformanceMonitor.LogPerformanceMetrics();
+                
+                // End performance timing before sleep
+                PerformanceMonitor.EndLoopTiming();
+
                 if (playerView == "default" || playerView == "all" || playerView == "rss")
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(16);
                 }
                 else
                     Thread.Sleep(5);
