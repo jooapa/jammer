@@ -11,7 +11,7 @@ namespace Jammer.Components
         private ViewType _viewType;
         private bool _isInsideRssFeed;
         private string _currentPlaylist;
-        private string _backupPlaylistName;
+        private string? _backupPlaylistName;
         private string[] _songs;
 
         public PlaylistComponent(ViewType viewType)
@@ -114,7 +114,27 @@ namespace Jammer.Components
                 table.AddColumn(playlistInfo);
             }
             
-            table.AddRow(Funcs.GetPrevCurrentNextSong());
+            string current = string.Empty;
+            string next = string.Empty;
+            string previous = string.Empty;
+
+            // get the previous, current, and next songs PubDate. and assign it to the variables
+            if (Utils.CurrentSongIndex >= 0 && Utils.CurrentSongIndex < Utils.Songs.Length && Utils.Songs[Utils.CurrentSongIndex] != null)
+                current = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])?.PubDate?.ToString() ?? string.Empty;
+            else
+                current = Locale.Player.Current;
+
+            if (Utils.CurrentSongIndex + 1 < Utils.Songs.Length && Utils.Songs[Utils.CurrentSongIndex + 1] != null)
+                next = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex + 1])?.PubDate?.ToString() ?? string.Empty;
+            else
+                next = Locale.Player.Next;
+                
+            if (Utils.CurrentSongIndex - 1 >= 0 && Utils.Songs[Utils.CurrentSongIndex - 1] != null)
+                previous = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex - 1])?.PubDate?.ToString() ?? string.Empty;
+            else
+                previous = Locale.Player.Previos;
+
+            table.AddRow(Funcs.GetPrevCurrentNextSong(current, previous, next));
         }
 
         private void RenderNormalPlaylistContent(Table table, LayoutConfig layout)
