@@ -61,12 +61,13 @@ namespace Jammer
         {
             RootRssData rssData = await Rss.GetRssData(url);
 
-            Debug.dprint($"RSS Title: {rssData.Title}");
-            Debug.dprint($"RSS Author: {rssData.Author}");
+            Log.Info($"RSS Title: {rssData.Title}");
+            Log.Info($"RSS Author: {rssData.Author}");
 
             songPath = url;
             constructedSong = new Song
             {
+                URI = url,
                 Title = rssData.Title,
                 Author = rssData.Author
             };
@@ -82,6 +83,10 @@ namespace Jammer
             );
             if (System.IO.File.Exists(songPath))
             {
+                constructedSong = new Song
+                {
+                    URI = songPath,
+                };
                 return;
             }
             // AnsiConsole.MarkupLine($"{Locale.OutsideItems.Downloading}: {url} to {songPath}");
@@ -197,6 +202,10 @@ namespace Jammer
 
             if (System.IO.File.Exists(songPath))
             {
+                constructedSong = new Song
+                {
+                    URI = songPath,
+                };
                 return;
             }
 
@@ -413,6 +422,10 @@ namespace Jammer
 
             if (System.IO.File.Exists(songPath))
             {
+                constructedSong = new Song
+                {
+                    URI = songPath
+                };
                 return;
             }
 

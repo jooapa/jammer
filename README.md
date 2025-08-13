@@ -25,6 +25,7 @@ for the playlist feature across different platforms***
 - [Usage](#usage)
 - [Supported formats](#supported-formats)
 - [MIDI support](#midi-support)
+- [RSS](#rss)
 - [Themes](#themes)
 - [Visualizer](#visualizer)
 - [Effects](#effects)
@@ -64,6 +65,7 @@ jammer https://youtube.com/watch?v=video-id
 jammer https://youtube.com/playlist?list=playlist-id
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/npc_music/616845.mp3
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/example/terraria.jammer
+jammer https://rss.com/best_podcast.rss
 jammer "path/to/song.mp3"
 
 jammer     --start        # opens jammer folder
@@ -103,6 +105,7 @@ Jammer **supports** the following audio formats: ***.mp3***, ***.ogg***, ***.wav
 - **FOLDER** Folder/Directory (support playing all audio files within a folder)
 - **YOUTUBE** Youtube video/playlist
 - **SOUNDCLOUD** Soundcloud song/playlist
+- **RSS** RSS feed
 
 ### MIDI support
 
@@ -117,6 +120,10 @@ To change the SoundFont file, press `G` (default keybind).
 `Import soundfont by path`: **This will copy the SoundFont file to the `<jammer/soundfonts>`.**
 
 Will show all the SoundFont files in the `<jammer/soundfonts>` folder.
+
+### RSS
+
+Jammer supports playing audio from RSS feeds. You can add an RSS feed by the url. Then you can open the rss, and it will show all the audio files in the feed.
 
 ### Themes
 

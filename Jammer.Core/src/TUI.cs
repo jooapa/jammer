@@ -44,7 +44,7 @@ namespace Jammer
 
 
                 // näyttää aina ne tiedot eikä mitään url hommaa
-                Funcs.UpdateSongListCorrectly();
+                // Funcs.UpdateSongListCorrectly();
 
                 if (Start.playerView == "default")
                 {
