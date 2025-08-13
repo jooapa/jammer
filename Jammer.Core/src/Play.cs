@@ -129,7 +129,10 @@ namespace Jammer
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                if (song.Title == null || song.Author == null)
+                {
+                    (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                }
                 // Message.Data(SongExtensions.ToSongString(song), "33");
 
             }
