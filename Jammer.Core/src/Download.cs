@@ -85,7 +85,7 @@ namespace Jammer
             {
                 constructedSong = new Song
                 {
-                    URI = songPath,
+                    URI = url,
                 };
                 return;
             }
@@ -204,7 +204,7 @@ namespace Jammer
             {
                 constructedSong = new Song
                 {
-                    URI = songPath,
+                    URI = url,
                 };
                 return;
             }
@@ -273,7 +273,7 @@ namespace Jammer
                     // }
                     constructedSong = new Song
                     {
-                        URI = songPath,
+                        URI = url,
                         Title = video.Title,
                         Author = video.Author.ChannelTitle
                     };
@@ -424,7 +424,7 @@ namespace Jammer
             {
                 constructedSong = new Song
                 {
-                    URI = songPath
+                    URI = url
                 };
                 return;
             }
@@ -481,7 +481,7 @@ namespace Jammer
                             // songPath += "://:" + track.Title + "://:" + track.User.Username;
                             constructedSong = new Song
                             {
-                                URI = songPath,
+                                URI = url,
                                 Title = track.Title,
                                 Author = track.User?.Username ?? null
                             };

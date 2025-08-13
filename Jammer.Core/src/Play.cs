@@ -202,7 +202,7 @@ namespace Jammer
             // Message.Data(Utils.currentSongIndex + "#" + Utils.currentPlaylistSongIndex, "s");
             // taglib get title to display
 
-            string title = "", author = "", album = "", year = "", genre = "";
+            string? title = "", author = "", album = "", year = "", genre = "";
             TagLib.File? tagFile;
             if (song.Title == null || song.Title == "" ||
                 song.Author == null || song.Author == "" ||
@@ -247,6 +247,10 @@ namespace Jammer
             }
             if (song.Year == null || song.Year == "")
             {
+                if (year == "0")
+                {
+                    year = null;
+                }
                 song.Year = year;
             }
             if (song.Genre == null || song.Genre == "")
