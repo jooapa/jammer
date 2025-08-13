@@ -22,7 +22,7 @@
     </PackageReference> -->
     
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
-    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="ini-parser-new" Version="2.6.2" />
     <PackageReference Include="m3uParser.NET" Version="1.0.17" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" />
