@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace Jammer.Core.Components
+namespace Jammer.Components
 {
     /// <summary>
     /// Base interface for all UI components that can render tables

@@ -1,6 +1,7 @@
 using Spectre.Console;
+using Jammer;
 
-namespace Jammer.Core.Components
+namespace Jammer.Components
 {
     /// <summary>
     /// Component responsible for rendering player time information including progress bar

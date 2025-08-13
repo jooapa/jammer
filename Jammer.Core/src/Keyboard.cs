@@ -3,7 +3,7 @@ using Spectre.Console;
 using System.IO;
 using SharpHook;
 using System.Diagnostics.CodeAnalysis;
-using Jammer.Core.Components;
+using Jammer.Components;
 
 namespace Jammer
 {

@@ -1,7 +1,7 @@
 using SharpHook.Native;
 using Spectre.Console;
-using Jammer.Core;
-using Jammer.Core.Components;
+using Jammer;
+using Jammer.Components;
 #pragma warning disable CS8604
 #pragma warning disable CS8602
 #pragma warning disable CS8600

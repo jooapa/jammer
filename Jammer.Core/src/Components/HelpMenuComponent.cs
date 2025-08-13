@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace Jammer.Core.Components
+namespace Jammer.Components
 {
     /// <summary>
     /// Component responsible for rendering the help menu

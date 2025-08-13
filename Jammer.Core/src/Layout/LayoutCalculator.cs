@@ -1,4 +1,4 @@
-namespace Jammer.Core
+namespace Jammer
 {
     public static class LayoutCalculator
     {
