@@ -81,6 +81,7 @@ namespace Jammer
                 Preferences.songsPath,
                 formattedUrl
             );
+
             if (System.IO.File.Exists(songPath))
             {
                 constructedSong = new Song
@@ -122,6 +123,11 @@ namespace Jammer
                                 TUI.PrintToTopOfPlayer($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage:P}).");
                             }
                         }
+
+                        constructedSong = new Song
+                        {
+                            URI = url,
+                        };
                     }
                 }
             }
@@ -147,6 +153,11 @@ namespace Jammer
                 if (input != "y" && input != "yes")
                 {
                     songPath = downloadedPath;
+                    constructedSong = new Song
+                    {
+                        URI = url,
+                        Title = Path.GetFileNameWithoutExtension(downloadedPath),
+                    };
                     return;
                 }
             }
@@ -189,6 +200,11 @@ namespace Jammer
 
 
             songPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
+            constructedSong = new Song
+            {
+                URI = url,
+                Title = Path.GetFileNameWithoutExtension(songPath),
+            };
         }
 
         private static async Task DownloadYoutubeTrackAsync(string url)
