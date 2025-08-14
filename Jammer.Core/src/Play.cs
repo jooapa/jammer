@@ -142,15 +142,12 @@ namespace Jammer
                 // Message.Data(path, song);
             }
 
-            if (song == null)
-            {
-                song = new Song();
-            }
-            else
-            {
+            song ??= new Song()
+                {
+                    URI = songs[Utils.CurrentSongIndex],
+                };
 
-            }
-            // Message.Data(song.URI, "111");
+            // Message.Data(SongExtensions.ToSongString(song), "111");
             // {
             //     string tmpstr = SongExtensions.ToSongString(song);
 

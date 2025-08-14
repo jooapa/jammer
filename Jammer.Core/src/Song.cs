@@ -61,7 +61,7 @@ namespace Jammer
 
             if (IsAlreadyInString(song))
             {
-                Message.Data(song.URI, "Already in string");
+                // Message.Data(song.URI, "Already in string");
                 return song.URI;
             }
 
