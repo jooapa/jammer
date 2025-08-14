@@ -1,6 +1,6 @@
 @ECHO OFF
 IF NOT pwd==%cd% (cd /d %~dp0)
-
+cd ..\Jammer.CLI
 SET "RELEASE_VERSION=win-x64"                                       
 SET "sourceFolder=bin\Release\net8.0\%RELEASE_VERSION%\publish"     
 SET "sourceFolder2=bin\Release\net8.0\%RELEASE_VERSION%"     

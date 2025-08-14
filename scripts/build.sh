@@ -2,6 +2,8 @@
 set -e -b
 DOTNET_CLI_TELEMETRY_OPTOUT=1
 
+cd "$(dirname "$0")/.."
+
 if [ -f jammer-*.AppImage ]; then
     rm jammer-*.AppImage
 fi

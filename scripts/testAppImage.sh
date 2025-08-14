@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e -b
+cd "$(dirname "$0")/.."
 
 dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true
 mkdir -p Jammer.AppDir/usr/{bin,lib,locales}

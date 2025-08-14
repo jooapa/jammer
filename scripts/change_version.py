@@ -38,6 +38,9 @@ def change_version(version):
 
 
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir('..')
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('version', help='New version number')
     args = parser.parse_args()

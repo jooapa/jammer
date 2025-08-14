@@ -1,4 +1,9 @@
 import sys, os
+
+# goto parent directory of the python script
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir('..')
+
 args = sys.argv[1:]
 if(len(args) == 0):
     print('Usage: update.py <major0,1><minor0,1><patch 0,1>')

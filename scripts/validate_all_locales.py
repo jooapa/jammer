@@ -2,7 +2,7 @@
 # go through all the other locale files and check if none of them are missing, add them
 
 import os
-import sys
+
 
 def validate_all_locales() -> None:
     with open("locales/en.ini", "r", encoding="utf-8") as file:
@@ -40,4 +40,7 @@ def validate_all_locales() -> None:
             print(f"{locale_file} is valid!")
     
 if __name__ == "__main__":
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir('..')
+    
     validate_all_locales()

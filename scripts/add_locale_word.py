@@ -80,5 +80,8 @@ if __name__ == "__main__":
         help="The default value for the new locale word (optional)")
 
     args = parser.parse_args()
+    
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir('..')
 
     add_locale_word(args.section, args.key, args.value)
