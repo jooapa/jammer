@@ -10,7 +10,7 @@ namespace Jammer
     public partial class Start
     {
         public static string Action = "";
-        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
+        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage, log
         public static async Task CheckKeyboardAsync()
         {
             if (Console.KeyAvailable || Action != "")
@@ -408,6 +408,48 @@ namespace Jammer
                         drawWhole = true;
                     }
                 }
+                else if (playerView.Equals("log"))
+                {
+                    // Static instance for log view
+                    var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
+                    ViewType viewType = LayoutCalculator.GetViewType("default");
+                    bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                    int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                        layout.ConsoleHeight,
+                        viewType,
+                        Preferences.isVisualizer,
+                        hasPlaylist,
+                        Utils.Songs.Length
+                    );
+                    if (Start.logViewComponent == null)
+                    {
+                        Start.logViewComponent = new Jammer.Components.LogViewComponent(Log.log);
+                        drawWhole = true;
+                    }
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (Start.logViewComponent.ScrollUp(contentHeight))
+                        {
+                            drawWhole = true;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (Start.logViewComponent.ScrollDown(contentHeight))
+                        {
+                            drawWhole = true;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        playerView = "default";
+                        Start.logViewComponent = null;
+                        AnsiConsole.Clear();
+                        drawWhole = true;
+                    }
+                    // Disable all other actions in log view
+                    Action = "";
+                }
                 else
                     switch (Action)
                     {
@@ -761,9 +803,19 @@ namespace Jammer
                             break;
                         case "ShowLog":
                             AnsiConsole.Clear();
-                            Message.Data(Log.GetLog(), "Log");
-                            drawWhole = true;
-                            break;
+                            playerView = "log";
+                            Start.logViewComponent = new Jammer.Components.LogViewComponent(Log.log);
+                            var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
+                            ViewType viewType = LayoutCalculator.GetViewType("default");
+                            bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                            int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                                layout.ConsoleHeight,
+                                viewType,
+                                Preferences.isVisualizer,
+                                hasPlaylist,
+                                Utils.Songs.Length
+                            );
+                        drawWhole = true;                            break;
                         case "Choose":
 
                             if (!Funcs.IsCurrentSongARssFeed())

@@ -584,6 +584,25 @@ namespace Jammer
             {
                 ChangeLanguage();
             }
+            else if (Start.playerView == "log")
+            {
+                var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+                ViewType viewType = LayoutCalculator.GetViewType("default"); // treat log view as default
+                bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                    layout.ConsoleHeight,
+                    viewType,
+                    Preferences.isVisualizer,
+                    hasPlaylist,
+                    Utils.Songs.Length
+                );
+                if (Start.logViewComponent != null)
+                {
+                    var table = Start.logViewComponent.Render(layout, contentHeight);
+                    AnsiConsole.Cursor.SetPosition(0, 0);
+                    AnsiConsole.Write(table);
+                }
+            }
         }
     }
 }
