@@ -36,7 +36,7 @@ PausingEffect = true
 ";
 
 
-        public static int refreshTime = 10; // Visualizer enabled flag
+        public static int refreshTime = 33; // Visualizer enabled flag
         public static int bufferSize = 41000; // FFT data buffer size
         public static string dataFlags = "FFT4098"; // FFT data flags
         public static int minFrequency = 50; // Minimum frequency

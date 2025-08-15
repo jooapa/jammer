@@ -13,6 +13,9 @@ namespace Jammer
         public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
         public static async Task CheckKeyboardAsync()
         {
+            // Increment keyboard check counter for performance monitoring
+            PerformanceMonitor.IncrementKeyboardChecks();
+            
             if (Console.KeyAvailable || Action != "")
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -729,6 +732,15 @@ namespace Jammer
                             Message.Data(Log.GetLog(), "Log");
                             drawWhole = true;
                             break;
+                        case "ShowPerformanceLog": // New performance log action
+                            AnsiConsole.Clear();
+                            Message.Data(PerformanceMonitor.GetPerformanceLog(), "Performance Log");
+                            drawWhole = true;
+                            break;
+                        case "ExportPerformanceLog": // New performance log export action
+                            PerformanceMonitor.WritePerformanceLogToFile();
+                            drawWhole = true;
+                            break;
                         case "Choose":
 
                             if (!Funcs.IsCurrentSongARssFeed())
@@ -874,6 +886,18 @@ namespace Jammer
 
                 if (debug)
                     Message.Data(Environment.StackTrace, "sd");
+            }
+        }
+
+        /// <summary>
+        /// Clears all pending keystrokes from the console input buffer.
+        /// This prevents buffered keypresses from being processed after user stops pressing keys.
+        /// </summary>
+        public static void ClearKeyboardBuffer()
+        {
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true); // Read and discard the key
             }
         }
 

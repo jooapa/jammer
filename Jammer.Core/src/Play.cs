@@ -91,6 +91,10 @@ namespace Jammer
 
             song.ExtractSongDetails();
 
+            // Clear keyboard buffer before potentially downloading/loading songs to prevent
+            // buffered keypresses from being processed after user stops pressing keys
+            Start.ClearKeyboardBuffer();
+
             // check if file is a local
             if (System.IO.File.Exists(song.URI))
             {
@@ -285,6 +289,9 @@ namespace Jammer
                 }
                 else
                 {
+                    // Clear keyboard buffer again after song loading completes to ensure
+                    // no stale input remains from the loading process
+                    Start.ClearKeyboardBuffer();
                     StartPlaying();
                 }
 
