@@ -7,6 +7,42 @@ namespace Jammer
 {
     public static class Message
     {
+        // Custom menu that supports ESC to cancel
+        public static string CustomMenuSelect(string[] options, string title)
+        {
+            int selected = 0;
+            ConsoleKeyInfo keyInfo;
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(title + " (Use arrows, Enter to select, ESC to cancel)");
+                for (int i = 0; i < options.Length; i++)
+                {
+                    if (i == selected)
+                        Console.WriteLine($"> {options[i]} <");
+                    else
+                        Console.WriteLine($"  {options[i]}");
+                }
+                keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    selected = (selected - 1 + options.Length) % options.Length;
+                }
+                else if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    selected = (selected + 1) % options.Length;
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    return options[selected];
+                }
+                else if (keyInfo.Key == ConsoleKey.Escape)
+                {
+                    return "__CANCELLED__";
+                }
+            }
+        }
+
         public static string Input(string inputSaying, string title, bool oneChar = false, string[]? setText = null)
         {
             var mainTable = new Table();
@@ -515,12 +551,24 @@ namespace Jammer
             AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0, 0);
 
+            // Add a Cancel option if it doesn't already exist
+            bool hasCancelOption = options.Contains("Cancel");
+            string[] optionsWithCancel = hasCancelOption ? options : new[] { "Cancel" }.Concat(options).ToArray();
+
             try
             {
                 var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title(title + " (Press ESC to cancel)")
                     .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
-                    .AddChoices(options));
+                    .AddChoices(optionsWithCancel));
+
+                // Check if the selection is the first item (Cancel) and there are keys available
+                // This might indicate the user pressed ESC and the default was selected
+                if (selection == "Cancel" && Console.KeyAvailable)
+                {
+                    // Peek at the next key to see if it's ESC
+                    // Note: This is a workaround since we can't actually peek without consuming
+                }
 
                 return selection;
             }

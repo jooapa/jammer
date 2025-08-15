@@ -666,7 +666,7 @@ namespace Jammer
                                 newThemes[i + 2] = themes[i];
                             }
                             themes = newThemes;
-                            string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
+                            string chosen = Message.CustomMenuSelect(themes, Locale.Miscellaneous.ChooseTheme);
 
                             // Check if the user cancelled the selection
                             if (chosen == "__CANCELLED__")
@@ -818,7 +818,7 @@ namespace Jammer
 
                             soundFonts = newSoundFonts;
 
-                            string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+                            string chosenSoundFont = Message.CustomMenuSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
 
                             // Check if the user cancelled the selection
                             if (chosenSoundFont == "__CANCELLED__" || chosenSoundFont == "Cancel")
