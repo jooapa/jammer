@@ -533,18 +533,8 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "RenameSong": // rename song
-
-                            // Message.Data(
-
-                            // Funcs.SmartRename(
-                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            // ).Author
-                            // + " - " +
-                            // Funcs.SmartRename(
-                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            // ).Title
-                            // , "Renamed song");
-
+                            string currentSongName = GetCurrentSongDisplayName();
+                            
                             var smartSong = Funcs.SmartRename(
                                 SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
                             );
@@ -554,6 +544,7 @@ namespace Jammer
                             var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
 
                             string[] name = new[] {
+                                currentSongName, // Pre-fill with current song name
                                 ogSongTitle,
                                 smartAuthor + " - " + smartTitle,
                                 smartTitle + " - " + smartAuthor,
@@ -563,12 +554,13 @@ namespace Jammer
                             name = name.Distinct().ToArray();
 
                             string newName = Message.Input(
-                                "New name: ", $"Go up in History to see current name and Jammer's Smart Renames\nLeave empty to keep current name\nSeperating with 'author - title' will set the author and title",
-                                false, name
+                                "New name: ", $"Current: {currentSongName}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
+                                currentSongName, false, name
                             );
 
                             if (string.IsNullOrEmpty(newName))
                             {
+                                Message.Data("Rename cancelled", "F2 Rename", false, false);
                                 drawWhole = true;
                                 break;
                             }
@@ -986,6 +978,21 @@ namespace Jammer
             var hook = new TaskPoolGlobalHook();
             hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
             await hook.RunAsync();
+        }
+
+        private static string GetCurrentSongDisplayName()
+        {
+            if (Utils.Songs == null || Utils.Songs.Length == 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
+                return string.Empty;
+            
+            var currentSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+            if (currentSong == null) return string.Empty;
+            
+            // Format as "Author - Title" if both exist, otherwise just Title
+            if (!string.IsNullOrEmpty(currentSong.Author) && !string.IsNullOrEmpty(currentSong.Title))
+                return $"{currentSong.Author} - {currentSong.Title}";
+            
+            return currentSong.Title ?? string.Empty;
         }
 
     }

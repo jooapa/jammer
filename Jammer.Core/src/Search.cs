@@ -284,7 +284,7 @@ namespace Jammer
         public static void SearchForSongInPlaylistAsync()
         {
             // Fuzzy search
-            string search = Message.Input("Search:", "Search for a song in the current playlist");
+            string search = Message.Input("", "Search for a song in the current playlist");
 
             if (string.IsNullOrEmpty(search))
             {
