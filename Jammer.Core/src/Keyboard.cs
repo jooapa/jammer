@@ -115,6 +115,7 @@ namespace Jammer
                 {
                     AnsiConsole.Clear();
                     // Jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
+                    // Handle PageUp/PageDown as before
                     if (Action == "PlaylistViewScrolldown")
                     {
                         Action = "";
@@ -138,6 +139,31 @@ namespace Jammer
                         {
                             IniFileHandling.ScrollIndexLanguage -= 1;
                         }
+                    }
+                    // Add UpArrow/DownArrow navigation
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (IniFileHandling.ScrollIndexLanguage - 1 < 0)
+                        {
+                            IniFileHandling.ScrollIndexLanguage = IniFileHandling.LocaleAmount - 1;
+                        }
+                        else
+                        {
+                            IniFileHandling.ScrollIndexLanguage -= 1;
+                        }
+                        drawWhole = true;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount)
+                        {
+                            IniFileHandling.ScrollIndexLanguage = 0;
+                        }
+                        else
+                        {
+                            IniFileHandling.ScrollIndexLanguage += 1;
+                        }
+                        drawWhole = true;
                     }
                     if (Action == "Choose")
                     {
@@ -419,6 +445,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "VolumeUp": // volume up
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -428,6 +455,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeDown": // volume down
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -437,6 +465,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeUpByOne":
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -445,6 +474,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeDownByOne":
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();

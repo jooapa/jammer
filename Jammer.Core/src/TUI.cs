@@ -548,7 +548,7 @@ namespace Jammer
             AnsiConsole.Write(table);
             AnsiConsole.Cursor.Show();
 
-            AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
+            AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}, UpArrow, DownArrow\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
             DrawHelpSettingInfo();
         }
 
