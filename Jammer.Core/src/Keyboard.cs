@@ -804,8 +804,20 @@ namespace Jammer
                         case "ShowLog":
                             AnsiConsole.Clear();
                             playerView = "log";
-                            Start.logViewComponent = new Jammer.Components.LogViewComponent(Log.log);
-                            var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
+// Deduplicate and sort log entries by timestamp
+var cleanedLog = Log.log
+    .Distinct()
+    .OrderBy(line => {
+        // Extract timestamp (HH:mm:ss) from each line
+        var semiIdx = line.IndexOf(';');
+        if (semiIdx > 0) {
+            var timeStr = line.Substring(0, semiIdx).Replace("[red]", "").Replace("[green3_1]", "").Replace("[/]", "");
+            if (TimeSpan.TryParse(timeStr, out var ts)) return ts;
+        }
+        return TimeSpan.Zero;
+    })
+    .ToArray();
+Start.logViewComponent = new Jammer.Components.LogViewComponent(cleanedLog);                            var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
                             ViewType viewType = LayoutCalculator.GetViewType("default");
                             bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
                             int contentHeight = LayoutCalculator.CalculateTableRowCount(

@@ -598,9 +598,9 @@ namespace Jammer
                 );
                 if (Start.logViewComponent != null)
                 {
-                    var table = Start.logViewComponent.Render(layout, contentHeight);
-                    AnsiConsole.Cursor.SetPosition(0, 0);
-                    AnsiConsole.Write(table);
+                    AnsiConsole.Clear();
+                    Start.logViewComponent.Render(layout, contentHeight);
+                    // Table rendering removed: log lines are rendered manually inside LogViewComponent
                 }
             }
         }
