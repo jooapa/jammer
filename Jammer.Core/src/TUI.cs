@@ -548,7 +548,7 @@ namespace Jammer
             AnsiConsole.Write(table);
             AnsiConsole.Cursor.Show();
 
-            AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
+            AnsiConsole.Markup(Themes.sColor($"{Locale.LocaleKeybind.ChangeLanguageMessage1} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}, UpArrow, DownArrow\n", Themes.CurrentTheme.Playlist.InfoColor)); // Press Enter to edit); // Press Enter to edit
             DrawHelpSettingInfo();
         }
 
@@ -583,6 +583,25 @@ namespace Jammer
             else if (Start.playerView == "changelanguage")
             {
                 ChangeLanguage();
+            }
+            else if (Start.playerView == "log")
+            {
+                var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+                ViewType viewType = LayoutCalculator.GetViewType("default"); // treat log view as default
+                bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                    layout.ConsoleHeight,
+                    viewType,
+                    Preferences.isVisualizer,
+                    hasPlaylist,
+                    Utils.Songs.Length
+                );
+                if (Start.logViewComponent != null)
+                {
+                    AnsiConsole.Clear();
+                    Start.logViewComponent.Render(layout, contentHeight);
+                    // Table rendering removed: log lines are rendered manually inside LogViewComponent
+                }
             }
         }
     }

@@ -107,7 +107,7 @@ namespace Jammer
                 AnsiConsole.Clear();
                 string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
                 // remove the cancel from the array
-                if (answer == "Cancel")
+                if (answer == "Cancel" || answer == "__CANCELLED__")
                 {
                     Start.drawWhole = true;
                     return;
@@ -231,7 +231,7 @@ namespace Jammer
                 string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max);
 
                 // remove the cancel from the array
-                if (answer == "Cancel")
+                if (answer == "Cancel" || answer == "__CANCELLED__")
                 {
                     Start.drawWhole = true;
                     return;
@@ -284,7 +284,7 @@ namespace Jammer
         public static void SearchForSongInPlaylistAsync()
         {
             // Fuzzy search
-            string search = Message.Input("Search:", "Search for a song in the current playlist");
+            string search = Message.Input("", "Search for a song in the current playlist");
 
             if (string.IsNullOrEmpty(search))
             {

@@ -502,14 +502,25 @@ namespace Jammer
         // Show songs in playlist
         public static void ShowSongsInPlaylist()
         {
-            string? playlistNameToShow = Jammer.Message.Input(Locale.Player.ShowSongsInPlaylistMessage1, Locale.Player.ShowSongsInPlaylistMessage2);
+            string? playlistNameToShow = Jammer.Message.Input("", Locale.Player.ShowSongsInPlaylistMessage2);
             if (playlistNameToShow == "" || playlistNameToShow == null)
             {
-                Jammer.Message.Data(Locale.Player.ShowSongsInPlaylistError1, Locale.Player.ShowSongsInPlaylistError2, true);
+                // User pressed ESC or entered nothing - silently return without error
                 return;
             }
+            
+            // Check if playlist exists before calling GetShow to avoid double error messages
+            string playlistPath = Playlists.GetJammerPlaylistPath(playlistNameToShow);
+            if (!File.Exists(playlistPath))
+            {
+                // Show single error message for non-existent playlist
+                AnsiConsole.Clear();
+                Jammer.Message.Data($"{Locale.OutsideItems.PlaylistDoesntExist}: {playlistNameToShow}", Locale.OutsideItems.ErrorPlaying, true);
+                return;
+            }
+            
             AnsiConsole.Clear();
-            // show songs in playlist
+            // Playlist exists - show songs (GetShow won't trigger error path)
             Jammer.Message.Data(Playlists.GetShow(playlistNameToShow), Locale.Player.SongsInPlaylist + " " + playlistNameToShow);
         }
 

@@ -42,7 +42,8 @@ namespace Jammer
         public static double lastPlaybackTime = -1;
         public static double treshhold = 1;
         public static double prevMusicTimePlayed = 0;
-        public static bool LoopRunning = true;
+         public static bool LoopRunning = true;
+         public static Jammer.Components.LogViewComponent logViewComponent = null;
 
         //
         // Run
@@ -172,77 +173,76 @@ namespace Jammer
                     drawWhole = true;
                 }
 
-                switch (state)
-                {
-                    case MainStates.idle:
-                        // TUI.ClearScreen();
-                        CheckKeyboardAsync();
-                        break;
+                 CheckKeyboardAsync();
+                 switch (state)
+                 {
+                     case MainStates.idle:
+                         // TUI.ClearScreen();
+                         break;
 
-                    case MainStates.play:
-                        Debug.dprint("Play");
-                        if (Utils.Songs.Length > 0)
-                        {
-                            Debug.dprint("Play - len");
-                            Play.PlaySong();
-                            TUI.ClearScreen();
-                            TUI.DrawPlayer();
+                     case MainStates.play:
+                         Debug.dprint("Play");
+                         if (Utils.Songs.Length > 0)
+                         {
+                             Debug.dprint("Play - len");
+                             Play.PlaySong();
+                             TUI.ClearScreen();
+                             TUI.DrawPlayer();
 
-                            Utils.TotalMusicDurationInSec = 0;
-                            state = MainStates.playing;
-                        }
-                        else
-                        {
-                            drawWhole = true;
-                            state = MainStates.idle;
-                        }
-                        break;
+                             Utils.TotalMusicDurationInSec = 0;
+                             state = MainStates.playing;
+                         }
+                         else
+                         {
+                             drawWhole = true;
+                             state = MainStates.idle;
+                         }
+                         break;
 
-                    case MainStates.playing:
-                        // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
-                        if (Utils.TotalMusicDurationInSec - prevMusicTimePlayed >= 1)
-                        {
-                            drawTime = true;
-                            prevMusicTimePlayed = Utils.TotalMusicDurationInSec;
-                        }
+                     case MainStates.playing:
+                         // every second, update screen, use MusicTimePlayed, and prevMusicTimePlayed
+                         if (Utils.TotalMusicDurationInSec - prevMusicTimePlayed >= 1)
+                         {
+                             drawTime = true;
+                             prevMusicTimePlayed = Utils.TotalMusicDurationInSec;
+                         }
 
-                        // If the song is finished
-                        if (Bass.ChannelIsActive(Utils.CurrentMusic) == PlaybackState.Stopped && Utils.TotalMusicDurationInSec > 0)
-                        {
-                            prevMusicTimePlayed = 0;
-                            drawTime = true;
-                        }
-                        if (debug)
-                            Message.Data("asd", "asd");
-                        CheckKeyboardAsync();
-                        break;
+                         // If the song is finished
+                         if (Bass.ChannelIsActive(Utils.CurrentMusic) == PlaybackState.Stopped && Utils.TotalMusicDurationInSec > 0)
+                         {
+                             prevMusicTimePlayed = 0;
+                             drawTime = true;
+                         }
+                         if (debug)
+                             Message.Data("asd", "asd");
+                         break;
 
-                    case MainStates.pause:
-                        Play.PauseSong();
-                        state = MainStates.idle;
-                        break;
+                     case MainStates.pause:
+                         Play.PauseSong();
+                         state = MainStates.idle;
+                         break;
 
-                    case MainStates.stop:
-                        Play.StopSong();
-                        state = MainStates.idle;
-                        break;
+                     case MainStates.stop:
+                         Play.StopSong();
+                         state = MainStates.idle;
+                         break;
 
-                    case MainStates.next:
-                        Debug.dprint("next");
-                        Play.NextSong();
-                        break;
-                    case MainStates.previous:
-                        if (Utils.TotalMusicDurationInSec > 3)
-                        { // if the song is played for more than 5 seconds, go to the beginning
-                            Play.SeekSong(0, false);
-                            state = MainStates.playing;
-                        }
-                        else
-                        {
-                            Play.PrevSong();
-                        }
-                        break;
-                }
+                     case MainStates.next:
+                         Debug.dprint("next");
+                         Play.NextSong();
+                         break;
+                     case MainStates.previous:
+                         if (Utils.TotalMusicDurationInSec > 3)
+                         { // if the song is played for more than 5 seconds, go to the beginning
+                             Play.SeekSong(0, false);
+                             state = MainStates.playing;
+                         }
+                         else
+                         {
+                             Play.PrevSong();
+                         }
+                         break;
+                 }
 
                 if (debug)
                     // print the call stack
@@ -290,6 +290,7 @@ namespace Jammer
                         TUI.RefreshCurrentView();
                     }
                 }
+
                 else
                 {
                     if (drawWhole)

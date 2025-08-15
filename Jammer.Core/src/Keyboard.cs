@@ -10,7 +10,7 @@ namespace Jammer
     public partial class Start
     {
         public static string Action = "";
-        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
+        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage, log
         public static async Task CheckKeyboardAsync()
         {
             if (Console.KeyAvailable || Action != "")
@@ -115,6 +115,7 @@ namespace Jammer
                 {
                     AnsiConsole.Clear();
                     // Jammer.Message.Data("A", $"{IniFileHandling.ScrollIndexLanguage}");
+                    // Handle PageUp/PageDown as before
                     if (Action == "PlaylistViewScrolldown")
                     {
                         Action = "";
@@ -138,6 +139,31 @@ namespace Jammer
                         {
                             IniFileHandling.ScrollIndexLanguage -= 1;
                         }
+                    }
+                    // Add UpArrow/DownArrow navigation
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (IniFileHandling.ScrollIndexLanguage - 1 < 0)
+                        {
+                            IniFileHandling.ScrollIndexLanguage = IniFileHandling.LocaleAmount - 1;
+                        }
+                        else
+                        {
+                            IniFileHandling.ScrollIndexLanguage -= 1;
+                        }
+                        drawWhole = true;
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (IniFileHandling.ScrollIndexLanguage + 1 >= IniFileHandling.LocaleAmount)
+                        {
+                            IniFileHandling.ScrollIndexLanguage = 0;
+                        }
+                        else
+                        {
+                            IniFileHandling.ScrollIndexLanguage += 1;
+                        }
+                        drawWhole = true;
                     }
                     if (Action == "Choose")
                     {
@@ -382,6 +408,48 @@ namespace Jammer
                         drawWhole = true;
                     }
                 }
+                else if (playerView.Equals("log"))
+                {
+                    // Static instance for log view
+                    var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
+                    ViewType viewType = LayoutCalculator.GetViewType("default");
+                    bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                    int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                        layout.ConsoleHeight,
+                        viewType,
+                        Preferences.isVisualizer,
+                        hasPlaylist,
+                        Utils.Songs.Length
+                    );
+                    if (Start.logViewComponent == null)
+                    {
+                        Start.logViewComponent = new Jammer.Components.LogViewComponent(Log.log);
+                        drawWhole = true;
+                    }
+                    if (key.Key == ConsoleKey.UpArrow)
+                    {
+                        if (Start.logViewComponent.ScrollUp(contentHeight))
+                        {
+                            drawWhole = true;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (Start.logViewComponent.ScrollDown(contentHeight))
+                        {
+                            drawWhole = true;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        playerView = "default";
+                        Start.logViewComponent = null;
+                        AnsiConsole.Clear();
+                        drawWhole = true;
+                    }
+                    // Disable all other actions in log view
+                    Action = "";
+                }
                 else
                     switch (Action)
                     {
@@ -419,6 +487,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "VolumeUp": // volume up
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -428,6 +497,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeDown": // volume down
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -437,6 +507,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeUpByOne":
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -445,6 +516,7 @@ namespace Jammer
                             drawTime = true;
                             break;
                         case "VolumeDownByOne":
+                            if (playerView == "changelanguage") break;
                             if (Preferences.isMuted)
                             {
                                 Play.ToggleMute();
@@ -533,18 +605,8 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "RenameSong": // rename song
-
-                            // Message.Data(
-
-                            // Funcs.SmartRename(
-                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            // ).Author
-                            // + " - " +
-                            // Funcs.SmartRename(
-                            //     SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
-                            // ).Title
-                            // , "Renamed song");
-
+                            string currentSongName = GetCurrentSongDisplayName();
+                            
                             var smartSong = Funcs.SmartRename(
                                 SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
                             );
@@ -554,6 +616,7 @@ namespace Jammer
                             var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
 
                             string[] name = new[] {
+                                currentSongName, // Pre-fill with current song name
                                 ogSongTitle,
                                 smartAuthor + " - " + smartTitle,
                                 smartTitle + " - " + smartAuthor,
@@ -563,12 +626,13 @@ namespace Jammer
                             name = name.Distinct().ToArray();
 
                             string newName = Message.Input(
-                                "New name: ", $"Go up in History to see current name and Jammer's Smart Renames\nLeave empty to keep current name\nSeperating with 'author - title' will set the author and title",
-                                false, name
+                                "New name: ", $"Current: {currentSongName}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
+                                currentSongName, false, name
                             );
 
                             if (string.IsNullOrEmpty(newName))
                             {
+                                Message.Data("Rename cancelled", "F2 Rename", false, false);
                                 drawWhole = true;
                                 break;
                             }
@@ -674,8 +738,14 @@ namespace Jammer
                                 newThemes[i + 2] = themes[i];
                             }
                             themes = newThemes;
-                            string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
+                            string chosen = Message.CustomMenuSelect(themes, Locale.Miscellaneous.ChooseTheme);
 
+                            // Check if the user cancelled the selection
+                            if (chosen == "__CANCELLED__")
+                            {
+                                drawWhole = true;
+                                break;
+                            }
 
                             if (chosen == "Jammer Default")
                             {
@@ -691,7 +761,8 @@ namespace Jammer
                             {
                                 AnsiConsole.Clear();
                                 string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
-                                if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
+                                // Check if the user cancelled the input
+                                if (string.IsNullOrEmpty(themeName) || Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
                                 {
                                     drawWhole = true;
                                     break;
@@ -710,6 +781,12 @@ namespace Jammer
                             }
                             else
                             {
+                                // If the chosen theme is the same as the current one, no need to change
+                                if (chosen == Preferences.theme)
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
                                 Preferences.theme = chosen;
                             }
 
@@ -726,9 +803,31 @@ namespace Jammer
                             break;
                         case "ShowLog":
                             AnsiConsole.Clear();
-                            Message.Data(Log.GetLog(), "Log");
-                            drawWhole = true;
-                            break;
+                            playerView = "log";
+// Deduplicate and sort log entries by timestamp
+var cleanedLog = Log.log
+    .Distinct()
+    .OrderBy(line => {
+        // Extract timestamp (HH:mm:ss) from each line
+        var semiIdx = line.IndexOf(';');
+        if (semiIdx > 0) {
+            var timeStr = line.Substring(0, semiIdx).Replace("[red]", "").Replace("[green3_1]", "").Replace("[/]", "");
+            if (TimeSpan.TryParse(timeStr, out var ts)) return ts;
+        }
+        return TimeSpan.Zero;
+    })
+    .ToArray();
+Start.logViewComponent = new Jammer.Components.LogViewComponent(cleanedLog);                            var layout = new LayoutConfig(Console.WindowWidth, Console.WindowHeight);
+                            ViewType viewType = LayoutCalculator.GetViewType("default");
+                            bool hasPlaylist = !(Utils.CurrentPlaylist == "" && !Funcs.IsInsideOfARssFeed());
+                            int contentHeight = LayoutCalculator.CalculateTableRowCount(
+                                layout.ConsoleHeight,
+                                viewType,
+                                Preferences.isVisualizer,
+                                hasPlaylist,
+                                Utils.Songs.Length
+                            );
+                        drawWhole = true;                            break;
                         case "Choose":
 
                             if (!Funcs.IsCurrentSongARssFeed())
@@ -813,16 +912,25 @@ namespace Jammer
 
                             soundFonts = newSoundFonts;
 
-                            string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+                            string chosenSoundFont = Message.CustomMenuSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+
+                            // Check if the user cancelled the selection
+                            if (chosenSoundFont == "__CANCELLED__" || chosenSoundFont == "Cancel")
+                            {
+                                drawWhole = true;
+                                break;
+                            }
 
                             switch (chosenSoundFont)
                             {
-                                case "Cancel":
-                                    drawWhole = true;
-                                    chosenSoundFont = Preferences.currentSf2;
-                                    break;
                                 case "Link to a soundfont by path":
                                     string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    // Check if the user cancelled the input
+                                    if (string.IsNullOrEmpty(path))
+                                    {
+                                        drawWhole = true;
+                                        break;
+                                    }
                                     if (File.Exists(path))
                                     {
                                         SoundFont.MakeAbsoluteSfFile(path);
@@ -832,11 +940,17 @@ namespace Jammer
                                     {
                                         Message.Data("The file does not exist", ":(", true);
                                         drawWhole = true;
-                                        chosenSoundFont = Preferences.currentSf2;
+                                        break;
                                     }
                                     break;
                                 case "Import soundfont by path":
                                     string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    // Check if the user cancelled the input
+                                    if (string.IsNullOrEmpty(importPath))
+                                    {
+                                        drawWhole = true;
+                                        break;
+                                    }
                                     if (File.Exists(importPath))
                                     {
                                         chosenSoundFont = Preferences.currentSf2;
@@ -850,17 +964,29 @@ namespace Jammer
                                     {
                                         Message.Data("The file does not exist", ":(", true);
                                         drawWhole = true;
-                                        chosenSoundFont = Preferences.currentSf2;
+                                        break;
+                                    }
+                                    break;
+                                default:
+                                    // If the chosen soundfont is the same as the current one, no need to restart playback
+                                    if (chosenSoundFont == Preferences.currentSf2)
+                                    {
+                                        drawWhole = true;
+                                        break;
                                     }
                                     break;
                             }
 
-                            Preferences.currentSf2 = chosenSoundFont;
-                            Preferences.SaveSettings();
-                            long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
-                            Play.StartPlaying();
-                            // goto the position
-                            Bass.ChannelSetPosition(Utils.CurrentMusic, position);
+                            // Only update and restart if we actually have a new soundfont
+                            if (chosenSoundFont != Preferences.currentSf2 && chosenSoundFont != "__CANCELLED__")
+                            {
+                                Preferences.currentSf2 = chosenSoundFont;
+                                Preferences.SaveSettings();
+                                long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
+                                Play.StartPlaying();
+                                // goto the position
+                                Bass.ChannelSetPosition(Utils.CurrentMusic, position);
+                            }
                             drawWhole = true;
                             break;
                     }
@@ -986,6 +1112,21 @@ namespace Jammer
             var hook = new TaskPoolGlobalHook();
             hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
             await hook.RunAsync();
+        }
+
+        private static string GetCurrentSongDisplayName()
+        {
+            if (Utils.Songs == null || Utils.Songs.Length == 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
+                return string.Empty;
+            
+            var currentSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+            if (currentSong == null) return string.Empty;
+            
+            // Format as "Author - Title" if both exist, otherwise just Title
+            if (!string.IsNullOrEmpty(currentSong.Author) && !string.IsNullOrEmpty(currentSong.Title))
+                return $"{currentSong.Author} - {currentSong.Title}";
+            
+            return currentSong.Title ?? string.Empty;
         }
 
     }
