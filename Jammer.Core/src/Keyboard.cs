@@ -889,6 +889,18 @@ namespace Jammer
             }
         }
 
+        /// <summary>
+        /// Clears all pending keystrokes from the console input buffer.
+        /// This prevents buffered keypresses from being processed after user stops pressing keys.
+        /// </summary>
+        public static void ClearKeyboardBuffer()
+        {
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true); // Read and discard the key
+            }
+        }
+
         public static void PauseSong(bool onlyPause = false)
         {
             if (onlyPause)
