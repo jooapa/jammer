@@ -515,12 +515,20 @@ namespace Jammer
             AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0, 0);
 
-            var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title(title)
-                .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
-                .AddChoices(options));
+            try
+            {
+                var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title(title + " (Press ESC to cancel)")
+                    .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
+                    .AddChoices(options));
 
-            return selection;
+                return selection;
+            }
+            catch (Exception)
+            {
+                // Return a special value to indicate cancellation
+                return "__CANCELLED__";
+            }
         }
 
 

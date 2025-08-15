@@ -668,6 +668,12 @@ namespace Jammer
                             themes = newThemes;
                             string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
 
+                            // Check if the user cancelled the selection
+                            if (chosen == "__CANCELLED__")
+                            {
+                                drawWhole = true;
+                                break;
+                            }
 
                             if (chosen == "Jammer Default")
                             {
@@ -683,7 +689,8 @@ namespace Jammer
                             {
                                 AnsiConsole.Clear();
                                 string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
-                                if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
+                                // Check if the user cancelled the input
+                                if (string.IsNullOrEmpty(themeName) || Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
                                 {
                                     drawWhole = true;
                                     break;
@@ -702,6 +709,12 @@ namespace Jammer
                             }
                             else
                             {
+                                // If the chosen theme is the same as the current one, no need to change
+                                if (chosen == Preferences.theme)
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
                                 Preferences.theme = chosen;
                             }
 
@@ -807,14 +820,23 @@ namespace Jammer
 
                             string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
 
+                            // Check if the user cancelled the selection
+                            if (chosenSoundFont == "__CANCELLED__" || chosenSoundFont == "Cancel")
+                            {
+                                drawWhole = true;
+                                break;
+                            }
+
                             switch (chosenSoundFont)
                             {
-                                case "Cancel":
-                                    drawWhole = true;
-                                    chosenSoundFont = Preferences.currentSf2;
-                                    break;
                                 case "Link to a soundfont by path":
                                     string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    // Check if the user cancelled the input
+                                    if (string.IsNullOrEmpty(path))
+                                    {
+                                        drawWhole = true;
+                                        break;
+                                    }
                                     if (File.Exists(path))
                                     {
                                         SoundFont.MakeAbsoluteSfFile(path);
@@ -824,11 +846,17 @@ namespace Jammer
                                     {
                                         Message.Data("The file does not exist", ":(", true);
                                         drawWhole = true;
-                                        chosenSoundFont = Preferences.currentSf2;
+                                        break;
                                     }
                                     break;
                                 case "Import soundfont by path":
                                     string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                    // Check if the user cancelled the input
+                                    if (string.IsNullOrEmpty(importPath))
+                                    {
+                                        drawWhole = true;
+                                        break;
+                                    }
                                     if (File.Exists(importPath))
                                     {
                                         chosenSoundFont = Preferences.currentSf2;
@@ -842,17 +870,29 @@ namespace Jammer
                                     {
                                         Message.Data("The file does not exist", ":(", true);
                                         drawWhole = true;
-                                        chosenSoundFont = Preferences.currentSf2;
+                                        break;
+                                    }
+                                    break;
+                                default:
+                                    // If the chosen soundfont is the same as the current one, no need to restart playback
+                                    if (chosenSoundFont == Preferences.currentSf2)
+                                    {
+                                        drawWhole = true;
+                                        break;
                                     }
                                     break;
                             }
 
-                            Preferences.currentSf2 = chosenSoundFont;
-                            Preferences.SaveSettings();
-                            long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
-                            Play.StartPlaying();
-                            // goto the position
-                            Bass.ChannelSetPosition(Utils.CurrentMusic, position);
+                            // Only update and restart if we actually have a new soundfont
+                            if (chosenSoundFont != Preferences.currentSf2 && chosenSoundFont != "__CANCELLED__")
+                            {
+                                Preferences.currentSf2 = chosenSoundFont;
+                                Preferences.SaveSettings();
+                                long position = Bass.ChannelGetPosition(Utils.CurrentMusic);
+                                Play.StartPlaying();
+                                // goto the position
+                                Bass.ChannelSetPosition(Utils.CurrentMusic, position);
+                            }
                             drawWhole = true;
                             break;
                     }
