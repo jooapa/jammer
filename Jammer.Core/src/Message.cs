@@ -69,6 +69,11 @@ namespace Jammer
             count += Regex.Matches(inputSaying, @"\n").Count;
 
             AnsiConsole.Cursor.SetPosition(5, 5 + count);
+            // Clear the input line to ensure it starts empty for all prompts
+            // This prevents leftover text from previous prompts appearing in the input area.
+            // Prompts with prefill or suggestions will still show their intended text after clearing.
+            Console.Write(new string(' ', Start.consoleWidth - 10));
+            AnsiConsole.Cursor.SetPosition(5, 5 + count); // Reset cursor after clearing
 
             if (oneChar)
             {
@@ -92,7 +97,8 @@ namespace Jammer
             else
             {
                 string input = ReadLineWithEscSupport(inputSaying + " ");
-                ReadLine.AddHistory(input);
+                if (!string.IsNullOrEmpty(input)) // Only add non-empty input to history
+                    ReadLine.AddHistory(input);
                 Start.Sanitize(input, true);
                 return input;
             }
@@ -120,6 +126,11 @@ namespace Jammer
             count += Regex.Matches(inputSaying, @"\n").Count;
 
             AnsiConsole.Cursor.SetPosition(5, 5 + count);
+            // Clear the input line to ensure it starts empty for all prompts
+            // This prevents leftover text from previous prompts appearing in the input area.
+            // Prompts with prefill or suggestions will still show their intended text after clearing.
+            Console.Write(new string(' ', Start.consoleWidth - 10));
+            AnsiConsole.Cursor.SetPosition(5, 5 + count); // Reset cursor after clearing
 
             if (oneChar)
             {
@@ -143,7 +154,8 @@ namespace Jammer
             else
             {
                 string input = ReadLineWithEscSupportAndPrefill(inputSaying + " ", prefillText);
-                ReadLine.AddHistory(input);
+                if (!string.IsNullOrEmpty(input)) // Only add non-empty input to history
+                    ReadLine.AddHistory(input);
                 Start.Sanitize(input, true);
                 return input;
             }
