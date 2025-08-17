@@ -12,7 +12,7 @@ namespace Jammer
 
             if (platform == "youtube" || platform == "y")
             {
-                string type = Message.Input("Type 'v' for Video or 'p' for Playlist:", "[red]Youtube[/] Search for a Video or Playlist?", true);
+                string type = Message.Input("", "[red]Youtube[/] Search for a [[v]]ideo or [[p]]laylist?", true);
                 type = type.ToLower();
 
                 if (type == "video" || type == "v" || type == "track" || type == "t")
@@ -26,7 +26,7 @@ namespace Jammer
             }
             else if (platform == "soundcloud" || platform == "s")
             {
-                string type = Message.Input("Type 't' for Track or 'p' for Playlist:", "[darkorange]Soundcloud[/] Search for a Track or Playlist?", true);
+                string type = Message.Input("Type 't' for Track or 'p' for Playlist:", "[darkorange]Soundcloud[/] Search for a [[t]]rack or [[p]]laylist?", true);
                 type = type.ToLower();
 
                 if (type == "track" || type == "t")
