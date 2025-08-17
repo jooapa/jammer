@@ -517,7 +517,15 @@ namespace Jammer
             }
             catch (Exception ex)
             {
-                Utils.SCClientIdAlreadyLookedAndItsIncorrect = true;
+
+                if (ex.Message.Contains("401"))
+                {
+                    Utils.SCClientIdAlreadyLookedAndItsIncorrect = true;
+                    Utils.CustomTopErrorMessage = "Error: Client ID is incorrect, please check your Client ID in Preferences.";}
+                else
+                {
+                    Utils.CustomTopErrorMessage = "Error: Song not found, maybe the song is private or the URL is invalid.";
+                }
 
                 if (Funcs.DontShowErrorWhenSongNotFound())
                 {
@@ -526,7 +534,7 @@ namespace Jammer
                 }
                 // Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message + ": " + url
                 // , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
-                Utils.CustomTopErrorMessage = "Error: Maybe your Client ID is invalid or the song is private. (check log)";
+                // Utils.CustomTopErrorMessage = "Error: Maybe your Client ID is invalid or the song is private. (check log)";
                 Log.Error(ex.Message);
                 songPath = "";
                 constructedSong = null;
