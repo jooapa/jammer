@@ -224,7 +224,7 @@ namespace Jammer
                 catch (Exception)
                 {
                     tagFile = null;
-                    Log.Error("Error getting title of the song");
+                    // Log.Error("Error getting title of the song");
                 }
             }
 

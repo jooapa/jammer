@@ -5,24 +5,67 @@ using System.Text.RegularExpressions;
 
 namespace Jammer
 {
+
+    // custom type for the custom select input.
+    public class CustomSelectInput
+    {
+        public string? DataURI { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
+        public string? Description { get; set; }
+    }
+
     public static class Message
     {
         // Custom menu that supports ESC to cancel
-        public static string CustomMenuSelect(string[] options, string title)
+        public static string? CustomMenuSelect(CustomSelectInput[] options, string title)
         {
+            if (options == null || options.Length == 0)
+                return "__CANCELLED__";
+
             int selected = 0;
             ConsoleKeyInfo keyInfo;
+
             while (true)
             {
-                Console.Clear();
-                Console.WriteLine(title + " (Use arrows, Enter to select, ESC to cancel)");
+                AnsiConsole.Clear();
+
+                var selectionTable = new Table();
+                selectionTable.AddColumn(new TableColumn(Themes.sColor(title + " [i](Use arrows, Enter to select, ESC to cancel)[/]", Themes.CurrentTheme.InputBox.TitleColor ?? "")));
+                selectionTable.Width(Start.consoleWidth);
+
                 for (int i = 0; i < options.Length; i++)
                 {
+                    var opt = options[i];
+                    string? titleText = opt?.Title ?? null;
+
+                    // Highlight selected row
                     if (i == selected)
-                        Console.WriteLine($"> {options[i]} <");
+                    {
+                        selectionTable.AddRow(Themes.sColor($"> [b]{Markup.Escape(titleText)}[/] <", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                    }
                     else
-                        Console.WriteLine($"  {options[i]}");
+                    {
+                        selectionTable.AddRow(Markup.Escape(titleText));
+                    }
                 }
+
+                AnsiConsole.Write(selectionTable);
+
+                // Info table for selected item (author + description)
+                var infoTable = new Table();
+                infoTable.AddColumn(Themes.sColor("Author", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                infoTable.AddColumn(Themes.sColor("Description", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                infoTable.Width(Start.consoleWidth);
+
+                var sel = options[selected];
+                string selAuthor = sel?.Author ?? "";
+                string selDesc = sel?.Description ?? "";
+
+                infoTable.AddRow(Markup.Escape(selAuthor), Markup.Escape(selDesc));
+                AnsiConsole.Write(infoTable);
+
+                // Read input
                 keyInfo = Console.ReadKey(true);
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
@@ -34,7 +77,7 @@ namespace Jammer
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    return options[selected];
+                    return options[selected]?.DataURI ?? null;
                 }
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {

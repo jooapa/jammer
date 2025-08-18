@@ -665,8 +665,19 @@ namespace Jammer
                             {
                                 newThemes[i + 2] = themes[i];
                             }
-                            themes = newThemes;
-                            string chosen = Message.MultiSelect(themes, Locale.Miscellaneous.ChooseTheme);
+
+                            CustomSelectInput[] _themes = new CustomSelectInput[newThemes.Length];
+                            for (int i = 0; i < newThemes.Length; i++)
+                            {
+                                _themes[i] = new CustomSelectInput
+                                {
+                                    DataURI = newThemes[i],
+                                    Title = newThemes[i],
+                                    Author = null,
+                                    Description = null
+                                };
+                            }
+                            string chosen = Message.CustomMenuSelect(_themes, Locale.Miscellaneous.ChooseTheme);
 
 
                             if (chosen == "Jammer Default")

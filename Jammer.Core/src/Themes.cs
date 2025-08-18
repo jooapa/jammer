@@ -211,7 +211,7 @@ namespace Jammer
             }
 
 
-            return themes;
+            return Start.Sanitize(themes);
         }
 
         public static void SetDefaultTheme()
