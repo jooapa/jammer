@@ -603,9 +603,9 @@ namespace Jammer
             switch (Preferences.loopType)
             {
                 case LoopType.Always:
-                    PlayDrawReset();
                     Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
                     Bass.ChannelPlay(Utils.CurrentMusic);
+                    PlayDrawReset();
                     break;
                     
                 case LoopType.Once:
@@ -618,6 +618,7 @@ namespace Jammer
                     else if (Preferences.isShuffle)
                     {
                         RandomSong();
+                        PlayDrawReset();
                     }
                     else
                     {
@@ -635,6 +636,7 @@ namespace Jammer
                     else if (Preferences.isShuffle)
                     {
                         RandomSong();
+                        PlayDrawReset();
                     }
                     else
                     {

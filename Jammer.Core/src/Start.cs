@@ -176,7 +176,7 @@ namespace Jammer
                 {
                     case MainStates.idle:
                         // TUI.ClearScreen();
-                        CheckKeyboardAsync();
+                        _ = CheckKeyboardAsync();
                         break;
 
                     case MainStates.play:
@@ -214,7 +214,7 @@ namespace Jammer
                         }
                         if (debug)
                             Message.Data("asd", "asd");
-                        CheckKeyboardAsync();
+                        _ = CheckKeyboardAsync();
                         break;
 
                     case MainStates.pause:
