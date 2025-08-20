@@ -107,7 +107,7 @@ namespace Jammer
         public static string CheckValue(string value, string defaultValue)
         {
 
-            string finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);
+            string? finalValue = IniFileHandling.ReadIni_KeyData("Keybinds", value);
             if (Preferences.isModifierKeyHelper)
             {
                 if (finalValue == null || finalValue.Equals(""))

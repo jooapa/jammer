@@ -26,8 +26,8 @@ namespace Jammer.Components
         public Table Render(LayoutConfig layout)
         {
             var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.Time.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.Time.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.Time?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.Time?.BorderColor ?? new int[] {255, 255, 255}));
             table.AddColumn(TUI.ProgressBar(_currentTime, _totalTime, layout));
             return table;
         }

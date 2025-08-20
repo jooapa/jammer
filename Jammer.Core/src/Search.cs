@@ -60,7 +60,7 @@ namespace Jammer
                         {
                             var id = result.Id;
                             var title = Markup.Escape(result.Title);
-                            var author = Markup.Escape(result.Author.ToString());
+                            var author = Markup.Escape(result.Author?.ToString() ?? "");
                             string type = "playlist";
                             results.Add(new YTSearchResult { Id = id, Title = title, Type = type, Author = author });
 
@@ -77,7 +77,7 @@ namespace Jammer
                         {
                             var id = result.Id;
                             var title = Markup.Escape(result.Title);
-                            var author = Markup.Escape(result.Author.ToString());
+                            var author = Markup.Escape(result.Author?.ToString() ?? "");
                             string type = "video";
                             results.Add(new YTSearchResult { Id = id, Title = title, Type = type, Author = author });
 
@@ -201,9 +201,9 @@ namespace Jammer
                         await foreach (var result in Download.ReturnSoundCloudClient().Search.GetTracksAsync(search))
                         {
                             var url = result.Url;
-                            var title = Markup.Escape(result.Title);
-                            var author = Markup.Escape(result.User.ToString());
-                            results.Add(new SCSearchResult { Url = url, Title = title, Author = author });
+                            var title = Markup.Escape(result.Title ?? "");
+                            var author = Markup.Escape(result.User?.ToString() ?? "");
+                            results.Add(new SCSearchResult { Url = url ?? "", Title = title, Author = author });
 
                             if (indexer == max - 1)
                             {

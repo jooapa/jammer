@@ -14,8 +14,8 @@ namespace Jammer.Components
         public Table Render(LayoutConfig layout)
         {
             var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralHelp.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralHelp.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.GeneralHelp?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.GeneralHelp?.BorderColor ?? new int[] {255, 255, 255}));
             table.Width = layout.ConsoleWidth;
 
             // Build the help content using the original logic
@@ -31,10 +31,10 @@ namespace Jammer.Components
             var keybindings = ParseKeybindings(separator);
 
             // Add table headers with fixed column widths
-            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
-            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(25));
-            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
-            table.AddColumn(new TableColumn(Themes.sColor($"{Locale.Help.Description} ({_currentPage}/{_totalPages})", Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(30));
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white")).Width(20));
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Description, Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white")).Width(25));
+            table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white")).Width(20));
+            table.AddColumn(new TableColumn(Themes.sColor($"{Locale.Help.Description} ({_currentPage}/{_totalPages})", Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white")).Width(30));
 
             // Add help rows based on current page
             if (_currentPage == 1)
@@ -105,76 +105,76 @@ namespace Jammer.Components
             // Basic Controls
             table.AddRow(
                 DrawHelpTextColouring(keybindings["PlayPause"]),
-                Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["NextSong"]),
-                Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["PreviousSong"]),
-                Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["Quit"]),
-                Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Navigation
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ToMainMenu"]),
-                Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["Help"]),
-                Themes.sColor("Show Help", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Show Help", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Volume Controls
             table.AddRow(
                 DrawHelpTextColouring(keybindings["VolumeUp"]),
-                Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["VolumeDown"]),
-                Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["VolumeUpByOne"]),
-                Themes.sColor("Volume +1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Volume +1", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["VolumeDownByOne"]),
-                Themes.sColor("Volume -1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Volume -1", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["Mute"]),
-                Themes.sColor(Locale.Help.ToggleMute, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ToggleMute, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["Forward5s"]),
-                Themes.sColor(Locale.Help.Forward + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.Forward + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["Backwards5s"]),
-                Themes.sColor(Locale.Help.Rewind + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.Rewind + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ToSongStart"]),
-                Themes.sColor("Go to Start", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Go to Start", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ToSongEnd"]),
-                Themes.sColor("Go to End", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Go to End", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["Loop"]),
-                Themes.sColor(Locale.Help.ToggleLooping, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.ToggleLooping, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Basic Playlist Controls
             table.AddRow(
                 DrawHelpTextColouring(keybindings["Shuffle"]),
-                Themes.sColor(Locale.Help.ToggleShuffle, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ToggleShuffle, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ShowHidePlaylist"]),
-                Themes.sColor(Locale.Help.ToShowPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.ToShowPlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Scrolling
             table.AddRow(
                 DrawHelpTextColouring(keybindings["PlaylistViewScrollup"]),
-                Themes.sColor("Scroll Up", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Scroll Up", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["PlaylistViewScrolldown"]),
-                Themes.sColor("Scroll Down", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Scroll Down", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Page navigation hint
@@ -185,8 +185,8 @@ namespace Jammer.Components
             table.AddRow(
                 "",
                 "",
-                Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor("Next page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("PgDn/→", Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white"),
+                Themes.sColor("Next page", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
         }
 
@@ -195,97 +195,97 @@ namespace Jammer.Components
             // Playlist Management
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ShufflePlaylist"]),
-                Themes.sColor(Locale.Help.ShufflePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ShufflePlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["AddSongToPlaylist"]),
-                Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["AddSongToQueue"]),
-                Themes.sColor("Add to Queue", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Add to Queue", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ShowSongsInPlaylists"]),
-                Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ListAllPlaylists"]),
-                Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["PlayOtherPlaylist"]),
-                Themes.sColor(Locale.Help.PlayOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.PlayOtherPlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["SaveCurrentPlaylist"]),
-                Themes.sColor(Locale.Help.SavePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.SavePlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["SaveAsPlaylist"]),
-                Themes.sColor(Locale.Help.SaveAs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.SaveAs, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Song Management
             table.AddRow(
                 DrawHelpTextColouring(keybindings["PlaySong"]),
-                Themes.sColor(Locale.Help.PlaySongs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.PlaySongs, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["PlayRandomSong"]),
-                Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["DeleteCurrentSong"]),
-                Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["HardDeleteCurrentSong"]),
-                Themes.sColor("Delete from PC", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Delete from PC", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["RenameSong"]),
-                Themes.sColor("Rename", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Rename", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["RedownloadCurrentSong"]),
-                Themes.sColor(Locale.Help.RedownloadCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.RedownloadCurrentSong, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Search and Navigation
             table.AddRow(
                 DrawHelpTextColouring(keybindings["Search"]),
-                Themes.sColor("Search", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Search", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["SearchInPlaylist"]),
-                Themes.sColor("Search Playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Search Playlist", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ChooseSong"]),
-                Themes.sColor("Select Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Select Song", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ToggleInfo"]),
-                Themes.sColor("Show/Hide Info", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Show/Hide Info", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Settings and Configuration
             table.AddRow(
                 DrawHelpTextColouring(keybindings["Settings"]),
-                Themes.sColor("Settings", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Settings", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["EditKeybindings"]),
-                Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ChangeLanguage"]),
-                Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ChangeTheme"]),
-                Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Change Theme", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             table.AddRow(
                 DrawHelpTextColouring(keybindings["ChangeSoundFont"]),
-                Themes.sColor("Change Font", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("Change Font", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ShowLog"]),
-                Themes.sColor("Show Log", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Show Log", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Special
             table.AddRow(
                 DrawHelpTextColouring(keybindings["CommandHelpScreen"]),
-                Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 DrawHelpTextColouring(keybindings["ExitRssFeed"]),
-                Themes.sColor("Exit RSS", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                Themes.sColor("Exit RSS", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white")
             );
 
             // Page navigation hint
@@ -294,8 +294,8 @@ namespace Jammer.Components
                 ""
             );
             table.AddRow(
-                Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor("Previous page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                Themes.sColor("PgUp/←", Themes.CurrentTheme?.GeneralHelp?.HeaderTextColor ?? "white"),
+                Themes.sColor("Previous page", Themes.CurrentTheme?.GeneralHelp?.DescriptionTextColor ?? "white"),
                 "",
                 ""
             );
@@ -305,38 +305,38 @@ namespace Jammer.Components
         {
             if (textArray.Length == 1)
             {
-                return Themes.sColor(textArray[0], Themes.CurrentTheme.GeneralHelp.ControlTextColor);
+                return Themes.sColor(textArray[0], Themes.CurrentTheme?.GeneralHelp?.ControlTextColor ?? "white");
             }
             else if (textArray.Length == 2)
             {
                 return
-                Themes.sColor(textArray[0], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_1)
+                Themes.sColor(textArray[0], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_1 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[1], Themes.CurrentTheme.GeneralHelp.ControlTextColor);
+                + Themes.sColor(textArray[1], Themes.CurrentTheme?.GeneralHelp?.ControlTextColor ?? "white");
             }
             else if (textArray.Length == 3)
             {
                 return
-                Themes.sColor(textArray[0], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_1)
+                Themes.sColor(textArray[0], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_1 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[1], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_2)
+                + Themes.sColor(textArray[1], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_2 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[2], Themes.CurrentTheme.GeneralHelp.ControlTextColor);
+                + Themes.sColor(textArray[2], Themes.CurrentTheme?.GeneralHelp?.ControlTextColor ?? "white");
             }
             else if (textArray.Length == 4)
             {
                 return
-                Themes.sColor(textArray[0], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_1)
+                Themes.sColor(textArray[0], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_1 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[1], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_2)
+                + Themes.sColor(textArray[1], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_2 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[2], Themes.CurrentTheme.GeneralHelp.ModifierTextColor_3)
+                + Themes.sColor(textArray[2], Themes.CurrentTheme?.GeneralHelp?.ModifierTextColor_3 ?? "white")
                 + " + "
-                + Themes.sColor(textArray[3], Themes.CurrentTheme.GeneralHelp.ControlTextColor);
+                + Themes.sColor(textArray[3], Themes.CurrentTheme?.GeneralHelp?.ControlTextColor ?? "white");
             }
             else
             {
-                return Themes.sColor(textArray[0], Themes.CurrentTheme.GeneralHelp.ControlTextColor);
+                return Themes.sColor(textArray[0], Themes.CurrentTheme?.GeneralHelp?.ControlTextColor ?? "white");
             }
         }
 

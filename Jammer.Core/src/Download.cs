@@ -328,9 +328,9 @@ namespace Jammer
                     CreateNoWindow = true
                 };
 
-                using System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
-                process.WaitForExit();
-                return process.ExitCode == 0;
+                using System.Diagnostics.Process? process = System.Diagnostics.Process.Start(startInfo);
+                process?.WaitForExit();
+                return process?.ExitCode == 0;
             }
             catch (Exception)
             {
@@ -544,8 +544,8 @@ namespace Jammer
         static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
         {
             var file = TagLib.File.Create(songPath);
-            using WebClient webClient = new();
-            byte[] imageBytes = webClient.DownloadData(imageUrl);
+            using var httpClient = new HttpClient();
+            byte[] imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
             Picture picture = new(imageBytes);
             file.Tag.Pictures = Array.Empty<IPicture>();
             file.Tag.Pictures = new[] { picture };

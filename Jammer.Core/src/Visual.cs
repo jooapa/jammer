@@ -133,11 +133,11 @@ PausingEffect = true
 
             if (isPlaying)
             {
-                return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PlayingColor);
+                return Themes.sColor(str, Themes.CurrentTheme?.Visualizer?.PlayingColor ?? "white");
             }
             else
             {
-                return Themes.sColor(str, Themes.CurrentTheme.Visualizer.PausedColor);
+                return Themes.sColor(str, Themes.CurrentTheme?.Visualizer?.PausedColor ?? "white");
             }
         }
 

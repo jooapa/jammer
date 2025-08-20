@@ -13,14 +13,33 @@ namespace Jammer
             string downloadPath = Path.Combine(Utils.JammerPath, "Jammer-Setup_V" + version + ".exe");
             try
             {
-                using (var webClient = new WebClient())
+                using (var httpClient = new HttpClient())
                 {
-                    webClient.DownloadProgressChanged += (sender, e) =>
+                    using (var response = httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead).Result)
                     {
-                        Console.WriteLine($"{Locale.OutsideItems.Downloaded} {e.BytesReceived} {Locale.OutsideItems.Of} {e.TotalBytesToReceive} {Locale.OutsideItems.Bytes} ({e.ProgressPercentage}%).");
-                    };
-
-                    webClient.DownloadFile(downloadUrl, downloadPath);
+                        response.EnsureSuccessStatusCode();
+                        
+                        using (var contentStream = response.Content.ReadAsStreamAsync().Result)
+                        using (var fileStream = new FileStream(downloadPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            var totalBytes = response.Content.Headers.ContentLength ?? 0;
+                            var buffer = new byte[8192];
+                            var totalBytesRead = 0L;
+                            int bytesRead;
+                            
+                            while ((bytesRead = contentStream.ReadAsync(buffer, 0, buffer.Length).Result) != 0)
+                            {
+                                fileStream.WriteAsync(buffer, 0, bytesRead).Wait();
+                                totalBytesRead += bytesRead;
+                                
+                                if (totalBytes > 0)
+                                {
+                                    var progressPercentage = (int)((totalBytesRead * 100) / totalBytes);
+                                    Console.WriteLine($"{Locale.OutsideItems.Downloaded} {totalBytesRead} {Locale.OutsideItems.Of} {totalBytes} {Locale.OutsideItems.Bytes} ({progressPercentage}%).");
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)

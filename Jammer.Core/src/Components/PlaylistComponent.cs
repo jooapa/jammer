@@ -10,9 +10,9 @@ namespace Jammer.Components
     {
         private ViewType _viewType;
         private bool _isInsideRssFeed;
-        private string _currentPlaylist;
+        private string _currentPlaylist = string.Empty;
         private string? _backupPlaylistName;
-        private string[] _songs;
+        private string[] _songs = Array.Empty<string>();
 
         public PlaylistComponent(ViewType viewType)
         {
@@ -50,8 +50,8 @@ namespace Jammer.Components
 
         private void RenderNormalView(Table table, LayoutConfig layout)
         {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralPlaylist.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralPlaylist.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.GeneralPlaylist?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.GeneralPlaylist?.BorderColor ?? new int[] {255, 255, 255}));
 
             if (_isInsideRssFeed)
             {
@@ -65,8 +65,8 @@ namespace Jammer.Components
 
         private void RenderAllSongsView(Table table, LayoutConfig layout)
         {
-            table.Border = Themes.bStyle(Themes.CurrentTheme.WholePlaylist.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.WholePlaylist.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.WholePlaylist?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.WholePlaylist?.BorderColor ?? new int[] {255, 255, 255}));
 
             if (_isInsideRssFeed)
             {
@@ -92,23 +92,23 @@ namespace Jammer.Components
             if (_backupPlaylistName == "")
             {
                 table.AddColumn(
-                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                    " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]"
+                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme?.Rss?.TitleColor ?? "white") + " - " +
+                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme?.Rss?.AuthorColor ?? "white") +
+                    " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme?.Rss?.ExitRssFeedColor ?? "white") + "[/]"
                 );
             }
             else
             {
-                string playlistInfo = Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(_backupPlaylistName, Themes.CurrentTheme.Playlist.PlaylistNameColor) + " -> " +
-                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme.Rss.TitleColor) + " - " +
-                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme.Rss.AuthorColor) +
-                    " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme.Rss.ExitRssFeedColor) + "[/]";
+                string playlistInfo = Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme?.Playlist?.RandomTextColor ?? "white") + " " +
+                    Themes.sColor(_backupPlaylistName, Themes.CurrentTheme?.Playlist?.PlaylistNameColor ?? "white") + " -> " +
+                    Themes.sColor(Utils.RssFeedSong.Title, Themes.CurrentTheme?.Rss?.TitleColor ?? "white") + " - " +
+                    Themes.sColor(Utils.RssFeedSong.Author, Themes.CurrentTheme?.Rss?.AuthorColor ?? "white") +
+                    " [i]" + Themes.sColor("(Exit Rss Feed with " + Keybindings.ExitRssFeed + ")", Themes.CurrentTheme?.Rss?.ExitRssFeedColor ?? "white") + "[/]";
 
                 if (_currentPlaylist != "")
                 {
-                    playlistInfo += Themes.sColor(" saved as: ", Themes.CurrentTheme.Rss.DescriptionColor) +
-                        Themes.sColor(_currentPlaylist, Themes.CurrentTheme.Rss.DescriptionColor);
+                    playlistInfo += Themes.sColor(" saved as: ", Themes.CurrentTheme?.Rss?.DescriptionColor ?? "white") +
+                        Themes.sColor(_currentPlaylist, Themes.CurrentTheme?.Rss?.DescriptionColor ?? "white");
                 }
 
                 table.AddColumn(playlistInfo);
@@ -150,9 +150,9 @@ namespace Jammer.Components
                     layout.CalculatePlaylistNameWidth());
                 
                 table.AddColumn(
-                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(playlistName, Themes.CurrentTheme.Playlist.PlaylistNameColor) +
-                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme.Playlist.RandomTextColor)
+                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme?.Playlist?.RandomTextColor ?? "white") + " " +
+                    Themes.sColor(playlistName, Themes.CurrentTheme?.Playlist?.PlaylistNameColor ?? "white") +
+                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme?.Playlist?.RandomTextColor ?? "white")
                 );
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
@@ -171,9 +171,9 @@ namespace Jammer.Components
                     layout.CalculatePlaylistNameWidth());
                 
                 table.AddColumn(
-                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(playlistName, Themes.CurrentTheme.Playlist.PlaylistNameColor) +
-                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme.Playlist.RandomTextColor)
+                    Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme?.Playlist?.RandomTextColor ?? "white") + " " +
+                    Themes.sColor(playlistName, Themes.CurrentTheme?.Playlist?.PlaylistNameColor ?? "white") +
+                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme?.Playlist?.RandomTextColor ?? "white")
                 );
             }
         }

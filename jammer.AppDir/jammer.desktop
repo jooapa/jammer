@@ -3,5 +3,5 @@ Name=Jammer
 Exec=Jammer
 Icon=Jammer-icon
 Type=Application
-Categories=Music
+Categories=AudioVideo;Music;Player;
 Terminal=true

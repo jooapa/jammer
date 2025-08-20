@@ -62,7 +62,7 @@ namespace Jammer
             if (IsAlreadyInString(song))
             {
                 // Message.Data(song.URI, "Already in string");
-                return song.URI;
+                return song.URI ?? string.Empty;
             }
 
             if (song == null || string.IsNullOrEmpty(song.URI))

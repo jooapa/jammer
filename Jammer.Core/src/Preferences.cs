@@ -177,7 +177,7 @@ namespace Jammer
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
             {
-                return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), "jammer", "songs");
+                return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME") ?? string.Empty, "jammer", "songs");
             }
 
             // check if settings.json exists

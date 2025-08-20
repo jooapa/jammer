@@ -87,7 +87,7 @@ namespace Jammer
                 URI = songs[Utils.CurrentSongIndex]
             };
 
-            string fullPathToFile = "";
+            string? fullPathToFile = "";
 
             song.ExtractSongDetails();
 
@@ -114,7 +114,9 @@ namespace Jammer
             else if (URL.IsValidSoundcloudSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                var downloadResult = Download.DownloadSong(song.URI ?? "");
+                fullPathToFile = downloadResult.Item1!;
+                song = downloadResult.Item2 ?? song;
             }
             else if (URL.IsValidYoutubePlaylist(song.URI))
             {
@@ -124,21 +126,27 @@ namespace Jammer
             else if (URL.IsValidYoutubeSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                var downloadResult = Download.DownloadSong(song.URI ?? "");
+                fullPathToFile = downloadResult.Item1!;
+                song = downloadResult.Item2 ?? song;
                 // Message.Data(SongExtensions.ToSongString(song), "123");
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
                 if (song.Title == null || song.Author == null)
                 {
-                    (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                    var downloadResult = Download.DownloadSong(song.URI ?? "");
+                fullPathToFile = downloadResult.Item1!;
+                song = downloadResult.Item2 ?? song;
                 }
                 // Message.Data(SongExtensions.ToSongString(song), "33");
 
             }
             else if (URL.IsUrl(song.URI))
             {
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                var downloadResult = Download.DownloadSong(song.URI ?? "");
+                fullPathToFile = downloadResult.Item1!;
+                song = downloadResult.Item2 ?? song;
                 // Message.Data(path, song);
             }
 

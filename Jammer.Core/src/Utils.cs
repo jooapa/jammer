@@ -66,13 +66,13 @@ namespace Jammer
                 // use xdg_config_home if it is set
                 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
                 {
-                    return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), defaultJammerFolderName);
+                    return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME") ?? string.Empty, defaultJammerFolderName);
                 }
 
                 // use JAMMER_CONFIG_PATH if it is set
                 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH")))
                 {
-                    return Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH");
+                    return Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH") ?? string.Empty;
                 }
 
                 // use the default user profile path

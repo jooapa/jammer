@@ -31,7 +31,7 @@ namespace Jammer
                 AnsiConsole.Clear();
 
                 var selectionTable = new Table();
-                selectionTable.AddColumn(new TableColumn(Themes.sColor(title + " [i](Use arrows, Enter to select, ESC to cancel)[/]", Themes.CurrentTheme.InputBox.TitleColor ?? "")));
+                selectionTable.AddColumn(new TableColumn(Themes.sColor(title + " [i](Use arrows, Enter to select, ESC to cancel)[/]", Themes.CurrentTheme?.InputBox?.TitleColor ?? "")));
                 selectionTable.Width(Start.consoleWidth);
 
                 for (int i = 0; i < options.Length; i++)
@@ -42,11 +42,11 @@ namespace Jammer
                     // Highlight selected row
                     if (i == selected)
                     {
-                        selectionTable.AddRow(Themes.sColor($"> [b]{Markup.Escape(titleText)}[/] <", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                        selectionTable.AddRow(Themes.sColor($"> [b]{Markup.Escape(titleText ?? "")}[/] <", Themes.CurrentTheme?.InputBox?.InputTextColor ?? ""));
                     }
                     else
                     {
-                        selectionTable.AddRow(Markup.Escape(titleText));
+                        selectionTable.AddRow(Markup.Escape(titleText ?? ""));
                     }
                 }
 
@@ -54,8 +54,8 @@ namespace Jammer
 
                 // Info table for selected item (author + description)
                 var infoTable = new Table();
-                infoTable.AddColumn(Themes.sColor("Author", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
-                infoTable.AddColumn(Themes.sColor("Description", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                infoTable.AddColumn(Themes.sColor("Author", Themes.CurrentTheme?.InputBox?.InputTextColor ?? ""));
+                infoTable.AddColumn(Themes.sColor("Description", Themes.CurrentTheme?.InputBox?.InputTextColor ?? ""));
                 infoTable.Width(Start.consoleWidth);
 
                 var sel = options[selected];
@@ -89,15 +89,15 @@ namespace Jammer
         public static string Input(string inputSaying, string title, bool oneChar = false, string[]? setText = null)
         {
             var mainTable = new Table();
-            mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
-            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.BorderColor));
+            mainTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.BorderStyle ?? "rounded");
+            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.BorderColor ?? new int[] {255, 255, 255}));
 
             var messageTable = new Table();
-            messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
-            messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
+            messageTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.InputBorderStyle ?? "rounded");
+            messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.InputBorderColor ?? new int[] {255, 255, 255}));
 
-            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
-            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
+            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme?.InputBox?.TitleColor ?? "white"))).Centered().Width(Start.consoleWidth);
+            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme?.InputBox?.InputTextColor ?? "white"))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Show();
@@ -150,15 +150,15 @@ namespace Jammer
         public static string Input(string inputSaying, string title, string prefillText, bool oneChar = false, string[]? setText = null)
         {
             var mainTable = new Table();
-            mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
-            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.BorderColor));
+            mainTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.BorderStyle ?? "rounded");
+            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.BorderColor ?? new int[] {255, 255, 255}));
 
             var messageTable = new Table();
-            messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
-            messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
+            messageTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.InputBorderStyle ?? "rounded");
+            messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.InputBorderColor ?? new int[] {255, 255, 255}));
 
-            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
-            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
+            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme?.InputBox?.TitleColor ?? "white"))).Centered().Width(Start.consoleWidth);
+            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme?.InputBox?.InputTextColor ?? "white"))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Show();
@@ -573,21 +573,21 @@ namespace Jammer
         {
             var mainTable = new Table();
             var messageTable = new Table();
-            mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
-            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.BorderColor));
+            mainTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.BorderStyle ?? "rounded");
+            mainTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.BorderColor ?? new int[] {255, 255, 255}));
             if (isError)
             {
-                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColorIfError))).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme.InputBox.InputTextColorIfError))).Centered().Width(Start.consoleWidth);
-                messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyleIfError);
-                messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColorIfError));
+                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme?.InputBox?.TitleColorIfError ?? "red"))).Centered().Width(Start.consoleWidth);
+                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme?.InputBox?.InputTextColorIfError ?? "red"))).Centered().Width(Start.consoleWidth);
+                messageTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.InputBorderStyleIfError ?? "rounded");
+                messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.InputBorderColorIfError ?? new int[] {255, 0, 0}));
             }
             else
             {
-                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
-                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
-                messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
-                messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
+                mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme?.InputBox?.TitleColor ?? "white"))).Centered().Width(Start.consoleWidth);
+                messageTable.AddColumn(new TableColumn(Themes.sColor(data, Themes.CurrentTheme?.InputBox?.InputTextColor ?? "white"))).Centered().Width(Start.consoleWidth);
+                messageTable.Border = Themes.bStyle(Themes.CurrentTheme?.InputBox?.InputBorderStyle ?? "rounded");
+                messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme?.InputBox?.InputBorderColor ?? new int[] {255, 255, 255}));
             }
 
             mainTable.AddRow(messageTable);
@@ -614,7 +614,7 @@ namespace Jammer
             {
                 var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title(title + " (Press ESC to cancel)")
-                    .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
+                    .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme?.InputBox?.MultiSelectMoreChoicesTextColor ?? "gray"))
                     .AddChoices(optionsWithCancel));
 
                 // Check if the selection is the first item (Cancel) and there are keys available

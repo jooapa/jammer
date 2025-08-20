@@ -147,12 +147,13 @@ ExitRssFeed = E
             bool isExisting = false;
             string isExistingKeyName;
             // Check if keybind exists
+            if (KeyData?.Sections != null)
             foreach (var section in KeyData.Sections)
             {
                 foreach (var key in section.Keys)
                 {
-                    string current = key.Value;
-                    if (current.ToLower().Replace(" ", "").Equals(final.ToLower().Replace(" ", "")))
+                    string? current = key.Value;
+                    if (current != null && current.ToLower().Replace(" ", "").Equals(final.ToLower().Replace(" ", "")))
                     {
                         isExisting = true;
                         isExistingKeyName = key.KeyName;
@@ -162,7 +163,7 @@ ExitRssFeed = E
             }
 
             // Save if not
-            if (!isExisting)
+            if (!isExisting && KeyData?.Sections != null)
             {
                 int i = 0;
                 foreach (var section in KeyData.Sections)
@@ -171,7 +172,7 @@ ExitRssFeed = E
                     {
                         if (i == ScrollIndexKeybind)
                         {
-                            KeyData["Keybinds"][key.KeyName] = final;
+                            KeyData!["Keybinds"][key.KeyName] = final;
                             break;
                         }
                         i++;
@@ -179,7 +180,7 @@ ExitRssFeed = E
                 }
                 try
                 {
-                    parser.WriteFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), KeyData);
+                    parser.WriteFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), KeyData!);
                 }
                 catch (Exception)
                 {
@@ -193,9 +194,9 @@ ExitRssFeed = E
             }
 
         }
-        public static string ReadIni_KeyData(string section, string key)
+        public static string? ReadIni_KeyData(string section, string key)
         {
-            string key_value = KeyData[section][key];
+            string? key_value = KeyData?[section][key];
             return key_value;
         }
 
@@ -250,10 +251,10 @@ ExitRssFeed = E
                 // Remove useless keys from
                 foreach (string key in uselessKeysFromFile)
                 {
-                    KeyData["Keybinds"].RemoveKey(key);
+                    KeyData!["Keybinds"].RemoveKey(key);
                 }
 
-                parser.WriteFile(filePath, KeyData);
+                parser.WriteFile(filePath, KeyData!);
                 // Find missing keys
                 HashSet<string> missingKeys = new HashSet<string>(keysFromString);
                 missingKeys.ExceptWith(keysFromFile);
@@ -283,9 +284,12 @@ ExitRssFeed = E
             ReadNewKeybinds();
         }
         // Method to extract keys from IniData object
-        static HashSet<string> ExtractKeys(IniData iniData)
+        static HashSet<string> ExtractKeys(IniData? iniData)
         {
             HashSet<string> keys = new HashSet<string>();
+
+            if (iniData == null) 
+                return keys;
 
             foreach (var section in iniData.Sections)
             {
@@ -321,6 +325,7 @@ ExitRssFeed = E
             }
             string currentKeyPress = "";
 
+            if (KeyData?.Sections != null)
             foreach (var section in KeyData.Sections)
             {
                 foreach (var key in section.Keys)
@@ -331,7 +336,8 @@ ExitRssFeed = E
                     bool shiftModifier = false;
 
                     // Base value string
-                    string keyValue = key.Value;
+                    string? keyValue = key.Value;
+                    if (keyValue == null) continue;
 
                     // Parse spaces
                     keyValue = keyValue.Replace(" ", "");
@@ -503,66 +509,75 @@ ExitRssFeed = E
             int i = 0;
             int maximum = 15;
             Type type = typeof(Locale.EditKeysTexts);
-            foreach (var section in KeyData.Sections)
+            
+            if (KeyData?.Sections != null)
             {
-                foreach (var key in section.Keys)
+                foreach (var section in KeyData.Sections)
                 {
-                    string keyValue = key.Value;
-                    if (i >= ScrollIndexKeybind && results.Count != maximum)
+                    foreach (var key in section.Keys)
                     {
-                        results.Add(keyValue);
-                        var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
-                        if (field != null)
+                        string? keyValue = key.Value;
+                        if (keyValue == null) continue;
+                        
+                        if (i >= ScrollIndexKeybind && results.Count != maximum)
                         {
-                            var value = field?.GetValue(null)?.ToString();
-                            if (value != null)
+                            results.Add(keyValue);
+                            var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
+                            if (field != null)
                             {
-                                results_locale.Add(value);
+                                var value = field?.GetValue(null)?.ToString();
+                                if (value != null)
+                                {
+                                    results_locale.Add(value);
+                                }
+                                else
+                                {
+                                    results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
+                                }
                             }
                             else
                             {
                                 results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
-                        else
-                        {
-                            results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
-                        }
+                        i++;
                     }
-                    i++;
                 }
-            }
 
-            i = 0;
-            foreach (var section in KeyData.Sections)
-            {
-                foreach (var key in section.Keys)
+                i = 0;
+                foreach (var section in KeyData.Sections)
                 {
-                    string keyValue = key.Value;
-                    if (i < ScrollIndexKeybind && results.Count != maximum)
+                    foreach (var key in section.Keys)
                     {
-                        results.Add(keyValue);
-                        var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
-                        if (field != null)
+                        string? keyValue = key.Value;
+                        if (keyValue == null) continue;
+                        
+                        if (i < ScrollIndexKeybind && results.Count != maximum)
                         {
-                            var value = field?.GetValue(null)?.ToString();
-                            if (value != null)
+                            results.Add(keyValue);
+                            var field = type.GetField(key.KeyName, BindingFlags.Public | BindingFlags.Static);
+                            if (field != null)
                             {
-                                results_locale.Add(value);
+                                var value = field?.GetValue(null)?.ToString();
+                                if (value != null)
+                                {
+                                    results_locale.Add(value);
+                                }
+                                else
+                                {
+                                    results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
+                                }
                             }
                             else
                             {
                                 results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
                             }
                         }
-                        else
-                        {
-                            results_locale.Add(Locale.OutsideItems.ErrorLoadingDescription);
-                        }
+                        i++;
                     }
-                    i++;
                 }
             }
+            
             return (results.ToArray(), results_locale.ToArray()); // Convert List<string> to string[]
         }
 
@@ -645,7 +660,7 @@ ExitRssFeed = E
             {
                 return null;
             }
-            string key_value = LocaleData[section][key];
+            string? key_value = LocaleData[section][key];
             return key_value;
         }
 

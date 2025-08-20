@@ -7,6 +7,7 @@ using Spectre.Console;
 using System.Globalization;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Jammer
 {
@@ -234,7 +235,7 @@ namespace Jammer
             var defaultThemeJson = System.Text.Json.JsonSerializer.Deserialize<Theme>(defaultThemeWithoutComments);
 
             // loop through all properties in default theme
-            foreach (var property in defaultThemeJson.GetType().GetProperties())
+            foreach (var property in defaultThemeJson?.GetType().GetProperties() ?? new PropertyInfo[0])
             {
                 // if the property is null in the theme, add it
                 if (property.GetValue(theme) == null)
@@ -244,7 +245,7 @@ namespace Jammer
                 // if the property is a class, loop through all properties in the class
                 else if (property.GetValue(theme) != null)
                 {
-                    foreach (var subProperty in property.GetValue(defaultThemeJson).GetType().GetProperties())
+                    foreach (var subProperty in property.GetValue(defaultThemeJson)?.GetType().GetProperties() ?? new PropertyInfo[0])
                     {
                         // if the subProperty is null in the theme, add it
                         if (subProperty.GetValue(property.GetValue(theme)) == null)
@@ -319,22 +320,28 @@ namespace Jammer
             return false;
         }
 
-        public static string sColor(string str, string color)
+        public static string sColor(string? str, string? color)
         {
-            if (Play.EmptySpaces(str) || color == "")
+            if (str == null || Play.EmptySpaces(str) || color == null || color == "")
             {
-                return str;
+                return str ?? string.Empty;
             }
             return $"[{color}]{str}[/]";
         }
 
-        public static Color bColor(int[] color)
+        public static Color bColor(int[]? color)
         {
+            if (color == null || color.Length < 3)
+                return Color.White; // Default color
             return new Color((byte)color[0], (byte)color[1], (byte)color[2]);
         }
 
-        public static TableBorder bStyle(string style)
+        public static TableBorder bStyle(string? style)
         {
+            // Handle null input
+            if (style == null)
+                return TableBorder.None;
+
             // to lowercase
             style = style.ToLower();
 

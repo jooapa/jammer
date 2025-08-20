@@ -101,9 +101,9 @@ namespace Jammer
                                              null;
 
                             // Look for the media file in multiple possible locations
-                            var itemLink = itemNode.SelectSingleNode("enclosure")?.Attributes["url"]?.Value ?? // Standard RSS enclosure
-                                           itemNode.SelectSingleNode("media:content", namespaceManager)?.Attributes["url"]?.Value ?? // Media RSS
-                                           itemNode.SelectSingleNode("media:group/media:content", namespaceManager)?.Attributes["url"]?.Value ?? // Media RSS group
+                            var itemLink = itemNode.SelectSingleNode("enclosure")?.Attributes?["url"]?.Value ?? // Standard RSS enclosure
+                                           itemNode.SelectSingleNode("media:content", namespaceManager)?.Attributes?["url"]?.Value ?? // Media RSS
+                                           itemNode.SelectSingleNode("media:group/media:content", namespaceManager)?.Attributes?["url"]?.Value ?? // Media RSS group
                                            itemNode.SelectSingleNode("link")?.InnerText ?? // Fallback to <link>
                                            itemNode.SelectSingleNode("guid")?.InnerText ?? // GUID as a fallback
                                            "Unknown Link";

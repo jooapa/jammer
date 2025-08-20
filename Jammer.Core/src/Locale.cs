@@ -370,7 +370,7 @@ namespace Jammer
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {
-            string finalValue = IniFileHandling.ReadIni_LocaleData(key, value);
+            string? finalValue = IniFileHandling.ReadIni_LocaleData(key, value);
 
             if (finalValue == null || finalValue.Equals(""))
             {

@@ -682,7 +682,7 @@ namespace Jammer
                                     Description = null
                                 };
                             }
-                            string chosen = Message.CustomMenuSelect(_themes, Locale.Miscellaneous.ChooseTheme);
+                            string? chosen = Message.CustomMenuSelect(_themes, Locale.Miscellaneous.ChooseTheme);
 
 
                             if (chosen == "Jammer Default")
@@ -718,11 +718,11 @@ namespace Jammer
                             }
                             else
                             {
-                                Preferences.theme = chosen;
+                                Preferences.theme = chosen ?? "";
                             }
 
                             Preferences.SaveSettings();
-                            Themes.SetTheme(Preferences.theme);
+                            Themes.SetTheme(Preferences.theme ?? "");
                             drawWhole = true;
                             break;
                         case "Search":
@@ -754,7 +754,7 @@ namespace Jammer
 
                             
                             // convert all the rssfeeds to songs
-                            RootRssData rssFeed = Rss.GetRssData(Utils.RssFeedSong.URI).GetAwaiter().GetResult();
+                            RootRssData rssFeed = Rss.GetRssData(Utils.RssFeedSong.URI ?? "").GetAwaiter().GetResult();
                             // state = MainStates.next;
                             // break;
                             Utils.Songs = Array.Empty<string>();
@@ -796,14 +796,14 @@ namespace Jammer
                             }
 
                             // do the oppisite of what it does when going in
-                            Utils.Songs = Utils.BackUpSongs;
-                            Utils.CurrentPlaylist = Utils.BackUpPlaylistName;
+                            Utils.Songs = Utils.BackUpSongs ?? Array.Empty<string>();
+                            Utils.CurrentPlaylist = Utils.BackUpPlaylistName ?? "";
                             Utils.CurrentSongIndex = Utils.lastPositionInPreviousPlaylist;
                             Utils.CurrentPlaylistSongIndex = Utils.lastPositionInPreviousPlaylist;
 
                             Funcs.ResetRssExitVariables();
 
-                            Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
+                            Play.PlaySong(Utils.Songs ?? Array.Empty<string>(), Utils.CurrentSongIndex);
 
                             break;
                         case "ChangeSoundFont":

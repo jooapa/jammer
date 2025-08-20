@@ -11,8 +11,8 @@ namespace Jammer.Components
         public Table Render(LayoutConfig layout)
         {
             var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.GeneralSettings?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.GeneralSettings?.BorderColor ?? new int[] { 255, 255, 255 }));
             table.Width = layout.ConsoleWidth;
 
             BuildSettingsContent(table);
@@ -29,9 +29,9 @@ namespace Jammer.Components
 
             // Add table headers
             table.AddColumns(
-                Themes.sColor(Locale.Settings._Settings, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
-                Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
-                Themes.sColor(Locale.Settings.ChangeValue, Themes.CurrentTheme.GeneralSettings.HeaderTextColor)
+                Themes.sColor(Locale.Settings._Settings, Themes.CurrentTheme?.GeneralSettings?.SettingTextColor ?? "white"),
+                Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme?.GeneralSettings?.HeaderTextColor ?? "white"),
+                Themes.sColor(Locale.Settings.ChangeValue, Themes.CurrentTheme?.GeneralSettings?.HeaderTextColor ?? "white")
             );
 
             // Add settings rows
@@ -55,22 +55,22 @@ namespace Jammer.Components
         private void AddSettingRow(Table table, string settingName, string currentValue, string changeKey, string changeDescription)
         {
             table.AddRow(
-                Themes.sColor(settingName, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
-                Themes.sColor(currentValue, Themes.CurrentTheme.GeneralSettings.SettingValueColor),
-                Themes.sColor($"{changeKey} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) +
-                Themes.sColor(changeDescription, Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor)
+                Themes.sColor(settingName, Themes.CurrentTheme?.GeneralSettings?.SettingTextColor ?? "white"),
+                Themes.sColor(currentValue, Themes.CurrentTheme?.GeneralSettings?.SettingValueColor ?? "white"),
+                Themes.sColor($"{changeKey} ", Themes.CurrentTheme?.GeneralSettings?.SettingChangeValueValueColor ?? "white") +
+                Themes.sColor(changeDescription, Themes.CurrentTheme?.GeneralSettings?.SettingChangeValueColor ?? "white")
             );
         }
 
         public Table CreateNavigationTable()
         {
             var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
+            table.Border = Themes.bStyle(Themes.CurrentTheme?.GeneralSettings?.BorderStyle ?? "rounded");
+            table.BorderColor(Themes.bColor(Themes.CurrentTheme?.GeneralSettings?.BorderColor ?? new int[] { 255, 255, 255 }));
 
             table.AddColumn(
                 Locale.Help.ToMainMenu + ": " +
-                Themes.sColor(Keybindings.ToMainMenu, Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)
+                Themes.sColor(Keybindings.ToMainMenu, Themes.CurrentTheme?.GeneralSettings?.SettingChangeValueValueColor ?? "white")
             );
 
             return table;

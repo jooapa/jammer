@@ -76,14 +76,14 @@ namespace Jammer
         {
             if (Utils.Songs.Length == 0)
             {
-                string[] returnstring = { Themes.sColor("No songs in playlist", Themes.CurrentTheme.Playlist.InfoColor) }; // "No songs in playlist"
+                string[] returnstring = { Themes.sColor("No songs in playlist", Themes.CurrentTheme?.Playlist?.InfoColor ?? "white") }; // "No songs in playlist"
                 return returnstring;
             }
 
             List<string> results = new()
             {
-                Themes.sColor($"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}", Themes.CurrentTheme.Playlist.InfoColor),
-                Themes.sColor($"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.DeleteSongWith} {Keybindings.DeleteCurrentSong}.", Themes.CurrentTheme.Playlist.InfoColor),
+                Themes.sColor($"{Locale.OutsideItems.CurrPlaylistView} {Keybindings.PlaylistViewScrollup}, {Keybindings.PlaylistViewScrolldown}", Themes.CurrentTheme?.Playlist?.InfoColor ?? "white"),
+                Themes.sColor($"{Locale.OutsideItems.PlaySongWith} {Keybindings.Choose}. {Locale.OutsideItems.DeleteSongWith} {Keybindings.DeleteCurrentSong}.", Themes.CurrentTheme?.Playlist?.InfoColor ?? "white"),
             };
 
             int maximum = 7;
@@ -99,27 +99,27 @@ namespace Jammer
                     if (i == Utils.CurrentSongIndex)
                     {
                         // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme?.WholePlaylist?.CurrentSongColor ?? "green"));
                     }
                     else if (i == Utils.CurrentPlaylistSongIndex)
                     {
                         // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme?.WholePlaylist?.ChoosingColor ?? "yellow"));
                     }
                     else if (Utils.CurrentPlaylistSongIndex <= 3)
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme?.WholePlaylist?.NormalSongColor ?? "white"));
                     }
                     else if (i >= Utils.CurrentPlaylistSongIndex - 2 && i < Utils.CurrentPlaylistSongIndex + 3)
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme?.WholePlaylist?.NormalSongColor ?? "white"));
                     }
                     else if (i >= Utils.Songs.Length - (maximum - results.Count))
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme?.WholePlaylist?.NormalSongColor ?? "white"));
                     }
                 }
             }
@@ -310,14 +310,14 @@ namespace Jammer
 
             // Apply colors
             currentSong = Themes.sColor(currentSong, Utils.Songs.Length == 0
-                ? Themes.CurrentTheme.GeneralPlaylist.NoneSongColor
-                : Themes.CurrentTheme.GeneralPlaylist.CurrentSongColor);
+                ? Themes.CurrentTheme?.GeneralPlaylist?.NoneSongColor ?? "gray"
+                : Themes.CurrentTheme?.GeneralPlaylist?.CurrentSongColor ?? "green");
             prevSong = Themes.sColor(prevSong, Utils.CurrentSongIndex > 0
-                ? Themes.CurrentTheme.GeneralPlaylist.PreviousSongColor
-                : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+                ? Themes.CurrentTheme?.GeneralPlaylist?.PreviousSongColor ?? "blue"
+                : Themes.CurrentTheme?.GeneralPlaylist?.NoneSongColor ?? "gray");
             nextSong = Themes.sColor(nextSong, Utils.CurrentSongIndex < Utils.Songs.Length - 1
-                ? Themes.CurrentTheme.GeneralPlaylist.NextSongColor
-                : Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+                ? Themes.CurrentTheme?.GeneralPlaylist?.NextSongColor ?? "yellow"
+                : Themes.CurrentTheme?.GeneralPlaylist?.NoneSongColor ?? "gray");
 
             prevSong = RemoveControlChars(prevSong);
             currentSong = RemoveControlChars(currentSong);
@@ -435,7 +435,7 @@ namespace Jammer
 
 
             // convert all the rssfeeds to songs
-            RootRssData rssFeed = await Rss.GetRssData(Utils.RssFeedSong.URI);
+            RootRssData rssFeed = await Rss.GetRssData(Utils.RssFeedSong.URI ?? "");
             // state = MainStates.next;
             // break;
             Utils.Songs = Array.Empty<string>();
@@ -467,7 +467,7 @@ namespace Jammer
 
             if (getColor)
             {
-                return Themes.sColor(timeString, Themes.CurrentTheme.Time.TimeColor);
+                return Themes.sColor(timeString, Themes.CurrentTheme?.Time?.TimeColor ?? "white");
             }
             return timeString;
         }
@@ -764,13 +764,13 @@ namespace Jammer
 
             foreach (var pattern in patternsToRemove)
             {
-                title = Regex.Replace(title, pattern, "").Trim();
-                author = Regex.Replace(author, pattern, "").Trim();
+                title = Regex.Replace(title ?? "", pattern, "").Trim();
+                author = Regex.Replace(author ?? "", pattern, "").Trim();
             }
 
             // Remove multiple spaces
-            title = Regex.Replace(title, @"\s+", " ");
-            author = Regex.Replace(author, @"\s+", " ");
+            title = Regex.Replace(title ?? "", @"\s+", " ");
+            author = Regex.Replace(author ?? "", @"\s+", " ");
 
             song.Title = title;
             song.Author = author;
@@ -781,17 +781,17 @@ namespace Jammer
 
     public class YTSearchResult
     {
-        public string Id { get; set; }
-        public string Title { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
         public TimeSpan? Duration { get; set; }
-        public string Type { get; set; }
-        public string Author { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
     }
 
     public class SCSearchResult
     {
-        public string Url { get; set; }
-        public string Title { get; set; }
-        public string Author { get; set; }
+        public string Url { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
     }
 }

@@ -40,6 +40,6 @@ if [ ! -f ./appimagetool-x86_64.AppImage ]; then
         chmod 700 ./appimagetool-x86_64.AppImage
 fi
 
-ARCH=x86_64 ./appimagetool-x86_64.AppImage jammer.AppDir jammer-$(cat VERSION)-x86_64.AppImage
+ARCH=x86_64 ./appimagetool-x86_64.AppImage --no-appstream jammer.AppDir jammer-$(cat VERSION)-x86_64.AppImage
 
 #./jammer-$(cat VERSION)-x86_64.AppImage 
