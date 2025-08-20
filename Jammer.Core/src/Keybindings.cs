@@ -163,6 +163,7 @@ namespace Jammer
             public const ConsoleKey FetchClientID = ConsoleKey.J;
             public const ConsoleKey KeyModifierHelper = ConsoleKey.K;
             public const ConsoleKey SkipErrors = ConsoleKey.L;
+            public const ConsoleKey TogglePlaylistPosition = ConsoleKey.M;
         }
     }
 }

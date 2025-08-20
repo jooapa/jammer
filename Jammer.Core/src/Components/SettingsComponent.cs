@@ -43,12 +43,13 @@ namespace Jammer.Components
             // Add additional settings
             AddSettingRow(table, "Load Effects", "", Keybindings.SettingsKeys.LoadEffects.ToString(), "To Load Effects settings");
             AddSettingRow(table, "Toggle Media Buttons", Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.ToggleMediaButtons.ToString(), "To Toggle Media Buttons");
-            AddSettingRow(table, "Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.ToggleVisualizer.ToString(), "To Toggle Visualizer (change visualizer settings in Visualizer.ini)");
+            AddSettingRow(table, "Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.ToggleVisualizer.ToString(), "To Toggle Visualizer");
             AddSettingRow(table, "Load Visualizer", "", Keybindings.SettingsKeys.LoadVisualizer.ToString(), "To Load Visualizer settings");
             AddSettingRow(table, "Set Soundcloud Client ID", "", Keybindings.SettingsKeys.SoundCloudClientID.ToString(), "To Set Soundcloud Client ID");
-            AddSettingRow(table, "Fetch Client ID", "", Keybindings.SettingsKeys.FetchClientID.ToString(), "To Fetch and Set Soundcloud Client ID");
-            AddSettingRow(table, "Toggle Key Mofifier Helpers", Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.KeyModifierHelper.ToString(), "To Toggle Key Modifier Helpers ie. E -> Shift + E. (restart required)");
-            AddSettingRow(table, "Toggle Skip Errors", Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.SkipErrors.ToString(), "To Toggle Skip Errors (goes to new song if error in playing)");
+            AddSettingRow(table, "Fetch Client ID", "", Keybindings.SettingsKeys.FetchClientID.ToString(), "To Fetch Soundcloud Client ID");
+            AddSettingRow(table, "Toggle Key Mofifier Helpers", Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.KeyModifierHelper.ToString(), "To Toggle Key Helpers (restart required)");
+            AddSettingRow(table, "Toggle Skip Errors", Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.SkipErrors.ToString(), "To Toggle Skip Errors");
+            AddSettingRow(table, "Toggle Playlist Position", Preferences.showPlaylistPosition ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.TogglePlaylistPosition.ToString(), "To Toggle Playlist Position");
         }
 
         private void AddSettingRow(Table table, string settingName, string currentValue, string changeKey, string changeDescription)

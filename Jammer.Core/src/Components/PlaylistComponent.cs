@@ -145,13 +145,14 @@ namespace Jammer.Components
             }
             else
             {
+                string playlistName = Funcs.GetSongWithDots(
+                    Playlists.GetJammerPlaylistVisualPath(_currentPlaylist),
+                    layout.CalculatePlaylistNameWidth());
+                
                 table.AddColumn(
                     Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(
-                        Funcs.GetSongWithDots(
-                            Playlists.GetJammerPlaylistVisualPath(_currentPlaylist),
-                            layout.CalculatePlaylistNameWidth()),
-                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                    Themes.sColor(playlistName, Themes.CurrentTheme.Playlist.PlaylistNameColor) +
+                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme.Playlist.RandomTextColor)
                 );
                 table.AddRow(Funcs.GetPrevCurrentNextSong());
             }
@@ -165,13 +166,14 @@ namespace Jammer.Components
             }
             else
             {
+                string playlistName = Funcs.GetSongWithDots(
+                    Playlists.GetJammerPlaylistVisualPath(_currentPlaylist),
+                    layout.CalculatePlaylistNameWidth());
+                
                 table.AddColumn(
                     Themes.sColor(Locale.Player.Playlist, Themes.CurrentTheme.Playlist.RandomTextColor) + " " +
-                    Themes.sColor(
-                        Funcs.GetSongWithDots(
-                            Playlists.GetJammerPlaylistVisualPath(_currentPlaylist),
-                            layout.CalculatePlaylistNameWidth()),
-                        Themes.CurrentTheme.Playlist.PlaylistNameColor)
+                    Themes.sColor(playlistName, Themes.CurrentTheme.Playlist.PlaylistNameColor) +
+                    Themes.sColor(Funcs.GetPlaylistPositionText(playlistName), Themes.CurrentTheme.Playlist.RandomTextColor)
                 );
             }
         }

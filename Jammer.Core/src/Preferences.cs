@@ -31,6 +31,7 @@ namespace Jammer
         public static string clientID = GetClientId();
         public static bool isModifierKeyHelper = GetModifierKeyHelper();
         public static bool isSkipErrors = GetIsSkipErrors();
+        public static bool showPlaylistPosition = GetShowPlaylistPosition();
 
         private static bool GetModifierKeyHelper()
         {
@@ -55,6 +56,21 @@ namespace Jammer
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
                 return settings?.isIgnoreErrors ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static bool GetShowPlaylistPosition()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.showPlaylistPosition ?? false;
             }
             else
             {
@@ -139,6 +155,7 @@ namespace Jammer
             settings.clientID = clientID;
             settings.modifierKeyHelper = isModifierKeyHelper;
             settings.isIgnoreErrors = isSkipErrors;
+            settings.showPlaylistPosition = showPlaylistPosition;
 
             string jsonString = JsonSerializer.Serialize(settings);
             // delete file if exists
@@ -498,6 +515,7 @@ namespace Jammer
             public string? clientID { get; set; }
             public bool? modifierKeyHelper { get; set; }
             public bool? isIgnoreErrors { get; set; }
+            public bool? showPlaylistPosition { get; set; }
         }
     }
 }

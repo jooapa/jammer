@@ -373,6 +373,11 @@ namespace Jammer
                             Preferences.SaveSettings();
                             drawWhole = true;
                             break;
+                        case Keybindings.SettingsKeys.TogglePlaylistPosition:
+                            Preferences.showPlaylistPosition = !Preferences.showPlaylistPosition;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
                     }
 
                     // able to return to default view

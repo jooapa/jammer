@@ -354,6 +354,70 @@ namespace Jammer
             return new string(input.Where(c => !char.IsControl(c)).ToArray());
         }
 
+        public static string GetPlaylistPositionText(string processedPlaylistName = "")
+        {
+            if (Utils.Songs.Length == 0 || !Preferences.showPlaylistPosition)
+            {
+                return "";
+            }
+            
+            int currentPosition = Utils.CurrentSongIndex + 1; // Convert to 1-based indexing
+            int totalSongs = Utils.Songs.Length;
+            string positionText = $"{currentPosition}/{totalSongs}";
+            
+            // Use the same calculation as PadAuthorToRight
+            int strpadding = 9; // Length of "playlist " prefix
+            int titleWidth = GetTerminalWidth(processedPlaylistName);
+            
+            // Use exact same formula as PadAuthorToRight: consoleWidth - (strpadding + titleWidth + 12)
+            int remainingSpace = Start.consoleWidth - (strpadding + titleWidth + 12);
+            
+            if (remainingSpace <= 0) return ""; // No space available
+            
+            // Truncate position text with ... if it doesn't fit, similar to GetSongWithDots
+            int positionWidth = GetTerminalWidth(positionText);
+            
+            if (positionWidth > remainingSpace)
+            {
+                // Try to fit "...X/Y" format where we truncate numbers if needed
+                string minPositionText = "...1/1"; // Minimum expected format
+                if (GetTerminalWidth(minPositionText) > remainingSpace)
+                {
+                    return ""; // Not enough space even for minimal format
+                }
+                
+                // Truncate the position text to fit
+                string truncatedPosition = GetPositionWithDots(positionText, remainingSpace);
+                return new string(' ', remainingSpace - GetTerminalWidth(truncatedPosition)) + truncatedPosition;
+            }
+            
+            return new string(' ', remainingSpace - positionWidth) + positionText;
+        }
+        
+        private static string GetPositionWithDots(string positionText, int maxLength)
+        {
+            // If original fits, return it
+            if (GetTerminalWidth(positionText) <= maxLength)
+            {
+                return positionText;
+            }
+            
+            // Try "...X/Y" format by progressively truncating
+            for (int len = maxLength; len >= 4; len--) // Minimum "...1" is 4 chars
+            {
+                if (len >= positionText.Length) continue;
+                
+                string truncated = "..." + positionText.Substring(positionText.Length - (len - 3));
+                if (GetTerminalWidth(truncated) <= maxLength)
+                {
+                    return truncated;
+                }
+            }
+            
+            // Last resort - just return dots
+            return "...";
+        }
+
         public static async Task ContinueToRss() {
             // when opening the new view its actually gonna save the playlist aand come back to it to the same position it left.
             Utils.lastPositionInPreviousPlaylist = Utils.CurrentSongIndex;
