@@ -246,7 +246,7 @@ namespace Jammer
                     switch (key.Key)
                     {
                         case Keybindings.SettingsKeys.ForwardSecondAmount:
-                            string forwardSecondsString = Message.Input(Locale.OutsideItems.EnterForwardSeconds, "");
+                            string forwardSecondsString = Message.Input("", Locale.OutsideItems.EnterForwardSeconds);
                             if (int.TryParse(forwardSecondsString, out int forwardSeconds))
                             {
                                 Preferences.forwardSeconds = forwardSeconds;
@@ -262,7 +262,7 @@ namespace Jammer
                             break;
                         case Keybindings.SettingsKeys.BackwardSecondAmount:
 
-                            string rewindSecondsString = Message.Input(Locale.OutsideItems.EnterBackwardSeconds, "");
+                            string rewindSecondsString = Message.Input("", Locale.OutsideItems.EnterBackwardSeconds);
                             if (int.TryParse(rewindSecondsString, out int rewindSeconds))
                             {
                                 Preferences.rewindSeconds = rewindSeconds;
@@ -275,7 +275,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case Keybindings.SettingsKeys.ChangeVolumeAmount:
-                            string volumeChangeString = Jammer.Message.Input(Locale.OutsideItems.EnterVolumeChange, "");
+                            string volumeChangeString = Jammer.Message.Input("", Locale.OutsideItems.EnterVolumeChange);
                             if (int.TryParse(volumeChangeString, out int volumeChange))
                             {
                                 float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
@@ -370,6 +370,11 @@ namespace Jammer
                             break;
                         case Keybindings.SettingsKeys.SkipErrors:
                             Preferences.isSkipErrors = !Preferences.isSkipErrors;
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
+                        case Keybindings.SettingsKeys.TogglePlaylistPosition:
+                            Preferences.showPlaylistPosition = !Preferences.showPlaylistPosition;
                             Preferences.SaveSettings();
                             drawWhole = true;
                             break;
