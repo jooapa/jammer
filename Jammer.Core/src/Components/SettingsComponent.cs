@@ -46,7 +46,7 @@ namespace Jammer.Components
             AddSettingRow(table, "Toggle Visualizer", Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.ToggleVisualizer.ToString(), "To Toggle Visualizer");
             AddSettingRow(table, "Load Visualizer", "", Keybindings.SettingsKeys.LoadVisualizer.ToString(), "To Load Visualizer settings");
             AddSettingRow(table, "Set Soundcloud Client ID", "", Keybindings.SettingsKeys.SoundCloudClientID.ToString(), "To Set Soundcloud Client ID");
-            AddSettingRow(table, "Fetch Client ID", "", Keybindings.SettingsKeys.FetchClientID.ToString(), "To Fetch Soundcloud Client ID");
+            AddSettingRow(table, "Fetch Client ID", "", Keybindings.SettingsKeys.FetchClientID.ToString(), "To Fetch and set Soundcloud Client ID");
             AddSettingRow(table, "Toggle Key Mofifier Helpers", Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.KeyModifierHelper.ToString(), "To Toggle Key Helpers (restart required)");
             AddSettingRow(table, "Toggle Skip Errors", Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.SkipErrors.ToString(), "To Toggle Skip Errors");
             AddSettingRow(table, "Toggle Playlist Position", Preferences.showPlaylistPosition ? Locale.Miscellaneous.True : Locale.Miscellaneous.False, Keybindings.SettingsKeys.TogglePlaylistPosition.ToString(), "To Toggle Playlist Position");
