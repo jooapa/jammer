@@ -834,8 +834,9 @@ namespace Jammer
                 if (Funcs.IsCurrentSongARssFeed())
                 {
                     Utils.CurSongError = false;
-                    Utils.CustomTopErrorMessage = "RSS feed can be opened, that will open a new view";
-                    
+                    Utils.CustomTopErrorMessage = "RSS feed can be opened, that will open a new view." +
+                    (Preferences.rssSkipAfterTime ? " Will be skipped after " + Preferences.rssSkipAfterTimeValue.ToString() + " seconds." : "") + "";
+
                     // Initialize RSS auto-skip timer if enabled
                     if (Preferences.rssSkipAfterTime)
                     {
