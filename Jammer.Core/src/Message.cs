@@ -63,7 +63,9 @@ namespace Jammer
                 string selDesc = sel?.Description ?? "";
 
                 infoTable.AddRow(Markup.Escape(selAuthor), Markup.Escape(selDesc));
-                AnsiConsole.Write(infoTable);
+                // dont write if no author or desc
+                if (!string.IsNullOrEmpty(selAuthor) || !string.IsNullOrEmpty(selDesc))
+                    AnsiConsole.Write(infoTable);
 
                 // Read input
                 keyInfo = Console.ReadKey(true);
