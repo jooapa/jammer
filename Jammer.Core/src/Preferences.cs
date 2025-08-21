@@ -32,6 +32,8 @@ namespace Jammer
         public static bool isModifierKeyHelper = GetModifierKeyHelper();
         public static bool isSkipErrors = GetIsSkipErrors();
         public static bool showPlaylistPosition = GetShowPlaylistPosition();
+        public static bool rssSkipAfterTime = GetRssSkipAfterTime();
+        public static int rssSkipAfterTimeValue = GetRssSkipAfterTimeValue();
 
         private static bool GetModifierKeyHelper()
         {
@@ -75,6 +77,36 @@ namespace Jammer
             else
             {
                 return false;
+            }
+        }
+
+        private static bool GetRssSkipAfterTime()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.rssSkipAfterTime ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static int GetRssSkipAfterTimeValue()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.rssSkipAfterTimeValue ?? 5;
+            }
+            else
+            {
+                return 5;
             }
         }
 
@@ -156,8 +188,15 @@ namespace Jammer
             settings.modifierKeyHelper = isModifierKeyHelper;
             settings.isIgnoreErrors = isSkipErrors;
             settings.showPlaylistPosition = showPlaylistPosition;
+            settings.rssSkipAfterTime = rssSkipAfterTime;
+            settings.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
 
-            string jsonString = JsonSerializer.Serialize(settings);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            
+            string jsonString = JsonSerializer.Serialize(settings, options);
             // delete file if exists
             if (File.Exists(JammerPath))
             {
@@ -496,26 +535,28 @@ namespace Jammer
 
         public class Settings
         {
-            public LoopType LoopType { get; set; }
-            public float Volume { get; set; }
-            public float OldVolume { get; set; }
-            public bool isMuted { get; set; }
-            public int forwardSeconds { get; set; }
-            public int rewindSeconds { get; set; }
+            public LoopType? LoopType { get; set; }
+            public float? Volume { get; set; }
+            public float? OldVolume { get; set; }
+            public bool? isMuted { get; set; }
+            public int? forwardSeconds { get; set; }
+            public int? rewindSeconds { get; set; }
             public float changeVolumeBy { get; set; }
-            public bool isShuffle { get; set; }
+            public bool? isShuffle { get; set; }
             public bool? isMediaButtons { get; set; }
-            public bool isAutoSave { get; set; }
+            public bool? isAutoSave { get; set; }
             public string? localeLanguage { get; set; }
             // old songs path, used in the migration process, if its set already
             public string? songsPath { get; set; }
-            public bool isVisualizer { get; set; }
+            public bool? isVisualizer { get; set; }
             public string? theme { get; set; }
             public string? currentSf2 { get; set; }
             public string? clientID { get; set; }
             public bool? modifierKeyHelper { get; set; }
             public bool? isIgnoreErrors { get; set; }
             public bool? showPlaylistPosition { get; set; }
+            public bool? rssSkipAfterTime { get; set; }
+            public int? rssSkipAfterTimeValue { get; set; }
         }
     }
 }

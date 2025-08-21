@@ -175,6 +175,18 @@ namespace Jammer
                             Utils.CurrentPlaylistSongIndex -= 1;
                         }
                     }
+                    
+                    if (key.Key == ConsoleKey.Home)
+                    {
+                        Action = "";
+                        Utils.CurrentPlaylistSongIndex = 0;
+                    }
+                    else if (key.Key == ConsoleKey.End)
+                    {
+                        Action = "";
+                        Utils.CurrentPlaylistSongIndex = Utils.Songs.Length - 1;
+                    }
+
                     if (Action == "Choose")
                     {
                         // EDIT MENU
@@ -243,141 +255,178 @@ namespace Jammer
                 }
                 if (playerView.Equals("settings"))
                 {
-                    switch (key.Key)
+                    // Handle settings page navigation first
+                    if (key.Key == ConsoleKey.PageDown || key.Key == ConsoleKey.RightArrow)
                     {
-                        case Keybindings.SettingsKeys.ForwardSecondAmount:
-                            string forwardSecondsString = Message.Input("", Locale.OutsideItems.EnterForwardSeconds);
-                            if (int.TryParse(forwardSecondsString, out int forwardSeconds))
-                            {
-                                Preferences.forwardSeconds = forwardSeconds;
-                                Preferences.SaveSettings();
-                            }
-                            else
-                            {
+                        SettingsComponent.NextSettingsPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (key.Key == ConsoleKey.PageUp || key.Key == ConsoleKey.LeftArrow)
+                    {
+                        SettingsComponent.PreviousSettingsPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else
+                    {
+                        switch (key.Key)
+                        {
+                            case Keybindings.SettingsKeys.ForwardSecondAmount:
+                                string forwardSecondsString = Message.Input("", Locale.OutsideItems.EnterForwardSeconds);
+                                if (int.TryParse(forwardSecondsString, out int forwardSeconds))
+                                {
+                                    Preferences.forwardSeconds = forwardSeconds;
+                                    Preferences.SaveSettings();
+                                }
+                                else
+                                {
 
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                            }
+                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                }
 
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.BackwardSecondAmount:
-
-                            string rewindSecondsString = Message.Input("", Locale.OutsideItems.EnterBackwardSeconds);
-                            if (int.TryParse(rewindSecondsString, out int rewindSeconds))
-                            {
-                                Preferences.rewindSeconds = rewindSeconds;
-                                Preferences.SaveSettings();
-                            }
-                            else
-                            {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                            }
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.ChangeVolumeAmount:
-                            string volumeChangeString = Jammer.Message.Input("", Locale.OutsideItems.EnterVolumeChange);
-                            if (int.TryParse(volumeChangeString, out int volumeChange))
-                            {
-                                float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
-                                Preferences.changeVolumeBy = changeVolumeByFloat;
-                                Preferences.SaveSettings();
-                            }
-                            else
-                            {
-                                Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                            }
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.SoundCloudClientID:
-                            if (Preferences.clientID == "")
-                            {
-
-                            }
-                            SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
-
-                            string soundcloudClientID = Jammer.Message.Input(
-                                "Enter your Soundcloud Client ID:",
-                                "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" +
-                                "type 'cancel' to cancel" + "\n" +
-                                "type 'reset' to reset to default"
-                            );
-
-                            if (soundcloudClientID == "cancel")
-                            {
                                 drawWhole = true;
                                 break;
-                            }
+                            case Keybindings.SettingsKeys.BackwardSecondAmount:
 
-                            if (soundcloudClientID == "reset")
-                            {
-                                Preferences.clientID = "";
+                                string rewindSecondsString = Message.Input("", Locale.OutsideItems.EnterBackwardSeconds);
+                                if (int.TryParse(rewindSecondsString, out int rewindSeconds))
+                                {
+                                    Preferences.rewindSeconds = rewindSeconds;
+                                    Preferences.SaveSettings();
+                                }
+                                else
+                                {
+                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                }
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.ChangeVolumeAmount:
+                                string volumeChangeString = Jammer.Message.Input("", Locale.OutsideItems.EnterVolumeChange);
+                                if (int.TryParse(volumeChangeString, out int volumeChange))
+                                {
+                                    float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
+                                    Preferences.changeVolumeBy = changeVolumeByFloat;
+                                    Preferences.SaveSettings();
+                                }
+                                else
+                                {
+                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                }
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.SoundCloudClientID:
+                                if (Preferences.clientID == "")
+                                {
+
+                                }
+                                SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
+
+                                string soundcloudClientID = Jammer.Message.Input(
+                                    "Enter your Soundcloud Client ID:",
+                                    "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" +
+                                    "type 'cancel' to cancel" + "\n" +
+                                    "type 'reset' to reset to default"
+                                );
+
+                                if (soundcloudClientID == "cancel")
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
+
+                                if (soundcloudClientID == "reset")
+                                {
+                                    Preferences.clientID = "";
+                                    Preferences.SaveSettings();
+                                    drawWhole = true;
+                                    break;
+                                }
+
+                                Preferences.clientID = soundcloudClientID;
+                                Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+
+                                Preferences.SaveSettings();
+
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.Autosave:
+                                Preferences.isAutoSave = !Preferences.isAutoSave;
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
-                            }
-
-                            Preferences.clientID = soundcloudClientID;
-                            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
-
-                            Preferences.SaveSettings();
-
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.Autosave:
-                            Preferences.isAutoSave = !Preferences.isAutoSave;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.LoadEffects:
-                            Effects.ReadEffects();
-                            if (Utils.Songs.Length > 0)
-                            {
-                                Play.SetEffectsToChannel();
-                            }
-                            break;
-                        case Keybindings.SettingsKeys.ToggleMediaButtons:
-                            Preferences.isMediaButtons = !Preferences.isMediaButtons;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.ToggleVisualizer:
-                            Preferences.isVisualizer = !Preferences.isVisualizer;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.LoadVisualizer:
-                            Visual.Read();
-                            break;
-                        case Keybindings.SettingsKeys.KeyModifierHelper:
-                            Preferences.isModifierKeyHelper = !Preferences.isModifierKeyHelper;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.FetchClientID:
-                            string clientID = await SCClientIdFetcher.GetClientId();
-                            if (string.IsNullOrEmpty(clientID))
-                            {
-                                Message.Data("Client ID not found", "Error :(", true, false);
+                            case Keybindings.SettingsKeys.LoadEffects:
+                                Effects.ReadEffects();
+                                if (Utils.Songs.Length > 0)
+                                {
+                                    Play.SetEffectsToChannel();
+                                }
+                                break;
+                            case Keybindings.SettingsKeys.ToggleMediaButtons:
+                                Preferences.isMediaButtons = !Preferences.isMediaButtons;
+                                Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
-       
-                            }
-                            Preferences.clientID = clientID;
-                            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
-                            Preferences.SaveSettings();
-                            Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.SkipErrors:
-                            Preferences.isSkipErrors = !Preferences.isSkipErrors;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
-                        case Keybindings.SettingsKeys.TogglePlaylistPosition:
-                            Preferences.showPlaylistPosition = !Preferences.showPlaylistPosition;
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
+                            case Keybindings.SettingsKeys.ToggleVisualizer:
+                                Preferences.isVisualizer = !Preferences.isVisualizer;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.LoadVisualizer:
+                                Visual.Read();
+                                break;
+                            case Keybindings.SettingsKeys.KeyModifierHelper:
+                                Preferences.isModifierKeyHelper = !Preferences.isModifierKeyHelper;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.FetchClientID:
+                                string clientID = await SCClientIdFetcher.GetClientId();
+                                if (string.IsNullOrEmpty(clientID))
+                                {
+                                    Message.Data("Client ID not found", "Error :(", true, false);
+                                    drawWhole = true;
+                                    break;
+
+                                }
+                                Preferences.clientID = clientID;
+                                Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+                                Preferences.SaveSettings();
+                                Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.SkipErrors:
+                                Preferences.isSkipErrors = !Preferences.isSkipErrors;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.TogglePlaylistPosition:
+                                Preferences.showPlaylistPosition = !Preferences.showPlaylistPosition;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.rssSkipAfterTime:
+                                Preferences.rssSkipAfterTime = !Preferences.rssSkipAfterTime;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.rssSkipAfterTimeValue:
+                                string rssSkipAfterTimeValueString = Message.Input(
+                                    "",
+                                    "Enter the amount of seconds after rss feed is skipped. Current: " + Preferences.rssSkipAfterTimeValue.ToString() + " seconds."
+                                );
+                                if (int.TryParse(rssSkipAfterTimeValueString, out int rssSkipAfterTimeValue))
+                                {
+                                    Preferences.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
+                                    Preferences.SaveSettings();
+                                }
+                                else
+                                {
+                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                }
+                                drawWhole = true;
+                                break;
+                        }
                     }
 
                     // able to return to default view
@@ -549,7 +598,6 @@ namespace Jammer
                             var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
 
                             string[] name = new[] {
-                                currentSongName, // Pre-fill with current song name
                                 ogSongTitle,
                                 smartAuthor + " - " + smartTitle,
                                 smartTitle + " - " + smartAuthor,
@@ -1004,6 +1052,15 @@ namespace Jammer
                 }
             }
         }
+
+        public static void ClearKeyboardBuffer()
+        {
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true); // Read and discard the key
+            }
+        }
+
         public static async void InitializeSharpHook()
         {
             var hook = new TaskPoolGlobalHook();

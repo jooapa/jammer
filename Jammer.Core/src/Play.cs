@@ -27,6 +27,9 @@ namespace Jammer
         public static int songsThatWereNotFound = 0;
         public static bool showNoSongsFoundMessage = true;
 
+        // RSS auto-skip timer tracking
+        private static DateTime? rssStartTime = null;
+
         public static bool isValidExtension(string checkingExt, string[] exts)
         {
             // if checkingExt is in exts
@@ -77,6 +80,9 @@ namespace Jammer
             Utils.CurrentSongIndex = Currentindex;
             Utils.CurrentPlaylistSongIndex = Currentindex;
 
+            // Reset RSS timer for new song
+            rssStartTime = null;
+
             // get song details
             // Utils.Song song = UtilFuncs.GetSongDetails(songs[Utils.currentSongIndex]);
 
@@ -90,6 +96,8 @@ namespace Jammer
             string fullPathToFile = "";
 
             song.ExtractSongDetails();
+
+            Start.ClearKeyboardBuffer();
 
             // check if file is a local
             if (System.IO.File.Exists(song.URI))
@@ -285,6 +293,7 @@ namespace Jammer
                 }
                 else
                 {
+                    Start.ClearKeyboardBuffer();
                     StartPlaying();
                 }
 
@@ -598,27 +607,30 @@ namespace Jammer
             }
         }
 
-        public static void MaybeNextSong()
+        public static void MaybeNextSong(bool forceNoLoop = false)
         {
-            switch (Preferences.loopType)
+            LoopType loopType = Preferences.loopType;
+            if (forceNoLoop)
+            {
+                loopType = LoopType.None;
+            }
+
+            Start.state = MainStates.play;
+
+            switch (loopType)
             {
                 case LoopType.Always:
                     Bass.ChannelSetPosition(Utils.CurrentMusic, 0);
                     Bass.ChannelPlay(Utils.CurrentMusic);
                     PlayDrawReset();
                     break;
-                    
+
                 case LoopType.Once:
                     if (Utils.Songs.Length == 1)
                     {
                         Bass.ChannelSetPosition(Utils.CurrentMusic, Bass.ChannelGetLength(Utils.CurrentMusic));
                         Start.state = MainStates.idle;
                         Bass.ChannelPause(Utils.CurrentMusic);
-                    }
-                    else if (Preferences.isShuffle)
-                    {
-                        RandomSong();
-                        PlayDrawReset();
                     }
                     else
                     {
@@ -823,6 +835,12 @@ namespace Jammer
                 {
                     Utils.CurSongError = false;
                     Utils.CustomTopErrorMessage = "RSS feed can be opened, that will open a new view";
+                    
+                    // Initialize RSS auto-skip timer if enabled
+                    if (Preferences.rssSkipAfterTime)
+                    {
+                        rssStartTime = DateTime.Now;
+                    }
                 }
                 // skip to next song if skiperrors is enabled
                 else if (Preferences.isSkipErrors && !Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound)
@@ -1035,6 +1053,30 @@ namespace Jammer
                 int reverbHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXReverb, 1);
                 Bass.FXSetParameters(reverbHandle, reverb);
             }
+        }
+
+        /// <summary>
+        /// Checks if the current RSS feed should be auto-skipped based on timer
+        /// </summary>
+        /// <returns>True if RSS should be skipped, false otherwise</returns>
+        public static bool ShouldSkipRss()
+        {
+            // Only check for RSS auto-skip if all conditions are met
+            if (!Preferences.rssSkipAfterTime ||
+                !Funcs.IsCurrentSongARssFeed() ||
+                Funcs.IsInsideOfARssFeed() ||
+                rssStartTime == null)
+            {
+                return false;
+            }
+            // Check if enough time has elapsed
+            TimeSpan elapsed = CalculateElapsedTime();
+            return elapsed.TotalSeconds >= Preferences.rssSkipAfterTimeValue;
+        }
+
+        private static TimeSpan CalculateElapsedTime()
+        {
+            return rssStartTime.HasValue ? DateTime.Now - rssStartTime.Value : TimeSpan.Zero;
         }
     }
 }

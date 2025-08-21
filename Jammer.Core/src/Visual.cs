@@ -65,7 +65,8 @@ PausingEffect = true
             int bytesRead = Bass.ChannelGetData(Utils.CurrentMusic, fftData, (int)GetFFTDataFlags());
             if (bytesRead <= 0)
             {
-                string songPath;
+                string songPath = "";
+                /*
                 if (Utils.CurrentMusic == 0 && Utils.CurSongError)
                 {
                     songPath = "Error: cannot read FFT data";
@@ -74,7 +75,7 @@ PausingEffect = true
                 {
                     songPath = "";
                 }
-
+                */
                 return songPath;
             }
 

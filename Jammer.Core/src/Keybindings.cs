@@ -164,6 +164,9 @@ namespace Jammer
             public const ConsoleKey KeyModifierHelper = ConsoleKey.K;
             public const ConsoleKey SkipErrors = ConsoleKey.L;
             public const ConsoleKey TogglePlaylistPosition = ConsoleKey.M;
+            public const ConsoleKey rssSkipAfterTime = ConsoleKey.N;
+            public const ConsoleKey rssSkipAfterTimeValue = ConsoleKey.O;
+
         }
     }
 }

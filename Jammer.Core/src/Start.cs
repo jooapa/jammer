@@ -212,6 +212,13 @@ namespace Jammer
                             prevMusicTimePlayed = 0;
                             drawTime = true;
                         }
+
+                        // Check for RSS auto-skip timer
+                        if (Play.ShouldSkipRss())
+                        {
+                            Play.MaybeNextSong(forceNoLoop: true);
+                        }
+
                         if (debug)
                             Message.Data("asd", "asd");
                         _ = CheckKeyboardAsync();

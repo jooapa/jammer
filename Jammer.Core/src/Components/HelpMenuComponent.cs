@@ -3,13 +3,32 @@ using Spectre.Console;
 namespace Jammer.Components
 {
     /// <summary>
+    /// Represents a single help item
+    /// </summary>
+    public class HelpItem
+    {
+        public string ControlKeys { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string ModControlKeys { get; set; } = "";
+        public string ModDescription { get; set; } = "";
+    }
+
+    /// <summary>
     /// Component responsible for rendering the help menu
     /// Extracted from TUI.DrawHelp method
     /// </summary>
     public class HelpMenuComponent : IUIComponent
     {
         private static int _currentPage = 1;
-        private static int _totalPages = 2;
+        private static int _totalPages = 1;
+        private static readonly int _helpItemsPerPage = 10; // Configurable page size
+        private static List<HelpItem> _helpItems = new List<HelpItem>();
+
+        static HelpMenuComponent()
+        {
+            InitializeHelpItems();
+            CalculateTotalPages();
+        }
 
         public Table Render(LayoutConfig layout)
         {
@@ -26,28 +45,297 @@ namespace Jammer.Components
 
         private void BuildHelpContent(Table table)
         {
-            // Parse keybindings for display
-            char separator = '+';
-            var keybindings = ParseKeybindings(separator);
-
             // Add table headers with fixed column widths
             table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Controls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
             table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.Description, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(25));
             table.AddColumn(new TableColumn(Themes.sColor(Locale.Help.ModControls, Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(20));
             table.AddColumn(new TableColumn(Themes.sColor($"{Locale.Help.Description} ({_currentPage}/{_totalPages})", Themes.CurrentTheme.GeneralHelp.HeaderTextColor)).Width(30));
 
-            // Add help rows based on current page
-            if (_currentPage == 1)
+            // Calculate which help items to show on current page
+            var startIndex = (_currentPage - 1) * _helpItemsPerPage;
+            var endIndex = Math.Min(startIndex + _helpItemsPerPage, _helpItems.Count);
+
+            // Add help items for current page
+            for (int i = startIndex; i < endIndex; i++)
             {
-                AddHelpRowsPage1(table, keybindings);
+                var helpItem = _helpItems[i];
+                table.AddRow(
+                    helpItem.ControlKeys,
+                    helpItem.Description,
+                    helpItem.ModControlKeys,
+                    helpItem.ModDescription
+                );
             }
-            else if (_currentPage == 2)
+
+            // Add navigation hints
+            AddNavigationHints(table);
+        }
+
+        private static void InitializeHelpItems()
+        {
+            _helpItems.Clear();
+            
+            // Parse keybindings for display
+            char separator = '+';
+            var keybindings = ParseKeybindings(separator);
+
+            // Basic Controls
+            _helpItems.Add(new HelpItem
             {
-                AddHelpRowsPage2(table, keybindings);
+                ControlKeys = DrawHelpTextColouring(keybindings["PlayPause"]),
+                Description = Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["NextSong"]),
+                ModDescription = Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["PreviousSong"]),
+                Description = Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["Quit"]),
+                ModDescription = Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Navigation
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ToMainMenu"]),
+                Description = Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["Help"]),
+                ModDescription = Themes.sColor("Show Help", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Volume Controls
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["VolumeUp"]),
+                Description = Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["VolumeDown"]),
+                ModDescription = Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["VolumeUpByOne"]),
+                Description = Themes.sColor("Volume +1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["VolumeDownByOne"]),
+                ModDescription = Themes.sColor("Volume -1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["Mute"]),
+                Description = Themes.sColor(Locale.Help.ToggleMute, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["Forward5s"]),
+                ModDescription = Themes.sColor(Locale.Help.Forward + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["Backwards5s"]),
+                Description = Themes.sColor(Locale.Help.Rewind + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ToSongStart"]),
+                ModDescription = Themes.sColor("Go to Start", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ToSongEnd"]),
+                Description = Themes.sColor("Go to End", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["Loop"]),
+                ModDescription = Themes.sColor(Locale.Help.ToggleLooping, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Basic Playlist Controls
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["Shuffle"]),
+                Description = Themes.sColor(Locale.Help.ToggleShuffle, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ShowHidePlaylist"]),
+                ModDescription = Themes.sColor(Locale.Help.ToShowPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Scrolling
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["PlaylistViewScrollup"]),
+                Description = Themes.sColor("Scroll Up", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["PlaylistViewScrolldown"]),
+                ModDescription = Themes.sColor("Scroll Down", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Playlist Management
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ShufflePlaylist"]),
+                Description = Themes.sColor(Locale.Help.ShufflePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["AddSongToPlaylist"]),
+                ModDescription = Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["AddSongToQueue"]),
+                Description = Themes.sColor("Add to Queue", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ShowSongsInPlaylists"]),
+                ModDescription = Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ListAllPlaylists"]),
+                Description = Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["PlayOtherPlaylist"]),
+                ModDescription = Themes.sColor(Locale.Help.PlayOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["SaveCurrentPlaylist"]),
+                Description = Themes.sColor(Locale.Help.SavePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["SaveAsPlaylist"]),
+                ModDescription = Themes.sColor(Locale.Help.SaveAs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Song Management
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["PlaySong"]),
+                Description = Themes.sColor(Locale.Help.PlaySongs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["PlayRandomSong"]),
+                ModDescription = Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["DeleteCurrentSong"]),
+                Description = Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["HardDeleteCurrentSong"]),
+                ModDescription = Themes.sColor("Delete from PC", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["RenameSong"]),
+                Description = Themes.sColor("Rename", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["RedownloadCurrentSong"]),
+                ModDescription = Themes.sColor(Locale.Help.RedownloadCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Search and Navigation
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["Search"]),
+                Description = Themes.sColor("Search", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["SearchInPlaylist"]),
+                ModDescription = Themes.sColor("Search Playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ChooseSong"]),
+                Description = Themes.sColor("Select Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ToggleInfo"]),
+                ModDescription = Themes.sColor("Show/Hide Info", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Settings and Configuration
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["Settings"]),
+                Description = Themes.sColor("Settings", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["EditKeybindings"]),
+                ModDescription = Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ChangeLanguage"]),
+                Description = Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ChangeTheme"]),
+                ModDescription = Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["ChangeSoundFont"]),
+                Description = Themes.sColor("Change Font", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ShowLog"]),
+                ModDescription = Themes.sColor("Show Log", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            // Special
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["CommandHelpScreen"]),
+                Description = Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["ExitRssFeed"]),
+                ModDescription = Themes.sColor("Exit RSS", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+        }
+
+        private static void CalculateTotalPages()
+        {
+            _totalPages = Math.Max(1, (int)Math.Ceiling((double)_helpItems.Count / _helpItemsPerPage));
+        }
+
+        private void AddNavigationHints(Table table)
+        {
+            // Add empty row for spacing
+            table.AddRow("", "", "", "");
+
+            if (_totalPages > 1)
+            {
+                if (_currentPage < _totalPages)
+                {
+                    table.AddRow(
+                        "",
+                        "",
+                        Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
+                        Themes.sColor("Next page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                    );
+                }
+
+                if (_currentPage > 1)
+                {
+                    table.AddRow(
+                        Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
+                        Themes.sColor("Previous page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                        "",
+                        ""
+                    );
+                }
             }
         }
 
-        private Dictionary<string, string[]> ParseKeybindings(char separator)
+        /// <summary>
+        /// Adds a new help item to the help list. Call RefreshPagination() after adding items.
+        /// </summary>
+        public static void AddHelpItem(string controlKeys, string description, string modControlKeys = "", string modDescription = "")
+        {
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = controlKeys,
+                Description = description,
+                ModControlKeys = modControlKeys,
+                ModDescription = modDescription
+            });
+        }
+
+        /// <summary>
+        /// Refreshes pagination after adding or removing help items
+        /// </summary>
+        public static void RefreshPagination()
+        {
+            CalculateTotalPages();
+            // Ensure current page is still valid
+            if (_currentPage > _totalPages)
+            {
+                _currentPage = _totalPages;
+            }
+        }
+
+        private static Dictionary<string, string[]> ParseKeybindings(char separator)
         {
             return new Dictionary<string, string[]>
             {
@@ -100,208 +388,7 @@ namespace Jammer.Components
             };
         }
 
-        private void AddHelpRowsPage1(Table table, Dictionary<string, string[]> keybindings)
-        {
-            // Basic Controls
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["PlayPause"]),
-                Themes.sColor(Locale.Help.PlayPause, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["NextSong"]),
-                Themes.sColor(Locale.Help.NextSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["PreviousSong"]),
-                Themes.sColor(Locale.Help.PreviousSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["Quit"]),
-                Themes.sColor(Locale.Help.Quit, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Navigation
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ToMainMenu"]),
-                Themes.sColor(Locale.Help.ToMainMenu, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["Help"]),
-                Themes.sColor("Show Help", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Volume Controls
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["VolumeUp"]),
-                Themes.sColor(Locale.Help.VolumeUp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["VolumeDown"]),
-                Themes.sColor(Locale.Help.VolumeDown, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["VolumeUpByOne"]),
-                Themes.sColor("Volume +1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["VolumeDownByOne"]),
-                Themes.sColor("Volume -1", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["Mute"]),
-                Themes.sColor(Locale.Help.ToggleMute, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["Forward5s"]),
-                Themes.sColor(Locale.Help.Forward + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["Backwards5s"]),
-                Themes.sColor(Locale.Help.Rewind + " 5 " + Locale.Help.Seconds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ToSongStart"]),
-                Themes.sColor("Go to Start", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ToSongEnd"]),
-                Themes.sColor("Go to End", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["Loop"]),
-                Themes.sColor(Locale.Help.ToggleLooping, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Basic Playlist Controls
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["Shuffle"]),
-                Themes.sColor(Locale.Help.ToggleShuffle, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ShowHidePlaylist"]),
-                Themes.sColor(Locale.Help.ToShowPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Scrolling
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["PlaylistViewScrollup"]),
-                Themes.sColor("Scroll Up", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["PlaylistViewScrolldown"]),
-                Themes.sColor("Scroll Down", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Page navigation hint
-            table.AddRow(
-                "",
-                ""
-            );
-            table.AddRow(
-                "",
-                "",
-                Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor("Next page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-        }
-
-        private void AddHelpRowsPage2(Table table, Dictionary<string, string[]> keybindings)
-        {
-            // Playlist Management
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ShufflePlaylist"]),
-                Themes.sColor(Locale.Help.ShufflePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["AddSongToPlaylist"]),
-                Themes.sColor(Locale.Help.AddsongToPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["AddSongToQueue"]),
-                Themes.sColor("Add to Queue", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ShowSongsInPlaylists"]),
-                Themes.sColor(Locale.Help.ListAllSongsInOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ListAllPlaylists"]),
-                Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["PlayOtherPlaylist"]),
-                Themes.sColor(Locale.Help.PlayOtherPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["SaveCurrentPlaylist"]),
-                Themes.sColor(Locale.Help.SavePlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["SaveAsPlaylist"]),
-                Themes.sColor(Locale.Help.SaveAs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Song Management
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["PlaySong"]),
-                Themes.sColor(Locale.Help.PlaySongs, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["PlayRandomSong"]),
-                Themes.sColor(Locale.Help.PlayRandomSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["DeleteCurrentSong"]),
-                Themes.sColor(Locale.Help.DeleteCurrentSongFromPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["HardDeleteCurrentSong"]),
-                Themes.sColor("Delete from PC", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["RenameSong"]),
-                Themes.sColor("Rename", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["RedownloadCurrentSong"]),
-                Themes.sColor(Locale.Help.RedownloadCurrentSong, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Search and Navigation
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["Search"]),
-                Themes.sColor("Search", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["SearchInPlaylist"]),
-                Themes.sColor("Search Playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ChooseSong"]),
-                Themes.sColor("Select Song", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ToggleInfo"]),
-                Themes.sColor("Show/Hide Info", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Settings and Configuration
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["Settings"]),
-                Themes.sColor("Settings", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["EditKeybindings"]),
-                Themes.sColor(Locale.Help.EditKeybinds, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ChangeLanguage"]),
-                Themes.sColor(Locale.Help.ChangeLanguage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ChangeTheme"]),
-                Themes.sColor("Change Theme", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["ChangeSoundFont"]),
-                Themes.sColor("Change Font", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ShowLog"]),
-                Themes.sColor("Show Log", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Special
-            table.AddRow(
-                DrawHelpTextColouring(keybindings["CommandHelpScreen"]),
-                Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                DrawHelpTextColouring(keybindings["ExitRssFeed"]),
-                Themes.sColor("Exit RSS", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
-            );
-
-            // Page navigation hint
-            table.AddRow(
-                "",
-                ""
-            );
-            table.AddRow(
-                Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                Themes.sColor("Previous page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
-                "",
-                ""
-            );
-        }
-
-        private string DrawHelpTextColouring(string[] textArray)
+        private static string DrawHelpTextColouring(string[] textArray)
         {
             if (textArray.Length == 1)
             {
@@ -368,6 +455,23 @@ namespace Jammer.Components
         public static int GetTotalPages()
         {
             return _totalPages;
+        }
+
+        /// <summary>
+        /// Gets the current help items per page configuration
+        /// </summary>
+        public static int GetHelpItemsPerPage()
+        {
+            return _helpItemsPerPage;
+        }
+
+        /// <summary>
+        /// Updates help items and refreshes pagination
+        /// </summary>
+        public static void RefreshHelpItems()
+        {
+            InitializeHelpItems();
+            CalculateTotalPages();
         }
 
         /// <summary>
