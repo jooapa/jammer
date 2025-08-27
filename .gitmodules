@@ -2,3 +2,5 @@
 [submodule "JRead"]
 	path = JRead
 	url = https://github.com/jooapa/JRead.git
+    update = merge
+    branch = main

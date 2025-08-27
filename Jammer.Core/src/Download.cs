@@ -149,7 +149,7 @@ namespace Jammer
 
             if (System.IO.File.Exists(downloadedPath))
             {
-                string input = Message.Input(Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " (y/n)", "Warning", true);
+                string input = Message.Input("Warning", Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " (y/n)",  true);
                 if (input != "y" && input != "yes")
                 {
                     songPath = downloadedPath;
