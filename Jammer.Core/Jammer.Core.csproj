@@ -30,7 +30,6 @@
     <PackageReference Include="ManagedBass.Opus" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PuppeteerSharp" Version="20.1.3" />
-    <PackageReference Include="ReadLine" Version="2.0.1" />
     <PackageReference Include="SoundCloudExplode" Version="1.6.4" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
