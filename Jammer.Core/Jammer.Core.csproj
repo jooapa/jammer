@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Jammer.Core</RootNamespace>
     <LangVersion>10</LangVersion>
@@ -36,5 +36,9 @@
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="YoutubeExplode" Version="6.5.4" />
     <PackageReference Include="SharpHook" Version="5.3.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\JRead\JRead\JRead.csproj" />
   </ItemGroup>
 </Project>
