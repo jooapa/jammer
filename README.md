@@ -231,6 +231,14 @@ export LD_LIBRARY_PATH=/path/to/your/library:$LD_LIBRARY_PATH
 
 On **Windows**, you need to add the libraries to the executable folder.
 
+## Install submodules
+
+Jammer uses git submodules. To get the submodules, run this command in the root folder. 
+
+```bash
+git submodule update --init --recursive
+```
+
 ### Run
 
 ```bash
