@@ -32,7 +32,7 @@ def change_version(version):
                     '    <Version>',
                     f'    <Version>{version}</Version>\n')
 
-    replace_in_file(os.path.join('Jammer.CLI', 'buildcli.bat'),
+    replace_in_file(os.path.join('scripts', 'buildcli.bat'),
                     'SET "start_name=Jammer-Setup_',
                     f'SET "start_name=Jammer-Setup_V{version}.exe\"\n')
 
