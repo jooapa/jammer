@@ -65,7 +65,7 @@ jammer https://youtube.com/watch?v=video-id
 jammer https://youtube.com/playlist?list=playlist-id
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/npc_music/616845.mp3
 jammer https://raw.githubusercontent.com/jooapa/jammer/main/example/terraria.jammer
-jammer https://rss.com/best_podcast.rss
+jammer https://anchor.fm/s/101ec0f34/podcast/rss
 jammer "path/to/song.mp3"
 
 jammer     --start        # opens jammer folder
