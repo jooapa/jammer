@@ -50,7 +50,7 @@ namespace Jammer
         /// </summary>
         public static bool IsValidRssFeed(string uri)
         {
-            return IsUrl(uri) && uri.EndsWith(".rss", StringComparison.OrdinalIgnoreCase);
+            return IsUrl(uri) && uri.EndsWith(".rss", StringComparison.OrdinalIgnoreCase) || IsUrl(uri) && uri.Contains("rss", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

@@ -792,6 +792,15 @@ namespace Jammer
                                 break;
                             }
 
+                            // convert all the rssfeeds to songs
+                            RootRssData rssFeed = Rss.GetRssData(SongExtensions.ToSong(Utils.Songs[Utils.CurrentPlaylistSongIndex]).URI ?? "").GetAwaiter().GetResult();
+                            // if rssfeed empty
+                            if (rssFeed.Content.Count() == 0)
+                            {
+                                drawWhole = true;
+                                break;
+                            }
+
                             // when opening the new view its actually gonna save the playlist aand come back to it to the same position it left.
                             Utils.lastPositionInPreviousPlaylist = Utils.CurrentSongIndex;
                             Utils.BackUpSongs = Utils.Songs;
@@ -801,10 +810,7 @@ namespace Jammer
                             // Message.Data(Utils.BackUpPlaylistName, "a");
 
                             
-                            // convert all the rssfeeds to songs
-                            RootRssData rssFeed = Rss.GetRssData(Utils.RssFeedSong.URI).GetAwaiter().GetResult();
-                            // state = MainStates.next;
-                            // break;
+
                             Utils.Songs = Array.Empty<string>();
                             Utils.CurrentPlaylistSongIndex = 0;
                             Utils.CurrentSongIndex = 0;
