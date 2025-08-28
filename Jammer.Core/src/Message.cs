@@ -120,6 +120,11 @@ namespace Jammer
             Console.Write(new string(' ', Start.consoleWidth - 10));
             AnsiConsole.Cursor.SetPosition(5, 5 + count); // Reset cursor after clearing
 
+            // add JReadOptions
+            options ??= new JReadOptions();
+            options.SubtractFromAvailableSpace = true;
+            options.MaxDisplayLength = 4;
+
             if (oneChar)
             {
                 ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
@@ -147,7 +152,7 @@ namespace Jammer
                 if (!string.IsNullOrEmpty(input)) // Only add non-empty input to history
                                                   // ReadLine.AddHistory(input);
                     JRead.JRead.History.Add(input);
-                    
+
                 Start.Sanitize(input, true);
                 return input;
             }
@@ -180,6 +185,11 @@ namespace Jammer
             // Prompts with prefill or suggestions will still show their intended text after clearing.
             Console.Write(new string(' ', Start.consoleWidth - 10));
             AnsiConsole.Cursor.SetPosition(5, 5 + count); // Reset cursor after clearing
+
+            // add JReadOptions
+            options ??= new JReadOptions();
+            options.SubtractFromAvailableSpace = true;
+            options.MaxDisplayLength = 4;
 
             if (oneChar)
             {
