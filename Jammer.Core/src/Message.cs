@@ -1,4 +1,5 @@
 using Jammer;
+using JRead;
 using Spectre.Console;
 using System.Text.RegularExpressions;
 
@@ -87,7 +88,7 @@ namespace Jammer
             }
         }
 
-        public static string Input(string inputSaying, string title, bool oneChar = false, string[]? setText = null)
+        public static string Input(string inputSaying, string title, bool oneChar = false, string[]? setText = null, JReadOptions? options = null)
         {
             var mainTable = new Table();
             mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
@@ -133,18 +134,16 @@ namespace Jammer
                     JRead.JRead.History.Add(setText[i]);
                 }
                 // string input = ReadLineWithEscSupport(inputSaying);
-                string input = JRead.JRead.Read("", inputSaying + " ");
+                string input = JRead.JRead.Read(inputSaying, options);
                 JRead.JRead.History.Clear();
-                foreach (var item in oldHistory)
-                {
-                    JRead.JRead.History.Add(item);
-                }
+                JRead.JRead.History.AddRange(oldHistory);
+
                 Start.Sanitize(input, false);
                 return input;
             }
             else
             {
-                string input = JRead.JRead.Read("", inputSaying + " ");
+                string input = JRead.JRead.Read(inputSaying, options);
                 if (!string.IsNullOrEmpty(input)) // Only add non-empty input to history
                                                   // ReadLine.AddHistory(input);
                     JRead.JRead.History.Add(input);
@@ -154,7 +153,7 @@ namespace Jammer
             }
         }
 
-        public static string Input(string inputSaying, string title, string prefillText, bool oneChar = false, string[]? setText = null)
+        public static string Input(string inputSaying, string title, string prefillText, bool oneChar = false, string[]? setText = null, JReadOptions? options = null)
         {
             var mainTable = new Table();
             mainTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.BorderStyle);
@@ -196,19 +195,17 @@ namespace Jammer
                     JRead.JRead.History.Add(setText[i]);
                 }
                 // string input = ReadLineWithEscSupportAndPrefill(inputSaying, prefillText, setText);
-                string input = JRead.JRead.Read(prefillText, inputSaying + " ");
+                string input = JRead.JRead.Read(inputSaying, prefillText, options);
                 JRead.JRead.History.Clear();
-                foreach (var item in oldHistory)
-                {
-                    JRead.JRead.History.Add(item);
-                }
+                JRead.JRead.History.AddRange(oldHistory);
+
                 Start.Sanitize(input, false);
                 return input;
             }
             else
             {
                 // string input = ReadLineWithEscSupportAndPrefill(inputSaying + " ", prefillText);
-                string input = JRead.JRead.Read(prefillText, inputSaying + " ");
+                string input = JRead.JRead.Read(inputSaying, prefillText, options);
                 if (!string.IsNullOrEmpty(input)) // Only add non-empty input to history
                     JRead.JRead.History.Add(input);
                 Start.Sanitize(input, true);

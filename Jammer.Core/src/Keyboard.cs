@@ -4,6 +4,7 @@ using System.IO;
 using SharpHook;
 using System.Diagnostics.CodeAnalysis;
 using Jammer.Components;
+using JRead;
 
 namespace Jammer
 {
@@ -603,12 +604,18 @@ namespace Jammer
                                 smartTitle + " - " + smartAuthor,
                             };
 
+                            var inputJreadOptions = new JReadOptions
+                            {
+                                EnableAutoComplete = true,
+                                AutoCompleteItems = new List<string> { ogSongTitle, smartAuthor ?? "", smartTitle ?? "" }
+                            };
+
                             // remove duplicates
                             name = name.Distinct().ToArray();
 
                             string newName = Message.Input(
                                 "New name: ", $"Current: {currentSongName}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
-                                currentSongName, false, name
+                                currentSongName, false, name, options: inputJreadOptions
                             );
 
                             if (string.IsNullOrEmpty(newName))
