@@ -1,5 +1,6 @@
 using Spectre.Console;
 using FuzzySharp;
+using JRead;
 
 namespace Jammer
 {
@@ -283,15 +284,21 @@ namespace Jammer
         }
         public static void SearchForSongInPlaylistAsync()
         {
-            // Fuzzy search
-            string search = Message.Input("Search:", "Search for a song in the current playlist");
+            List<string> songTitles = Utils.Songs.Select(SongExtensions.Title).ToList();
+
+            var options = new JReadOptions
+            {
+                EnableAutoComplete = true,
+                AutoCompleteItems = songTitles
+            };
+
+            string search = Message.Input("", "Search for a song in the current playlist", options: options);
 
             if (string.IsNullOrEmpty(search))
             {
                 return;
             }
 
-            List<string> songTitles = Utils.Songs.Select(SongExtensions.Title).ToList();
 
             // Perform fuzzy search using FuzzySharp
             var results = Process.ExtractTop(search, songTitles, limit: songTitles.Count)
