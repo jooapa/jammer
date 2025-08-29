@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Jammer.Core</RootNamespace>
     <LangVersion>10</LangVersion>
-    <AssemblyName>Jammer.Core/src</AssemblyName>
+    <AssemblyName>Jammer.Core</AssemblyName>
     <DefineConstants>CLI_UI</DefineConstants>
     <!-- <DefineConstants>AVALONIA_UI</DefineConstants> -->
   </PropertyGroup>
