@@ -33,6 +33,7 @@
     <PackageReference Include="SoundCloudExplode" Version="1.6.4" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    <PackageReference Include="YoutubeDLSharp" Version="1.1.2" />
     <PackageReference Include="YoutubeExplode" Version="6.5.4" />
     <PackageReference Include="SharpHook" Version="5.3.2" />
   </ItemGroup>

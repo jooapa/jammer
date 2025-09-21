@@ -11,6 +11,12 @@ namespace Jammer
         Once,
         Always
     }
+    public enum BackEndTypeYT
+    {
+        YoutubeExplode,
+        YoutubeDL
+    }
+
     public class Preferences
     {
         public static int rewindSeconds = GetRewindSeconds();
@@ -34,6 +40,7 @@ namespace Jammer
         public static bool showPlaylistPosition = GetShowPlaylistPosition();
         public static bool rssSkipAfterTime = GetRssSkipAfterTime();
         public static int rssSkipAfterTimeValue = GetRssSkipAfterTimeValue();
+        public static BackEndTypeYT backEndType = GetBackEndType();
 
         private static bool GetModifierKeyHelper()
         {
@@ -190,12 +197,13 @@ namespace Jammer
             settings.showPlaylistPosition = showPlaylistPosition;
             settings.rssSkipAfterTime = rssSkipAfterTime;
             settings.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
+            settings.backEndType = backEndType;
 
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true
             };
-            
+
             string jsonString = JsonSerializer.Serialize(settings, options);
             // delete file if exists
             if (File.Exists(JammerPath))
@@ -269,6 +277,21 @@ namespace Jammer
             else
             {
                 return LoopType.None;
+            }
+        }
+
+        static public BackEndTypeYT GetBackEndType()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.backEndType ?? BackEndTypeYT.YoutubeExplode;
+            }
+            else
+            {
+                return BackEndTypeYT.YoutubeExplode;
             }
         }
 
@@ -557,6 +580,7 @@ namespace Jammer
             public bool? showPlaylistPosition { get; set; }
             public bool? rssSkipAfterTime { get; set; }
             public int? rssSkipAfterTimeValue { get; set; }
+            public BackEndTypeYT? backEndType { get; set; }
         }
     }
 }

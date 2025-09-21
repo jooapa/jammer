@@ -366,6 +366,7 @@ namespace Jammer
             public static string RenameSong = CheckValueLocale("EditKeysTexts", "RenameSong", "Rename song");
             public static string ExitRssFeed = CheckValueLocale("EditKeysTexts", "ExitRssFeed", "Exit RSS feed");
             public static string SearchInPlaylist = CheckValueLocale("EditKeysTexts", "SearchInPlaylist", "Search in playlist");
+            public static string BackEndChange = CheckValueLocale("EditKeysTexts", "BackEndChange", "Change backend");
 
         }
         static string CheckValueLocale(string key, string value, string defaultString)

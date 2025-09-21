@@ -8,6 +8,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using YoutubeExplode.Videos.Streams;
 using System.Runtime.InteropServices;
+using YoutubeDLSharp;
+using YoutubeDLSharp.Options;
 
 namespace Jammer
 {
@@ -209,6 +211,19 @@ namespace Jammer
 
         private static async Task DownloadYoutubeTrackAsync(string url)
         {
+            // Route to appropriate backend based on preference
+            if (Preferences.backEndType == BackEndTypeYT.YoutubeDL)
+            {
+                await DownloadYoutubeTrackWithYtDlpAsync(url);
+            }
+            else
+            {
+                await DownloadYoutubeTrackWithYoutubeExplodeAsync(url);
+            }
+        }
+
+        private static async Task DownloadYoutubeTrackWithYoutubeExplodeAsync(string url)
+        {
             string formattedUrl = FormatUrlForFilename(url);
 
             songPath = Path.Combine(
@@ -314,6 +329,126 @@ namespace Jammer
                 constructedSong = null;
             }
         }
+
+        private static async Task DownloadYoutubeTrackWithYtDlpAsync(string url)
+        {
+            string formattedUrl = FormatUrlForFilename(url);
+
+            songPath = Path.Combine(
+                Preferences.songsPath,
+                formattedUrl
+            );
+
+            if (System.IO.File.Exists(songPath))
+            {
+                constructedSong = new Song
+                {
+                    URI = url,
+                };
+                return;
+            }
+
+            var theText = "Getting track with yt-dlp. please wait...";
+            TUI.PrintToTopOfPlayer(theText);
+
+            try
+            {
+                var ytdl = new YoutubeDL();
+
+                // Set yt-dlp executable path if needed
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    var ytdlpPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "yt-dlp.exe");
+                    if (System.IO.File.Exists(ytdlpPath))
+                    {
+                        ytdl.YoutubeDLPath = ytdlpPath;
+                    }
+                    var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
+                    if (System.IO.File.Exists(ffmpegPath))
+                    {
+                        ytdl.FFmpegPath = ffmpegPath;
+                    }
+
+                    ytdl.OutputFolder = Preferences.songsPath;
+                    // name
+                    ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
+                }
+
+                TUI.PrintToTopOfPlayer("Downloading with yt-dlp...");
+                
+                // Use simple approach to download best audio
+                var result = await ytdl.RunAudioDownload(url, AudioConversionFormat.Vorbis);
+
+                if (result.Success && result.Data != null)
+                {
+                    // Move the downloaded file to our expected path
+                    // var downloadedFile = result.Data;
+                    // if (System.IO.File.Exists(downloadedFile))
+                    // {
+                    //     // Convert to OGG if needed
+                    //     if (!downloadedFile.EndsWith(".ogg"))
+                    //     {
+                    //         // TUI.PrintToTopOfPlayer("Converting to OGG with ffmpeg...");
+                    //         // await FFMPEGConvert(downloadedFile);
+                            
+                    //         // Replace original with converted
+                    //         if (System.IO.File.Exists(songPath))
+                    //         {
+                    //             System.IO.File.Delete(downloadedFile);
+                    //         }
+                    //         else
+                    //         {
+                    //             System.IO.File.Move(downloadedFile, songPath);
+                    //         }
+                    //     }
+                    //     else
+                    //     {
+                    //         System.IO.File.Move(downloadedFile, songPath);
+                    //     }
+                    // }
+
+                    TUI.PrintToTopOfPlayer("Getting video info...");
+                    
+                    // Get video info for metadata
+                    var infoResult = await ytdl.RunVideoDataFetch(url);
+                    if (infoResult.Success && infoResult.Data != null)
+                    {
+                        var videoData = infoResult.Data;
+                        constructedSong = new Song
+                        {
+                            URI = url,
+                            Title = videoData.Title ?? "",
+                            Author = videoData.Uploader ?? ""
+                        };
+                    }
+                    else
+                    {
+                        constructedSong = new Song
+                        {
+                            URI = url,
+                        };
+                    }
+                }
+                else
+                {
+                    throw new Exception("yt-dlp download failed: " + string.Join("; ", result.ErrorOutput ?? new string[0]));
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Funcs.DontShowErrorWhenSongNotFound())
+                {
+                    Log.Error("Skipping song due to error: " + ex.Message);
+                    return;
+                }
+
+                Utils.CustomTopErrorMessage = "Error: yt-dlp download failed. Maybe the song is private or the URL is invalid. (check log)";
+                Log.Error(ex.Message);
+                songPath = "";
+                constructedSong = null;
+            }
+        }
+
         private static bool IsFFmpegInstalled()
         {
             try

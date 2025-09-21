@@ -103,6 +103,7 @@ namespace Jammer
         public static string VolumeUpByOne = CheckValue("VolumeUpByOne", "Shift + UpArrow");
         public static string VolumeDownByOne = CheckValue("VolumeDownByOne", "Shift + DownArrow");
         public static string ExitRssFeed = CheckValue("ExitRssFeed", "E");
+        public static string BackEndChange = CheckValue("BackEndChange", "B");
 
         public static string CheckValue(string value, string defaultValue)
         {

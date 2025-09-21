@@ -867,6 +867,44 @@ namespace Jammer
                             Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
 
                             break;
+                        case "BackEndChange":
+                            AnsiConsole.Clear();
+
+                            var backEndsList = new CustomSelectInput[]
+                            {
+                                new CustomSelectInput
+                                {
+                                    DataURI = "YT-DLP",
+                                    Title = "YT-DLP",
+                                    Author = "Third Party",
+                                    Description = "A very powerful backend that supports a lot of sites."
+                                },
+                                new CustomSelectInput
+                                {
+                                    DataURI = "YoutubeExplode",
+                                    Title = "YoutubeExplode",
+                                    Author = "Jerry",
+                                    Description = "Less compatible with some sites."
+                                },
+                            };
+
+                            string chosenBackEnd = Message.CustomMenuSelect(backEndsList, "Choose the backend you want to use for Youtube.");
+
+                            switch (chosenBackEnd)
+                            {
+                                case "YoutubeExplode":
+                                    Preferences.backEndType = BackEndTypeYT.YoutubeExplode;
+                                    break;
+                                case "VideoLibrary":
+                                    break;
+                                case "YT-DLP":
+                                    Preferences.backEndType = BackEndTypeYT.YoutubeDL;
+                                    break;
+                            }
+
+                            Preferences.SaveSettings();
+                            drawWhole = true;
+                            break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();

@@ -61,6 +61,7 @@ ShowLog = Ctrl + L
 HardDeleteCurrentSong = Shift + Delete
 RenameSong = F2
 ExitRssFeed = E
+BackEndChange = B
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
