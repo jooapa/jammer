@@ -123,6 +123,8 @@ namespace Jammer
             public static string PlaySongs = CheckValueLocale("Help", "PlaySongs", "Play song(s)");
             public static string RedownloadCurrentSong = CheckValueLocale("Help", "RedownloadCurrentSong", "Redownload song");
             public static string ChangeLanguage = CheckValueLocale("Help", "ChangeLanguage", "Change language");
+            public static string SearchInPlaylist = CheckValueLocale("Help", "SearchInPlaylist", "Search in playlist");
+            public static string SearchByAuthor = CheckValueLocale("Help", "SearchByAuthor", "Search by author");
         }
 
         public static class Settings
@@ -366,6 +368,7 @@ namespace Jammer
             public static string RenameSong = CheckValueLocale("EditKeysTexts", "RenameSong", "Rename song");
             public static string ExitRssFeed = CheckValueLocale("EditKeysTexts", "ExitRssFeed", "Exit RSS feed");
             public static string SearchInPlaylist = CheckValueLocale("EditKeysTexts", "SearchInPlaylist", "Search in playlist");
+            public static string SearchByAuthor = CheckValueLocale("EditKeysTexts", "SearchByAuthor", "Search by author");
             public static string BackEndChange = CheckValueLocale("EditKeysTexts", "BackEndChange", "Change backend");
 
         }

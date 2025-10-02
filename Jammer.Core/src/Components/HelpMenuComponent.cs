@@ -230,6 +230,13 @@ namespace Jammer.Components
                 ModControlKeys = DrawHelpTextColouring(keybindings["SearchInPlaylist"]),
                 ModDescription = Themes.sColor("Search Playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
             });
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["SearchByAuthor"]),
+                Description = Themes.sColor(Locale.Help.SearchByAuthor, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = DrawHelpTextColouring(keybindings["SearchInPlaylist"]),
+                ModDescription = Themes.sColor("Search Playlist", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
 
             _helpItems.Add(new HelpItem
             {
@@ -375,6 +382,7 @@ namespace Jammer.Components
                 ["DeleteCurrentSong"] = Keybindings.DeleteCurrentSong.Replace(" ", "").Split(separator),
                 ["HardDeleteCurrentSong"] = Keybindings.HardDeleteCurrentSong.Replace(" ", "").Split(separator),
                 ["SearchInPlaylist"] = Keybindings.SearchInPlaylist.Replace(" ", "").Split(separator),
+                ["SearchByAuthor"] = Keybindings.SearchByAuthor.Replace(" ", "").Split(separator),
                 ["Search"] = Keybindings.Search.Replace(" ", "").Split(separator),
                 ["RenameSong"] = Keybindings.RenameSong.Replace(" ", "").Split(separator),
                 ["CommandHelpScreen"] = Keybindings.CommandHelpScreen.Replace(" ", "").Split(separator),

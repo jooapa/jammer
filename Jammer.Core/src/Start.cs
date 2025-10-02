@@ -358,8 +358,13 @@ namespace Jammer
         /// string sanitized = Sanitize("Hello world [lol]");
         /// Output: "Hello world lol"
         /// </code>        
-        public static string Sanitize(string input, bool removeBrakets = false)
+        public static string? Sanitize(string? input, bool removeBrakets = false)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
             if (removeBrakets)
             {
                 input = input.Replace("[", "");

@@ -72,6 +72,7 @@ namespace Jammer
         public static string ToSongEnd = CheckValue("ToSongEnd", "9");
         public static string ToggleInfo = CheckValue("ToggleInfo", "I");
         public static string SearchInPlaylist = CheckValue("SearchInPlaylist", "F3");
+        public static string SearchByAuthor = CheckValue("SearchByAuthor", "Shift + F3");
         public static string RenameSong = CheckValue("RenameSong", "F2");
 
         // public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
@@ -165,8 +166,9 @@ namespace Jammer
             public const ConsoleKey KeyModifierHelper = ConsoleKey.K;
             public const ConsoleKey SkipErrors = ConsoleKey.L;
             public const ConsoleKey TogglePlaylistPosition = ConsoleKey.M;
-            public const ConsoleKey rssSkipAfterTime = ConsoleKey.N;
-            public const ConsoleKey rssSkipAfterTimeValue = ConsoleKey.O;
+            public const ConsoleKey RssSkipAfterTime = ConsoleKey.N;
+            public const ConsoleKey RssSkipAfterTimeValue = ConsoleKey.O;
+            public const ConsoleKey QuickSearch = ConsoleKey.P;
 
         }
     }

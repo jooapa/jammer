@@ -406,12 +406,12 @@ namespace Jammer
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
-                            case Keybindings.SettingsKeys.rssSkipAfterTime:
+                            case Keybindings.SettingsKeys.RssSkipAfterTime:
                                 Preferences.rssSkipAfterTime = !Preferences.rssSkipAfterTime;
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
-                            case Keybindings.SettingsKeys.rssSkipAfterTimeValue:
+                            case Keybindings.SettingsKeys.RssSkipAfterTimeValue:
                                 string rssSkipAfterTimeValueString = Message.Input(
                                     "",
                                     "Enter the amount of seconds after rss feed is skipped. Current: " + Preferences.rssSkipAfterTimeValue.ToString() + " seconds."
@@ -425,6 +425,11 @@ namespace Jammer
                                 {
                                     Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
                                 }
+                                drawWhole = true;
+                                break;
+                            case Keybindings.SettingsKeys.QuickSearch:
+                                Preferences.isQuickSearch = !Preferences.isQuickSearch;
+                                Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
                         }
@@ -587,68 +592,68 @@ namespace Jammer
                             Search.SearchForSongInPlaylistAsync();
                             drawWhole = true;
                             break;
-                        case "RenameSong": // rename song
-                            string currentSongName = GetCurrentSongDisplayName();
-
+                        case "SearchByAuthor": // search by author
+                            Search.SearchByAuthorAsync();
+                            drawWhole = true;
+                            break;
+                        case "RenameSong": // rename song                            
                             var smartSong = Funcs.SmartRename(
                                 SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex])
                             );
+
                             var smartTitle = smartSong.Title;
                             var smartAuthor = smartSong.Author;
 
                             var ogSongTitle = SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]);
 
                             string[] name = new[] {
-                                ogSongTitle,
-                                smartAuthor + " - " + smartTitle,
                                 smartTitle + " - " + smartAuthor,
+                                smartAuthor + " - " + smartTitle
                             };
 
                             var inputJreadOptions = new JReadOptions
                             {
-                                EnableAutoComplete = true,
-                                AutoCompleteItems = new List<string> { ogSongTitle, smartAuthor ?? "", smartTitle ?? "" }
+                                EnableAutoComplete = false,
+                                // AutoCompleteItems = new List<string> { ogSongTitle, smartAuthor ?? "", smartTitle ?? "" }
                             };
 
                             // remove duplicates
                             name = name.Distinct().ToArray();
 
+
                             string newName = Message.Input(
-                                "New name: ", $"Current: {currentSongName}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
-                                currentSongName, false, name, options: inputJreadOptions
+                                "New name: ", $"Current: {Sanitize(ogSongTitle)}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
+                                ogSongTitle, false, name, options: inputJreadOptions
                             );
 
-                            if (string.IsNullOrEmpty(newName))
+                            if (!string.IsNullOrEmpty(newName))
                             {
-                                Message.Data("Rename cancelled", "F2 Rename", false, false);
-                                drawWhole = true;
-                                break;
-                            }
+                                // if -
+                                // newNameTitle
+                                // newNameAuthor
+                                var newNewName = newName.Split(" - ");
 
-                            // if -
-                            // newNameTitle
-                            // newNameAuthor
-                            var newNewName = newName.Split(" - ");
-                            string newNameAuthor = "";
-                            string newNameTitle = "";
-                            if (newNewName.Length > 1)
-                            {
-                                newNameAuthor = newNewName[0];
-                                newNameTitle = newNewName[1];
+                                string newNameAuthor = "";
+                                string newNameTitle = "";
+                                if (newNewName.Length > 1)
+                                {
+                                    newNameAuthor = newNewName[0];
+                                    newNameTitle = newNewName[1];
 
-                                Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
-                                newRenamedSong.Author = newNameAuthor;
-                                newRenamedSong.Title = newNameTitle;
-                                newRenamedSong.ToSongString();
-                                Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
-                            }
-                            else
-                            {
-                                Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
-                                newRenamedSong.Title = newName;
-                                newRenamedSong.ToSongString();
+                                    Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                                    newRenamedSong.Author = newNameAuthor;
+                                    newRenamedSong.Title = newNameTitle;
+                                    newRenamedSong.ToSongString();
+                                    Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                                }
+                                else
+                                {
+                                    Song newRenamedSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
+                                    newRenamedSong.Title = newName;
+                                    newRenamedSong.ToSongString();
 
-                                Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                                    Utils.Songs[Utils.CurrentSongIndex] = newRenamedSong.ToSongString();
+                                }
                             }
 
 
@@ -983,22 +988,6 @@ namespace Jammer
                     Message.Data(Environment.StackTrace, "sd");
             }
         }
-
-        private static string GetCurrentSongDisplayName()
-        {
-            if (Utils.Songs == null || Utils.Songs.Length == 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
-                return string.Empty;
-
-            var currentSong = SongExtensions.ToSong(Utils.Songs[Utils.CurrentSongIndex]);
-            if (currentSong == null) return string.Empty;
-
-            // Format as "Author - Title" if both exist, otherwise just Title
-            if (!string.IsNullOrEmpty(currentSong.Author) && !string.IsNullOrEmpty(currentSong.Title))
-                return $"{currentSong.Author} - {currentSong.Title}";
-
-            return currentSong.Title ?? string.Empty;
-        }
-
         public static void PauseSong(bool onlyPause = false)
         {
             if (onlyPause)

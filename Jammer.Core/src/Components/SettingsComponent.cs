@@ -179,7 +179,7 @@ namespace Jammer.Components
             {
                 Name = "Skip Rss after some time",
                 CurrentValue = Preferences.rssSkipAfterTime.ToString(),
-                ChangeKey = Keybindings.SettingsKeys.rssSkipAfterTime.ToString(),
+                ChangeKey = Keybindings.SettingsKeys.RssSkipAfterTime.ToString(),
                 ChangeDescription = "To Toggle Skip Rss after some time"
             });
 
@@ -187,8 +187,15 @@ namespace Jammer.Components
             {
                 Name = "Amount of time to skip Rss",
                 CurrentValue = Preferences.rssSkipAfterTimeValue.ToString(),
-                ChangeKey = Keybindings.SettingsKeys.rssSkipAfterTimeValue.ToString(),
+                ChangeKey = Keybindings.SettingsKeys.RssSkipAfterTimeValue.ToString(),
                 ChangeDescription = "To Set Amount of time to skip Rss"
+            });
+            _settings.Add(new SettingItem
+            {
+                Name = "Toggle Quick Search",
+                CurrentValue = Preferences.isQuickSearch ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
+                ChangeKey = Keybindings.SettingsKeys.QuickSearch.ToString(),
+                ChangeDescription = "To Toggle (will autoplay search result if exact match)"
             });
         }
 

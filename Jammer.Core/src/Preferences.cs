@@ -41,6 +41,7 @@ namespace Jammer
         public static bool rssSkipAfterTime = GetRssSkipAfterTime();
         public static int rssSkipAfterTimeValue = GetRssSkipAfterTimeValue();
         public static BackEndTypeYT backEndType = GetBackEndType();
+        public static bool isQuickSearch = GetEnableQuickSearch();
 
         private static bool GetModifierKeyHelper()
         {
@@ -198,6 +199,7 @@ namespace Jammer
             settings.rssSkipAfterTime = rssSkipAfterTime;
             settings.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
             settings.backEndType = backEndType;
+            settings.EnableQuickSearch = isQuickSearch;
 
             var options = new JsonSerializerOptions
             {
@@ -292,6 +294,21 @@ namespace Jammer
             else
             {
                 return BackEndTypeYT.YoutubeExplode;
+            }
+        }
+
+        static public bool GetEnableQuickSearch()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.EnableQuickSearch ?? true;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -581,6 +598,7 @@ namespace Jammer
             public bool? rssSkipAfterTime { get; set; }
             public int? rssSkipAfterTimeValue { get; set; }
             public BackEndTypeYT? backEndType { get; set; }
+            public bool? EnableQuickSearch { get; set; }
         }
     }
 }

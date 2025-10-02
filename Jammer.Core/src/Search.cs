@@ -284,7 +284,9 @@ namespace Jammer
         }
         public static void SearchForSongInPlaylistAsync()
         {
+            List<string> songs = Utils.Songs.ToList();
             List<string> songTitles = Utils.Songs.Select(SongExtensions.Title).ToList();
+            List<string> songAuthors = Utils.Songs.Select(SongExtensions.Author).ToList();
 
             var options = new JReadOptions
             {
@@ -299,6 +301,20 @@ namespace Jammer
                 return;
             }
 
+            // Check for exact match if QuickSearch is enabled
+            if (Preferences.isQuickSearch)
+            {
+                var exactMatch = songTitles.FirstOrDefault(title => 
+                    string.Equals(title, search.Trim(), StringComparison.OrdinalIgnoreCase));
+                
+                if (exactMatch != null)
+                {
+                    // Found exact match, play it directly
+                    int exactIndex = songTitles.IndexOf(exactMatch);
+                    Play.PlaySong(Utils.Songs, exactIndex);
+                    return;
+                }
+            }
 
             // Perform fuzzy search using FuzzySharp
             var results = Process.ExtractTop(search, songTitles, limit: songTitles.Count)
@@ -313,13 +329,108 @@ namespace Jammer
 
                 // Display the MultiSelect prompt after the loop completes
                 AnsiConsole.Clear();
-                string answer = Message.MultiSelect(resultsString, $"Search results for '{search}' in the current playlist: {results.Count}");
+                // string answer = Message.MultiSelect(resultsString, $"Search results for '{search}' in the current playlist: {results.Count}");
+                var inputs = new CustomSelectInput[]
+                {
+                    new CustomSelectInput
+                    {
+                        DataURI = "Cancel",
+                        Title = "Cancel"
+                    }
+                };
 
-                if (answer != "Cancel")
+                inputs = inputs.Concat(results.Select(r => 
+                {
+                    int titleIndex = songTitles.IndexOf(r);
+                    string author = titleIndex >= 0 && titleIndex < songAuthors.Count ? songAuthors[titleIndex] : "";
+                    return new CustomSelectInput 
+                    { 
+                        DataURI = r, 
+                        Title = r,
+                        Author = author
+                    };
+                })).ToArray();
+
+                string? answer = Message.CustomMenuSelect(inputs, $"Search results for '{search}' in the current playlist: {results.Count}", new CustomSelectInputSettings { StartIndex = 1 });
+                if (answer != null && answer != "Cancel")
                 {
                     // Find the index of the selected song by the title in the songTitles list
                     int index = songTitles.IndexOf(answer);
                     Play.PlaySong(Utils.Songs, index);
+                }
+            }
+            else
+            {
+                Message.Data("No results found", ":(");
+            }
+        }
+
+        public static void SearchByAuthorAsync()
+        {
+            List<string> songs = Utils.Songs.ToList();
+            List<string> songTitles = Utils.Songs.Select(SongExtensions.Title).ToList();
+            List<string> songAuthors = Utils.Songs.Select(SongExtensions.Author).ToList();
+
+            var uniqueAuthors = songAuthors.Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
+
+            var options = new JReadOptions
+            {
+                EnableAutoComplete = true,
+                AutoCompleteItems = uniqueAuthors
+            };
+
+            string search = Message.Input("", "Search for songs by author in the current playlist", options: options);
+
+            if (string.IsNullOrEmpty(search))
+            {
+                return;
+            }
+
+            var results = Process.ExtractTop(search, uniqueAuthors, limit: uniqueAuthors.Count)
+                                .Where(result => result.Score > 50)
+                                .SelectMany(result =>
+                                {
+                                    // Find all songs by this author
+                                    var authorName = result.Value;
+                                    return songTitles
+                                        .Select((title, index) => new { title, index, author = songAuthors[index] })
+                                        .Where(item => string.Equals(item.author, authorName, StringComparison.OrdinalIgnoreCase))
+                                        .Select(item => item.title);
+                                })
+                                .ToList();
+
+            if (results.Count > 0)
+            {
+                var inputs = new CustomSelectInput[]
+                {
+            new CustomSelectInput
+            {
+                DataURI = "Cancel",
+                Title = "Cancel"
+            }
+                };
+
+                inputs = inputs.Concat(results.Select(r =>
+                {
+                    int titleIndex = songTitles.IndexOf(r);
+                    string author = titleIndex >= 0 && titleIndex < songAuthors.Count ? songAuthors[titleIndex] : "";
+                    return new CustomSelectInput
+                    {
+                        DataURI = r,
+                        Title = r,
+                        Author = author
+                    };
+                })).ToArray();
+
+                string? answer = Message.CustomMenuSelect(inputs, $"Songs by authors matching '{search}': {results.Count}");
+
+                if (answer != null && answer != "Cancel")
+                {
+                    int songIndex = songTitles.IndexOf(answer);
+                    if (songIndex >= 0)
+                    {
+                        Play.PlaySong(Utils.Songs, songIndex);
+                    }
                 }
             }
             else

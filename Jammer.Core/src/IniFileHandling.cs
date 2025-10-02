@@ -41,6 +41,7 @@ ToSongStart = 0
 ToSongEnd = 9
 ToggleInfo = I
 SearchInPlaylist = F3
+SearchByAuthor = Shift + F3
 CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete
