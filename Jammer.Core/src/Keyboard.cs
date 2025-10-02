@@ -742,7 +742,7 @@ namespace Jammer
                                     Description = null
                                 };
                             }
-                            string chosen = Message.CustomMenuSelect(_themes, Locale.Miscellaneous.ChooseTheme);
+                            string? chosen = Message.CustomMenuSelect(_themes, Locale.Miscellaneous.ChooseTheme);
 
 
                             if (chosen == "Jammer Default")
@@ -778,6 +778,12 @@ namespace Jammer
                             }
                             else
                             {
+                                if (chosen == null)
+                                {
+                                    drawWhole = true;
+                                    break;
+                                }
+                                
                                 Preferences.theme = chosen;
                             }
 
@@ -925,10 +931,24 @@ namespace Jammer
 
                             soundFonts = newSoundFonts;
 
-                            string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+                            // string chosenSoundFont = Message.MultiSelect(soundFonts, Locale.Miscellaneous.ChooseSoundFont);
+                            CustomSelectInput[] _soundFonts = new CustomSelectInput[soundFonts.Length];
+                            for (int i = 0; i < soundFonts.Length; i++)
+                            {
+                                _soundFonts[i] = new CustomSelectInput
+                                {
+                                    DataURI = soundFonts[i],
+                                    Title = soundFonts[i],
+                                    Author = null,
+                                    Description = null
+                                };
+                            }
+
+                            string? chosenSoundFont = Message.CustomMenuSelect(_soundFonts, Locale.Miscellaneous.ChooseSoundFont);
 
                             switch (chosenSoundFont)
                             {
+                                case null:
                                 case "Cancel":
                                     drawWhole = true;
                                     chosenSoundFont = Preferences.currentSf2;

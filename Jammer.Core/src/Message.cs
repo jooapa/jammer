@@ -200,11 +200,16 @@ namespace Jammer
                 {
                     selected = Math.Min(options.Length - 1, selected + itemsPerPage);
                 }
-                else if (keyInfo.Key == ConsoleKey.Home)
+                else if ((keyInfo.Key == ConsoleKey.Home) ||
+                         (keyInfo.Key == ConsoleKey.UpArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+                )
                 {
                     selected = 0;
                 }
-                else if (keyInfo.Key == ConsoleKey.End)
+                else if (
+                    (keyInfo.Key == ConsoleKey.End) ||
+                    (keyInfo.Key == ConsoleKey.DownArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+                )
                 {
                     selected = options.Length - 1;
                 }
@@ -215,6 +220,15 @@ namespace Jammer
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     return null;
+                }
+                // if Ctrl plus Down
+                else if (keyInfo.Key == ConsoleKey.DownArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+                {
+                    selected = Math.Min(options.Length - 1, selected + itemsPerPage);
+                }
+                else if (keyInfo.Key == ConsoleKey.UpArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+                {
+                    selected = Math.Max(0, selected - itemsPerPage);
                 }
 
                 // Update state for next iteration
