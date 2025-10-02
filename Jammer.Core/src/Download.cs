@@ -368,12 +368,28 @@ namespace Jammer
                     {
                         ytdl.FFmpegPath = ffmpegPath;
                     }
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // check for ffmpeg
+                    if (!IsFFmpegInstalled())
+                    {
+                        Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
+                        return;
+                    }
 
-                    ytdl.OutputFolder = Preferences.songsPath;
-                    // name
-                    ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
+                    if (!IfYtdlpInstalled())
+                    {
+                        Message.Data("yt-dlp is not installed on your system. Please install it for so that the downloading works.", "Error id:2", true);
+                        return;
+                    }
+
+                    ytdl.YoutubeDLPath = "yt-dlp";
+                    ytdl.FFmpegPath = "ffmpeg";
                 }
 
+                ytdl.OutputFolder = Preferences.songsPath;
+                ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
                 TUI.PrintToTopOfPlayer("Downloading with yt-dlp...");
                 
                 // Use simple approach to download best audio
@@ -473,6 +489,30 @@ namespace Jammer
             }
         }
 
+        private static bool IfYtdlpInstalled()
+        {
+            try
+            {
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "yt-dlp",
+                    Arguments = "--version",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
+                process.WaitForExit();
+                return process.ExitCode == 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private static Task FFMPEGConvert(string songPath, Song? metadata = null)
         {
             return Task.Run(() =>
@@ -539,7 +579,7 @@ namespace Jammer
                         Log.Error("Skipping song due to error: " + ex.Message);
                         return;
                     }
-                    
+
                     Message.Data(ex.ToString(), "Error id:323");
                 }
 
