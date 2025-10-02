@@ -51,7 +51,7 @@ namespace Jammer
             List<YTSearchResult> results = new();
             int indexer = 0;
             int max = 10;
-            async Task loopedidoo()
+            async Task loopedidoo_YT()
             {
                 try
                 {
@@ -96,59 +96,55 @@ namespace Jammer
                     return;
                 }
             }
-            loopedidoo().Wait();
+            loopedidoo_YT().Wait();
 
             if (results.Count() > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape($"{r.Type}: {r.Title} [{r.Author}]")).ToArray();
-                // add cancel to the list
-                resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
+                var inputs = new CustomSelectInput[]
+                {
+                    new CustomSelectInput
+                    {
+                        DataURI = "Cancel",
+                        Title = "Cancel"
+                    }
+                };
 
-                // Display the MultiSelect prompt after the loop completes
+                inputs = inputs.Concat(results.Select(r => new CustomSelectInput
+                {
+                    DataURI = r.Id,
+                    Title = $"{r.Type}: {r.Title}",
+                    Author = r.Author
+                })).ToArray();
+
+                // Display the CustomMenuSelect prompt after the loop completes
                 AnsiConsole.Clear();
-                string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max);
-                // remove the cancel from the array
-                if (answer == "Cancel")
+                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 1 });
+                
+                if (answer == null || answer == "Cancel")
                 {
                     Start.drawWhole = true;
                     return;
                 }
 
-                // remove first index from the array
-                resultsString = resultsString.Skip(1).ToArray();
-
-                // Get the id of the selected song
-                string selectedId = "";
-                string selectedString = "";
-                try
+                // Get the selected result
+                var selectedResult = results.FirstOrDefault(r => r.Id == answer);
+                if (selectedResult == null)
                 {
-                    selectedId = results[Array.IndexOf(resultsString, answer)].Id;
-                    selectedString = results[Array.IndexOf(resultsString, answer)].Title;
-                }
-                catch
-                {
-                    // If the user cancels the selection
-                    /*
-                    Unhandled exception. System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
-                    at System.Collections.Generic.List`1.get_Item(Int32 index)
-                    at Jammer.Start.CheckKeyboardAsync() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Keyboard.cs:line 495
-                    at Jammer.Start.Loop() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Start.cs:line 373
-                    */
                     Start.drawWhole = true;
                     return;
                 }
                 Song song = new Song()
                 {
-                    Title = selectedString
+                    Title = selectedResult.Title
                 };
 
                 if (type == "playlist")
                 {
-                    song.URI = "https://www.youtube.com/playlist?list=" + selectedId;
+                    song.URI = "https://www.youtube.com/playlist?list=" + selectedResult.Id;
                 }
                 else
                 {
-                    song.URI = "https://www.youtube.com/watch?v=" + selectedId;
+                    song.URI = "https://www.youtube.com/watch?v=" + selectedResult.Id;
                 }
                 song.ExtractSongDetails();
                 string url = song.ToSongString();
@@ -173,7 +169,7 @@ namespace Jammer
             List<SCSearchResult> results = new();
             int indexer = 0;
             int max = 10;
-            async Task loopedidoo()
+            async Task loopedidoo_SC()
             {
 
                 try
@@ -220,44 +216,40 @@ namespace Jammer
                     return;
                 }
             }
-            loopedidoo().Wait();
+            loopedidoo_SC().Wait();
 
             if (results.Count > 0)
             {
-                string[] resultsString = results.Select(r => Markup.Escape(r.Title + (r.Author != null ? $" [{r.Author}]" : ""))).ToArray();
-                resultsString = new[] { "Cancel" }.Concat(resultsString).ToArray();
+                var inputs = new CustomSelectInput[]
+                {
+                    new CustomSelectInput
+                    {
+                        DataURI = "Cancel",
+                        Title = "Cancel"
+                    }
+                };
 
-                // Display the MultiSelect prompt after the loop completes
+                inputs = inputs.Concat(results.Select(r => new CustomSelectInput
+                {
+                    DataURI = r.Url,
+                    Title = r.Title,
+                    Author = r.Author
+                })).ToArray();
+
+                // Display the CustomMenuSelect prompt after the loop completes
                 AnsiConsole.Clear();
-                string answer = Message.MultiSelect(resultsString, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max);
+                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 1 });
 
-                // remove the cancel from the array
-                if (answer == "Cancel")
+                if (answer == null || answer == "Cancel")
                 {
                     Start.drawWhole = true;
                     return;
                 }
 
-                // remove first index from the array
-                resultsString = resultsString.Skip(1).ToArray();
-
-                // Get the url of the selected song
-                string selectedUrl = "";
-                string selectedString = "";
-                try
+                // Get the selected result
+                var selectedResult = results.FirstOrDefault(r => r.Url == answer);
+                if (selectedResult == null)
                 {
-                    selectedUrl = results[Array.IndexOf(resultsString, answer)].Url;
-                    selectedString = results[Array.IndexOf(resultsString, answer)].Title;
-                }
-                catch
-                {
-                    // If the user cancels the selection
-                    /*
-                    Unhandled exception. System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
-                    at System.Collections.Generic.List`1.get_Item(Int32 index)
-                    at Jammer.Start.CheckKeyboardAsync() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Keyboard.cs:line 495
-                    at Jammer.Start.Loop() in C:\Users\%USERNAME%\Documents\GitHub\jammer\Jammer.Core\src\Start.cs:line 373
-                    */
                     Start.drawWhole = true;
                     return;
                 }
@@ -267,8 +259,8 @@ namespace Jammer
                 // string url = UtilFuncs.CombineToSongString(song);
                 Song song = new Song()
                 {
-                    URI = selectedUrl,
-                    Title = selectedString
+                    URI = selectedResult.Url,
+                    Title = selectedResult.Title
                 };
                 song.ExtractSongDetails();
                 string url = song.ToSongString();

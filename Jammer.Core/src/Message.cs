@@ -30,43 +30,31 @@ namespace Jammer
                 return 0;
 
             int width = 0;
-            foreach (char c in text)
+            foreach (var c in text.Normalize(System.Text.NormalizationForm.FormKC))
             {
-                // Check if character is wide (CJK characters, etc.)
-                UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (category == UnicodeCategory.OtherLetter || // Most CJK characters
-                    category == UnicodeCategory.OtherSymbol ||  // CJK symbols
-                    (c >= 0x1100 && c <= 0x11FF) ||  // Hangul Jamo
-                    (c >= 0x2E80 && c <= 0x2EFF) ||  // CJK Radicals Supplement
-                    (c >= 0x2F00 && c <= 0x2FDF) ||  // Kangxi Radicals
-                    (c >= 0x3000 && c <= 0x303F) ||  // CJK Symbols and Punctuation
-                    (c >= 0x3040 && c <= 0x309F) ||  // Hiragana
-                    (c >= 0x30A0 && c <= 0x30FF) ||  // Katakana
-                    (c >= 0x3100 && c <= 0x312F) ||  // Bopomofo
-                    (c >= 0x3130 && c <= 0x318F) ||  // Hangul Compatibility Jamo
-                    (c >= 0x3190 && c <= 0x319F) ||  // Kanbun
-                    (c >= 0x31A0 && c <= 0x31BF) ||  // Bopomofo Extended
-                    (c >= 0x31C0 && c <= 0x31EF) ||  // CJK Strokes
-                    (c >= 0x31F0 && c <= 0x31FF) ||  // Katakana Phonetic Extensions
-                    (c >= 0x3200 && c <= 0x32FF) ||  // Enclosed CJK Letters and Months
-                    (c >= 0x3300 && c <= 0x33FF) ||  // CJK Compatibility
-                    (c >= 0x3400 && c <= 0x4DBF) ||  // CJK Unified Ideographs Extension A
-                    (c >= 0x4E00 && c <= 0x9FFF) ||  // CJK Unified Ideographs
-                    (c >= 0xA000 && c <= 0xA48F) ||  // Yi Syllables
-                    (c >= 0xA490 && c <= 0xA4CF) ||  // Yi Radicals
-                    (c >= 0xAC00 && c <= 0xD7AF) ||  // Hangul Syllables
-                    (c >= 0xF900 && c <= 0xFAFF) ||  // CJK Compatibility Ideographs
-                    (c >= 0xFE30 && c <= 0xFE4F) ||  // CJK Compatibility Forms
-                    (c >= 0xFF00 && c <= 0xFFEF))    // Halfwidth and Fullwidth Forms
-                {
-                    width += 2; // Wide characters take 2 columns
-                }
+                if (IsFullWidth(c))
+                    width += 2;
                 else
-                {
-                    width += 1; // Regular characters take 1 column
-                }
+                    width += 1;
             }
             return width;
+        }
+
+        // Helper to check if a char is fullwidth (same logic as Funcs.IsFullWidth)
+        private static bool IsFullWidth(char c)
+        {
+            int code = (int)c;
+            // CJK Unified Ideographs
+            if ((code >= 0x4E00 && code <= 0x9FFF) ||
+                (code >= 0x3400 && code <= 0x4DBF) ||
+                (code >= 0xF900 && code <= 0xFAFF) ||
+                (code >= 0xFF01 && code <= 0xFF60) || // Fullwidth ASCII variants
+                (code >= 0xFFE0 && code <= 0xFFE6) || // Fullwidth symbol variants
+                (code >= 0x1100 && code <= 0x11FF) || // Hangul Jamo
+                (code >= 0x3040 && code <= 0x309F) || // Hiragana
+                (code >= 0x30A0 && code <= 0x30FF))   // Katakana
+                return true;
+            return false;
         }
 
         // Custom menu that supports ESC to cancel
