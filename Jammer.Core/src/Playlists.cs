@@ -99,10 +99,24 @@ namespace Jammer
         /// <returns></returns>
         static public string GetJammerPlaylistPath(string playlist)
         {
-            // if playlist is not a path, return the path
             if (!playlist.Contains(Path.DirectorySeparatorChar))
             {
-                return Path.Combine(Preferences.GetPlaylistsPath(), playlist + ".jammer");
+                string playlistsPath = Preferences.GetPlaylistsPath();
+
+                if (!Path.HasExtension(playlist))
+                {
+                    string defaultPath = Path.Combine(playlistsPath, playlist + ".jammer");
+                    string alternatePath = Path.Combine(playlistsPath, playlist + ".playlist");
+
+                    if (File.Exists(alternatePath) && !File.Exists(defaultPath))
+                    {
+                        return alternatePath;
+                    }
+
+                    return defaultPath;
+                }
+
+                return Path.Combine(playlistsPath, playlist);
             }
             return Path.GetFullPath(playlist);
         }

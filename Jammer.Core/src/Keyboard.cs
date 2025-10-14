@@ -432,6 +432,22 @@ namespace Jammer
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
+                            case Keybindings.SettingsKeys.FavoriteNotificationTimeout:
+                                string favoriteNotificationTimeoutInput = Message.Input(
+                                    "",
+                                    $"{Locale.OutsideItems.EnterFavoriteNotificationTimeout} ({Preferences.favoriteNotificationTimeoutMs} ms)"
+                                );
+                                if (int.TryParse(favoriteNotificationTimeoutInput, out int favoriteNotificationTimeout) && favoriteNotificationTimeout >= 0)
+                                {
+                                    Preferences.favoriteNotificationTimeoutMs = favoriteNotificationTimeout;
+                                    Preferences.SaveSettings();
+                                }
+                                else
+                                {
+                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
+                                }
+                                drawWhole = true;
+                                break;
                         }
                     }
 
@@ -678,6 +694,10 @@ namespace Jammer
                         // Case For A
                         case "AddSongToPlaylist":
                             Funcs.AddSongToPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "AddCurrentSongToFavorites":
+                            Funcs.AddCurrentSongToFavorites();
                             drawWhole = true;
                             break;
                         // Case For ?

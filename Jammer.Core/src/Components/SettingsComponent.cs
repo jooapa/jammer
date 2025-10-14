@@ -197,6 +197,14 @@ namespace Jammer.Components
                 ChangeKey = Keybindings.SettingsKeys.QuickSearch.ToString(),
                 ChangeDescription = "To Toggle (will autoplay search result if exact match)"
             });
+
+            _settings.Add(new SettingItem
+            {
+                Name = Locale.Settings.FavoriteNotificationTimeout,
+                CurrentValue = $"{Preferences.favoriteNotificationTimeoutMs} ms",
+                ChangeKey = Keybindings.SettingsKeys.FavoriteNotificationTimeout.ToString(),
+                ChangeDescription = Locale.Settings.ToChange
+            });
         }
 
         private static void CalculateTotalPages()

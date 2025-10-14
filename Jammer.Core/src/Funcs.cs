@@ -557,6 +557,92 @@ namespace Jammer
             }
         }
 
+        public static void AddCurrentSongToFavorites()
+        {
+            if (Utils.Songs == null || Utils.Songs.Length == 0)
+            {
+                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesNoSong, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                return;
+            }
+
+            if (Utils.CurrentSongIndex < 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
+            {
+                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                return;
+            }
+
+            string currentSong = Utils.Songs[Utils.CurrentSongIndex];
+            if (string.IsNullOrWhiteSpace(currentSong))
+            {
+                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                return;
+            }
+
+            string playlistsDirectory = Preferences.GetPlaylistsPath();
+            string favoritesPlaylistPath = Path.Combine(playlistsDirectory, "jammer-fav.playlist");
+            string legacyFavoritesPath = Path.Combine(playlistsDirectory, "jammer-fav.jammer");
+
+            try
+            {
+                if (!Directory.Exists(playlistsDirectory))
+                {
+                    Directory.CreateDirectory(playlistsDirectory);
+                }
+
+                if (!File.Exists(favoritesPlaylistPath) && File.Exists(legacyFavoritesPath))
+                {
+                    File.Copy(legacyFavoritesPath, favoritesPlaylistPath);
+                }
+
+                string[] existingSongs = File.Exists(favoritesPlaylistPath)
+                    ? File.ReadAllLines(favoritesPlaylistPath)
+                    : Array.Empty<string>();
+
+                int timeout = Math.Max(0, Preferences.favoriteNotificationTimeoutMs);
+                bool autoClose = timeout > 0;
+
+                if (existingSongs.Contains(currentSong))
+                {
+                    Jammer.Message.Data(
+                        Locale.Player.AddCurrentSongToFavoritesAlreadyExists,
+                        Locale.Player.AddCurrentSongToFavoritesTitle,
+                        true,
+                        !autoClose,
+                        autoClose ? timeout : 0);
+                    Start.drawWhole = true;
+                    return;
+                }
+
+                using (StreamWriter writer = File.AppendText(favoritesPlaylistPath))
+                {
+                    writer.WriteLine(currentSong);
+                }
+
+                string favoriteDisplayName = SongExtensions.Title(currentSong);
+                if (string.IsNullOrWhiteSpace(favoriteDisplayName))
+                {
+                    favoriteDisplayName = Path.GetFileName(currentSong);
+                }
+                if (string.IsNullOrWhiteSpace(favoriteDisplayName))
+                {
+                    favoriteDisplayName = currentSong;
+                }
+
+                Log.Info($"Added to favorites: {favoriteDisplayName}");
+                Jammer.Message.Data(
+                    Locale.Player.AddCurrentSongToFavoritesSuccess,
+                    Locale.Player.AddCurrentSongToFavoritesTitle,
+                    false,
+                    !autoClose,
+                    autoClose ? timeout : 0);
+                Start.drawWhole = true;
+            }
+            catch (Exception ex)
+            {
+                Jammer.Message.Data($"{Locale.Player.AddCurrentSongToFavoritesError}: {ex.Message}", Locale.Player.AddCurrentSongToFavoritesTitle, true);
+            }
+        }
+
         // Delete current song from playlist
         public static void DeleteCurrentSongFromPlaylist()
         {

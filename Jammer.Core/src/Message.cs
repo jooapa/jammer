@@ -3,6 +3,7 @@ using JRead;
 using Spectre.Console;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Threading;
 
 namespace Jammer
 {
@@ -372,7 +373,7 @@ namespace Jammer
             }
         }
 
-        public static void Data(string data, string title, bool isError = false, bool readKey = true)
+        public static void Data(string data, string title, bool isError = false, bool readKey = true, int closeAfterMilliseconds = 0)
         {
             var mainTable = new Table();
             var messageTable = new Table();
@@ -397,9 +398,33 @@ namespace Jammer
             AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(mainTable);
-            if (readKey)
+            if (closeAfterMilliseconds > 0)
             {
-                Console.ReadKey();
+                if (readKey)
+                {
+                    int waited = 0;
+                    const int pollInterval = 50;
+                    while (waited < closeAfterMilliseconds)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            Console.ReadKey(true);
+                            return;
+                        }
+                        Thread.Sleep(pollInterval);
+                        waited += pollInterval;
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(closeAfterMilliseconds);
+                }
+
+                AnsiConsole.Clear();
+            }
+            else if (readKey)
+            {
+                Console.ReadKey(true);
             }
         }
 

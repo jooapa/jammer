@@ -42,6 +42,9 @@ namespace Jammer
         public static int rssSkipAfterTimeValue = GetRssSkipAfterTimeValue();
         public static BackEndTypeYT backEndType = GetBackEndType();
         public static bool isQuickSearch = GetEnableQuickSearch();
+        public static int favoriteNotificationTimeoutMs = GetFavoriteNotificationTimeoutMs();
+
+        private const int DefaultFavoriteNotificationTimeoutMs = 1000;
 
         private static bool GetModifierKeyHelper()
         {
@@ -116,6 +119,23 @@ namespace Jammer
             {
                 return 5;
             }
+        }
+
+        private static int GetFavoriteNotificationTimeoutMs()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                int? storedValue = settings?.favoriteNotificationTimeoutMs;
+                if (storedValue.HasValue && storedValue.Value >= 0)
+                {
+                    return storedValue.Value;
+                }
+            }
+
+            return DefaultFavoriteNotificationTimeoutMs;
         }
 
         static public void CheckJammerFolderExists()
@@ -200,6 +220,7 @@ namespace Jammer
             settings.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
             settings.backEndType = backEndType;
             settings.EnableQuickSearch = isQuickSearch;
+            settings.favoriteNotificationTimeoutMs = favoriteNotificationTimeoutMs;
 
             var options = new JsonSerializerOptions
             {
@@ -599,7 +620,7 @@ namespace Jammer
             public int? rssSkipAfterTimeValue { get; set; }
             public BackEndTypeYT? backEndType { get; set; }
             public bool? EnableQuickSearch { get; set; }
+            public int? favoriteNotificationTimeoutMs { get; set; }
         }
     }
 }
-
