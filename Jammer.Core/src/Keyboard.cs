@@ -432,20 +432,9 @@ namespace Jammer
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
-                            case Keybindings.SettingsKeys.FavoriteNotificationTimeout:
-                                string favoriteNotificationTimeoutInput = Message.Input(
-                                    "",
-                                    $"{Locale.OutsideItems.EnterFavoriteNotificationTimeout} ({Preferences.favoriteNotificationTimeoutMs} ms)"
-                                );
-                                if (int.TryParse(favoriteNotificationTimeoutInput, out int favoriteNotificationTimeout) && favoriteNotificationTimeout >= 0)
-                                {
-                                    Preferences.favoriteNotificationTimeoutMs = favoriteNotificationTimeout;
-                                    Preferences.SaveSettings();
-                                }
-                                else
-                                {
-                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                }
+                            case Keybindings.SettingsKeys.FavoriteExplainer:
+                                Preferences.favoriteExplainer = !Preferences.favoriteExplainer;
+                                Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
                         }
@@ -488,11 +477,13 @@ namespace Jammer
                             Play.SeekSong(Preferences.forwardSeconds, true);
                             drawTime = true;
                             drawWhole = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "Backwards5s": // move backward 5 seconds
                             Play.SeekSong(-Math.Abs(Preferences.rewindSeconds), true);
                             drawTime = true;
                             drawWhole = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeUp": // volume up
                             if (Preferences.isMuted)
@@ -502,6 +493,7 @@ namespace Jammer
                             Play.ModifyVolume(Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeDown": // volume down
                             if (Preferences.isMuted)
@@ -511,6 +503,7 @@ namespace Jammer
                             Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeUpByOne":
                             if (Preferences.isMuted)
@@ -519,6 +512,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(0.01f);
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeDownByOne":
                             if (Preferences.isMuted)
@@ -527,6 +521,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(-0.01f);
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "Shuffle": // suffle or save
                             Preferences.isShuffle = !Preferences.isShuffle;
@@ -697,7 +692,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "AddCurrentSongToFavorites":
-                            Funcs.AddCurrentSongToFavorites();
+                            Funcs.ToggleCurrentSongToFavorites();
                             drawWhole = true;
                             break;
                         // Case For ?
@@ -940,7 +935,6 @@ namespace Jammer
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
                             string[] newSoundFonts = new string[soundFonts.Length + 3];
-                            newSoundFonts[0] = "Cancel";
                             newSoundFonts[1] = "Link to a soundfont by path";
                             newSoundFonts[2] = "Import soundfont by path";
 

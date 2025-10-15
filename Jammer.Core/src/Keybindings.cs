@@ -170,7 +170,7 @@ namespace Jammer
             public const ConsoleKey RssSkipAfterTime = ConsoleKey.N;
             public const ConsoleKey RssSkipAfterTimeValue = ConsoleKey.O;
             public const ConsoleKey QuickSearch = ConsoleKey.P;
-            public const ConsoleKey FavoriteNotificationTimeout = ConsoleKey.Z;
+            public const ConsoleKey FavoriteExplainer = ConsoleKey.Q;
 
         }
     }

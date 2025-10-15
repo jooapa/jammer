@@ -256,8 +256,6 @@ BackEndChange = B
                     KeyData["Keybinds"].RemoveKey(key);
                 }
 
-                MigrateLegacyKeybinds();
-
                 parser.WriteFile(filePath, KeyData);
                 // Find missing keys
                 HashSet<string> missingKeys = new HashSet<string>(keysFromString);
@@ -288,30 +286,6 @@ BackEndChange = B
             ReadNewKeybinds();
         }
 
-        private static void MigrateLegacyKeybinds()
-        {
-            if (KeyData == null)
-            {
-                return;
-            }
-
-            if (!KeyData.Sections.ContainsSection("Keybinds"))
-            {
-                return;
-            }
-
-            var keybindSection = KeyData["Keybinds"];
-            string? existingFavoriteKey = keybindSection?["AddCurrentSongToFavorites"];
-
-            if (!string.IsNullOrWhiteSpace(existingFavoriteKey))
-            {
-                string normalized = existingFavoriteKey.Replace(" ", "").ToLowerInvariant();
-                if (normalized == "ctrl+shift+f")
-                {
-                    keybindSection["AddCurrentSongToFavorites"] = "Ctrl + F";
-                }
-            }
-        }
         // Method to extract keys from IniData object
         static HashSet<string> ExtractKeys(IniData iniData)
         {

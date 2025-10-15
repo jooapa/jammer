@@ -271,36 +271,70 @@ namespace Jammer
             prevLabel = (prevLabel ?? Locale.Player.Previos).PadRight(maxLabelLength);
             nextLabel = (nextLabel ?? Locale.Player.Next).PadRight(maxLabelLength);
 
-            // Console.WriteLine(Start.Sanitize(Utils.Songs[Utils.CurrentSongIndex]));
-            // Console.ReadLine();
-
-            // Get song strings with consistent formatting
-
-            // if the current song is a rrs feed then add a open text to the end of the title
-            string openString = "";
-            if (IsCurrentSongARssFeed())
+            // Check if we have songs and valid indices
+            if (Utils.Songs == null || Utils.Songs.Length == 0 || Utils.CurrentSongIndex < 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
             {
-                openString += " (Open with " + Keybindings.Choose + ")";
+                string emptyCurrent = $"{currentLabel} : -";
+                string emptyPrev = $"{prevLabel} : -";
+                string emptyNext = $"{nextLabel} : -";
+
+                emptyCurrent = Start.Sanitize(emptyCurrent);
+                emptyPrev = Start.Sanitize(emptyPrev);
+                emptyNext = Start.Sanitize(emptyNext);
+
+                // Apply colors for empty state
+                emptyCurrent = Themes.sColor(emptyCurrent, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+                emptyPrev = Themes.sColor(emptyPrev, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+                emptyNext = Themes.sColor(emptyNext, Themes.CurrentTheme.GeneralPlaylist.NoneSongColor);
+
+                emptyCurrent = RemoveControlChars(emptyCurrent);
+                emptyPrev = RemoveControlChars(emptyPrev);
+                emptyNext = RemoveControlChars(emptyNext);
+
+                var emptyText = $"{emptyPrev}\n{emptyCurrent}\n{emptyNext}";
+                return emptyText.Normalize(System.Text.NormalizationForm.FormC);
             }
 
-            string currentSong = Utils.Songs.Length > 0
-                ? $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]) + openString, songLength)}"
-                + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex]),
-                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex]) + openString,
-                            Start.consoleWidth, currentLabel.Length)
-                : $"{currentLabel} : -";
+            // Get song strings with consistent formatting
+            string customAfterText_current = "";
+            string customAfterText_prev = "";
+            string customAfterText_next = "";
+
+            string curStringSong = Utils.Songs[Utils.CurrentSongIndex] ?? "";
+            string prevStringSong = Utils.CurrentSongIndex > 0 ? Utils.Songs[Utils.CurrentSongIndex - 1] ?? "" : "";
+            string nextStringSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1 ? Utils.Songs[Utils.CurrentSongIndex + 1] ?? "" : "";
+
+            // assign "star" to the song if isFavorite
+            if (SongExtensions.IsFavorite(curStringSong)){
+                customAfterText_current += " ★";
+                
+            }
+            // if the current song is a rss feed then add a open text to the end of the title
+            if (IsCurrentSongARssFeed())
+                customAfterText_current += " (Open with " + Keybindings.Choose + ")";
+
+            if (SongExtensions.IsFavorite(prevStringSong))
+                customAfterText_prev += " ★";
+
+            if (SongExtensions.IsFavorite(nextStringSong))
+                customAfterText_next += " ★";
+
+            string currentSong = $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(curStringSong) + customAfterText_current, songLength)}"
+                + PadAuthorToRight(SongExtensions.Author(curStringSong),
+                            SongExtensions.Title(curStringSong) + customAfterText_current,
+                            Start.consoleWidth, currentLabel.Length);
 
             string prevSong = Utils.CurrentSongIndex > 0
-                ? $"{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]), songLength)}"
+                ? $"{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]) + customAfterText_prev, songLength)}"
                 + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex - 1]),
-                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]),
+                            SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]) + customAfterText_prev,
                             Start.consoleWidth, prevLabel.Length)
                 : $"{prevLabel} : -";
 
             string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
-                ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]), songLength)}"
+                ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]) + customAfterText_next, songLength)}"
             + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex + 1]),
-                        SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]),
+                        SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]) + customAfterText_next,
                         Start.consoleWidth, nextLabel.Length)
             : $"{nextLabel} : -";
 
@@ -557,90 +591,43 @@ namespace Jammer
             }
         }
 
-        public static void AddCurrentSongToFavorites()
+        public static void ToggleCurrentSongToFavorites()
         {
             if (Utils.Songs == null || Utils.Songs.Length == 0)
             {
-                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesNoSong, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                Message.Data(Locale.Player.AddCurrentSongToFavoritesNoSong, Locale.Player.AddCurrentSongToFavoritesTitle, true);
                 return;
             }
 
             if (Utils.CurrentSongIndex < 0 || Utils.CurrentSongIndex >= Utils.Songs.Length)
             {
-                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
                 return;
             }
 
             string currentSong = Utils.Songs[Utils.CurrentSongIndex];
             if (string.IsNullOrWhiteSpace(currentSong))
             {
-                Jammer.Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                Message.Data(Locale.Player.AddCurrentSongToFavoritesError, Locale.Player.AddCurrentSongToFavoritesTitle, true);
                 return;
             }
 
-            string playlistsDirectory = Preferences.GetPlaylistsPath();
-            string favoritesPlaylistPath = Path.Combine(playlistsDirectory, "jammer-fav.playlist");
-            string legacyFavoritesPath = Path.Combine(playlistsDirectory, "jammer-fav.jammer");
-
-            try
+            Song song = SongExtensions.ToSong(currentSong);
+            if (SongExtensions.IsFavorite(song.ToSongString()))
             {
-                if (!Directory.Exists(playlistsDirectory))
-                {
-                    Directory.CreateDirectory(playlistsDirectory);
-                }
-
-                if (!File.Exists(favoritesPlaylistPath) && File.Exists(legacyFavoritesPath))
-                {
-                    File.Copy(legacyFavoritesPath, favoritesPlaylistPath);
-                }
-
-                string[] existingSongs = File.Exists(favoritesPlaylistPath)
-                    ? File.ReadAllLines(favoritesPlaylistPath)
-                    : Array.Empty<string>();
-
-                int timeout = Math.Max(0, Preferences.favoriteNotificationTimeoutMs);
-                bool autoClose = timeout > 0;
-
-                if (existingSongs.Contains(currentSong))
-                {
-                    Jammer.Message.Data(
-                        Locale.Player.AddCurrentSongToFavoritesAlreadyExists,
-                        Locale.Player.AddCurrentSongToFavoritesTitle,
-                        true,
-                        !autoClose,
-                        autoClose ? timeout : 0);
-                    Start.drawWhole = true;
-                    return;
-                }
-
-                using (StreamWriter writer = File.AppendText(favoritesPlaylistPath))
-                {
-                    writer.WriteLine(currentSong);
-                }
-
-                string favoriteDisplayName = SongExtensions.Title(currentSong);
-                if (string.IsNullOrWhiteSpace(favoriteDisplayName))
-                {
-                    favoriteDisplayName = Path.GetFileName(currentSong);
-                }
-                if (string.IsNullOrWhiteSpace(favoriteDisplayName))
-                {
-                    favoriteDisplayName = currentSong;
-                }
-
-                Log.Info($"Added to favorites: {favoriteDisplayName}");
-                Jammer.Message.Data(
-                    Locale.Player.AddCurrentSongToFavoritesSuccess,
-                    Locale.Player.AddCurrentSongToFavoritesTitle,
-                    false,
-                    !autoClose,
-                    autoClose ? timeout : 0);
-                Start.drawWhole = true;
+                song.IsFavorite = null;
+                Utils.Songs[Utils.CurrentSongIndex] = song.ToSongString();
             }
-            catch (Exception ex)
+            else
             {
-                Jammer.Message.Data($"{Locale.Player.AddCurrentSongToFavoritesError}: {ex.Message}", Locale.Player.AddCurrentSongToFavoritesTitle, true);
+                song.IsFavorite = "true";
+                Utils.Songs[Utils.CurrentSongIndex] = SongExtensions.ToSongString(song);
+                if (Preferences.favoriteExplainer)
+                {
+                    Message.Data("You have marked this song as favorite. \nYou can play all your favorite songs by playing the current playlist name with ':fav' appended. i.e. [bold]example:fav[/]\nor you can add play the playlist by path and adding -fav to the extension i.e. [bold]example.jammer-fav[/]\nYou can remove this message from the settings. ([bold]" + Keybindings.SettingsKeys.FavoriteExplainer.ToString() + "[/])", "Favorite song added");
+                }
             }
+
         }
 
         // Delete current song from playlist

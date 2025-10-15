@@ -200,10 +200,10 @@ namespace Jammer.Components
 
             _settings.Add(new SettingItem
             {
-                Name = Locale.Settings.FavoriteNotificationTimeout,
-                CurrentValue = $"{Preferences.favoriteNotificationTimeoutMs} ms",
-                ChangeKey = Keybindings.SettingsKeys.FavoriteNotificationTimeout.ToString(),
-                ChangeDescription = Locale.Settings.ToChange
+                Name = "Favorite Explainer",
+                CurrentValue = Preferences.favoriteExplainer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
+                ChangeKey = Keybindings.SettingsKeys.FavoriteExplainer.ToString(),
+                ChangeDescription = "To Toggle (show explainer when favoriting a song)"
             });
         }
 
