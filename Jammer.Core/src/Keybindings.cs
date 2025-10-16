@@ -95,6 +95,8 @@ namespace Jammer
         public static string ChangeTheme = CheckValue("ChangeTheme", "Shift + T");
         public static string PlayRandomSong = CheckValue("PlayRandomSong", "R");
         public static string ChangeSoundFont = CheckValue("ChangeSoundFont", "Shift + G");
+        public static string GroupMenu = CheckValue("GroupMenu", "Ctrl + G");
+        public static string AddToGroup = CheckValue("AddToGroup", "G");
         public static string PlaylistViewScrollup = CheckValue("PlaylistViewScrollup", "PageUp");
         public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "PageDown");
         public static string Choose = CheckValue("Choose", "Enter");
