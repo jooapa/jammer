@@ -181,7 +181,12 @@ namespace Jammer
             // }
 
             // if the song has the URI and no other properties check for them in the songs[Utils.CurrentSongIndex],
-            if (song.URI != null && (song.Title == null || song.Author == null || song.Album == null || song.Year == null || song.Genre == null))
+            if (
+                song.URI != null &&
+                    (
+                        song.Title == null || song.Author == null || song.Album == null || song.Year == null || song.Genre == null || song.Duration == null || song.Description == null || song.PubDate == null || song.IsFavorite == null
+                    )
+                )
             {
                 Song tempSong = SongExtensions.ToSong(songs[Utils.CurrentSongIndex]);
                 song.Title ??= tempSong.Title;
@@ -192,6 +197,7 @@ namespace Jammer
                 song.Duration ??= tempSong.Duration;
                 song.Description ??= tempSong.Description;
                 song.PubDate ??= tempSong.PubDate;
+                song.IsFavorite ??= tempSong.IsFavorite;
             }
 
             // Message.Data(songs[Utils.CurrentSongIndex], "path");

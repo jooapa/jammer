@@ -934,13 +934,13 @@ namespace Jammer
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
-                            string[] newSoundFonts = new string[soundFonts.Length + 3];
-                            newSoundFonts[1] = "Link to a soundfont by path";
-                            newSoundFonts[2] = "Import soundfont by path";
+                            string[] newSoundFonts = new string[soundFonts.Length + 2];
+                            newSoundFonts[0] = "Link to a soundfont by path";
+                            newSoundFonts[1] = "Import soundfont by path";
 
                             for (int i = 0; i < soundFonts.Length; i++)
                             {
-                                newSoundFonts[i + 3] = soundFonts[i];
+                                newSoundFonts[i + 2] = soundFonts[i];
                             }
 
                             soundFonts = newSoundFonts;
