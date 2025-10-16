@@ -99,6 +99,13 @@ namespace Jammer
 
             Start.ClearKeyboardBuffer();
 
+            // if file extension is .jammer-fav or .jammer:favorites
+            if (song.URI != null && (song.URI.EndsWith(".jammer:fav") || song.URI.EndsWith(".jammer:favorites")))
+            {
+                song.Stream = JammerPlaylistStream.Favorites;
+                song.URI = song.URI.Replace(".jammer:fav", ".jammer").Replace(".jammer:favorites", ".jammer");
+            }
+            
             // check if file is a local
             if (System.IO.File.Exists(song.URI))
             {
@@ -374,7 +381,7 @@ namespace Jammer
             // add all songs in playlist to Utils.songs
             foreach (string s in playlist)
             {
-                if (song.Stream == Playlists.JammerPlaylistStream.Favorites)
+                if (song.Stream == JammerPlaylistStream.Favorites)
                 {
                     Song plSong = SongExtensions.ToSong(s);
                     if (plSong.IsFavorite != null && plSong.IsFavorite == "true")

@@ -17,7 +17,7 @@ namespace Jammer
         public string? Description { get; set; }
         public string? PubDate { get; set; }
         public string? IsFavorite { get; set; }
-        public Playlists.JammerPlaylistStream? Stream { get; set; }
+        public JammerPlaylistStream? Stream { get; set; }
 
         /// <summary>
         /// Extracts song details from the Path property if it contains metadata.
@@ -77,7 +77,7 @@ namespace Jammer
                         if (root.TryGetProperty("Stream", out var streamElement))
                         {
                             var streamValue = streamElement.GetString();
-                            if (Enum.TryParse<Playlists.JammerPlaylistStream>(streamValue, true, out var parsedStream))
+                            if (Enum.TryParse<JammerPlaylistStream>(streamValue, true, out var parsedStream))
                             {
                                 Stream = parsedStream;
                             }
@@ -185,7 +185,7 @@ namespace Jammer
                         if (root.TryGetProperty("Stream", out var streamElement))
                         {
                             var streamValue = streamElement.GetString();
-                            if (Enum.TryParse<Playlists.JammerPlaylistStream>(streamValue, true, out var parsedStream))
+                            if (Enum.TryParse<JammerPlaylistStream>(streamValue, true, out var parsedStream))
                             {
                                 song.Stream = parsedStream;
                             }

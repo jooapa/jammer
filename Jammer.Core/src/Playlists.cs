@@ -3,8 +3,13 @@ using System.IO;
 
 namespace Jammer
 {
+    public enum JammerPlaylistStream
+    {
+        Favorites,
+    }
     public class Playlists
     {
+
         static public void Create(string playlist)
         {
             Console.WriteLine($"{Locale.OutsideItems.CreatingPlaylist}: " + playlist + ".jammer");
@@ -102,11 +107,6 @@ namespace Jammer
                     Environment.Exit(0);
                 }
             }
-        }
-
-        public enum JammerPlaylistStream
-        {
-            Favorites,
         }
 
         /// <summary>
