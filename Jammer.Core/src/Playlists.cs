@@ -3,13 +3,18 @@ using System.IO;
 
 namespace Jammer
 {
+    public enum JammerPlaylistStream
+    {
+        Favorites,
+    }
     public class Playlists
     {
+
         static public void Create(string playlist)
         {
             Console.WriteLine($"{Locale.OutsideItems.CreatingPlaylist}: " + playlist + ".jammer");
             string playlistName = playlist;
-            string playlistPath = GetJammerPlaylistPath(playlistName);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -50,15 +55,27 @@ namespace Jammer
 
             // AnsiConsole.WriteLine($"{Locale.OutsideItems.StartingUp} " + playlist);
             string playlistName = playlist;
-            string playlistPath = GetJammerPlaylistPath(playlistName);
-            AnsiConsole.MarkupLine($"[green]{playlistPath}[/]");
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
+            AnsiConsole.MarkupLine($"[green]{playlistPath}[/]---");
             if (File.Exists(playlistPath) || URL.IsUrl(playlist))
             {
 
                 Utils.CurrentSongIndex = 0;
-                Utils.Songs = new string[] { GetJammerPlaylistPath(playlist) };
+                Song song = new Song();
+                song.URI = playlistPath;
+                song.Stream = stream;
 
-                Utils.CurrentPlaylist = playlistName;
+                Utils.Songs = new string[] { song.ToSongString() };
+
+                if (stream == null)
+                {
+                    Utils.CurrentPlaylist = playlistName;
+                }
+                else
+                {
+                    Utils.CurrentPlaylist = "";
+                    Utils.BackUpPlaylistName = playlistName;
+                }
 
                 if (fromCli)
                 {
@@ -93,18 +110,45 @@ namespace Jammer
         }
 
         /// <summary>
-        /// Returns the path of the playlist
+        /// Returns the path of the playlist and the stream type if any
         /// </summary>
-        /// <param name="playlist"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        static public string GetJammerPlaylistPath(string playlist)
+        public static (string, JammerPlaylistStream?) GetJammerPlaylistPath(string input)
         {
-            // if playlist is not a path, return the path
-            if (!playlist.Contains(Path.DirectorySeparatorChar))
+            JammerPlaylistStream? stream = null;
+            if (!input.Contains(Path.DirectorySeparatorChar))
             {
-                return Path.Combine(Preferences.GetPlaylistsPath(), playlist + ".jammer");
+                string playlistsPath = Preferences.GetPlaylistsPath();
+
+                if (!Path.HasExtension(input))
+                {
+                    // if the file name has ":" ie "MyPlaylist:Favs" then split it and use the last part as the name
+                    if (input.Contains(':') && !input.StartsWith("http") && !input.StartsWith("https") && !input.Contains(":\\"))
+                    {
+                        string[] parts = input.Split(':');
+                        input = parts[0];
+                        string streamName = parts[1].ToLower().Trim();
+                        if (streamName == "favorites" || streamName == "favs" || streamName == "fav")
+                        {
+                            stream = JammerPlaylistStream.Favorites;
+                        }
+                    }
+
+                    string defaultPath = Path.Combine(playlistsPath, input + ".jammer");
+                    string alternatePath = Path.Combine(playlistsPath, input + ".playlist");
+
+                    if (File.Exists(alternatePath) && !File.Exists(defaultPath))
+                    {
+                        return (alternatePath, stream);
+                    }
+
+                    return (defaultPath, stream);
+                }
+
+                return (Path.Combine(playlistsPath, input), stream);
             }
-            return Path.GetFullPath(playlist);
+            return (Path.GetFullPath(input), stream);
         }
 
         /// <summary>
@@ -126,7 +170,7 @@ namespace Jammer
         {
             Console.WriteLine($"{Locale.OutsideItems.Deleting} " + playlist);
             string playlistName = playlist;
-            string playlistPath = GetJammerPlaylistPath(playlistName);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
 
             if (File.Exists(playlistPath))
             {
@@ -141,7 +185,7 @@ namespace Jammer
         static public void Add(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = GetJammerPlaylistPath(playlistName);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.AddingSongsTo} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -183,7 +227,7 @@ namespace Jammer
         static public void Remove(string[] args)
         {
             string playlistName = args[0];
-            string playlistPath = GetJammerPlaylistPath(playlistName);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
 
             AnsiConsole.MarkupLine($"[green]{Locale.OutsideItems.RemovingFrom} " + playlistPath + "[/]");
             if (File.Exists(playlistPath))
@@ -232,7 +276,7 @@ namespace Jammer
         static public string GetShow(string playlist)
         {
             AnsiConsole.MarkupLine($"{Locale.OutsideItems.ShowingPlaylist} [red]" + playlist + "[/]");
-            string playlistPath = GetJammerPlaylistPath(playlist);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlist);
 
             string playlistList = "";
             if (File.Exists(playlistPath))
@@ -264,7 +308,7 @@ namespace Jammer
         /// <param name="type"></param>
         static public void Save(string playlistName, bool force = false, string type = "auto")
         {
-            string playlistPath = GetJammerPlaylistPath(playlistName);
+            (string playlistPath, JammerPlaylistStream? stream) = GetJammerPlaylistPath(playlistName);
 
             // if playlist exists, overwrite it with y/n
             if (File.Exists(playlistPath))

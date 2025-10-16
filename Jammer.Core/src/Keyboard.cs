@@ -432,6 +432,11 @@ namespace Jammer
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
+                            case Keybindings.SettingsKeys.FavoriteExplainer:
+                                Preferences.favoriteExplainer = !Preferences.favoriteExplainer;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
                         }
                     }
 
@@ -472,11 +477,13 @@ namespace Jammer
                             Play.SeekSong(Preferences.forwardSeconds, true);
                             drawTime = true;
                             drawWhole = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "Backwards5s": // move backward 5 seconds
                             Play.SeekSong(-Math.Abs(Preferences.rewindSeconds), true);
                             drawTime = true;
                             drawWhole = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeUp": // volume up
                             if (Preferences.isMuted)
@@ -486,6 +493,7 @@ namespace Jammer
                             Play.ModifyVolume(Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeDown": // volume down
                             if (Preferences.isMuted)
@@ -495,6 +503,7 @@ namespace Jammer
                             Play.ModifyVolume(-Preferences.GetChangeVolumeBy());
                             Preferences.SaveSettings();
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeUpByOne":
                             if (Preferences.isMuted)
@@ -503,6 +512,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(0.01f);
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "VolumeDownByOne":
                             if (Preferences.isMuted)
@@ -511,6 +521,7 @@ namespace Jammer
                             }
                             Play.ModifyVolume(-0.01f);
                             drawTime = true;
+                            ClearKeyboardBuffer();
                             break;
                         case "Shuffle": // suffle or save
                             Preferences.isShuffle = !Preferences.isShuffle;
@@ -678,6 +689,10 @@ namespace Jammer
                         // Case For A
                         case "AddSongToPlaylist":
                             Funcs.AddSongToPlaylist();
+                            drawWhole = true;
+                            break;
+                        case "AddCurrentSongToFavorites":
+                            Funcs.ToggleCurrentSongToFavorites();
                             drawWhole = true;
                             break;
                         // Case For ?
@@ -919,14 +934,13 @@ namespace Jammer
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
-                            string[] newSoundFonts = new string[soundFonts.Length + 3];
-                            newSoundFonts[0] = "Cancel";
-                            newSoundFonts[1] = "Link to a soundfont by path";
-                            newSoundFonts[2] = "Import soundfont by path";
+                            string[] newSoundFonts = new string[soundFonts.Length + 2];
+                            newSoundFonts[0] = "Link to a soundfont by path";
+                            newSoundFonts[1] = "Import soundfont by path";
 
                             for (int i = 0; i < soundFonts.Length; i++)
                             {
-                                newSoundFonts[i + 3] = soundFonts[i];
+                                newSoundFonts[i + 2] = soundFonts[i];
                             }
 
                             soundFonts = newSoundFonts;

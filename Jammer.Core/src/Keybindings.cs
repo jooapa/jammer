@@ -86,6 +86,7 @@ namespace Jammer
         public static string CommandHelpScreen = CheckValue("CommandHelpScreen", "Tab");
         public static string DeleteCurrentSong = CheckValue("DeleteCurrentSong", "Delete");
         public static string AddSongToPlaylist = CheckValue("AddSongToPlaylist", "Shift + A");
+        public static string AddCurrentSongToFavorites = CheckValue("AddCurrentSongToFavorites", "Ctrl + F");
         public static string ShowSongsInPlaylists = CheckValue("ShowSongsInPlaylists", "Shift + D");
         public static string PlayOtherPlaylist = CheckValue("PlayOtherPlaylist", "Shift + O");
         public static string RedownloadCurrentSong = CheckValue("RedownloadCurrentSong", "Shift + B");
@@ -94,6 +95,8 @@ namespace Jammer
         public static string ChangeTheme = CheckValue("ChangeTheme", "Shift + T");
         public static string PlayRandomSong = CheckValue("PlayRandomSong", "R");
         public static string ChangeSoundFont = CheckValue("ChangeSoundFont", "Shift + G");
+        public static string GroupMenu = CheckValue("GroupMenu", "Ctrl + G");
+        public static string AddToGroup = CheckValue("AddToGroup", "G");
         public static string PlaylistViewScrollup = CheckValue("PlaylistViewScrollup", "PageUp");
         public static string PlaylistViewScrolldown = CheckValue("PlaylistViewScrolldown", "PageDown");
         public static string Choose = CheckValue("Choose", "Enter");
@@ -169,6 +172,7 @@ namespace Jammer
             public const ConsoleKey RssSkipAfterTime = ConsoleKey.N;
             public const ConsoleKey RssSkipAfterTimeValue = ConsoleKey.O;
             public const ConsoleKey QuickSearch = ConsoleKey.P;
+            public const ConsoleKey FavoriteExplainer = ConsoleKey.Q;
 
         }
     }

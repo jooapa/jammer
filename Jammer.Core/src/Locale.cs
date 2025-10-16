@@ -84,6 +84,11 @@ namespace Jammer
             public static string AddSongToPlaylistError2 = CheckValueLocale("Player", "AddSongToPlaylistError2", "no song given");
             public static string AddSongToPlaylistError3 = CheckValueLocale("Player", "AddSongToPlaylistError3", "Error:");
             public static string AddSongToPlaylistError4 = CheckValueLocale("Player", "AddSongToPlaylistError4", "invalid song: Make sure you typed it correctly");
+            public static string AddCurrentSongToFavoritesSuccess = CheckValueLocale("Player", "AddCurrentSongToFavoritesSuccess", "Added current song to favorites");
+            public static string AddCurrentSongToFavoritesAlreadyExists = CheckValueLocale("Player", "AddCurrentSongToFavoritesAlreadyExists", "Song already in favorites");
+            public static string AddCurrentSongToFavoritesNoSong = CheckValueLocale("Player", "AddCurrentSongToFavoritesNoSong", "No song is playing");
+            public static string AddCurrentSongToFavoritesError = CheckValueLocale("Player", "AddCurrentSongToFavoritesError", "Error adding current song to favorites");
+            public static string AddCurrentSongToFavoritesTitle = CheckValueLocale("Player", "AddCurrentSongToFavoritesTitle", "Favorites");
         }
         public static class Help
         {
@@ -114,6 +119,7 @@ namespace Jammer
             public static string ForSettings = CheckValueLocale("Help", "ForSettings", "for settings");
             public static string ToShowPlaylist = CheckValueLocale("Help", "ToShowPlaylist", "to show playlist");
             public static string AddsongToPlaylist = CheckValueLocale("Help", "AddsongToPlaylist", "Add to playlist");
+            public static string AddCurrentSongToFavorites = CheckValueLocale("Help", "AddCurrentSongToFavorites", "Add current song to favorites");
             public static string ListAllSongsInOtherPlaylist = CheckValueLocale("Help", "ListAllSongsInOtherPlaylist", "Show playlist songs");
             public static string ListAllPlaylists = CheckValueLocale("Help", "ListAllPlaylists", "List all playlists");
             public static string PlayOtherPlaylist = CheckValueLocale("Help", "PlayOtherPlaylist", "Play other playlist");
@@ -138,6 +144,7 @@ namespace Jammer
             public static string AutoSave = CheckValueLocale("Settings", "AutoSave", "Playlist Auto Save");
             public static string ToChange = CheckValueLocale("Settings", "ToChange", "To Change");
             public static string ToToggle = CheckValueLocale("Settings", "ToToggle", "To Toggle");
+            public static string FavoriteNotificationTimeout = CheckValueLocale("Settings", "FavoriteNotificationTimeout", "Favorite notification timeout");
         }
 
         public static class CliHelp
@@ -257,6 +264,7 @@ namespace Jammer
             public static string EnterForwardSeconds = CheckValueLocale("OutsideItems", "EnterForwardSeconds", "Enter forward seconds");
             public static string EnterBackwardSeconds = CheckValueLocale("OutsideItems", "EnterBackwardSeconds", "Enter backward seconds");
             public static string EnterVolumeChange = CheckValueLocale("OutsideItems", "EnterVolumeChange", "Enter volume change");
+            public static string EnterFavoriteNotificationTimeout = CheckValueLocale("OutsideItems", "EnterFavoriteNotificationTimeout", "Enter favorite notification timeout (ms)");
             public static string NoCommand = CheckValueLocale("OutsideItems", "NoCommand", "No playlist command given");
             public static string NoSongsInPlaylist = CheckValueLocale("OutsideItems", "NoSongsInPlaylist", "No songs in playlist");
             public static string SongNotFound = CheckValueLocale("OutsideItems", "SongNotFound", "Song not found");
@@ -342,6 +350,7 @@ namespace Jammer
             public static string CommandHelpScreen = CheckValueLocale("EditKeysTexts", "CommandHelpScreen", "Command prompt help screen");
             public static string DeleteCurrentSong = CheckValueLocale("EditKeysTexts", "DeleteCurrentSong", "Delete current song");
             public static string AddSongToPlaylist = CheckValueLocale("EditKeysTexts", "AddSongToPlaylist", "Add song to playlist");
+            public static string AddCurrentSongToFavorites = CheckValueLocale("EditKeysTexts", "AddCurrentSongToFavorites", "Add current song to favorites");
             public static string ShowSongsInPlaylists = CheckValueLocale("EditKeysTexts", "ShowSongsInPlaylists", "Show songs in playlist");
             public static string PlayOtherPlaylist = CheckValueLocale("EditKeysTexts", "PlayOtherPlaylist", "Play other playlist");
             public static string RedownloadCurrentSong = CheckValueLocale("EditKeysTexts", "RedownloadCurrentSong", "Redownload current song");

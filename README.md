@@ -24,16 +24,17 @@ for the playlist feature across different platforms***
 - [Install/Update](#installupdate)
 - [Usage](#usage)
 - [Supported formats](#supported-formats)
+- [M3U and M3U8 Support](#m3u-and-m3u8-support)
 - [MIDI support](#midi-support)
 - [RSS](#rss)
+- [Streams](#streams)
+- [Soundcloud Client ID](#soundcloud-client-id)
+- [Jammer Location](#jammer-location)
+- [Environment Variables](#environment-variables)
 - [Themes](#themes)
 - [Visualizer](#visualizer)
 - [Effects](#effects)
-- [Jammer Location](#jammer-location)
-- [Environment Variables](#environment-variables)
-- [M3U and M3U8 Support](#m3u-and-m3u8-support)
 - [Language support](#language-support)
-- [Soundcloud Client ID](#soundcloud-client-id)
 - [Developing](#developing)
 - [Build / Run yourself](#build--run-yourself)
 - [Known Issues](#known-issues)
@@ -124,6 +125,46 @@ Will show all the SoundFont files in the `<jammer/soundfonts>` folder.
 ### RSS
 
 Jammer supports playing audio from RSS feeds. You can add an RSS feed by the url. Then you can open the rss, and it will show all the audio files in the feed.
+
+### Streams
+
+Streams are filtered views of your Jammer playlists that allow you to play specific subsets of songs based on tags or properties.
+
+Currently available stream:
+
+#### Favorites Stream (`fav` / `favorites`)
+
+The favorites stream plays only songs that have been marked as favorites using the `IsFavorite` tag.
+
+**Usage:**
+```bash
+# Play favorites from a specific playlist
+jammer -p playlist:fav
+jammer -p playlist:favorites
+
+# Play favorites from a playlist file
+jammer example.jammer:fav
+jammer example.jammer:favorites
+```
+
+**How to favorite songs:**
+- Press `Ctrl + F` (default keybind) while playing a song to toggle its favorite status
+- Favorited songs will be marked with a ★ symbol in the player interface
+
+**Examples:**
+```bash
+# Create a playlist and add some songs
+jammer -c mymusic
+jammer -a mymusic "https://www.youtube.com/watch?v=example"
+
+# Play the playlist and favorite some songs using Ctrl+F
+jammer -p mymusic
+
+# Play only the favorited songs from that playlist
+jammer -p mymusic:fav
+```
+
+This allows you to curate your favorite tracks within any playlist and easily access them later without creating separate playlist files.
 
 ### Themes
 

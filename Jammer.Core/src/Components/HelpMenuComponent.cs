@@ -183,6 +183,12 @@ namespace Jammer.Components
 
             _helpItems.Add(new HelpItem
             {
+                ControlKeys = DrawHelpTextColouring(keybindings["AddCurrentSongToFavorites"]),
+                Description = Themes.sColor(Locale.Help.AddCurrentSongToFavorites, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+            });
+
+            _helpItems.Add(new HelpItem
+            {
                 ControlKeys = DrawHelpTextColouring(keybindings["ListAllPlaylists"]),
                 Description = Themes.sColor(Locale.Help.ListAllPlaylists, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
                 ModControlKeys = DrawHelpTextColouring(keybindings["PlayOtherPlaylist"]),
@@ -356,6 +362,7 @@ namespace Jammer.Components
             {
                 ["ToMainMenu"] = Keybindings.ToMainMenu.Replace(" ", "").Split(separator),
                 ["AddSongToPlaylist"] = Keybindings.AddSongToPlaylist.Replace(" ", "").Split(separator),
+                ["AddCurrentSongToFavorites"] = Keybindings.AddCurrentSongToFavorites.Replace(" ", "").Split(separator),
                 ["AddSongToQueue"] = Keybindings.AddSongToQueue.Replace(" ", "").Split(separator),
                 ["ShowSongsInPlaylists"] = Keybindings.ShowSongsInPlaylists.Replace(" ", "").Split(separator),
                 ["ListAllPlaylists"] = Keybindings.ListAllPlaylists.Replace(" ", "").Split(separator),

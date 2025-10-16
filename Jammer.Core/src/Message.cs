@@ -3,6 +3,7 @@ using JRead;
 using Spectre.Console;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Threading;
 
 namespace Jammer
 {
@@ -77,10 +78,10 @@ namespace Jammer
                 // Check if current selection has description (author is now inline)
                 var currentSel = options[selected];
                 bool currentHasDescription = !string.IsNullOrEmpty(currentSel?.Description);
-                
+
                 // Only clear if first run or description state changed
                 bool needsClear = firstRun || previousHadInfo != currentHasDescription;
-                
+
                 if (needsClear)
                 {
                     AnsiConsole.Clear();
@@ -134,11 +135,11 @@ namespace Jammer
                     {
                         string escapedTitle = string.IsNullOrEmpty(titleText) ? "" : Markup.Escape(titleText);
                         string escapedAuthor = Markup.Escape(authorText);
-                        
+
                         // Calculate space for right alignment using visual width
                         int availableWidth = Start.consoleWidth - 8; // Account for table borders and padding
                         int contentWidth = GetVisualWidth(escapedTitle) + GetVisualWidth(escapedAuthor);
-                        
+
                         if (contentWidth < availableWidth)
                         {
                             int spacePadding = availableWidth - contentWidth;
@@ -176,7 +177,7 @@ namespace Jammer
                     var descTable = new Table();
                     descTable.AddColumn(Themes.sColor("Description", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
                     descTable.Width(Start.consoleWidth);
-                    
+
                     string escapedDesc = Markup.Escape(selDesc);
                     descTable.AddRow(escapedDesc);
                     AnsiConsole.Write(descTable);
@@ -372,7 +373,7 @@ namespace Jammer
             }
         }
 
-        public static void Data(string data, string title, bool isError = false, bool readKey = true)
+        public static void Data(string data, string title, bool isError = false, bool readKey = true, int closeAfterMs = 0)
         {
             var mainTable = new Table();
             var messageTable = new Table();
@@ -397,9 +398,33 @@ namespace Jammer
             AnsiConsole.Cursor.Show();
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Write(mainTable);
-            if (readKey)
+            if (closeAfterMs > 0)
             {
-                Console.ReadKey();
+                if (readKey)
+                {
+                    int waited = 0;
+                    const int pollInterval = 50;
+                    while (waited < closeAfterMs)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            Console.ReadKey(true);
+                            return;
+                        }
+                        Thread.Sleep(pollInterval);
+                        waited += pollInterval;
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(closeAfterMs);
+                }
+
+                AnsiConsole.Clear();
+            }
+            else if (readKey)
+            {
+                Console.ReadKey(true);
             }
         }
 

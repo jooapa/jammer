@@ -102,11 +102,7 @@ namespace Jammer
             {
                 var inputs = new CustomSelectInput[]
                 {
-                    new CustomSelectInput
-                    {
-                        DataURI = "Cancel",
-                        Title = "Cancel"
-                    }
+                    
                 };
 
                 inputs = inputs.Concat(results.Select(r => new CustomSelectInput
@@ -116,9 +112,8 @@ namespace Jammer
                     Author = r.Author
                 })).ToArray();
 
-                // Display the CustomMenuSelect prompt after the loop completes
                 AnsiConsole.Clear();
-                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 1 });
+                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 0 });
                 
                 if (answer == null || answer == "Cancel")
                 {
@@ -222,11 +217,7 @@ namespace Jammer
             {
                 var inputs = new CustomSelectInput[]
                 {
-                    new CustomSelectInput
-                    {
-                        DataURI = "Cancel",
-                        Title = "Cancel"
-                    }
+                    
                 };
 
                 inputs = inputs.Concat(results.Select(r => new CustomSelectInput
@@ -236,9 +227,8 @@ namespace Jammer
                     Author = r.Author
                 })).ToArray();
 
-                // Display the CustomMenuSelect prompt after the loop completes
                 AnsiConsole.Clear();
-                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 1 });
+                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 0 });
 
                 if (answer == null || answer == "Cancel")
                 {
@@ -324,11 +314,7 @@ namespace Jammer
                 // string answer = Message.MultiSelect(resultsString, $"Search results for '{search}' in the current playlist: {results.Count}");
                 var inputs = new CustomSelectInput[]
                 {
-                    new CustomSelectInput
-                    {
-                        DataURI = "Cancel",
-                        Title = "Cancel"
-                    }
+                    
                 };
 
                 inputs = inputs.Concat(results.Select(r => 
@@ -343,7 +329,7 @@ namespace Jammer
                     };
                 })).ToArray();
 
-                string? answer = Message.CustomMenuSelect(inputs, $"Search results for '{search}' in the current playlist: {results.Count}", new CustomSelectInputSettings { StartIndex = 1 });
+                string? answer = Message.CustomMenuSelect(inputs, $"Search results for '{search}' in the current playlist: {results.Count}", new CustomSelectInputSettings { StartIndex = 0 });
                 if (answer != null && answer != "Cancel")
                 {
                     // Find the index of the selected song by the title in the songTitles list
@@ -395,11 +381,7 @@ namespace Jammer
             {
                 var inputs = new CustomSelectInput[]
                 {
-            new CustomSelectInput
-            {
-                DataURI = "Cancel",
-                Title = "Cancel"
-            }
+            
                 };
 
                 inputs = inputs.Concat(results.Select(r =>

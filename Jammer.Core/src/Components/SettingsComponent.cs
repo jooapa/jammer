@@ -197,6 +197,14 @@ namespace Jammer.Components
                 ChangeKey = Keybindings.SettingsKeys.QuickSearch.ToString(),
                 ChangeDescription = "To Toggle (will autoplay search result if exact match)"
             });
+
+            _settings.Add(new SettingItem
+            {
+                Name = "Favorite Explainer",
+                CurrentValue = Preferences.favoriteExplainer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
+                ChangeKey = Keybindings.SettingsKeys.FavoriteExplainer.ToString(),
+                ChangeDescription = "To Toggle (show explainer when favoriting a song)"
+            });
         }
 
         private static void CalculateTotalPages()

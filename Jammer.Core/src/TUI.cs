@@ -24,7 +24,7 @@ namespace Jammer
         static public void DrawPlayer()
         {
             var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
-            try
+            // try
             {
                 var ansiConsoleSettings = new AnsiConsoleSettings();
                 AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
@@ -142,14 +142,14 @@ namespace Jammer
                 AnsiConsole.Cursor.SetPosition(0, 0);
                 AnsiConsole.Write(mainTable);
             }
-            catch (Exception e)
-            {
-                AnsiConsole.Cursor.SetPosition(0, 0);
-                AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
-                AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
-                AnsiConsole.MarkupLine("[red]" + e + "[/]");
-                AnsiConsole.WriteLine(Utils.Songs.Length);
-            }
+            // catch (Exception e)
+            // {
+            //     AnsiConsole.Cursor.SetPosition(0, 0);
+            //     AnsiConsole.MarkupLine($"[red]{Locale.Player.DrawingError}[/]");
+            //     AnsiConsole.MarkupLine($"[red]{Locale.Player.ControlsWillWork}[/]");
+            //     AnsiConsole.MarkupLine("[red]" + e + "[/]");
+            //     AnsiConsole.WriteLine(Utils.Songs.Length);
+            // }
 
         }
 

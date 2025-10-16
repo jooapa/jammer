@@ -16,6 +16,9 @@ namespace Jammer
         public string? Duration { get; set; }
         public string? Description { get; set; }
         public string? PubDate { get; set; }
+        public string? IsFavorite { get; set; }
+        public JammerPlaylistStream? Stream { get; set; }
+
         /// <summary>
         /// Extracts song details from the Path property if it contains metadata.
         /// </summary>
@@ -32,16 +35,59 @@ namespace Jammer
                     return;
                 }
 
-                Song metadata = JsonSerializer.Deserialize<Song>(json) ?? new Song();
+                try
+                {
+                    Song metadata = JsonSerializer.Deserialize<Song>(json) ?? new Song();
 
-                Title = metadata.Title;
-                Author = metadata.Author;
-                Album = metadata.Album;
-                Year = metadata.Year;
-                Genre = metadata.Genre;
-                Duration = metadata.Duration;
-                Description = metadata.Description;
-                PubDate = metadata.PubDate;
+                    Title = metadata.Title;
+                    Author = metadata.Author;
+                    Album = metadata.Album;
+                    Year = metadata.Year;
+                    Genre = metadata.Genre;
+                    Duration = metadata.Duration;
+                    Description = metadata.Description;
+                    PubDate = metadata.PubDate;
+                    IsFavorite = metadata.IsFavorite;
+                    Stream = metadata.Stream;
+                }
+                catch (JsonException)
+                {
+                    // If JSON deserialization fails, try to deserialize without the problematic Stream property
+                    try
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        
+                        using var doc = JsonDocument.Parse(json);
+                        var root = doc.RootElement;
+
+                        if (root.TryGetProperty("Title", out var titleElement)) Title = titleElement.GetString();
+                        if (root.TryGetProperty("Author", out var authorElement)) Author = authorElement.GetString();
+                        if (root.TryGetProperty("Album", out var albumElement)) Album = albumElement.GetString();
+                        if (root.TryGetProperty("Year", out var yearElement)) Year = yearElement.GetString();
+                        if (root.TryGetProperty("Genre", out var genreElement)) Genre = genreElement.GetString();
+                        if (root.TryGetProperty("Duration", out var durationElement)) Duration = durationElement.GetString();
+                        if (root.TryGetProperty("Description", out var descElement)) Description = descElement.GetString();
+                        if (root.TryGetProperty("PubDate", out var pubDateElement)) PubDate = pubDateElement.GetString();
+                        if (root.TryGetProperty("IsFavorite", out var favElement)) IsFavorite = favElement.GetString();
+                        
+                        // Try to parse Stream enum safely
+                        if (root.TryGetProperty("Stream", out var streamElement))
+                        {
+                            var streamValue = streamElement.GetString();
+                            if (Enum.TryParse<JammerPlaylistStream>(streamValue, true, out var parsedStream))
+                            {
+                                Stream = parsedStream;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If all else fails, just ignore the metadata
+                    }
+                }
             }
         }
     }
@@ -88,6 +134,8 @@ namespace Jammer
             if (!string.IsNullOrEmpty(song.Duration)) definedProperties.Add("Duration", song.Duration);
             if (!string.IsNullOrEmpty(song.Description)) definedProperties.Add("Description", song.Description);
             if (!string.IsNullOrEmpty(song.PubDate)) definedProperties.Add("PubDate", song.PubDate);
+            if (song.IsFavorite != null && song.IsFavorite == "true") definedProperties.Add("IsFavorite", "true");
+            if (song.Stream != null) definedProperties.Add("Stream", song.Stream.ToString() ?? "");
 
             string songString = song.URI + Utils.JammerFileDelimeter;
             songString += JsonSerializer.Serialize(definedProperties, options);
@@ -106,9 +154,50 @@ namespace Jammer
                 string[] parts = songString.Split(Utils.JammerFileDelimeter);
                 string uri = parts[0];
                 string json = parts[1];
-                Song song = JsonSerializer.Deserialize<Song>(json) ?? new Song();
-                song.URI = uri;
-                return song;
+                
+                try
+                {
+                    Song song = JsonSerializer.Deserialize<Song>(json) ?? new Song();
+                    song.URI = uri;
+                    return song;
+                }
+                catch (JsonException)
+                {
+                    // If JSON deserialization fails, create a new song and manually parse properties
+                    var song = new Song { URI = uri };
+                    
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        var root = doc.RootElement;
+
+                        if (root.TryGetProperty("Title", out var titleElement)) song.Title = titleElement.GetString();
+                        if (root.TryGetProperty("Author", out var authorElement)) song.Author = authorElement.GetString();
+                        if (root.TryGetProperty("Album", out var albumElement)) song.Album = albumElement.GetString();
+                        if (root.TryGetProperty("Year", out var yearElement)) song.Year = yearElement.GetString();
+                        if (root.TryGetProperty("Genre", out var genreElement)) song.Genre = genreElement.GetString();
+                        if (root.TryGetProperty("Duration", out var durationElement)) song.Duration = durationElement.GetString();
+                        if (root.TryGetProperty("Description", out var descElement)) song.Description = descElement.GetString();
+                        if (root.TryGetProperty("PubDate", out var pubDateElement)) song.PubDate = pubDateElement.GetString();
+                        if (root.TryGetProperty("IsFavorite", out var favElement)) song.IsFavorite = favElement.GetString();
+                        
+                        // Try to parse Stream enum safely
+                        if (root.TryGetProperty("Stream", out var streamElement))
+                        {
+                            var streamValue = streamElement.GetString();
+                            if (Enum.TryParse<JammerPlaylistStream>(streamValue, true, out var parsedStream))
+                            {
+                                song.Stream = parsedStream;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // If manual parsing also fails, just return the song with URI
+                    }
+                    
+                    return song;
+                }
             }
 
             return new Song() { URI = songString };
@@ -177,6 +266,25 @@ namespace Jammer
             else
             {
                 return "";
+            }
+        }
+
+        /// <summary>
+        /// Get if the song is a favorite
+        /// </summary>
+        /// <param name="isFavorite">isFavorite</param>
+        /// <returns></returns>
+        public static bool IsFavorite(string song)
+        {
+            Song song1 = new Song() { URI = song };
+            song1.ExtractSongDetails();
+            if (song1.IsFavorite != null && song1.IsFavorite == "true")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

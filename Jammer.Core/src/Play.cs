@@ -99,6 +99,13 @@ namespace Jammer
 
             Start.ClearKeyboardBuffer();
 
+            // if file extension is .jammer-fav or .jammer:favorites
+            if (song.URI != null && (song.URI.EndsWith(".jammer:fav") || song.URI.EndsWith(".jammer:favorites")))
+            {
+                song.Stream = JammerPlaylistStream.Favorites;
+                song.URI = song.URI.Replace(".jammer:fav", ".jammer").Replace(".jammer:favorites", ".jammer");
+            }
+            
             // check if file is a local
             if (System.IO.File.Exists(song.URI))
             {
@@ -174,7 +181,12 @@ namespace Jammer
             // }
 
             // if the song has the URI and no other properties check for them in the songs[Utils.CurrentSongIndex],
-            if (song.URI != null && (song.Title == null || song.Author == null || song.Album == null || song.Year == null || song.Genre == null))
+            if (
+                song.URI != null &&
+                    (
+                        song.Title == null || song.Author == null || song.Album == null || song.Year == null || song.Genre == null || song.Duration == null || song.Description == null || song.PubDate == null || song.IsFavorite == null
+                    )
+                )
             {
                 Song tempSong = SongExtensions.ToSong(songs[Utils.CurrentSongIndex]);
                 song.Title ??= tempSong.Title;
@@ -185,6 +197,7 @@ namespace Jammer
                 song.Duration ??= tempSong.Duration;
                 song.Description ??= tempSong.Description;
                 song.PubDate ??= tempSong.PubDate;
+                song.IsFavorite ??= tempSong.IsFavorite;
             }
 
             // Message.Data(songs[Utils.CurrentSongIndex], "path");
@@ -283,7 +296,7 @@ namespace Jammer
 
                 if (extension == ".jammer")
                 {
-                    HandleJammerPlaylist(fullPathToFile);
+                    HandleJammerPlaylist(song);
                 }
                 else if (extension == ".m3u" || extension == ".m3u8")
                 {
@@ -310,74 +323,94 @@ namespace Jammer
             Debug.dprint("End of PlaySong");
         }
 
-        public static void HandleJammerPlaylist(string fullPath)
+        public static void HandleJammerPlaylist(Song song)
         {
             Debug.dprint("jammer");
 
-            string[] playlist = System.IO.File.ReadAllLines(fullPath);
+            string[] playlist = System.IO.File.ReadAllLines(song.URI ?? "");
+            if (playlist == null || playlist.Length == 0)
+                return;
 
             // MARK: - Detect if playlist is using the old format
-            string newPlaylist = "";
-            bool isOldFormat = false;
-            foreach (string s in playlist)
             {
-                if (s.Contains('½') && !s.Contains(Utils.JammerFileDelimeter))
+                string newPlaylist = "";
+                bool isOldFormat = false;
+                foreach (string s in playlist)
                 {
-                    isOldFormat = true;
-
-                    string[] split = s.Split('½');
-                    Song newSong = new Song()
+                    if (s.Contains('½') && !s.Contains(Utils.JammerFileDelimeter))
                     {
-                        URI = split[0],
-                        Title = split[1]
-                    };
-                    newPlaylist += newSong.ToSongString() + "\n";
-                }
-                else
-                {
-                    newPlaylist += s + "\n";
-                }
-            }
+                        isOldFormat = true;
 
-            if (isOldFormat)
-            {
-                string input = Message.Input(
-                    "Update Playlist? (y/n)",
-                    "Hold On a Second! 🤠" + Environment.NewLine +
-                    "This might be an old playlist format." + Environment.NewLine +
-                    "Do you want to update it to the new format?" + Environment.NewLine +
-                    "The old format is outdated and will not work at all." + Environment.NewLine +
-                    "but just incase a backup will be created to 'playlist/backups'.",
-                    true
-                    );
-
-                if (input == "y")
-                {
-                    if (!Directory.Exists(Path.Combine(Utils.JammerPath, "playlists", "backups")))
-                    {
-                        Directory.CreateDirectory(Path.Combine(Utils.JammerPath, "playlists", "backups"));
+                        string[] split = s.Split('½');
+                        Song newSong = new Song()
+                        {
+                            URI = split[0],
+                            Title = split[1]
+                        };
+                        newPlaylist += newSong.ToSongString() + "\n";
                     }
+                    else
+                    {
+                        newPlaylist += s + "\n";
+                    }
+                }
 
-                    string backupPath = Path.Combine(Utils.JammerPath, "playlists", "backups", Path.GetFileNameWithoutExtension(fullPath) + "_" + DateTime.Now.ToString("dd-MM_HH-mm-ss") + ".jammer");
-                    System.IO.File.WriteAllText(backupPath, System.IO.File.ReadAllText(fullPath), Encoding.UTF8);
+                if (isOldFormat)
+                {
+                    string input = Message.Input(
+                        "Update Playlist? (y/n)",
+                        "Hold On a Second! 🤠" + Environment.NewLine +
+                        "This might be an old playlist format." + Environment.NewLine +
+                        "Do you want to update it to the new format?" + Environment.NewLine +
+                        "The old format is outdated and will not work at all." + Environment.NewLine +
+                        "but just incase a backup will be created to 'playlist/backups'.",
+                        true
+                        );
 
-                    // Message.Data(fullPath + " " + newPlaylist, "newPlaylist");
-                    System.IO.File.WriteAllText(fullPath, newPlaylist, Encoding.UTF8);
-                    playlist = System.IO.File.ReadAllLines(fullPath);
+                    if (input == "y")
+                    {
+                        if (!Directory.Exists(Path.Combine(Utils.JammerPath, "playlists", "backups")))
+                        {
+                            Directory.CreateDirectory(Path.Combine(Utils.JammerPath, "playlists", "backups"));
+                        }
+
+                        string backupPath = Path.Combine(Utils.JammerPath, "playlists", "backups", Path.GetFileNameWithoutExtension(song.URI) + "_" + DateTime.Now.ToString("dd-MM_HH-mm-ss") + ".jammer");
+                        System.IO.File.WriteAllText(backupPath, System.IO.File.ReadAllText(song.URI), Encoding.UTF8);
+
+                        // Message.Data(fullPath + " " + newPlaylist, "newPlaylist");
+                        System.IO.File.WriteAllText(song.URI, newPlaylist, Encoding.UTF8);
+                        playlist = System.IO.File.ReadAllLines(song.URI);
+                    }
                 }
             }
 
             // add all songs in playlist to Utils.songs
             foreach (string s in playlist)
             {
-                AddSong(s, false);
+                if (song.Stream == JammerPlaylistStream.Favorites)
+                {
+                    Song plSong = SongExtensions.ToSong(s);
+                    if (plSong.IsFavorite != null && plSong.IsFavorite == "true")
+                    {
+                        AddSong(s, false);
+                    }
+                    continue;
+                }
+                else
+                {
+                    AddSong(s, false);
+                }
             }
+            
             // remove playlist from Utils.songs
             Utils.Songs = Utils.Songs.Where((source, i) => i != Utils.CurrentSongIndex).ToArray();
             if (Utils.CurrentSongIndex == Utils.Songs.Length)
             {
                 Utils.CurrentSongIndex = Utils.Songs.Length - 1;
             }
+
+
+
             Start.state = MainStates.playing;
             PlaySong(Utils.Songs, Utils.CurrentSongIndex);
         }

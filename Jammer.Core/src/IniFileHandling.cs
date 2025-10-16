@@ -46,12 +46,15 @@ CurrentState = F12
 CommandHelpScreen = Tab
 DeleteCurrentSong = Delete
 AddSongToPlaylist = Shift + A
+AddCurrentSongToFavorites = Ctrl + F
 ShowSongsInPlaylists = Shift + D
 PlayOtherPlaylist = Shift + O
 RedownloadCurrentSong = Shift + B
 EditKeybindings = Shift + E
 ChangeLanguage = Shift + L
 ChangeSoundFont = Shift + G
+GroupMenu = Ctrl + G
+AddToGroup = G
 PlayRandomSong = R
 PlaylistViewScrollup = PageUp
 PlaylistViewScrolldown = PageDown
@@ -284,6 +287,7 @@ BackEndChange = B
 
             ReadNewKeybinds();
         }
+
         // Method to extract keys from IniData object
         static HashSet<string> ExtractKeys(IniData iniData)
         {
