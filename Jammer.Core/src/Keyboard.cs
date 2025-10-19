@@ -247,14 +247,31 @@ namespace Jammer
                         drawWhole = true;
                         Action = ""; // Clear action
                     }
+                    else if (Action == "PlaylistViewScrolldown" || Action == "NextSong")
+                    {
+                        HelpMenuComponent.NextHelpPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (Action == "PlaylistViewScrollup" || Action == "PreviousSong")
+                    {
+                        HelpMenuComponent.PreviousHelpPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
                     else if (Action == "ToMainMenu" || Action == "Help")
                     {
                         playerView = "default";
                         drawWhole = true;
                         Action = ""; // Clear action
                     }
+                    else
+                    {
+                        // Swallow all other actions while in help view
+                        Action = "";
+                    }
                 }
-                if (playerView.Equals("settings"))
+                else if (playerView.Equals("settings"))
                 {
                     // Handle settings page navigation first
                     if (key.Key == ConsoleKey.PageDown || key.Key == ConsoleKey.RightArrow)
@@ -264,6 +281,18 @@ namespace Jammer
                         Action = ""; // Clear action
                     }
                     else if (key.Key == ConsoleKey.PageUp || key.Key == ConsoleKey.LeftArrow)
+                    {
+                        SettingsComponent.PreviousSettingsPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (Action == "PlaylistViewScrolldown" || Action == "NextSong")
+                    {
+                        SettingsComponent.NextSettingsPage();
+                        drawWhole = true;
+                        Action = ""; // Clear action
+                    }
+                    else if (Action == "PlaylistViewScrollup" || Action == "PreviousSong")
                     {
                         SettingsComponent.PreviousSettingsPage();
                         drawWhole = true;

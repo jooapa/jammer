@@ -37,6 +37,7 @@ for the playlist feature across different platforms***
 - [Developing](#developing)
 - [Build / Run yourself](#build--run-yourself)
 - [Known Issues](#known-issues)
+ - [Keybindings](#keybindings)
 
 ## Install/Update
 
@@ -153,6 +154,17 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 - **Windows**: `C:\Users\username\jammer`
 - **Linux**: `~/jammer`
+
+## Keybindings
+
+- Defaults are built-in. To customize, create `KeyData.ini` in your Jammer config folder (see paths above). The app reads keys from `[Keybinds]` in that file.
+- A VIM-style preset is shipped as `KeyData_vim.ini`:
+  - Windows installer copies it to `C:\Users\username\jammer\KeyData_vim.ini`.
+  - AppImage copies it on first run to `~/jammer/KeyData_vim.ini` (or `$JAMMER_CONFIG_PATH/KeyData_vim.ini`).
+  - To enable, copy or rename it to `KeyData.ini` in the same folder.
+- Notes:
+  - Single-letter keys must be uppercase (e.g., `N`, `P`, `J`, `K`). Modifiers are `Shift`, `Ctrl`, `Alt`.
+  - Help/Settings page navigation also respects actions `PlaylistViewScrolldown`/`PlaylistViewScrollup` and `NextSong`/`PreviousSong`.
 
 ### Environment Variables
 

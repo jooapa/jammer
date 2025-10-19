@@ -37,6 +37,7 @@ cp -v Jammer.CLI/bin/Release/net8.0/linux-x64/publish/Jammer.CLI jammer.AppDir/u
 cp -v Jammer.CLI/bin/Release/net8.0/linux-x64/publish/libuiohook.so jammer.AppDir/usr/lib/libuiohook.so
 cp -v libs/linux/x86_64/libbass* jammer.AppDir/usr/lib
 cp -v locales/* jammer.AppDir/usr/locales
+cp -v KeyData_vim.ini jammer.AppDir/usr/KeyData_vim.ini
 
 if [ ! -f ./appimagetool-x86_64.AppImage ]; then
         curl -LO https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage

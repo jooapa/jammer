@@ -1,14 +1,19 @@
 #!/bin/bash
 # Add after the first line and before the exports
 
-# Set default config path if JAMMER_CONFIG_PATH is not set
-TARGET_PATH="${JAMMER_CONFIG_PATH:-$HOME/jammer}/locales"
+# Set default config root if JAMMER_CONFIG_PATH is not set
+CONFIG_ROOT="${JAMMER_CONFIG_PATH:-$HOME/jammer}"
 
-# Create target directory
-mkdir -p "$TARGET_PATH"
+# Ensure config directories exist
+mkdir -p "$CONFIG_ROOT/locales"
 
 # Copy locale files
-cp -rf "$APPDIR/usr/locales/"* "$TARGET_PATH/"
+cp -rf "$APPDIR/usr/locales/"* "$CONFIG_ROOT/locales/"
+
+# Copy VIM preset without overwriting existing file
+if [ -f "$APPDIR/usr/KeyData_vim.ini" ]; then
+  cp -n "$APPDIR/usr/KeyData_vim.ini" "$CONFIG_ROOT/KeyData_vim.ini" 2>/dev/null || true
+fi
 
 export LD_LIBRARY_PATH=$APPDIR/usr/lib
 exec $APPDIR/usr/bin/Jammer "$@"

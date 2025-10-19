@@ -102,6 +102,11 @@ SetOutPath $PROFILE\Jammer\docs
 File /r "docs\*.*"
 SetOutPath $INSTALL_DIR
 
+; Copy optional VIM keybind preset to user config root
+CreateDirectory $PROFILE\Jammer
+SetOutPath $PROFILE\Jammer
+File "KeyData_vim.ini"
+
 SectionEnd
 
 ############# SETUP ################
