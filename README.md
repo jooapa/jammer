@@ -11,13 +11,10 @@ Jammer is a simple CLI music player that supports playing songs from your **loca
 
 Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have no way to compile to mac)*
 
-***Jammer shines its best when using it as a playlist. That's why I created it,
-for the playlist feature across different platforms***
-
-- The player doesn't stream the songs, but downloads them to local storage.
+- The player **doesn't** stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the
   downloaded songs, playlists, settings, keybinds, locales and effects modification.
-- Jammer uses [Bass](https://www.un4seen.com/bass.html) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it in .NET, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
+- Jammer uses [Bass](https://www.un4seen.com/bass.html) for playing the songs and [ManagedBass](https://github.com/ManagedBass/ManagedBass) for being able to use it with C#, [SoundCloudExplode](https://github.com/jerry08/SoundCloudExplode), [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode), [yt-dlp](https://github.com/yt-dlp/yt-dlp) for downloading the songs and [Spectre.Console](https://github.com/spectreconsole/spectre.console) for the UI.
 
 ## Table of Contents
 
@@ -140,29 +137,16 @@ The favorites stream plays only songs that have been marked as favorites using t
 ```bash
 # Play favorites from a specific playlist
 jammer -p playlist:fav
-jammer -p playlist:favorites
+jammer -p epic:favorites
 
 # Play favorites from a playlist file
 jammer example.jammer:fav
-jammer example.jammer:favorites
+jammer path/example.jammer:favorites
 ```
 
 **How to favorite songs:**
 - Press `Ctrl + F` (default keybind) while playing a song to toggle its favorite status
 - Favorited songs will be marked with a ★ symbol in the player interface
-
-**Examples:**
-```bash
-# Create a playlist and add some songs
-jammer -c mymusic
-jammer -a mymusic "https://www.youtube.com/watch?v=example"
-
-# Play the playlist and favorite some songs using Ctrl+F
-jammer -p mymusic
-
-# Play only the favorited songs from that playlist
-jammer -p mymusic:fav
-```
 
 This allows you to curate your favorite tracks within any playlist and easily access them later without creating separate playlist files.
 
@@ -245,6 +229,36 @@ You can change the client id by going to the settings and changing the client id
 - you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
 
 or you can use the automatic client id fetcher, that is located in the settings menu. *(Might crash on linux)*
+
+## YouTube Download Backends
+
+Jammer supports two different backends for downloading YouTube content:
+
+### YoutubeExplode (Default)
+The default backend that works out of the box without any additional setup.
+
+### yt-dlp Backend
+An alternative backend that uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) for downloading YouTube content.
+
+**Setup Requirements:**
+
+**Windows:**
+- Download `yt-dlp.exe` from the [official releases](https://github.com/yt-dlp/yt-dlp/releases)
+- Place the `yt-dlp.exe` file in the same folder as `jammer.exe`
+
+**Linux/macOS:**
+- Install yt-dlp and ensure it's available in your system PATH:
+```bash
+# Using pip
+pip install yt-dlp
+
+# Or using your package manager
+# Ubuntu/Debian
+sudo apt install yt-dlp
+```
+
+**Switching Backends:**
+You can change between backends by pressing `B` (default keybind) while Jammer is running.
 
 ## Star History
 
