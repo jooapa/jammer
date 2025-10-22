@@ -96,30 +96,32 @@ namespace Jammer
 
                 if (i >= IniFileHandling.ScrollIndexLanguage && results.Count != maximum)
                 {
+                    string favPrefix = SongExtensions.IsFavorite(keyValue) ? "★ " : string.Empty;
+                    int rowSongLength = songLength - favPrefix.Length;
                     if (i == Utils.CurrentSongIndex)
                     {
                         // results.Add($"[green]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
+                        results.Add(Themes.sColor($"{favPrefix}{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), rowSongLength)}", Themes.CurrentTheme.WholePlaylist.CurrentSongColor));
                     }
                     else if (i == Utils.CurrentPlaylistSongIndex)
                     {
                         // results.Add($"[yellow]{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}[/]");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
+                        results.Add(Themes.sColor($"{favPrefix}{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), rowSongLength)}", Themes.CurrentTheme.WholePlaylist.ChoosingColor));
                     }
                     else if (Utils.CurrentPlaylistSongIndex <= 3)
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{favPrefix}{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), rowSongLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.CurrentPlaylistSongIndex - 2 && i < Utils.CurrentPlaylistSongIndex + 3)
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{favPrefix}{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), rowSongLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                     else if (i >= Utils.Songs.Length - (maximum - results.Count))
                     {
                         // results.Add($"{i + 1}. {Start.Sanitize(Play.Title(keyValue, "get"))}");
-                        results.Add(Themes.sColor($"{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), songLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
+                        results.Add(Themes.sColor($"{favPrefix}{i + 1}. {GetSongWithDots(Start.Sanitize(SongExtensions.Title(keyValue)), rowSongLength)}", Themes.CurrentTheme.WholePlaylist.NormalSongColor));
                     }
                 }
             }
@@ -300,43 +302,51 @@ namespace Jammer
             string customAfterText_prev = "";
             string customAfterText_next = "";
 
+            string prefix_current = "";
+            string prefix_prev = "";
+            string prefix_next = "";
+
             string curStringSong = Utils.Songs[Utils.CurrentSongIndex] ?? "";
             string prevStringSong = Utils.CurrentSongIndex > 0 ? Utils.Songs[Utils.CurrentSongIndex - 1] ?? "" : "";
             string nextStringSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1 ? Utils.Songs[Utils.CurrentSongIndex + 1] ?? "" : "";
 
-            // assign "star" to the song if isFavorite
-            if (SongExtensions.IsFavorite(curStringSong)){
-                customAfterText_current += " ★";
-                
+            // assign star to the beginning of the row if favorite
+            if (SongExtensions.IsFavorite(curStringSong))
+            {
+                prefix_current = "★ ";
             }
             // if the current song is a rss feed then add a open text to the end of the title
             if (IsCurrentSongARssFeed())
                 customAfterText_current += " (Open with " + Keybindings.Choose + ")";
 
             if (SongExtensions.IsFavorite(prevStringSong))
-                customAfterText_prev += " ★";
+                prefix_prev = "★ ";
 
             if (SongExtensions.IsFavorite(nextStringSong))
-                customAfterText_next += " ★";
+                prefix_next = "★ ";
+            // Adjust visible width when a prefix is present
+            int curSongLen = songLength - prefix_current.Length;
+            int prevSongLen = songLength - prefix_prev.Length;
+            int nextSongLen = songLength - prefix_next.Length;
 
-            string currentSong = $"{currentLabel} : {GetSongWithDots(SongExtensions.Title(curStringSong) + customAfterText_current, songLength)}"
+            string currentSong = $"{prefix_current}{currentLabel} : {GetSongWithDots(SongExtensions.Title(curStringSong) + customAfterText_current, curSongLen)}"
                 + PadAuthorToRight(SongExtensions.Author(curStringSong),
                             SongExtensions.Title(curStringSong) + customAfterText_current,
-                            Start.consoleWidth, currentLabel.Length);
+                            Start.consoleWidth, currentLabel.Length + prefix_current.Length);
 
             string prevSong = Utils.CurrentSongIndex > 0
-                ? $"{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]) + customAfterText_prev, songLength)}"
+                ? $"{prefix_prev}{prevLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]) + customAfterText_prev, prevSongLen)}"
                 + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex - 1]),
                             SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex - 1]) + customAfterText_prev,
-                            Start.consoleWidth, prevLabel.Length)
-                : $"{prevLabel} : -";
+                            Start.consoleWidth, prevLabel.Length + prefix_prev.Length)
+                : $"{prefix_prev}{prevLabel} : -";
 
             string nextSong = Utils.CurrentSongIndex < Utils.Songs.Length - 1
-                ? $"{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]) + customAfterText_next, songLength)}"
+                ? $"{prefix_next}{nextLabel} : {GetSongWithDots(SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]) + customAfterText_next, nextSongLen)}"
             + PadAuthorToRight(SongExtensions.Author(Utils.Songs[Utils.CurrentSongIndex + 1]),
                         SongExtensions.Title(Utils.Songs[Utils.CurrentSongIndex + 1]) + customAfterText_next,
-                        Start.consoleWidth, nextLabel.Length)
-            : $"{nextLabel} : -";
+                        Start.consoleWidth, nextLabel.Length + prefix_next.Length)
+            : $"{prefix_next}{nextLabel} : -";
 
             prevSong = Start.Sanitize(prevSong);
             currentSong = Start.Sanitize(currentSong);
