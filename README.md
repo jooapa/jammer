@@ -141,7 +141,6 @@ jammer -p epic:favorites
 
 # Play favorites from a playlist file
 jammer example.jammer:fav
-jammer path/example.jammer:favorites
 ```
 
 **How to favorite songs:**
