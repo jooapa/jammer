@@ -329,6 +329,15 @@ namespace Jammer
                     };
                 })).ToArray();
 
+                if (Preferences.isQuickPlayFromSearch)
+                {
+                    // Automatically play the first result
+                    string firstResult = results[0];
+                    int index = songTitles.IndexOf(firstResult);
+                    Play.PlaySong(Utils.Songs, index);
+                    return;
+                }
+
                 string? answer = Message.CustomMenuSelect(inputs, $"Search results for '{search}' in the current playlist: {results.Count}", new CustomSelectInputSettings { StartIndex = 0 });
                 if (answer != null && answer != "Cancel")
                 {
