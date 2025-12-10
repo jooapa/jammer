@@ -356,17 +356,49 @@ namespace Jammer
                 var ytdl = new YoutubeDL();
 
                 // Set yt-dlp executable path if needed
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                // First check environment variable
+                string? ytdlpEnvPath = Environment.GetEnvironmentVariable("JAMMER_YTDLP_BIN");
+                
+                if (!string.IsNullOrEmpty(ytdlpEnvPath) && System.IO.File.Exists(ytdlpEnvPath))
                 {
+                    ytdl.YoutubeDLPath = ytdlpEnvPath;
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    // Check local directory for yt-dlp.exe
                     var ytdlpPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "yt-dlp.exe");
                     if (System.IO.File.Exists(ytdlpPath))
                     {
                         ytdl.YoutubeDLPath = ytdlpPath;
                     }
+                    else if (!IfYtdlpInstalled())
+                    {
+                        Message.Data("yt-dlp is not installed on your system. Please install it globally or place yt-dlp.exe in the same folder as jammer.exe, or set JAMMER_YTDLP_BIN environment variable.", "Error", true);
+                        return;
+                    }
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // Check for global yt-dlp installation
+                    if (!IfYtdlpInstalled())
+                    {
+                        Message.Data("yt-dlp is not installed on your system. Please install it globally or set JAMMER_YTDLP_BIN environment variable to the yt-dlp binary path.", "Error", true);
+                        return;
+                    }
+                    ytdl.YoutubeDLPath = "yt-dlp";
+                }
+
+                // Set ffmpeg path
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
                     var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
                     if (System.IO.File.Exists(ffmpegPath))
                     {
                         ytdl.FFmpegPath = ffmpegPath;
+                    }
+                    else{
+                        Message.Data("FFmpeg should come with Jammer setup. Reinstall using the setup, or place ffmpeg.exe in the same folder as jammer.exe.", "Error", true);
+                        return;
                     }
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -374,19 +406,13 @@ namespace Jammer
                     // check for ffmpeg
                     if (!IsFFmpegInstalled())
                     {
-                        Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
+                        Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error", true);
                         return;
                     }
-
-                    if (!IfYtdlpInstalled())
-                    {
-                        Message.Data("yt-dlp is not installed on your system. Please install it for so that the downloading works.", "Error id:2", true);
-                        return;
-                    }
-
-                    ytdl.YoutubeDLPath = "yt-dlp";
                     ytdl.FFmpegPath = "ffmpeg";
                 }
+
+                Debug.dprint("Using yt-dlp at: " + ytdl.YoutubeDLPath);
 
                 ytdl.OutputFolder = Preferences.songsPath;
                 ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
@@ -447,7 +473,7 @@ namespace Jammer
                 }
                 else
                 {
-                    throw new Exception("yt-dlp download failed: " + string.Join("; ", result.ErrorOutput ?? new string[0]));
+                    throw new Exception("yt-dlp download failed: " + string.Join("; ", result.ErrorOutput ?? new string[0]) + " :: "+ytdl.YoutubeDLPath);
                 }
             }
             catch (Exception ex)
@@ -458,8 +484,8 @@ namespace Jammer
                     return;
                 }
 
-                Utils.CustomTopErrorMessage = "Error: yt-dlp download failed. Maybe the song is private or the URL is invalid. (check log)";
-                Log.Error(ex.Message);
+                Utils.CustomTopErrorMessage = "Error: yt-dlp download failed. (check log)";
+                Log.Error(ex.Message + " :: Could be that the youtube has changed once again something in their backend so this version of yt-dlp doesnt work?. or could also be that url is invalid or private or live.");
                 songPath = "";
                 constructedSong = null;
             }

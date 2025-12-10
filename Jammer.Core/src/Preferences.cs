@@ -43,6 +43,7 @@ namespace Jammer
         public static BackEndTypeYT backEndType = GetBackEndType();
         public static bool isQuickSearch = GetEnableQuickSearch();
         public static bool favoriteExplainer = GetFavoriteExplainer();
+        public static bool isQuickPlayFromSearch = GetEnableQuickPlayFromSearch();
 
         private const int DefaultFavoriteNotificationTimeoutMs = 1000;
 
@@ -136,6 +137,21 @@ namespace Jammer
             }
         }
 
+        private static bool GetEnableQuickPlayFromSearch()
+        {
+            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            if (File.Exists(JammerPath))
+            {
+                string jsonString = File.ReadAllText(JammerPath);
+                Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+                return settings?.EnableQuickPlayFromSearch ?? false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         static public void CheckJammerFolderExists()
         {
             string JammerPath = Path.Combine(Utils.JammerPath);
@@ -219,6 +235,7 @@ namespace Jammer
             settings.backEndType = backEndType;
             settings.EnableQuickSearch = isQuickSearch;
             settings.favoriteExplainer = favoriteExplainer;
+            settings.EnableQuickPlayFromSearch = isQuickPlayFromSearch;
 
             var options = new JsonSerializerOptions
             {
@@ -619,6 +636,7 @@ namespace Jammer
             public BackEndTypeYT? backEndType { get; set; }
             public bool? EnableQuickSearch { get; set; }
             public bool? favoriteExplainer { get; set; }
+            public bool? EnableQuickPlayFromSearch { get; set; }
         }
     }
 }

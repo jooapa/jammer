@@ -180,9 +180,25 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 ### Environment Variables
 
-- `JAMMER_CONFIG_PATH`
-- `JAMMER_SONGS_PATH`
-- `JAMMER_PLAYLISTS_PATH`
+You can customize Jammer's storage locations using these environment variables. They can point to either directories or files depending on the variable:
+
+- `JAMMER_CONFIG_PATH` - Path to the configuration directory
+- `JAMMER_SONGS_PATH` - Path to the songs storage directory
+- `JAMMER_PLAYLISTS_PATH` - Path to the playlists directory
+
+**Examples:**
+
+Windows:
+```powershell
+$env:JAMMER_SONGS_PATH = "D:\Music\JammerSongs"
+$env:JAMMER_CONFIG_PATH = "D:\AppData\Jammer"
+```
+
+Linux/macOS:
+```bash
+export JAMMER_SONGS_PATH="/mnt/music/jammer_songs"
+export JAMMER_CONFIG_PATH="/home/user/.config/jammer"
+```
 
 ### M3U and M3U8 Support
 
@@ -241,11 +257,18 @@ An alternative backend that uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) for 
 
 **Setup Requirements:**
 
-**Windows:**
+#### Windows:
+
+##### In Jammer installation folder
 - Download `yt-dlp.exe` from the [official releases](https://github.com/yt-dlp/yt-dlp/releases)
 - Place the `yt-dlp.exe` file in the same folder as `jammer.exe`
 
-**Linux/macOS:**
+##### Environment Variable
+- Alternatively, place the `yt-dlp.exe` binary to environment variable `JAMMER_YTDLP_BIN`
+
+#### Linux/macOS
+
+##### Global Installation
 - Install yt-dlp and ensure it's available in your system PATH:
 ```bash
 # Using pip
@@ -256,7 +279,10 @@ pip install yt-dlp
 sudo apt install yt-dlp
 ```
 
-**Switching Backends:**
+##### Local Installation
+- place the `yt-dlp` binary to environment variable `JAMMER_YTDLP_BIN`
+
+#### Switching Backends
 You can change between backends by pressing `B` (default keybind) while Jammer is running.
 
 ## Star History

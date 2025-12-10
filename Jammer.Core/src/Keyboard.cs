@@ -437,6 +437,11 @@ namespace Jammer
                                 Preferences.SaveSettings();
                                 drawWhole = true;
                                 break;
+                            case Keybindings.SettingsKeys.QuickPlayFromSearch:
+                                Preferences.isQuickPlayFromSearch = !Preferences.isQuickPlayFromSearch;
+                                Preferences.SaveSettings();
+                                drawWhole = true;
+                                break;
                         }
                     }
 
@@ -898,19 +903,17 @@ namespace Jammer
 
                             var backEndsList = new CustomSelectInput[]
                             {
-                                new CustomSelectInput
-                                {
+                                new() {
                                     DataURI = "YT-DLP",
                                     Title = "YT-DLP",
-                                    Author = "Third Party",
-                                    Description = "A very powerful backend that supports a lot of sites."
+                                    Author = "YT-DLP",
+                                    Description = "A very powerful backend that works better with downloads. Requires separate installation to environment variable (JAMMER_YTDLP_BIN) or Jammer folder."
                                 },
-                                new CustomSelectInput
-                                {
+                                new() {
                                     DataURI = "YoutubeExplode",
                                     Title = "YoutubeExplode",
-                                    Author = "Jerry",
-                                    Description = "Less compatible with some sites."
+                                    Author = "Tyrrrz",
+                                    Description = "Can be a bit not up to date with Youtube changes, but does not require separate installation."
                                 },
                             };
 
