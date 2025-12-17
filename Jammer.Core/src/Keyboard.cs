@@ -907,7 +907,7 @@ namespace Jammer
                                     DataURI = "YT-DLP",
                                     Title = "YT-DLP",
                                     Author = "YT-DLP",
-                                    Description = "A very powerful backend that works better with downloads. Requires separate installation to environment variable (JAMMER_YTDLP_BIN) or Jammer folder."
+                                    Description = "Powerful backend with excellent download support. Requires YT-DLP to be installed separately (add to PATH, set JAMMER_YTDLP_BIN environment variable, or place in Jammer folder on Windows)."
                                 },
                                 new() {
                                     DataURI = "YoutubeExplode",

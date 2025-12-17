@@ -634,7 +634,7 @@ namespace Jammer
                 Utils.Songs[Utils.CurrentSongIndex] = SongExtensions.ToSongString(song);
                 if (Preferences.favoriteExplainer)
                 {
-                    Message.Data("You have marked this song as favorite. \nYou can play all your favorite songs by playing the current playlist name with ':fav' appended. i.e. [bold]example:fav[/]\nor you can add play the playlist by path and adding -fav to the extension i.e. [bold]example.jammer-fav[/]\nYou can remove this message from the settings. ([bold]" + Keybindings.SettingsKeys.FavoriteExplainer.ToString() + "[/])", "Favorite song added");
+                    Message.Data("You have marked this song as favorite. \nYou can play all your favorite songs by playing the current playlist name with ':fav' appended. i.e. [bold]example:fav[/]\nYou can remove this message from the settings. ([bold]" + Keybindings.SettingsKeys.FavoriteExplainer.ToString() + "[/])", "Favorite song added");
                 }
             }
 
