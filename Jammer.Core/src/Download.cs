@@ -505,7 +505,12 @@ namespace Jammer
                     CreateNoWindow = true
                 };
 
-                using System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
+                using System.Diagnostics.Process? process = System.Diagnostics.Process.Start(startInfo);
+                if (process == null)
+                {
+                    return false;
+                }
+
                 process.WaitForExit();
                 return process.ExitCode == 0;
             }
@@ -528,8 +533,13 @@ namespace Jammer
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-
-                using System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
+            
+                using System.Diagnostics.Process? process = System.Diagnostics.Process.Start(startInfo);
+                if (process == null)
+                {
+                    return false;
+                }
+                
                 process.WaitForExit();
                 return process.ExitCode == 0;
             }
