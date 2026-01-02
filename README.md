@@ -23,6 +23,7 @@ Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have
 - [RSS](#rss)
 - [Streams](#streams)
 - [Soundcloud Client ID](#soundcloud-client-id)
+- [YouTube Download Backends](#youtube-download-backends)
 - [Jammer Location](#jammer-location)
 - [Environment Variables](#environment-variables)
 - [Themes](#themes)
