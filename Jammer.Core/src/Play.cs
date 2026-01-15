@@ -154,6 +154,7 @@ namespace Jammer
             else if (URL.IsUrl(song.URI))
             {
                 (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                // Message.Data(SongExtensions.ToSongString(song), fullPathToFile);
                 // Message.Data(path, song);
             }
 
@@ -296,7 +297,7 @@ namespace Jammer
 
                 if (extension == ".jammer")
                 {
-                    HandleJammerPlaylist(song);
+                    HandleJammerPlaylist(song, fullPathToFile);
                 }
                 else if (extension == ".m3u" || extension == ".m3u8")
                 {
@@ -323,11 +324,12 @@ namespace Jammer
             Debug.dprint("End of PlaySong");
         }
 
-        public static void HandleJammerPlaylist(Song song)
+        public static void HandleJammerPlaylist(Song song, string path)
         {
             Debug.dprint("jammer");
 
-            string[] playlist = System.IO.File.ReadAllLines(song.URI ?? "");
+            Message.Data(song.URI, "s");
+            string[] playlist = System.IO.File.ReadAllLines(path ?? "");
             if (playlist == null || playlist.Length == 0)
                 return;
 
