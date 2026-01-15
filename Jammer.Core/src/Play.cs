@@ -328,7 +328,7 @@ namespace Jammer
         {
             Debug.dprint("jammer");
 
-            Message.Data(song.URI, "s");
+            // Message.Data(song.URI, "s");
             string[] playlist = System.IO.File.ReadAllLines(path ?? "");
             if (playlist == null || playlist.Length == 0)
                 return;
