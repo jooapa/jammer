@@ -1,3 +1,5 @@
+#! /usr/bin/env pwsh
+
 [CmdletBinding()]
 param(
     [ValidateSet('linux-x64', 'win-x64', 'osx-x64', 'osx-arm64', 'all')]
