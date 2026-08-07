@@ -593,97 +593,32 @@ namespace Jammer
                 return;
             }
 
-            if (Utils.SCClientIdAlreadyLookedAndItsIncorrect)
-            {
-                Utils.CustomTopErrorMessage = Locale.UiMessages.ClientIdIncorrect;
-                songPath = "";
-                constructedSong = null;
-                return;
-            }
-
             var theText = Locale.UiMessages.GettingTrack;
             TUI.PrintToTopOfPlayer(theText);
 
-            var soundcloud = ReturnSoundCloudClient();
-
             try
             {
-                var track = await soundcloud.Tracks.GetAsync(url);
-
-                if (track != null)
-                {
-
-                    if (track.Title != null)
-                    {
-
-                        var progress = new Progress<double>(data =>
-                        {
-                            TUI.PrintToTopOfPlayer(theText + $" {data:P}");
-                        });
-
-                        await soundcloud.DownloadAsync(track, songPath, progress);
-
-                        TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
-
-                        try
-                        {
-                            using (var file = TagLib.File.Create(songPath))
-                            {
-                                file.Tag.Title = Start.Sanitize(track.Title);
-                                file.Tag.Description = track.Description;
-                                if (track.User != null && track.User.Username != null)
-                                {
-                                    file.Tag.Performers = new string[] { track.User.Username };
-                                }
-                                file.Save();
-                            }
-                            if (track.ArtworkUrl != null)
-                                await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
-
-                            constructedSong = new Song
-                            {
-                                URI = url,
-                                Title = track.Title,
-                                Author = track.User?.Username ?? null
-                            };
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(ex.Message);
-                            Log.Error("doing the dumb ://: title convert bullshit");
-                            // songPath += "://:" + track.Title + "://:" + track.User.Username;
-                            constructedSong = new Song
-                            {
-                                URI = url,
-                                Title = track.Title,
-                                Author = track.User?.Username ?? null
-                            };
-                        }
-
-                    }
-                    else
-                    {
-                        Debug.dprint("track title returns null");
-                    }
-                }
-                else
-                {
-                    Debug.dprint("track returns null");
-                }
-
+                await DownloadSoundCloudTrackWithRetryAsync(url, theText);
+                Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
             }
             catch (Exception ex)
             {
-
-                if (ex.Message.Contains("401"))
+                bool clientIdIncorrect =
+                    ex is HttpRequestException { StatusCode: HttpStatusCode.Unauthorized } ||
+                    ex.Message.Contains("401", StringComparison.Ordinal);
+                Utils.SCClientIdAlreadyLookedAndItsIncorrect = clientIdIncorrect;
+                if (clientIdIncorrect)
                 {
-                    Utils.SCClientIdAlreadyLookedAndItsIncorrect = true;
-                    Utils.CustomTopErrorMessage = Locale.UiMessages.ClientIdIncorrect;}
+                    Utils.CustomTopErrorMessage = Locale.UiMessages.ClientIdIncorrect;
+                }
                 else
                 {
                     Utils.CustomTopErrorMessage = Locale.UiMessages.SongNotFoundPrivateOrInvalid;
                 }
 
+                DeleteFailedSoundCloudDownload();
+                songPath = "";
+                constructedSong = null;
                 if (Funcs.DontShowErrorWhenSongNotFound())
                 {
                     Log.Error("Skipping song due to error: " + ex.Message);
@@ -693,9 +628,103 @@ namespace Jammer
                 // , Locale.OutsideItems.DownloadErrorSoundcloud + "\nMaybe your Client ID is invalid or the song is private");
                 // Utils.CustomTopErrorMessage = "Error: Maybe your Client ID is invalid or the song is private. (check log)";
                 Log.Error(ex.Message);
-                songPath = "";
-                constructedSong = null;
             }
+        }
+
+        private static async Task DownloadSoundCloudTrackWithRetryAsync(string url, string statusText)
+        {
+            try
+            {
+                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText);
+            }
+            catch (Exception firstFailure)
+            {
+                Log.Error("Initial SoundCloud download failed: " + firstFailure.Message);
+                DeleteFailedSoundCloudDownload();
+                TUI.PrintToTopOfPlayer(Locale.Settings.FetchingSoundCloudId);
+
+                try
+                {
+                    string clientId = await SCClientIdFetcher.GetClientId();
+                    Preferences.clientID = clientId;
+                    Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+                    Preferences.SaveSettings();
+                }
+                catch (Exception refreshFailure)
+                {
+                    // Still make the promised second attempt in case the original
+                    // download failure was transient rather than client-ID related.
+                    Log.Error("Failed to refresh the SoundCloud client ID: " + refreshFailure.Message);
+                }
+
+                TUI.PrintToTopOfPlayer(statusText);
+                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText);
+            }
+        }
+
+        private static void DeleteFailedSoundCloudDownload()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(songPath) && System.IO.File.Exists(songPath))
+                {
+                    System.IO.File.Delete(songPath);
+                }
+            }
+            catch (Exception cleanupFailure)
+            {
+                Log.Error("Failed to remove an incomplete SoundCloud download: " + cleanupFailure.Message);
+            }
+        }
+
+        private static async Task DownloadSoundCloudTrackOnceAsync(
+            SoundCloudClient soundcloud,
+            string url,
+            string statusText)
+        {
+            var track = await soundcloud.Tracks.GetAsync(url);
+            if (track?.Title == null)
+            {
+                throw new InvalidOperationException("SoundCloud did not return a valid track.");
+            }
+
+            var progress = new Progress<double>(data =>
+            {
+                TUI.PrintToTopOfPlayer(statusText + $" {data:P}");
+            });
+
+            await soundcloud.DownloadAsync(track, songPath, progress);
+            TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
+
+            try
+            {
+                using (var file = TagLib.File.Create(songPath))
+                {
+                    file.Tag.Title = Start.Sanitize(track.Title);
+                    file.Tag.Description = track.Description;
+                    if (track.User?.Username != null)
+                    {
+                        file.Tag.Performers = new[] { track.User.Username };
+                    }
+                    file.Save();
+                }
+                if (track.ArtworkUrl != null)
+                {
+                    await DownloadThumbnailAsync(track.ArtworkUrl, songPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error("doing the dumb ://: title convert bullshit");
+            }
+
+            constructedSong = new Song
+            {
+                URI = url,
+                Title = track.Title,
+                Author = track.User?.Username
+            };
         }
 
         static async Task DownloadThumbnailAsync(Uri imageUrl, string songPath)
