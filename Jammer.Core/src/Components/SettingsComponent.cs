@@ -12,8 +12,7 @@ namespace Jammer.Components
     public sealed record SettingsCategoryDescriptor(
         Func<string> Name,
         Func<string> Description,
-        Func<IReadOnlyList<SettingDescriptor>> Settings,
-        char Shortcut = '\0');
+        Func<IReadOnlyList<SettingDescriptor>> Settings);
 
     /// <summary>Category-based, descriptor-driven settings UI and input handler.</summary>
     public sealed class SettingsComponent : IUIComponent
@@ -22,6 +21,8 @@ namespace Jammer.Components
         private static readonly YtDlpManager YtDlp = new();
         private static SettingsCategoryDescriptor? _currentCategory;
         private static int _currentPage;
+        private static int _selectedIndex;
+        private static int _selectedCategoryIndex;
         private static int _pageSize = 6;
         private static YtDlpResolution _ytDlpStatus = new(null, "missing", null);
         private static bool _ytDlpStatusChecked;
@@ -30,6 +31,8 @@ namespace Jammer.Components
         {
             _currentCategory = null;
             _currentPage = 0;
+            _selectedIndex = 0;
+            _selectedCategoryIndex = 0;
             Redraw();
         }
 
@@ -58,7 +61,7 @@ namespace Jammer.Components
                     Themes.sColor(Locale.Settings.Description, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
                     Themes.sColor(Locale.Settings.Open, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
                 AddRows(table, categories.Count, index => (
-                    CategoryNameWithShortcut(categories[index]),
+                    categories[index].Name(),
                     categories[index].Description(),
                     Locale.Settings.ToOpen));
             }
@@ -72,7 +75,7 @@ namespace Jammer.Components
                 AddRows(table, settings.Count, index => (
                     settings[index].Name(),
                     settings[index].Value(),
-                    Shortcut(index) + " " + settings[index].Description()));
+                    settings[index].Description()));
             }
 
             return table;
@@ -85,7 +88,8 @@ namespace Jammer.Components
                 if (_currentCategory != null)
                 {
                     _currentCategory = null;
-                    _currentPage = 0;
+                    _selectedIndex = _selectedCategoryIndex;
+                    _currentPage = _selectedIndex / _pageSize;
                     return false;
                 }
                 return true;
@@ -95,31 +99,40 @@ namespace Jammer.Components
                 ? BuildCategories().Count
                 : _currentCategory.Settings().Count;
             int totalPages = Math.Max(1, (int)Math.Ceiling((double)count / _pageSize));
-            if (key.Key is ConsoleKey.PageDown or ConsoleKey.RightArrow or ConsoleKey.DownArrow)
+            if (key.Key == ConsoleKey.DownArrow)
             {
-                _currentPage = (_currentPage + 1) % totalPages;
+                MoveSelection(1, count);
                 return false;
             }
-            if (key.Key is ConsoleKey.PageUp or ConsoleKey.LeftArrow or ConsoleKey.UpArrow)
+            if (key.Key == ConsoleKey.UpArrow)
             {
-                _currentPage = (_currentPage - 1 + totalPages) % totalPages;
+                MoveSelection(-1, count);
+                return false;
+            }
+            if (key.Key is ConsoleKey.PageDown or ConsoleKey.RightArrow)
+            {
+                MovePage(1, count, totalPages);
+                return false;
+            }
+            if (key.Key is ConsoleKey.PageUp or ConsoleKey.LeftArrow)
+            {
+                MovePage(-1, count, totalPages);
+                return false;
+            }
+            if (key.Key is not (ConsoleKey.Enter or ConsoleKey.Spacebar))
+            {
                 return false;
             }
 
-            int firstVisible = _currentPage * _pageSize;
-            int lastVisible = Math.Min(firstVisible + _pageSize, count);
+            _selectedIndex = Math.Clamp(_selectedIndex, 0, Math.Max(0, count - 1));
 
             if (_currentCategory == null)
             {
                 IReadOnlyList<SettingsCategoryDescriptor> categories = BuildCategories();
-                int categoryIndex = FindCategoryIndex(categories, key.Key);
-                if (categoryIndex < firstVisible || categoryIndex >= lastVisible)
-                {
-                    return false;
-                }
-
-                _currentCategory = categories[categoryIndex];
+                _selectedCategoryIndex = _selectedIndex;
+                _currentCategory = categories[_selectedIndex];
                 _currentPage = 0;
+                _selectedIndex = 0;
                 if (_currentCategory.Name() == Locale.Settings.Integrations)
                 {
                     await RefreshYtDlpStatusAsync();
@@ -127,13 +140,7 @@ namespace Jammer.Components
             }
             else
             {
-                int settingIndex = LetterIndex(key.Key);
-                if (settingIndex < firstVisible || settingIndex >= lastVisible)
-                {
-                    return false;
-                }
-
-                SettingDescriptor setting = _currentCategory.Settings()[settingIndex];
+                SettingDescriptor setting = _currentCategory.Settings()[_selectedIndex];
                 try
                 {
                     await setting.Activate();
@@ -154,7 +161,7 @@ namespace Jammer.Components
 
         private static IReadOnlyList<SettingsCategoryDescriptor> BuildCategories()
         {
-            SettingsCategoryDescriptor[] categories =
+            return new SettingsCategoryDescriptor[]
             {
                 new(() => Locale.Settings.Playback, () => Locale.Settings.PlaybackDescription, BuildPlaybackSettings),
                 new(() => Locale.Settings.Interface, () => Locale.Settings.InterfaceDescription, BuildInterfaceSettings),
@@ -162,97 +169,21 @@ namespace Jammer.Components
                 new(() => Locale.Settings.Integrations, () => Locale.Settings.IntegrationsDescription, BuildIntegrationSettings),
                 new(() => Locale.Settings.Advanced, () => Locale.Settings.AdvancedDescription, BuildAdvancedSettings)
             };
-
-            return AssignCategoryShortcuts(categories);
         }
 
-        private static IReadOnlyList<SettingsCategoryDescriptor> AssignCategoryShortcuts(SettingsCategoryDescriptor[] categories)
+        private static void MoveSelection(int direction, int count)
         {
-            var used = new HashSet<char>();
-            var firstLetters = categories
-                .Select(category => FirstShortcutLetter(category.Name()))
-                .ToArray();
-
-            // Reserve unique first letters before resolving collisions so later categories
-            // cannot consume an obvious mnemonic belonging to another category.
-            foreach (char firstLetter in firstLetters.Where(letter => letter != '\0').Distinct())
-            {
-                if (firstLetters.Count(letter => letter == firstLetter) == 1)
-                {
-                    used.Add(firstLetter);
-                }
-            }
-
-            var assignments = new Dictionary<SettingsCategoryDescriptor, char>();
-            foreach (var group in categories
-                .Select((category, index) => (category, index, firstLetter: firstLetters[index]))
-                .GroupBy(item => item.firstLetter))
-            {
-                foreach (var item in group.OrderBy(item => item.category.Name(), StringComparer.CurrentCultureIgnoreCase))
-                {
-                    char shortcut = group.Count() == 1 && item.firstLetter != '\0'
-                        ? item.firstLetter
-                        : FindAvailableShortcut(item.category.Name(), used);
-                    assignments[item.category] = shortcut;
-                    used.Add(shortcut);
-                }
-            }
-
-            return categories
-                .Select(category => category with { Shortcut = assignments[category] })
-                .ToArray();
+            if (count <= 0) return;
+            _selectedIndex = (_selectedIndex + direction + count) % count;
+            _currentPage = _selectedIndex / _pageSize;
         }
 
-        private static char FirstShortcutLetter(string name) =>
-            name.Select(char.ToUpperInvariant).FirstOrDefault(IsShortcutLetter);
-
-        private static char FindAvailableShortcut(string name, HashSet<char> used)
+        private static void MovePage(int direction, int count, int totalPages)
         {
-            foreach (char letter in name.Select(char.ToUpperInvariant))
-            {
-                if (IsShortcutLetter(letter) && !used.Contains(letter))
-                {
-                    return letter;
-                }
-            }
-
-            return Enumerable.Range('A', 26)
-                .Select(value => (char)value)
-                .First(letter => !used.Contains(letter));
-        }
-
-        private static bool IsShortcutLetter(char value) => value is >= 'A' and <= 'Z';
-
-        private static string CategoryNameWithShortcut(SettingsCategoryDescriptor category)
-        {
-            string name = category.Name();
-            int shortcutIndex = name.IndexOf(category.Shortcut.ToString(), StringComparison.CurrentCultureIgnoreCase);
-            if (shortcutIndex < 0)
-            {
-                return $"[{category.Shortcut}] {name}";
-            }
-
-            return name[..shortcutIndex] + $"[{category.Shortcut}]" + name[(shortcutIndex + 1)..];
-        }
-
-        private static int FindCategoryIndex(IReadOnlyList<SettingsCategoryDescriptor> categories, ConsoleKey key)
-        {
-            string pressedKey = key.ToString();
-            if (pressedKey.Length != 1)
-            {
-                return -1;
-            }
-
-            char pressedLetter = char.ToUpperInvariant(pressedKey[0]);
-            for (int index = 0; index < categories.Count; index++)
-            {
-                if (categories[index].Shortcut == pressedLetter)
-                {
-                    return index;
-                }
-            }
-
-            return -1;
+            if (count <= 0) return;
+            int offsetWithinPage = _selectedIndex % _pageSize;
+            _currentPage = (_currentPage + direction + totalPages) % totalPages;
+            _selectedIndex = Math.Min((_currentPage * _pageSize) + offsetWithinPage, count - 1);
         }
 
         private static IReadOnlyList<SettingDescriptor> BuildPlaybackSettings() =>
@@ -467,14 +398,19 @@ namespace Jammer.Components
         private static void AddRows(Table table, int count, Func<int, (string Name, string Value, string Action)> rowFactory)
         {
             int totalPages = Math.Max(1, (int)Math.Ceiling((double)count / _pageSize));
-            if (_currentPage >= totalPages) _currentPage = totalPages - 1;
+            _selectedIndex = Math.Clamp(_selectedIndex, 0, Math.Max(0, count - 1));
+            _currentPage = _selectedIndex / _pageSize;
             int start = _currentPage * _pageSize;
             int end = Math.Min(start + _pageSize, count);
             for (int index = start; index < end; index++)
             {
                 var row = rowFactory(index);
+                string escapedName = Markup.Escape(row.Name);
+                string selectableName = index == _selectedIndex
+                    ? $"> [b]{escapedName}[/] <"
+                    : $"  {escapedName}";
                 table.AddRow(
-                    Themes.sColor(Markup.Escape(row.Name), Themes.CurrentTheme.GeneralSettings.SettingTextColor),
+                    Themes.sColor(selectableName, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
                     Themes.sColor(Markup.Escape(row.Value), Themes.CurrentTheme.GeneralSettings.SettingValueColor),
                     Themes.sColor(Markup.Escape(row.Action), Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
             }
@@ -482,11 +418,8 @@ namespace Jammer.Components
             table.AddRow(
                 Themes.sColor(Locale.Settings.BackHint, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
                 totalPages > 1 ? string.Format(Locale.Settings.PageStatus, _currentPage + 1, totalPages) : "",
-                totalPages > 1 ? Locale.Settings.PageHint : "");
+                Locale.UiMessages.SelectionInstructions);
         }
-
-        private static string Shortcut(int index) => $"{(char)('A' + index)}";
-        private static int LetterIndex(ConsoleKey key) => key is >= ConsoleKey.A and <= ConsoleKey.Z ? (int)key - (int)ConsoleKey.A : -1;
 
         private static void ShowInvalidInput() => Message.Data(
             $"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.",
