@@ -607,11 +607,11 @@ namespace Jammer
                                 Message.Input(Locale.Miscellaneous.GoEditThemeFile, Locale.Miscellaneous.ThemeFileCreatedInJammerFolder);
                                 // If windows, open with notepad
 #if WINDOWS
-                                    System.Diagnostics.Process.Start("explorer.exe", Path.Combine(Utils.JammerPath, "themes"));
+                                    System.Diagnostics.Process.Start("explorer.exe", Utils.ThemesPath);
 #elif LINUX
-                                    System.Diagnostics.Process.Start("xdg-open", Path.Combine(Utils.JammerPath, "themes"));
+                                    System.Diagnostics.Process.Start("xdg-open", Utils.ThemesPath);
 #elif MAC
-                                    System.Diagnostics.Process.Start("open", Path.Combine(Utils.JammerPath, "themes"));
+                                    System.Diagnostics.Process.Start("open", Utils.ThemesPath);
 #endif
                                 Preferences.theme = themeName;
                             }

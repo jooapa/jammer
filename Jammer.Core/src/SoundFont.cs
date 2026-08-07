@@ -6,12 +6,12 @@ namespace Jammer
     {
         public static string[] GetSoundFonts()
         {
-            if (!Path.Exists(Path.Combine(Utils.JammerPath, "soundfonts")))
+            if (!Path.Exists(Utils.SoundFontsPath))
             {
                 return new string[0];
             }
 
-            string[] soundfonts = Directory.GetFiles(Path.Combine(Utils.JammerPath, "soundfonts"), "*");
+            string[] soundfonts = Directory.GetFiles(Utils.SoundFontsPath, "*");
             string[] soundfontsExt = new string[soundfonts.Length];
             string[] jammerSfFonts = Array.Empty<string>();
 
@@ -52,7 +52,7 @@ namespace Jammer
 
         public static string ImportSoundFont(string path)
         {
-            string sfPath = Path.Combine(Utils.JammerPath, "soundfonts", Path.GetFileName(path));
+            string sfPath = Path.Combine(Utils.SoundFontsPath, Path.GetFileName(path));
 
             if (Path.Exists(sfPath))
             {
@@ -79,7 +79,7 @@ namespace Jammer
             string sfName = Path.GetFileNameWithoutExtension(soundfontPath);
 
             // create the file
-            string sfFilePath = Path.Combine(Utils.JammerPath, "soundfonts", $"{sfName}.jammer-sf");
+            string sfFilePath = Path.Combine(Utils.SoundFontsPath, $"{sfName}.jammer-sf");
 
             // if it doesn't exist, create it
             if (!Path.Exists(sfFilePath))

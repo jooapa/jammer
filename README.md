@@ -178,11 +178,15 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 ### Environment Variables
 
-You can customize Jammer's storage locations using these environment variables. They can point to either directories or files depending on the variable:
+You can customize Jammer's storage locations using these environment variables:
 
 - `JAMMER_CONFIG_PATH` - Path to the configuration directory
 - `JAMMER_SONGS_PATH` - Path to the songs storage directory
 - `JAMMER_PLAYLISTS_PATH` - Path to the playlists directory
+- `JAMMER_YTDLP_BIN` - Path to an externally managed yt-dlp executable
+
+Without an override, Jammer uses centralized paths below `<JammerPath>`: `songs`,
+`playlists`, `tools`, `downloads`, `cache`, `locales`, `soundfonts`, and `themes`.
 
 **Examples:**
 
@@ -257,11 +261,14 @@ An alternative backend that uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) for 
 Choose it from Settings → Integrations. Jammer validates the configured executable and,
 when necessary, downloads the official release atomically into the user-writable
 `<JammerPath>/tools` directory. It does not write into the application installation.
+On macOS, the complete unpackaged build is kept in
+`<JammerPath>/tools/yt-dlp-macos` so its executable and runtime files stay together.
 
 Resolution order is: a valid `JAMMER_YTDLP_BIN` override, Jammer's managed binary, an
 executable on `PATH`, then automatic installation. The Integrations screen also provides
 install/repair and update actions. Set `JAMMER_YTDLP_BIN` only when you intentionally want
-Jammer to use a separately managed executable.
+Jammer to use a separately managed executable. yt-dlp cache data is kept in
+`<JammerPath>/cache/yt-dlp`.
 
 ## Star History
 

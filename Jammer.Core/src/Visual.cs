@@ -181,7 +181,7 @@ PausingEffect = true
 
         public static void Write()
         {
-            string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
+            string path = Utils.VisualizerFilePath;
 
             // Create the file if it doesn't exist
             if (!File.Exists(path))
@@ -198,7 +198,7 @@ PausingEffect = true
         public static void Read()
         {
             Log.Info("Reading Visualizer.ini file");
-            string path = Path.Combine(Utils.JammerPath, "Visualizer.ini");
+            string path = Utils.VisualizerFilePath;
             var parser = new FileIniDataParser();
             IniData data;
 

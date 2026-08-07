@@ -163,7 +163,7 @@ namespace Jammer
 }";
 
         public static Theme? CurrentTheme { get; private set; }
-        static readonly string themePath = Path.Combine(Utils.JammerPath, "themes");
+        static readonly string themePath = Utils.ThemesPath;
         public static void Init()
         {
             int returne = 0;

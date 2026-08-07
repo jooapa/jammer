@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
 
@@ -18,15 +19,22 @@ namespace Jammer
 
     public interface IYtDlpProcessRunner
     {
-        Task<string?> GetVersionAsync(string executable, CancellationToken cancellationToken);
+        Task<string?> GetVersionAsync(
+            string executable,
+            CancellationToken cancellationToken,
+            TimeSpan? validationTimeout = null);
     }
 
     public sealed class YtDlpProcessRunner : IYtDlpProcessRunner
     {
-        public async Task<string?> GetVersionAsync(string executable, CancellationToken cancellationToken)
+        public async Task<string?> GetVersionAsync(
+            string executable,
+            CancellationToken cancellationToken,
+            TimeSpan? validationTimeout = null)
         {
+            TimeSpan effectiveTimeout = validationTimeout ?? TimeSpan.FromSeconds(10);
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            timeout.CancelAfter(TimeSpan.FromSeconds(10));
+            timeout.CancelAfter(effectiveTimeout);
             using var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -39,30 +47,45 @@ namespace Jammer
                 }
             };
             process.StartInfo.ArgumentList.Add("--version");
+            bool started = false;
             try
             {
                 if (!process.Start())
                 {
-                    return null;
+                    throw new InvalidDataException($"Could not start '{executable}' for its --version check.");
+                }
+                started = true;
+
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
+                Task<string> errorTask = process.StandardError.ReadToEndAsync(timeout.Token);
+                await process.WaitForExitAsync(timeout.Token);
+                string output = (await outputTask).Trim();
+                string error = (await errorTask).Trim();
+                if (process.ExitCode != 0)
+                {
+                    string detail = string.IsNullOrWhiteSpace(error) ? output : error;
+                    throw new InvalidDataException(
+                        $"'{executable} --version' exited with code {process.ExitCode}" +
+                        (string.IsNullOrWhiteSpace(detail) ? "." : $": {detail}"));
                 }
 
-                string output = await process.StandardOutput.ReadToEndAsync(timeout.Token);
-                await process.WaitForExitAsync(timeout.Token);
-                return process.ExitCode == 0 ? output.Trim() : null;
+                return string.IsNullOrWhiteSpace(output) ? null : output;
             }
-            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
             {
-                return null;
+                throw new TimeoutException(
+                    $"'{executable} --version' did not finish within {effectiveTimeout.TotalSeconds:0} seconds.",
+                    ex);
             }
             catch (Exception ex) when (ex is IOException or InvalidOperationException or System.ComponentModel.Win32Exception)
             {
-                return null;
+                throw new InvalidDataException($"Could not run '{executable} --version': {ex.Message}", ex);
             }
             finally
             {
                 try
                 {
-                    if (process.StartTime != default && !process.HasExited) process.Kill(true);
+                    if (started && !process.HasExited) process.Kill(true);
                 }
                 catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
                 {
@@ -89,23 +112,26 @@ namespace Jammer
             IYtDlpProcessRunner? runner = null,
             Func<string?>? overridePath = null)
         {
-            _jammerPath = jammerPath ?? Utils.JammerPath;
+            _jammerPath = Path.GetFullPath(jammerPath ?? Utils.JammerPath);
             _platform = platform ?? DetectPlatform();
             _httpClient = httpClient ?? CreateHttpClient();
             _runner = runner ?? new YtDlpProcessRunner();
             _overridePath = overridePath ?? (() => Environment.GetEnvironmentVariable("JAMMER_YTDLP_BIN"));
         }
 
-        public string ManagedBinaryPath => Path.Combine(
-            _jammerPath,
-            "tools",
-            _platform == YtDlpPlatform.WindowsX64 ? "yt-dlp.exe" : "yt-dlp");
+        public string ManagedBinaryPath => _platform switch
+        {
+            YtDlpPlatform.WindowsX64 => Path.Combine(Utils.GetToolsPath(_jammerPath), "yt-dlp.exe"),
+            YtDlpPlatform.LinuxX64 => Path.Combine(Utils.GetToolsPath(_jammerPath), "yt-dlp"),
+            YtDlpPlatform.MacOSUniversal => Path.Combine(Utils.GetToolsPath(_jammerPath), "yt-dlp-macos", "yt-dlp_macos"),
+            _ => throw new PlatformNotSupportedException()
+        };
 
         public string ReleaseAssetName => _platform switch
         {
             YtDlpPlatform.WindowsX64 => "yt-dlp.exe",
             YtDlpPlatform.LinuxX64 => "yt-dlp_linux",
-            YtDlpPlatform.MacOSUniversal => "yt-dlp_macos",
+            YtDlpPlatform.MacOSUniversal => "yt-dlp_macos.zip",
             _ => throw new PlatformNotSupportedException()
         };
 
@@ -115,7 +141,7 @@ namespace Jammer
             if (!string.IsNullOrWhiteSpace(configured))
             {
                 string? version = File.Exists(configured)
-                    ? await _runner.GetVersionAsync(configured, cancellationToken)
+                    ? await TryGetVersionAsync(configured, cancellationToken)
                     : null;
                 if (version != null)
                 {
@@ -125,14 +151,14 @@ namespace Jammer
 
             if (File.Exists(ManagedBinaryPath))
             {
-                string? version = await _runner.GetVersionAsync(ManagedBinaryPath, cancellationToken);
+                string? version = await TryGetVersionAsync(ManagedBinaryPath, cancellationToken);
                 if (version != null)
                 {
                     return new YtDlpResolution(ManagedBinaryPath, "managed", version);
                 }
             }
 
-            string? pathVersion = await _runner.GetVersionAsync("yt-dlp", cancellationToken);
+            string? pathVersion = await TryGetVersionAsync("yt-dlp", cancellationToken);
             if (pathVersion != null)
             {
                 return new YtDlpResolution("yt-dlp", "PATH", pathVersion);
@@ -157,9 +183,10 @@ namespace Jammer
                 }
             }
 
-            string toolsDirectory = Path.GetDirectoryName(ManagedBinaryPath)!;
+            string toolsDirectory = Utils.GetToolsPath(_jammerPath);
             Directory.CreateDirectory(toolsDirectory);
-            string temporaryPath = Path.Combine(toolsDirectory, $".{Path.GetFileName(ManagedBinaryPath)}.{Guid.NewGuid():N}.download");
+            string temporaryPath = Path.Combine(toolsDirectory, $".{ReleaseAssetName}.{Guid.NewGuid():N}.download");
+            string? stagingDirectory = null;
 
             try
             {
@@ -189,21 +216,47 @@ namespace Jammer
                     await target.FlushAsync(cancellationToken);
                 }
 
+                string executableToValidate = temporaryPath;
+                if (_platform == YtDlpPlatform.MacOSUniversal)
+                {
+                    stagingDirectory = Path.Combine(toolsDirectory, $".yt-dlp-macos.{Guid.NewGuid():N}.staging");
+                    await ExtractArchiveAsync(temporaryPath, stagingDirectory, cancellationToken);
+                    executableToValidate = Path.Combine(stagingDirectory, "yt-dlp_macos");
+                    if (!File.Exists(executableToValidate))
+                    {
+                        throw new InvalidDataException("The yt-dlp macOS archive does not contain yt-dlp_macos.");
+                    }
+                }
+
                 if (!OperatingSystem.IsWindows())
                 {
-                    File.SetUnixFileMode(temporaryPath,
+                    File.SetUnixFileMode(executableToValidate,
                         UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
                         UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
                         UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
                 }
 
-                string? version = await _runner.GetVersionAsync(temporaryPath, cancellationToken);
+                TimeSpan? validationTimeout = _platform == YtDlpPlatform.MacOSUniversal
+                    ? TimeSpan.FromMinutes(1)
+                    : null;
+                string? version = await _runner.GetVersionAsync(
+                    executableToValidate,
+                    cancellationToken,
+                    validationTimeout);
                 if (version == null)
                 {
                     throw new InvalidDataException("The downloaded yt-dlp executable failed its --version check.");
                 }
 
-                File.Move(temporaryPath, ManagedBinaryPath, true);
+                if (_platform == YtDlpPlatform.MacOSUniversal)
+                {
+                    ReplaceManagedMacBundle(stagingDirectory!);
+                    stagingDirectory = null;
+                }
+                else
+                {
+                    File.Move(temporaryPath, ManagedBinaryPath, true);
+                }
                 progress?.Report(1);
                 return new YtDlpResolution(ManagedBinaryPath, "managed", version);
             }
@@ -213,6 +266,93 @@ namespace Jammer
                 {
                     File.Delete(temporaryPath);
                 }
+                if (stagingDirectory != null && Directory.Exists(stagingDirectory))
+                {
+                    Directory.Delete(stagingDirectory, true);
+                }
+            }
+        }
+
+        private async Task<string?> TryGetVersionAsync(string executable, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _runner.GetVersionAsync(executable, cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex) when (ex is InvalidDataException or TimeoutException)
+            {
+                return null;
+            }
+        }
+
+        private static async Task ExtractArchiveAsync(string archivePath, string destinationDirectory, CancellationToken cancellationToken)
+        {
+            Directory.CreateDirectory(destinationDirectory);
+            string destinationRoot = Path.GetFullPath(destinationDirectory) + Path.DirectorySeparatorChar;
+            await using FileStream archiveStream = File.OpenRead(archivePath);
+            using var archive = new ZipArchive(archiveStream, ZipArchiveMode.Read);
+
+            foreach (ZipArchiveEntry entry in archive.Entries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                string destinationPath = Path.GetFullPath(Path.Combine(destinationDirectory, entry.FullName));
+                if (!destinationPath.StartsWith(destinationRoot, StringComparison.Ordinal))
+                {
+                    throw new InvalidDataException($"Unsafe path in yt-dlp archive: {entry.FullName}");
+                }
+
+                int unixFileType = (entry.ExternalAttributes >> 16) & 0xF000;
+                if (unixFileType == 0xA000)
+                {
+                    throw new InvalidDataException($"Symbolic links are not allowed in the yt-dlp archive: {entry.FullName}");
+                }
+
+                if (string.IsNullOrEmpty(entry.Name))
+                {
+                    Directory.CreateDirectory(destinationPath);
+                    continue;
+                }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+                await using Stream source = entry.Open();
+                await using var target = new FileStream(destinationPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, true);
+                await source.CopyToAsync(target, cancellationToken);
+            }
+        }
+
+        private void ReplaceManagedMacBundle(string stagingDirectory)
+        {
+            string targetDirectory = Path.GetDirectoryName(ManagedBinaryPath)!;
+            string backupDirectory = Path.Combine(
+                Path.GetDirectoryName(targetDirectory)!,
+                $".{Path.GetFileName(targetDirectory)}.{Guid.NewGuid():N}.backup");
+            bool backedUp = false;
+
+            try
+            {
+                if (Directory.Exists(targetDirectory))
+                {
+                    Directory.Move(targetDirectory, backupDirectory);
+                    backedUp = true;
+                }
+
+                Directory.Move(stagingDirectory, targetDirectory);
+                if (backedUp)
+                {
+                    Directory.Delete(backupDirectory, true);
+                }
+            }
+            catch
+            {
+                if (!Directory.Exists(targetDirectory) && backedUp && Directory.Exists(backupDirectory))
+                {
+                    Directory.Move(backupDirectory, targetDirectory);
+                }
+                throw;
             }
         }
 

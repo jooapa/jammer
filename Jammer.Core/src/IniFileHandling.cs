@@ -93,7 +93,7 @@ ExitRssFeed = E
             // Read new keybinds from file
             try
             {
-                KeyData = parser.ReadFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), System.Text.Encoding.UTF8);
+                KeyData = parser.ReadFile(Utils.KeyDataFilePath, System.Text.Encoding.UTF8);
                 KeyDataFound = true;
                 KeybindAmount = KeyData["Keybinds"].Count;
             }
@@ -183,7 +183,7 @@ ExitRssFeed = E
                 }
                 try
                 {
-                    parser.WriteFile(Path.Combine(Utils.JammerPath, "KeyData.ini"), KeyData);
+                    parser.WriteFile(Utils.KeyDataFilePath, KeyData);
                 }
                 catch (Exception)
                 {
@@ -205,7 +205,7 @@ ExitRssFeed = E
 
         public static void Create_KeyDataIni(int hardReset)
         {
-            string filePath = Path.Combine(Utils.JammerPath, "KeyData.ini");
+            string filePath = Utils.KeyDataFilePath;
 
             // Create if not existing
             if (hardReset == 0)
@@ -582,7 +582,7 @@ ExitRssFeed = E
             DirectoryInfo? di;
             try
             {
-                di = new DirectoryInfo(Path.Combine(Utils.JammerPath, "locales"));
+                di = new DirectoryInfo(Utils.LocalesPath);
             }
             catch (Exception)
             {
@@ -616,7 +616,7 @@ ExitRssFeed = E
             string country_code = Path.GetFileNameWithoutExtension(files[ScrollIndexLanguage].Name);
             try
             {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
+                LocaleData = parser.ReadFile(Path.Combine(Utils.LocalesPath, $"{country_code}.ini"), System.Text.Encoding.UTF8);
                 Message.Data(Locale.LocaleKeybind.Ini_LoadNewLocaleMessage1, $"{Locale.LocaleKeybind.Ini_LoadNewLocaleMessage2}");
                 Preferences.localeLanguage = country_code;
                 Preferences.SaveSettings();
@@ -633,7 +633,7 @@ ExitRssFeed = E
         {
             try
             {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
+                LocaleData = parser.ReadFile(Path.Combine(Utils.LocalesPath, $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
             }
             catch (Exception)
             {
@@ -656,7 +656,7 @@ ExitRssFeed = E
         {
             List<string> results = new();
             DirectoryInfo? di = null;
-            string path = Path.Combine(Utils.JammerPath, "locales");
+            string path = Utils.LocalesPath;
             EnsureLocaleFilesAvailable();
 
             if (!Directory.Exists(path))
@@ -723,7 +723,7 @@ ExitRssFeed = E
         public static void EnsureLocaleFilesAvailable()
         {
             string bundledLocalesPath = Path.Combine(AppContext.BaseDirectory, "locales");
-            string userLocalesPath = Path.Combine(Utils.JammerPath, "locales");
+            string userLocalesPath = Utils.LocalesPath;
             try
             {
                 CopyMissingLocaleFiles(bundledLocalesPath, userLocalesPath);

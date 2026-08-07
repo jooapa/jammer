@@ -142,13 +142,13 @@ namespace Jammer
 
         private static string GetDownloadedJammerFileName(string url)
         {
-            string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", url);
+            string downloadedPath = Path.Combine(Preferences.GetPlaylistsPath(), url);
             return downloadedPath.LastIndexOf("/") > 0 ? downloadedPath.Substring(downloadedPath.LastIndexOf("/") + 1) : downloadedPath;
         }
 
         private static async Task DownloadJammerFile(string url)
         {
-            string downloadedPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
+            string downloadedPath = Path.Combine(Preferences.GetPlaylistsPath(), GetDownloadedJammerFileName(url));
 
             if (System.IO.File.Exists(downloadedPath))
             {
@@ -205,7 +205,7 @@ namespace Jammer
             }
 
 
-            songPath = Path.Combine(Utils.JammerPath, "playlists", GetDownloadedJammerFileName(url));
+            songPath = Path.Combine(Preferences.GetPlaylistsPath(), GetDownloadedJammerFileName(url));
             constructedSong = new Song
             {
                 URI = url,
@@ -379,10 +379,18 @@ namespace Jammer
 
                 ytdl.OutputFolder = Preferences.songsPath;
                 ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
+                Directory.CreateDirectory(Utils.YtDlpCachePath);
+                var ytDlpOptions = new OptionSet
+                {
+                    CacheDir = Utils.YtDlpCachePath
+                };
                 TUI.PrintToTopOfPlayer(Locale.UiMessages.DownloadingWithYtDlp);
                 
                 // Use simple approach to download best audio
-                var result = await ytdl.RunAudioDownload(url, AudioConversionFormat.Vorbis);
+                var result = await ytdl.RunAudioDownload(
+                    url,
+                    AudioConversionFormat.Vorbis,
+                    overrideOptions: ytDlpOptions);
 
                 if (result.Success && result.Data != null)
                 {
@@ -415,7 +423,7 @@ namespace Jammer
                     TUI.PrintToTopOfPlayer(Locale.UiMessages.GettingVideoInfo);
                     
                     // Get video info for metadata
-                    var infoResult = await ytdl.RunVideoDataFetch(url);
+                    var infoResult = await ytdl.RunVideoDataFetch(url, overrideOptions: ytDlpOptions);
                     if (infoResult.Success && infoResult.Data != null)
                     {
                         var videoData = infoResult.Data;

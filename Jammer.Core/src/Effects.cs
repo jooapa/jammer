@@ -171,7 +171,7 @@ HighFreqRTRatio = 0.001
 
         public static void WriteEffects()
         {
-            string path = Path.Combine(Utils.JammerPath, "Effects.ini");
+            string path = Utils.EffectsFilePath;
 
             // Create the file if it doesn't exist
             if (!File.Exists(path))
@@ -216,7 +216,7 @@ HighFreqRTRatio = 0.001
                 Log.Info("Reading the Effects.ini file");
                 var parser = new FileIniDataParser();
                 IniData data = new();
-                data = parser.ReadFile(Path.Combine(Utils.JammerPath, "Effects.ini"));
+                data = parser.ReadFile(Utils.EffectsFilePath);
 
                 chorusFrequency = float.Parse(data["Chorus"]["Frequency"], CultureInfo.InvariantCulture);
                 chorusWetDryMix = float.Parse(data["Chorus"]["WetDryMix"], CultureInfo.InvariantCulture);

@@ -49,7 +49,7 @@ namespace Jammer
 
         private static bool GetModifierKeyHelper()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -64,7 +64,7 @@ namespace Jammer
 
         private static bool GetIsSkipErrors()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -79,7 +79,7 @@ namespace Jammer
 
         private static bool GetShowPlaylistPosition()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -94,7 +94,7 @@ namespace Jammer
 
         private static bool GetRssSkipAfterTime()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -109,7 +109,7 @@ namespace Jammer
 
         private static int GetRssSkipAfterTimeValue()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -124,7 +124,7 @@ namespace Jammer
 
         private static bool GetFavoriteExplainer()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -139,7 +139,7 @@ namespace Jammer
 
         private static bool GetEnableQuickPlayFromSearch()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -154,7 +154,7 @@ namespace Jammer
 
         static public void CheckJammerFolderExists()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath);
+            string JammerPath = Utils.JammerPath;
 
             if (!Directory.Exists(JammerPath))
             {
@@ -166,16 +166,19 @@ namespace Jammer
                 Log.Error("Playlists folder does not exist, creating one...");
                 Directory.CreateDirectory(GetPlaylistsPath());
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "soundfonts")))
+            if (!Directory.Exists(Utils.SoundFontsPath))
             {
                 Log.Error("Soundfonts folder does not exist, creating one...");
-                Directory.CreateDirectory(Path.Combine(JammerPath, "soundfonts"));
+                Directory.CreateDirectory(Utils.SoundFontsPath);
             }
-            if (!Directory.Exists(Path.Combine(JammerPath, "locales")))
+            if (!Directory.Exists(Utils.LocalesPath))
             {
                 Log.Error("Locales folder does not exist, creating one...");
-                Directory.CreateDirectory(Path.Combine(JammerPath, "locales"));
+                Directory.CreateDirectory(Utils.LocalesPath);
             }
+            Directory.CreateDirectory(Utils.ToolsPath);
+            Directory.CreateDirectory(Utils.DownloadsPath);
+            Directory.CreateDirectory(Utils.CachePath);
 
             IniFileHandling.EnsureLocaleFilesAvailable();
 
@@ -200,7 +203,7 @@ namespace Jammer
             }
 
             // load if not folder empty
-            if (Directory.EnumerateFiles(Path.Combine(JammerPath, "locales"), "*.ini").Any())
+            if (Directory.EnumerateFiles(Utils.LocalesPath, "*.ini").Any())
             {
                 // load current locale
                 IniFileHandling.SetLocaleData();
@@ -211,7 +214,7 @@ namespace Jammer
 
         static public void SaveSettings()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             Settings settings = new Settings();
             settings.LoopType = loopType;
             settings.Volume = volume;
@@ -255,62 +258,49 @@ namespace Jammer
 
         static public string GetSongsPath()
         {
-
-            // check if environment variable JAMMER_SONGS_PATH exists
-            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_SONGS_PATH")))
+            string? configuredPath = Environment.GetEnvironmentVariable("JAMMER_SONGS_PATH");
+            if (!string.IsNullOrEmpty(configuredPath))
             {
-                return Environment.GetEnvironmentVariable("JAMMER_SONGS_PATH") ?? Path.Combine(Utils.JammerPath, "songs");
+                return configuredPath;
             }
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
             {
-                return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), "jammer", "songs");
+                return Utils.SongsPath;
             }
 
-            // check if settings.json exists
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
-            var value = "";
-            if (File.Exists(JammerPath))
+            string value = "";
+            if (File.Exists(Utils.SettingsFilePath))
             {
-                string jsonString = File.ReadAllText(JammerPath);
+                string jsonString = File.ReadAllText(Utils.SettingsFilePath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                value = settings?.songsPath;
+                value = settings?.songsPath ?? "";
             }
 
-            // Show a message box and ask the user if they want to change the path to the new Environment variable version
-            if (!string.IsNullOrEmpty(value) && value != Path.Combine(Utils.JammerPath, "songs"))
+            if (!string.IsNullOrEmpty(value) && value != Utils.SongsPath)
             {
-                var val =
-                    Message.Input(
-                        string.Format(Locale.UiMessages.SongsPathMigration, Locale.Miscellaneous.NoAnswer, Locale.Miscellaneous.YesAnswer),
-                        string.Format(Locale.UiMessages.CurrentSongsPath, Path.Combine(value, "songs")),
-                        true);
-                val = val.ToLower();
+                string val = Message.Input(
+                    string.Format(Locale.UiMessages.SongsPathMigration, Locale.Miscellaneous.NoAnswer, Locale.Miscellaneous.YesAnswer),
+                    string.Format(Locale.UiMessages.CurrentSongsPath, Path.Combine(value, "songs")),
+                    true).ToLower();
                 if (val == Locale.Miscellaneous.NoAnswer)
                 {
                     Environment.Exit(0);
                 }
             }
 
-            // return the normal path
-            return Path.Combine(Utils.JammerPath, "songs");
+            return Utils.SongsPath;
         }
 
         static public string GetPlaylistsPath()
         {
-            // check if environment variable JAMMER_PLAYLISTS_PATH exists
-            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_PLAYLISTS_PATH")))
-            {
-                return Environment.GetEnvironmentVariable("JAMMER_PLAYLISTS_PATH") ?? Path.Combine(Utils.JammerPath, "playlists");
-            }
-
-            // return the normal path
-            return Path.Combine(Utils.JammerPath, "playlists");
+            string? configuredPath = Environment.GetEnvironmentVariable("JAMMER_PLAYLISTS_PATH");
+            return !string.IsNullOrEmpty(configuredPath) ? configuredPath : Utils.PlaylistsPath;
         }
 
         static public LoopType GetLoopType()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -325,7 +315,7 @@ namespace Jammer
 
         static public BackEndTypeYT GetBackEndType()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -340,7 +330,7 @@ namespace Jammer
 
         static public bool GetEnableQuickSearch()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -355,7 +345,7 @@ namespace Jammer
 
         static public string GetTheme()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -370,7 +360,7 @@ namespace Jammer
 
         static public bool GetIsVisualizer()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -385,7 +375,7 @@ namespace Jammer
 
         static public float GetVolume()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -400,7 +390,7 @@ namespace Jammer
 
         static public bool GetIsMuted()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -415,7 +405,7 @@ namespace Jammer
 
         static public float GetOldVolume()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -430,7 +420,7 @@ namespace Jammer
 
         static public int GetForwardSeconds()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -445,7 +435,7 @@ namespace Jammer
 
         static public int GetRewindSeconds()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -460,7 +450,7 @@ namespace Jammer
 
         static public float GetChangeVolumeBy()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 try
@@ -484,7 +474,7 @@ namespace Jammer
 
         static public bool GetIsMediaButtons()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -499,7 +489,7 @@ namespace Jammer
 
         static public bool GetIsShuffle()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -515,7 +505,7 @@ namespace Jammer
 
         static public string? GetLocaleLanguage()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -530,7 +520,7 @@ namespace Jammer
 
         static public bool GetIsAutoSave()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -545,7 +535,7 @@ namespace Jammer
 
         static public string GetCurrentSf2()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -560,7 +550,7 @@ namespace Jammer
 
         static public string GetClientId()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.SettingsFilePath;
             if (File.Exists(JammerPath))
             {
                 string jsonString = File.ReadAllText(JammerPath);
@@ -575,7 +565,7 @@ namespace Jammer
 
         static public void OpenJammerFolder()
         {
-            string JammerPath = Path.Combine(Utils.JammerPath, "settings.json");
+            string JammerPath = Utils.JammerPath;
             // start file managert in the given operating system
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

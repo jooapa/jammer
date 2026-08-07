@@ -371,12 +371,13 @@ namespace Jammer
 
                     if (input.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!Directory.Exists(Path.Combine(Utils.JammerPath, "playlists", "backups")))
+                        string playlistBackupsPath = Utils.GetPlaylistBackupsPath(Preferences.GetPlaylistsPath());
+                        if (!Directory.Exists(playlistBackupsPath))
                         {
-                            Directory.CreateDirectory(Path.Combine(Utils.JammerPath, "playlists", "backups"));
+                            Directory.CreateDirectory(playlistBackupsPath);
                         }
 
-                        string backupPath = Path.Combine(Utils.JammerPath, "playlists", "backups", Path.GetFileNameWithoutExtension(song.URI) + "_" + DateTime.Now.ToString("dd-MM_HH-mm-ss") + ".jammer");
+                        string backupPath = Path.Combine(playlistBackupsPath, Path.GetFileNameWithoutExtension(song.URI) + "_" + DateTime.Now.ToString("dd-MM_HH-mm-ss") + ".jammer");
                         System.IO.File.WriteAllText(backupPath, System.IO.File.ReadAllText(song.URI), Encoding.UTF8);
 
                         // Message.Data(fullPath + " " + newPlaylist, "newPlaylist");
@@ -837,7 +838,7 @@ namespace Jammer
             if (Utils.CurrentMusic == 0)
             {
                 int newFont;
-                newFont = BassMidi.FontInit(Path.Combine(Utils.JammerPath, "soundfonts", Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
+                newFont = BassMidi.FontInit(Path.Combine(Utils.SoundFontsPath, Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
 
                 if (newFont == 0)
                 {

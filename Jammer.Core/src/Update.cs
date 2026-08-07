@@ -10,7 +10,8 @@ namespace Jammer
         public static string UpdateJammer(string version)
         {
             string downloadUrl = "https://github.com/jooapa/Jammer/releases/download/" + version + "/Jammer-Setup_V" + version + ".exe";
-            string downloadPath = Path.Combine(Utils.JammerPath, "Jammer-Setup_V" + version + ".exe");
+            Directory.CreateDirectory(Utils.DownloadsPath);
+            string downloadPath = Path.Combine(Utils.DownloadsPath, "Jammer-Setup_V" + version + ".exe");
             try
             {
                 using (var webClient = new WebClient())

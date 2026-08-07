@@ -36,6 +36,22 @@ namespace Jammer
         public static string UrlPatternHTTP = @"http?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
         public static bool MainLoop = true;
         public static string JammerPath = UtilFuncs.GetJammerPath();
+        public static string SongsPath => Path.Combine(JammerPath, "songs");
+        public static string PlaylistsPath => Path.Combine(JammerPath, "playlists");
+        public static string ToolsPath => GetToolsPath(JammerPath);
+        public static string DownloadsPath => Path.Combine(JammerPath, "downloads");
+        public static string CachePath => Path.Combine(JammerPath, "cache");
+        public static string YtDlpCachePath => Path.Combine(CachePath, "yt-dlp");
+        public static string LocalesPath => Path.Combine(JammerPath, "locales");
+        public static string SoundFontsPath => Path.Combine(JammerPath, "soundfonts");
+        public static string ThemesPath => Path.Combine(JammerPath, "themes");
+        public static string PlaylistBackupsPath => GetPlaylistBackupsPath(PlaylistsPath);
+        public static string SettingsFilePath => Path.Combine(JammerPath, "settings.json");
+        public static string KeyDataFilePath => Path.Combine(JammerPath, "KeyData.ini");
+        public static string EffectsFilePath => Path.Combine(JammerPath, "Effects.ini");
+        public static string VisualizerFilePath => Path.Combine(JammerPath, "Visualizer.ini");
+        public static string GetToolsPath(string jammerPath) => Path.Combine(jammerPath, "tools");
+        public static string GetPlaylistBackupsPath(string playlistsPath) => Path.Combine(playlistsPath, "backups");
         public static bool IsDebug = false;
         public static bool SCClientIdAlreadyLookedAndItsIncorrect = false;
         public static string CustomTopErrorMessage = "";
@@ -65,21 +81,22 @@ namespace Jammer
             // Return user preferred path for JammerPath
             public static string GetJammerPath()
             {
-                string defaultJammerFolderName = "jammer";
-                // use xdg_config_home if it is set
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")))
+                const string defaultJammerFolderName = "jammer";
+                string? configuredPath = Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH");
+                if (!string.IsNullOrWhiteSpace(configuredPath))
                 {
-                    return Path.Combine(Environment.GetEnvironmentVariable("XDG_CONFIG_HOME"), defaultJammerFolderName);
+                    return Path.GetFullPath(configuredPath);
                 }
 
-                // use JAMMER_CONFIG_PATH if it is set
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH")))
+                string? xdgConfigPath = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME");
+                if (!string.IsNullOrWhiteSpace(xdgConfigPath))
                 {
-                    return Environment.GetEnvironmentVariable("JAMMER_CONFIG_PATH");
+                    return Path.GetFullPath(Path.Combine(xdgConfigPath, defaultJammerFolderName));
                 }
 
-                // use the default user profile path
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), defaultJammerFolderName);
+                return Path.GetFullPath(Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    defaultJammerFolderName));
             }
         }
     }
