@@ -490,11 +490,8 @@ namespace Jammer
 
                             drawWhole = true;
                             break;
-                        case "CommandHelpScreen":
-                            TUI.CliHelp();
-
-                            AnsiConsole.MarkupLine($"\n{Locale.OutsideItems.PressToContinue}.");
-                            Console.ReadKey(true);
+                        case "QuickSwitchPlaylist":
+                            Funcs.QuickSwitchPlaylist();
                             drawWhole = true;
                             break;
                         case "DeleteCurrentSong":

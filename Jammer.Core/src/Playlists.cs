@@ -9,6 +9,30 @@ namespace Jammer
     }
     public class Playlists
     {
+        private static readonly HashSet<string> SupportedPlaylistExtensions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".jammer",
+            ".m3u",
+            ".m3u8",
+        };
+
+        /// <summary>
+        /// Returns the playlists that can be opened by the player, sorted by name.
+        /// </summary>
+        public static string[] GetAvailablePlaylistPaths(string? playlistDirectory = null)
+        {
+            playlistDirectory ??= Preferences.GetPlaylistsPath();
+            if (!Directory.Exists(playlistDirectory))
+            {
+                return Array.Empty<string>();
+            }
+
+            return Directory.EnumerateFiles(playlistDirectory, "*", SearchOption.TopDirectoryOnly)
+                .Where(path => SupportedPlaylistExtensions.Contains(Path.GetExtension(path)))
+                .OrderBy(path => Path.GetFileNameWithoutExtension(path), StringComparer.OrdinalIgnoreCase)
+                .ThenBy(path => Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+        }
 
         static public void Create(string playlist)
         {

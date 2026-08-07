@@ -683,6 +683,46 @@ namespace Jammer
             Playlists.Play(playlistNameToPlay, false);
         }
 
+        public static void QuickSwitchPlaylist()
+        {
+            string[] playlists = Playlists.GetAvailablePlaylistPaths();
+            if (playlists.Length == 0)
+            {
+                Message.Data(Locale.Player.NoPlaylistsAvailable, Locale.Player.QuickSwitchPlaylist, true);
+                return;
+            }
+
+            string currentPlaylistPath = string.Empty;
+            if (!string.IsNullOrWhiteSpace(Utils.CurrentPlaylist))
+            {
+                currentPlaylistPath = Path.GetFullPath(Playlists.GetJammerPlaylistPath(Utils.CurrentPlaylist).Item1);
+            }
+
+            int currentIndex = Array.FindIndex(playlists, path =>
+                string.Equals(Path.GetFullPath(path), currentPlaylistPath, StringComparison.OrdinalIgnoreCase));
+
+            CustomSelectInput[] options = playlists.Select(path => new CustomSelectInput
+            {
+                DataURI = path,
+                Title = Path.GetFileNameWithoutExtension(path),
+                Author = Path.GetExtension(path),
+            }).ToArray();
+
+            string? selectedPlaylist = Message.CustomMenuSelect(
+                options,
+                Locale.Player.QuickSwitchPlaylist,
+                new CustomSelectInputSettings { StartIndex = Math.Max(0, currentIndex) });
+
+            if (string.IsNullOrEmpty(selectedPlaylist))
+            {
+                return;
+            }
+
+            ResetRssExitVariables();
+            Utils.PlaylistCheckedForAllTheSongsAndNoneOfThemWereFound = false;
+            Playlists.Play(selectedPlaylist, false);
+        }
+
         // Save/replace playlist
         public static void SaveReplacePlaylist()
         {

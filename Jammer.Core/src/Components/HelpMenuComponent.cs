@@ -280,8 +280,8 @@ namespace Jammer.Components
             // Special
             _helpItems.Add(new HelpItem
             {
-                ControlKeys = DrawHelpTextColouring(keybindings["CommandHelpScreen"]),
-                Description = Themes.sColor(Locale.Help.ShowCmdHelp, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ControlKeys = DrawHelpTextColouring(keybindings["QuickSwitchPlaylist"]),
+                Description = Themes.sColor(Locale.Help.QuickSwitchPlaylist, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
                 ModControlKeys = DrawHelpTextColouring(keybindings["ExitRssFeed"]),
                 ModDescription = Themes.sColor("Exit RSS", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
             });
@@ -385,7 +385,7 @@ namespace Jammer.Components
                 ["SearchByAuthor"] = Keybindings.SearchByAuthor.Replace(" ", "").Split(separator),
                 ["Search"] = Keybindings.Search.Replace(" ", "").Split(separator),
                 ["RenameSong"] = Keybindings.RenameSong.Replace(" ", "").Split(separator),
-                ["CommandHelpScreen"] = Keybindings.CommandHelpScreen.Replace(" ", "").Split(separator),
+                ["QuickSwitchPlaylist"] = Keybindings.QuickSwitchPlaylist.Replace(" ", "").Split(separator),
                 ["Help"] = Keybindings.Help.Replace(" ", "").Split(separator),
                 ["EditKeybindings"] = Keybindings.EditKeybindings.Replace(" ", "").Split(separator),
                 ["ChangeLanguage"] = Keybindings.ChangeLanguage.Replace(" ", "").Split(separator),

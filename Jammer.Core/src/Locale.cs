@@ -72,6 +72,8 @@ namespace Jammer
             public static string PlayOtherPlaylistMessage2 = CheckValueLocale("Player", "PlayOtherPlaylistMessage2", "Play other playlist");
             public static string PlayOtherPlaylistError1 = CheckValueLocale("Player", "PlayOtherPlaylistError1", "Error: Play other playlist");
             public static string PlayOtherPlaylistError2 = CheckValueLocale("Player", "PlayOtherPlaylistError2", "no playlist given");
+            public static string QuickSwitchPlaylist = CheckValueLocale("Player", "QuickSwitchPlaylist", "Switch playlist");
+            public static string NoPlaylistsAvailable = CheckValueLocale("Player", "NoPlaylistsAvailable", "No playlists available");
             public static string AllPlaylists = CheckValueLocale("Player", "AllPlaylists", "All playlists");
             public static string ShowSongsInPlaylistMessage1 = CheckValueLocale("Player", "ShowSongsInPlaylistMessage1", "Enter playlist name:");
             public static string ShowSongsInPlaylistMessage2 = CheckValueLocale("Player", "ShowSongsInPlaylistMessage2", "Show songs in playlist");
@@ -113,7 +115,7 @@ namespace Jammer
             public static string PlayRandomSong = CheckValueLocale("Help", "PlayRandomSong", "Play random song");
             public static string DeleteCurrentSongFromPlaylist = CheckValueLocale("Help", "DeleteCurrentSongFromPlaylist", "Delete from playlist");
             public static string ShowPlaylistOptions = CheckValueLocale("Help", "ShowPlaylistOptions", "Show playlist options");
-            public static string ShowCmdHelp = CheckValueLocale("Help", "ShowCmdHelp", "Show cmd Help");
+            public static string QuickSwitchPlaylist = CheckValueLocale("Help", "QuickSwitchPlaylist", "Quick switch playlist");
             public static string Press = CheckValueLocale("Help", "Press", "Press");
             public static string ToHideHelp = CheckValueLocale("Help", "ToHideHelp", "to hide/show help");
             public static string ForSettings = CheckValueLocale("Help", "ForSettings", "for settings");
@@ -500,7 +502,7 @@ namespace Jammer
             public static string ChangeVolumeAmount = CheckValueLocale("EditKeysTexts", "ChangeVolumeAmount", "Change volume amount");
             public static string Autosave = CheckValueLocale("EditKeysTexts", "Autosave", "Toggle autosave");
             public static string CurrentState = CheckValueLocale("EditKeysTexts", "CurrentState", "Show current state");
-            public static string CommandHelpScreen = CheckValueLocale("EditKeysTexts", "CommandHelpScreen", "Command prompt help screen");
+            public static string QuickSwitchPlaylist = CheckValueLocale("EditKeysTexts", "QuickSwitchPlaylist", "Quick switch playlist");
             public static string DeleteCurrentSong = CheckValueLocale("EditKeysTexts", "DeleteCurrentSong", "Delete current song");
             public static string AddSongToPlaylist = CheckValueLocale("EditKeysTexts", "AddSongToPlaylist", "Add song to playlist");
             public static string AddCurrentSongToFavorites = CheckValueLocale("EditKeysTexts", "AddCurrentSongToFavorites", "Add current song to favorites");
