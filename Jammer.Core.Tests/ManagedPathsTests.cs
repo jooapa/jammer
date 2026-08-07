@@ -28,7 +28,8 @@ public sealed class ManagedPathsTests
             Utils.SettingsFilePath,
             Utils.KeyDataFilePath,
             Utils.EffectsFilePath,
-            Utils.VisualizerFilePath
+            Utils.VisualizerFilePath,
+            Utils.SpotifyAuthFilePath
         };
         Assert.All(managedFiles, path =>
             Assert.Equal(Path.GetFullPath(Utils.JammerPath), Path.GetDirectoryName(Path.GetFullPath(path))));

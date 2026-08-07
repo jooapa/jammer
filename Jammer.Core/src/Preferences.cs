@@ -16,6 +16,11 @@ namespace Jammer
         YoutubeExplode,
         YoutubeDL
     }
+    public enum SpotifyResolutionProvider
+    {
+        YouTube,
+        SoundCloud
+    }
 
     public class Preferences
     {
@@ -44,6 +49,8 @@ namespace Jammer
         public static bool isQuickSearch = GetEnableQuickSearch();
         public static bool favoriteExplainer = GetFavoriteExplainer();
         public static bool isQuickPlayFromSearch = GetEnableQuickPlayFromSearch();
+        public static string spotifyClientID = GetSpotifyClientId();
+        public static SpotifyResolutionProvider spotifyResolutionProvider = GetSpotifyResolutionProvider();
 
         private const int DefaultFavoriteNotificationTimeoutMs = 1000;
 
@@ -209,6 +216,8 @@ namespace Jammer
                 IniFileHandling.SetLocaleData();
             }
 
+            SpotifyIntegrationService.ResumePendingResolutions();
+
 
         }
 
@@ -241,6 +250,8 @@ namespace Jammer
             settings.EnableQuickSearch = isQuickSearch;
             settings.favoriteExplainer = favoriteExplainer;
             settings.EnableQuickPlayFromSearch = isQuickPlayFromSearch;
+            settings.spotifyClientID = spotifyClientID;
+            settings.spotifyResolutionProvider = spotifyResolutionProvider;
 
             var options = new JsonSerializerOptions
             {
@@ -563,6 +574,24 @@ namespace Jammer
             }
         }
 
+        static public string GetSpotifyClientId()
+        {
+            string? environmentClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID");
+            if (!string.IsNullOrWhiteSpace(environmentClientId)) return environmentClientId.Trim();
+            if (!File.Exists(Utils.SettingsFilePath)) return "";
+            string jsonString = File.ReadAllText(Utils.SettingsFilePath);
+            Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            return settings?.spotifyClientID ?? "";
+        }
+
+        static public SpotifyResolutionProvider GetSpotifyResolutionProvider()
+        {
+            if (!File.Exists(Utils.SettingsFilePath)) return SpotifyResolutionProvider.YouTube;
+            string jsonString = File.ReadAllText(Utils.SettingsFilePath);
+            Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            return settings?.spotifyResolutionProvider ?? SpotifyResolutionProvider.YouTube;
+        }
+
         static public void OpenJammerFolder()
         {
             string JammerPath = Utils.JammerPath;
@@ -632,6 +661,8 @@ namespace Jammer
             public bool? EnableQuickSearch { get; set; }
             public bool? favoriteExplainer { get; set; }
             public bool? EnableQuickPlayFromSearch { get; set; }
+            public string? spotifyClientID { get; set; }
+            public SpotifyResolutionProvider? spotifyResolutionProvider { get; set; }
         }
     }
 }

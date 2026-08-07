@@ -19,6 +19,7 @@ namespace Jammer.Components
     {
         private static readonly Regex ClientIdRegex = new("^[A-Za-z0-9]{32}$", RegexOptions.Compiled);
         private static readonly YtDlpManager YtDlp = new();
+        private static readonly SpotifyIntegrationService Spotify = new();
         private static SettingsCategoryDescriptor? _currentCategory;
         private static int _currentPage;
         private static int _selectedIndex;
@@ -256,7 +257,13 @@ namespace Jammer.Components
                 new(() => Locale.Settings.SoundCloudStatus, SoundCloudStatusValue, () => Task.CompletedTask, () => Locale.Settings.StatusOnly),
                 new(() => Locale.Settings.ManualSoundCloudId, () => "", SetSoundCloudIdAsync, () => Locale.Settings.ToChange),
                 new(() => Locale.Settings.FetchSoundCloudId, () => "", FetchSoundCloudIdAsync, () => Locale.Settings.ToRun),
-                new(() => Locale.Settings.ResetSoundCloudId, () => "", ResetSoundCloudIdAsync, () => Locale.Settings.ToRun)
+                new(() => Locale.Settings.ResetSoundCloudId, () => "", ResetSoundCloudIdAsync, () => Locale.Settings.ToRun),
+                new(() => Locale.Settings.SpotifyStatus, SpotifyStatusValue, () => Task.CompletedTask, () => Locale.Settings.StatusOnly),
+                new(() => Locale.Settings.SpotifyClientId, SpotifyClientIdValue, SetSpotifyClientIdAsync, () => Locale.Settings.ToChange),
+                new(() => Locale.Settings.SpotifyAuthorize, () => "", AuthorizeSpotifyAsync, () => Locale.Settings.ToRun),
+                new(() => Locale.Settings.SpotifyPlaylists, () => SpotifyIntegrationService.LoadRegistry().Playlists.Count.ToString(), ManageSpotifyPlaylistsAsync, () => Locale.Settings.ToOpen),
+                new(() => Locale.Settings.SpotifyResolver, () => Preferences.spotifyResolutionProvider.ToString(), SelectSpotifyResolverAsync, () => Locale.Settings.ToSelect),
+                new(() => Locale.Settings.SpotifyDisconnect, () => "", DisconnectSpotifyAsync, () => Locale.Settings.ToRun)
             };
 
         private static SettingDescriptor ToggleSetting(Func<string> name, Func<bool> get, Action<bool> set) =>
@@ -366,7 +373,113 @@ namespace Jammer.Components
             return Task.CompletedTask;
         }
 
+        private static Task SetSpotifyClientIdAsync()
+        {
+            string input = Message.Input(Locale.Settings.SpotifyClientIdPrompt, Locale.Settings.SpotifyClientIdTitle).Trim();
+            if (string.IsNullOrWhiteSpace(input)) return Task.CompletedTask;
+            Preferences.spotifyClientID = input;
+            Preferences.SaveSettings();
+            return Task.CompletedTask;
+        }
+
+        private static async Task AuthorizeSpotifyAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Preferences.spotifyClientID))
+            {
+                await SetSpotifyClientIdAsync();
+                if (string.IsNullOrWhiteSpace(Preferences.spotifyClientID)) return;
+            }
+            TUI.PrintToTopOfPlayer(string.Format(Locale.Settings.SpotifyRedirectHelp, SpotifyIntegrationService.RedirectUri));
+            var progress = new InlineProgress<string>(TUI.PrintToTopOfPlayer);
+            string user = await Spotify.AuthorizeAsync(progress);
+            Message.Data(
+                string.Format(Locale.Settings.SpotifyAuthorizedMessage, user),
+                Locale.Settings.SpotifyAuthorized,
+                false,
+                false);
+        }
+
+        private static async Task ManageSpotifyPlaylistsAsync()
+        {
+            if (!Spotify.IsAuthorized) throw new InvalidOperationException(Locale.Settings.SpotifyNotAuthorized);
+            IReadOnlyList<SpotifyPlaylistSummary> playlists = await Spotify.GetPlaylistsAsync();
+            var options = new List<CustomSelectInput>
+            {
+                new()
+                {
+                    DataURI = "__UPDATE_ALL__",
+                    Title = Locale.Settings.SpotifyUpdateAll,
+                    Author = SpotifyIntegrationService.LoadRegistry().Playlists.Count.ToString()
+                }
+            };
+            options.AddRange(playlists.Select(playlist => new CustomSelectInput
+            {
+                DataURI = playlist.Id,
+                Title = playlist.Name,
+                Author = playlist.Owner,
+                Description = playlist.IsImported ? Locale.Settings.SpotifyImported : Locale.Settings.SpotifyNotImported
+            }));
+
+            if (playlists.Count == 0)
+            {
+                Message.Data(Locale.Settings.SpotifyNoPlaylists, Locale.Settings.SpotifyPlaylists, false, false);
+                return;
+            }
+
+            string? choice = Message.CustomMenuSelect(options.ToArray(), Locale.Settings.SpotifyPlaylistMenu);
+            if (string.IsNullOrEmpty(choice)) return;
+            var progress = new InlineProgress<string>(TUI.PrintToTopOfPlayer);
+            if (choice == "__UPDATE_ALL__")
+            {
+                int count = await Spotify.UpdateAllAsync(progress);
+                Message.Data(string.Format(Locale.Settings.SpotifyUpdateComplete, count), Locale.Settings.SpotifyPlaylists, false, false);
+                return;
+            }
+
+            SpotifyPlaylistSummary? selected = playlists.FirstOrDefault(x => x.Id == choice);
+            if (selected == null) return;
+            SpotifyPlaylistImport imported = await Spotify.ImportOrUpdateAsync(selected, progress);
+            Message.Data(
+                string.Format(Locale.Settings.SpotifyImportComplete, imported.PlaylistPath),
+                Locale.Settings.SpotifyPlaylists,
+                false,
+                false);
+        }
+
+        private static Task SelectSpotifyResolverAsync()
+        {
+            var options = new[]
+            {
+                new CustomSelectInput { DataURI = nameof(SpotifyResolutionProvider.YouTube), Title = "YouTube", Description = Locale.Settings.YoutubeExplodeDescription },
+                new CustomSelectInput { DataURI = nameof(SpotifyResolutionProvider.SoundCloud), Title = "SoundCloud" }
+            };
+            string? choice = Message.CustomMenuSelect(options, Locale.Settings.SpotifyChooseResolver);
+            if (Enum.TryParse(choice, out SpotifyResolutionProvider provider))
+            {
+                Preferences.spotifyResolutionProvider = provider;
+                Preferences.SaveSettings();
+            }
+            return Task.CompletedTask;
+        }
+
+        private static Task DisconnectSpotifyAsync()
+        {
+            string answer = Message.Input(
+                string.Format(Locale.Settings.SpotifyDisconnectPrompt, Locale.Miscellaneous.YesAnswer),
+                Locale.Settings.SpotifyDisconnect).Trim();
+            if (answer.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase)) Spotify.Disconnect();
+            return Task.CompletedTask;
+        }
+
         private static string BackendValue() => Preferences.backEndType == BackEndTypeYT.YoutubeDL ? "yt-dlp" : "YoutubeExplode";
+
+        private static string SpotifyStatusValue() => Spotify.IsAuthorized
+            ? Locale.Settings.SpotifyAuthorized
+            : Locale.Settings.SpotifyNotAuthorized;
+
+        private static string SpotifyClientIdValue() => string.IsNullOrWhiteSpace(Preferences.spotifyClientID)
+            ? Locale.Settings.NotInstalled
+            : MaskClientId(Preferences.spotifyClientID);
 
         private static string YtDlpStatusValue()
         {

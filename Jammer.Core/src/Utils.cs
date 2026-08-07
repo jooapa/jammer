@@ -50,8 +50,10 @@ namespace Jammer
         public static string KeyDataFilePath => Path.Combine(JammerPath, "KeyData.ini");
         public static string EffectsFilePath => Path.Combine(JammerPath, "Effects.ini");
         public static string VisualizerFilePath => Path.Combine(JammerPath, "Visualizer.ini");
+        public static string SpotifyAuthFilePath => Path.Combine(JammerPath, "spotify-auth.json");
         public static string GetToolsPath(string jammerPath) => Path.Combine(jammerPath, "tools");
         public static string GetPlaylistBackupsPath(string playlistsPath) => Path.Combine(playlistsPath, "backups");
+        public static string GetSpotifyImportsFilePath(string playlistsPath) => Path.Combine(playlistsPath, ".spotify-imports.json");
         public static bool IsDebug = false;
         public static bool SCClientIdAlreadyLookedAndItsIncorrect = false;
         public static string CustomTopErrorMessage = "";

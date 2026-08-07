@@ -24,6 +24,7 @@ Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 - [RSS](#rss)
 - [Streams](#streams)
 - [Soundcloud Client ID](#soundcloud-client-id)
+- [Spotify Playlist Import](#spotify-playlist-import)
 - [YouTube Download Backends](#youtube-download-backends)
 - [Jammer Location](#jammer-location)
 - [Environment Variables](#environment-variables)
@@ -209,6 +210,7 @@ You can customize Jammer's storage locations using these environment variables:
 - `JAMMER_SONGS_PATH` - Path to the songs storage directory
 - `JAMMER_PLAYLISTS_PATH` - Path to the playlists directory
 - `JAMMER_YTDLP_BIN` - Path to an externally managed yt-dlp executable
+- `SPOTIFY_CLIENT_ID` - Optional override for the Spotify developer application client ID
 
 Without an override, Jammer uses centralized paths below `<JammerPath>`: `songs`,
 `playlists`, `tools`, `downloads`, `cache`, `locales`, `soundfonts`, and `themes`.
@@ -273,6 +275,39 @@ Or use Settings → Integrations → Fetch SoundCloud client ID. Jammer fetches 
 SoundCloud JavaScript assets over HTTP; it does not download or launch a browser.
 If a SoundCloud track download fails, Jammer automatically attempts to fetch the newest
 client ID and retries the download once before showing the final failure.
+
+## Spotify Playlist Import
+
+Jammer uses [SpotifyAPI-NET](https://johnnycrazy.github.io/SpotifyAPI-NET/) to import
+track metadata from Spotify playlists that you own or collaborate on. It uses the
+Authorization Code flow with PKCE, so a client secret is neither requested nor stored.
+
+1. Create an application in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+2. Add this exact redirect URI to the application: `http://127.0.0.1:5543/callback/`.
+3. In Jammer, open Settings → Integrations → Spotify application client ID and paste the
+   application's client ID. You can alternatively set `SPOTIFY_CLIENT_ID`.
+4. Select Authorize Spotify. Jammer opens Spotify in your browser and waits for the local
+   callback.
+5. Select Import or update Spotify playlists, then choose one playlist or Update all
+   imported playlists.
+
+The integration requests only `playlist-read-private` and `playlist-read-collaborative`.
+The refreshable authorization is stored in `<JammerPath>/spotify-auth.json`; on Unix-like
+systems the file is restricted to the current user. Disconnect Spotify deletes that file.
+
+Each imported track is initially stored in its `.jammer` file like this (abbreviated):
+
+```text
+spotify-import://track/<spotify-id>?|{"Title":"...","Author":"...","ImportSource":"Spotify","SpotifyTrackId":"...","SpotifyPlaylistId":"...","SpotifyUrl":"...","Resolver":"YouTube","ResolutionStatus":"Pending"}
+```
+
+Jammer then searches the selected resolver (YouTube by default, or SoundCloud), chooses
+the first result, and replaces only the placeholder URI. Spotify IDs, title/artist data,
+and the Spotify attribution URL remain in the JSON so later updates can preserve resolved
+matches, add new tracks, and remove tracks no longer in the Spotify playlist. Matching runs
+sequentially in the background and resumes on the next launch. The integration never
+requests or downloads audio from Spotify; resolved external media follows Jammer's normal
+playback and cache behavior.
 
 ## YouTube Download Backends
 

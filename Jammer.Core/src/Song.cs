@@ -17,6 +17,12 @@ namespace Jammer
         public string? Description { get; set; }
         public string? PubDate { get; set; }
         public string? IsFavorite { get; set; }
+        public string? ImportSource { get; set; }
+        public string? SpotifyTrackId { get; set; }
+        public string? SpotifyPlaylistId { get; set; }
+        public string? SpotifyUrl { get; set; }
+        public string? Resolver { get; set; }
+        public string? ResolutionStatus { get; set; }
         public JammerPlaylistStream? Stream { get; set; }
 
         /// <summary>
@@ -48,6 +54,12 @@ namespace Jammer
                     Description = metadata.Description;
                     PubDate = metadata.PubDate;
                     IsFavorite = metadata.IsFavorite;
+                    ImportSource = metadata.ImportSource;
+                    SpotifyTrackId = metadata.SpotifyTrackId;
+                    SpotifyPlaylistId = metadata.SpotifyPlaylistId;
+                    SpotifyUrl = metadata.SpotifyUrl;
+                    Resolver = metadata.Resolver;
+                    ResolutionStatus = metadata.ResolutionStatus;
                     Stream = metadata.Stream;
                 }
                 catch (JsonException)
@@ -72,6 +84,12 @@ namespace Jammer
                         if (root.TryGetProperty("Description", out var descElement)) Description = descElement.GetString();
                         if (root.TryGetProperty("PubDate", out var pubDateElement)) PubDate = pubDateElement.GetString();
                         if (root.TryGetProperty("IsFavorite", out var favElement)) IsFavorite = favElement.GetString();
+                        if (root.TryGetProperty("ImportSource", out var importSourceElement)) ImportSource = importSourceElement.GetString();
+                        if (root.TryGetProperty("SpotifyTrackId", out var spotifyTrackIdElement)) SpotifyTrackId = spotifyTrackIdElement.GetString();
+                        if (root.TryGetProperty("SpotifyPlaylistId", out var spotifyPlaylistIdElement)) SpotifyPlaylistId = spotifyPlaylistIdElement.GetString();
+                        if (root.TryGetProperty("SpotifyUrl", out var spotifyUrlElement)) SpotifyUrl = spotifyUrlElement.GetString();
+                        if (root.TryGetProperty("Resolver", out var resolverElement)) Resolver = resolverElement.GetString();
+                        if (root.TryGetProperty("ResolutionStatus", out var resolutionStatusElement)) ResolutionStatus = resolutionStatusElement.GetString();
                         
                         // Try to parse Stream enum safely
                         if (root.TryGetProperty("Stream", out var streamElement))
@@ -135,6 +153,12 @@ namespace Jammer
             if (!string.IsNullOrEmpty(song.Description)) definedProperties.Add("Description", song.Description);
             if (!string.IsNullOrEmpty(song.PubDate)) definedProperties.Add("PubDate", song.PubDate);
             if (song.IsFavorite != null && song.IsFavorite == "true") definedProperties.Add("IsFavorite", "true");
+            if (!string.IsNullOrEmpty(song.ImportSource)) definedProperties.Add("ImportSource", song.ImportSource);
+            if (!string.IsNullOrEmpty(song.SpotifyTrackId)) definedProperties.Add("SpotifyTrackId", song.SpotifyTrackId);
+            if (!string.IsNullOrEmpty(song.SpotifyPlaylistId)) definedProperties.Add("SpotifyPlaylistId", song.SpotifyPlaylistId);
+            if (!string.IsNullOrEmpty(song.SpotifyUrl)) definedProperties.Add("SpotifyUrl", song.SpotifyUrl);
+            if (!string.IsNullOrEmpty(song.Resolver)) definedProperties.Add("Resolver", song.Resolver);
+            if (!string.IsNullOrEmpty(song.ResolutionStatus)) definedProperties.Add("ResolutionStatus", song.ResolutionStatus);
             if (song.Stream != null) definedProperties.Add("Stream", song.Stream.ToString() ?? "");
 
             string songString = song.URI + Utils.JammerFileDelimeter;
@@ -180,6 +204,12 @@ namespace Jammer
                         if (root.TryGetProperty("Description", out var descElement)) song.Description = descElement.GetString();
                         if (root.TryGetProperty("PubDate", out var pubDateElement)) song.PubDate = pubDateElement.GetString();
                         if (root.TryGetProperty("IsFavorite", out var favElement)) song.IsFavorite = favElement.GetString();
+                        if (root.TryGetProperty("ImportSource", out var importSourceElement)) song.ImportSource = importSourceElement.GetString();
+                        if (root.TryGetProperty("SpotifyTrackId", out var spotifyTrackIdElement)) song.SpotifyTrackId = spotifyTrackIdElement.GetString();
+                        if (root.TryGetProperty("SpotifyPlaylistId", out var spotifyPlaylistIdElement)) song.SpotifyPlaylistId = spotifyPlaylistIdElement.GetString();
+                        if (root.TryGetProperty("SpotifyUrl", out var spotifyUrlElement)) song.SpotifyUrl = spotifyUrlElement.GetString();
+                        if (root.TryGetProperty("Resolver", out var resolverElement)) song.Resolver = resolverElement.GetString();
+                        if (root.TryGetProperty("ResolutionStatus", out var resolutionStatusElement)) song.ResolutionStatus = resolutionStatusElement.GetString();
                         
                         // Try to parse Stream enum safely
                         if (root.TryGetProperty("Stream", out var streamElement))
