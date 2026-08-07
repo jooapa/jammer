@@ -6,7 +6,7 @@
 
 Jammer is a simple CLI music player that supports playing songs from your **local files**, **Youtube** and **Soundcloud**.
 
-Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have no way to compile to mac)*
+Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 
 - The player **doesn't** stream the songs, but downloads them to local storage.
 - The Jammer folder is located in the user's home directory and contains the
@@ -15,6 +15,7 @@ Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have
 
 ## Table of Contents
 
+- [Recent changes](#recent-changes)
 - [Install/Update](#installupdate)
 - [Usage](#usage)
 - [Supported formats](#supported-formats)
@@ -33,6 +34,23 @@ Compatible with *Windows*, *Linux*, *(most likely works on MacOS too, but i have
 - [Developing](#developing)
 - [Build / Run yourself](#build--run-yourself)
 - [Known Issues](#known-issues)
+
+## Recent changes
+
+These are the user-facing changes from the 12 newest commits, from newest to oldest:
+
+- [`5e44c49`](https://github.com/jooapa/jammer/commit/5e44c49) — Settings categories and values now use an arrow cursor, Up/Down navigation, and Enter to select instead of letter shortcuts.
+- [`ae6e964`](https://github.com/jooapa/jammer/commit/ae6e964) — The settings view is fully redrawn after navigation, prompts, asynchronous work, cancellation, and errors.
+- [`dfc6786`](https://github.com/jooapa/jammer/commit/dfc6786) — Jammer paths are centralized under the Jammer folder; path overrides remain supported, and the complete managed macOS yt-dlp bundle stays under `tools/`.
+- [`f1ccf43`](https://github.com/jooapa/jammer/commit/f1ccf43) — A failed SoundCloud track download now refreshes the client ID and retries once before reporting the final error.
+- [`9c78b1c`](https://github.com/jooapa/jammer/commit/9c78b1c) — Completed asynchronous settings actions trigger an immediate redraw instead of leaving an empty terminal.
+- [`679054f`](https://github.com/jooapa/jammer/commit/679054f) — Terminal escape-sequence handling now recognizes navigation keys such as Page Up and Page Down consistently across platforms.
+- [`3dd9803`](https://github.com/jooapa/jammer/commit/3dd9803) — Missing bundled locale files are restored to the user locale directory, and an empty locale directory no longer crashes language selection.
+- [`afd9ad7`](https://github.com/jooapa/jammer/commit/afd9ad7) — Added macOS and Linux development run instructions.
+- [`e69c528`](https://github.com/jooapa/jammer/commit/e69c528) — Tab now opens a quick playlist switcher with the current playlist selected initially.
+- [`fc5ee5a`](https://github.com/jooapa/jammer/commit/fc5ee5a) — `scripts/build.ps1` can be executed directly on systems with PowerShell 7.
+- [`3d004e6`](https://github.com/jooapa/jammer/commit/3d004e6) — Completed and synchronized the English, Finnish, and Brazilian Portuguese interface translations.
+- [`4b4319f`](https://github.com/jooapa/jammer/commit/4b4319f) — Reorganized settings into categories and added cross-platform integrations for managed yt-dlp and SoundCloud client-ID management.
 
 ## Install/Update
 
@@ -84,6 +102,12 @@ jammer -gp, --get-path                        # get the path to the <jammer/song
 jammer -hm, --home                            # play all songs from the <jammer/songs> folder
 jammer -so, --songs                           # open <jammer/songs> folder
 ```
+
+### Interactive controls
+
+- Press `C` to open Settings, then use Up/Down to move the `>` cursor and Enter or Space to select. Page Up/Page Down and Left/Right move between pages; Escape goes back.
+- Press `Tab` to open the quick playlist switcher. It starts on the current playlist and uses the same arrow-and-Enter controls.
+- Default controls can be changed in `<JammerPath>/KeyData.ini`.
 
 #### Example of making a playlist in cli
 
@@ -175,6 +199,7 @@ These can be changed in the Effects.ini file in the jammer folder.
 
 - **Windows**: `C:\Users\username\jammer`
 - **Linux**: `~/jammer`
+- **macOS**: `~/jammer`
 
 ### Environment Variables
 
@@ -223,15 +248,14 @@ https://www.youtube.com/watch?v=Zwnvgz3ey78
 
 ## Language support
 
-Translations may not be up-to-date
-
-Currently supported languages:
+The bundled translations are synchronized for the currently supported languages:
 
 - English
 - Finnish (*[antonako1](https://github.com/antonako1)*)
 - Portuguese (*[Natanaelfelixx](https://github.com/Natanaelfelixx)*)
 
-Create new translation by copying already existing .ini file from /locales and translating it.
+Missing bundled files are copied automatically into `<JammerPath>/locales`. Create a new
+translation by copying an existing `.ini` file from `locales/` and translating it.
 
 ## Soundcloud Client ID
 
@@ -247,6 +271,8 @@ You can change the client id by going to the settings and changing the client id
 
 Or use Settings → Integrations → Fetch SoundCloud client ID. Jammer fetches the public
 SoundCloud JavaScript assets over HTTP; it does not download or launch a browser.
+If a SoundCloud track download fails, Jammer automatically attempts to fetch the newest
+client ID and retries the download once before showing the final failure.
 
 ## YouTube Download Backends
 
