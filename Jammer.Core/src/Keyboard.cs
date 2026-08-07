@@ -18,7 +18,7 @@ namespace Jammer
         {
             if (Console.KeyAvailable || Action != "")
             {
-                ConsoleKeyInfo key = Console.ReadKey(true);
+                ConsoleKeyInfo key = TerminalInput.ReadKey(true);
                 bool isAlt = IfHoldingDownALT(key);
                 bool isCtrl = IfHoldingDownCTRL(key);
                 bool isShift = IfHoldingDownSHIFT(key);

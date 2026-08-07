@@ -184,35 +184,31 @@ namespace Jammer
                 }
 
                 // Read input
-                keyInfo = Console.ReadKey(true);
-                if (keyInfo.Key == ConsoleKey.UpArrow)
+                keyInfo = TerminalInput.ReadKey(true);
+                bool control = keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control);
+                if (keyInfo.Key == ConsoleKey.Home || (keyInfo.Key == ConsoleKey.UpArrow && control))
+                {
+                    selected = 0;
+                }
+                else if (keyInfo.Key == ConsoleKey.End || (keyInfo.Key == ConsoleKey.DownArrow && control))
+                {
+                    selected = options.Length - 1;
+                }
+                else if (keyInfo.Key is ConsoleKey.PageUp or ConsoleKey.LeftArrow)
+                {
+                    selected = Math.Max(0, selected - itemsPerPage);
+                }
+                else if (keyInfo.Key is ConsoleKey.PageDown or ConsoleKey.RightArrow)
+                {
+                    selected = Math.Min(options.Length - 1, selected + itemsPerPage);
+                }
+                else if (keyInfo.Key == ConsoleKey.UpArrow)
                 {
                     selected = (selected - 1 + options.Length) % options.Length;
                 }
                 else if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
                     selected = (selected + 1) % options.Length;
-                }
-                else if (keyInfo.Key == ConsoleKey.PageUp)
-                {
-                    selected = Math.Max(0, selected - itemsPerPage);
-                }
-                else if (keyInfo.Key == ConsoleKey.PageDown)
-                {
-                    selected = Math.Min(options.Length - 1, selected + itemsPerPage);
-                }
-                else if ((keyInfo.Key == ConsoleKey.Home) ||
-                         (keyInfo.Key == ConsoleKey.UpArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
-                )
-                {
-                    selected = 0;
-                }
-                else if (
-                    (keyInfo.Key == ConsoleKey.End) ||
-                    (keyInfo.Key == ConsoleKey.DownArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
-                )
-                {
-                    selected = options.Length - 1;
                 }
                 else if (keyInfo.Key == ConsoleKey.Enter)
                 {
@@ -221,15 +217,6 @@ namespace Jammer
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     return null;
-                }
-                // if Ctrl plus Down
-                else if (keyInfo.Key == ConsoleKey.DownArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
-                {
-                    selected = Math.Min(options.Length - 1, selected + itemsPerPage);
-                }
-                else if (keyInfo.Key == ConsoleKey.UpArrow && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
-                {
-                    selected = Math.Max(0, selected - itemsPerPage);
                 }
 
                 // Update state for next iteration
@@ -277,7 +264,7 @@ namespace Jammer
 
             if (oneChar)
             {
-                ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
+                ConsoleKeyInfo keyInfo = TerminalInput.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
                 return Start.Sanitize(keyInfo.KeyChar.ToString());
             }
             else if (setText != null && setText.Length > 0)
@@ -343,7 +330,7 @@ namespace Jammer
             
             if (oneChar)
             {
-                ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+                ConsoleKeyInfo keyInfo = TerminalInput.ReadKey(intercept: true);
                 return Start.Sanitize(keyInfo.KeyChar.ToString());
             }
             else if (setText != null && setText.Length > 0)
@@ -408,7 +395,7 @@ namespace Jammer
                     {
                         if (Console.KeyAvailable)
                         {
-                            Console.ReadKey(true);
+                            TerminalInput.ReadKey(true);
                             return;
                         }
                         Thread.Sleep(pollInterval);
@@ -424,7 +411,7 @@ namespace Jammer
             }
             else if (readKey)
             {
-                Console.ReadKey(true);
+                TerminalInput.ReadKey(true);
             }
         }
 

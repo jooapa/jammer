@@ -530,7 +530,7 @@ namespace Jammer
             AnsiConsole.MarkupLine($"[grey]9. {Locale.PlaylistOptions.PlaySong}[/]");
             AnsiConsole.MarkupLine($"[grey]0. {Locale.PlaylistOptions.Exit}[/]");
 
-            var playlistInput = Console.ReadKey(true).Key;
+            var playlistInput = TerminalInput.ReadKey(true).Key;
             // if (playlistInput == "" || playlistInput == null) { return; }
             switch (playlistInput)
             {
