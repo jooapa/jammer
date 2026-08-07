@@ -307,6 +307,18 @@ See `scripts/README.md` for helper script documentation, including how to use `s
 dotnet run --project Jammer.CLI -- [args]
 ```
 
+#### MacOS
+
+```bash
+DYLD_LIBRARY_PATH="$PWD/libs/macos/universal" dotnet run --project Jammer.CLI --
+```
+
+#### Linux
+
+```bash
+LD_LIBRARY_PATH="$PWD/libs/linux/x64" dotnet run --project Jammer.CLI --
+```
+
 ### Release builds
 
 PowerShell 7 is the single build entry point. The version comes from `VERSION`; use
