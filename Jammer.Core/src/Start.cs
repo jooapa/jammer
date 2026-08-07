@@ -111,7 +111,7 @@ namespace Jammer
                 if (Utils.Songs.Length == 0)
                 {
                     Debug.dprint("No songs found");
-                    AnsiConsole.WriteLine("No songs found. Exiting...");
+                    AnsiConsole.WriteLine(Locale.UiMessages.NoSongsFoundExiting);
                     Environment.Exit(1);
                 }
                 Utils.CurrentSongPath = Utils.Songs[0];

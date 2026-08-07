@@ -8,12 +8,12 @@ namespace Jammer
     {
         public static void SearchSongOnMediaPlatform()
         {
-            string platform = Message.Input("Type 'y' for [red]Youtube[/] or 's' for [darkorange]SoundCloud[/]:", Locale.Miscellaneous.SearchForSongOnYoutubeorSoundcloud, true);
+            string platform = Message.Input(Locale.UiMessages.SearchPlatformPrompt, Locale.Miscellaneous.SearchForSongOnYoutubeorSoundcloud, true);
             platform = platform.ToLower();
 
             if (platform == "youtube" || platform == "y")
             {
-                string type = Message.Input("", "[red]Youtube[/] Search for a [[v]]ideo or [[p]]laylist?", true);
+                string type = Message.Input("", Locale.UiMessages.YoutubeSearchTypePrompt, true);
                 type = type.ToLower();
 
                 if (type == "video" || type == "v" || type == "track" || type == "t")
@@ -27,7 +27,7 @@ namespace Jammer
             }
             else if (platform == "soundcloud" || platform == "s")
             {
-                string type = Message.Input("Type 't' for Track or 'p' for Playlist:", "[darkorange]Soundcloud[/] Search for a [[t]]rack or [[p]]laylist?", true);
+                string type = Message.Input(Locale.UiMessages.SoundCloudSearchTypePrompt, Locale.Miscellaneous.SearchASongFromSoundcloudByName, true);
                 type = type.ToLower();
 
                 if (type == "track" || type == "t")
@@ -92,7 +92,7 @@ namespace Jammer
                 }
                 catch (Exception ex)
                 {
-                    Message.Data("Error: " + ex.Message, ":(");
+                    Message.Data(Locale.OutsideItems.Error + ": " + ex.Message, ":(");
                     return;
                 }
             }
@@ -113,7 +113,7 @@ namespace Jammer
                 })).ToArray();
 
                 AnsiConsole.Clear();
-                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on youtube: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 0 });
+                string? answer = Message.CustomMenuSelect(inputs, string.Format(Locale.UiMessages.SearchResultsYoutube, search, results.Count, max), new CustomSelectInputSettings { StartIndex = 0 });
                 
                 if (answer == null || answer == "Cancel")
                 {
@@ -149,7 +149,7 @@ namespace Jammer
             }
             else
             {
-                Message.Data("No results found", ":(");
+                Message.Data(Locale.UiMessages.NoResultsFound, ":(");
             }
             Start.drawWhole = true;
         }
@@ -207,7 +207,7 @@ namespace Jammer
                 }
                 catch (Exception ex)
                 {
-                    Message.Data("Error: " + ex.Message, ":( maybe clientId has changed or is invalid?");
+                    Message.Data(Locale.OutsideItems.Error + ": " + ex.Message, Locale.UiMessages.SoundCloudClientIdMayBeInvalid);
                     return;
                 }
             }
@@ -228,7 +228,7 @@ namespace Jammer
                 })).ToArray();
 
                 AnsiConsole.Clear();
-                string? answer = Message.CustomMenuSelect(inputs, "Search results for '" + search + "' on SoundCloud: " + results.Count + "/" + max, new CustomSelectInputSettings { StartIndex = 0 });
+                string? answer = Message.CustomMenuSelect(inputs, string.Format(Locale.UiMessages.SearchResultsSoundCloud, search, results.Count, max), new CustomSelectInputSettings { StartIndex = 0 });
 
                 if (answer == null || answer == "Cancel")
                 {
@@ -260,7 +260,7 @@ namespace Jammer
             }
             else
             {
-                Message.Data("No results found", ":(");
+                Message.Data(Locale.UiMessages.NoResultsFound, ":(");
             }
             Start.drawWhole = true;
         }
@@ -276,7 +276,7 @@ namespace Jammer
                 AutoCompleteItems = songTitles
             };
 
-            string search = Message.Input("", "Search for a song in the current playlist", options: options);
+            string search = Message.Input("", Locale.UiMessages.SearchCurrentPlaylist, options: options);
 
             if (string.IsNullOrEmpty(search))
             {
@@ -338,7 +338,7 @@ namespace Jammer
                     return;
                 }
 
-                string? answer = Message.CustomMenuSelect(inputs, $"Search results for '{search}' in the current playlist: {results.Count}", new CustomSelectInputSettings { StartIndex = 0 });
+                string? answer = Message.CustomMenuSelect(inputs, string.Format(Locale.UiMessages.SearchResultsCurrentPlaylist, search, results.Count), new CustomSelectInputSettings { StartIndex = 0 });
                 if (answer != null && answer != "Cancel")
                 {
                     // Find the index of the selected song by the title in the songTitles list
@@ -348,7 +348,7 @@ namespace Jammer
             }
             else
             {
-                Message.Data("No results found", ":(");
+                Message.Data(Locale.UiMessages.NoResultsFound, ":(");
             }
         }
 
@@ -366,7 +366,7 @@ namespace Jammer
                 AutoCompleteItems = uniqueAuthors
             };
 
-            string search = Message.Input("", "Search for songs by author in the current playlist", options: options);
+            string search = Message.Input("", Locale.UiMessages.SearchByAuthorCurrentPlaylist, options: options);
 
             if (string.IsNullOrEmpty(search))
             {
@@ -405,7 +405,7 @@ namespace Jammer
                     };
                 })).ToArray();
 
-                string? answer = Message.CustomMenuSelect(inputs, $"Songs by authors matching '{search}': {results.Count}");
+                string? answer = Message.CustomMenuSelect(inputs, string.Format(Locale.UiMessages.SearchResultsByAuthor, search, results.Count));
 
                 if (answer != null && answer != "Cancel")
                 {
@@ -418,7 +418,7 @@ namespace Jammer
             }
             else
             {
-                Message.Data("No results found", ":(");
+                Message.Data(Locale.UiMessages.NoResultsFound, ":(");
             }
         }
     }

@@ -279,9 +279,12 @@ namespace Jammer
             if (!string.IsNullOrEmpty(value) && value != Path.Combine(Utils.JammerPath, "songs"))
             {
                 var val =
-                    Message.Input("Jammer songs path has moved from the settings.json to the Environment variable JAMMER_SONGS_PATH. Now would be a good time to set the variable. Exit by pressing 'n', or if you want to use the default location press 'y'.", "Current songs Path " + Path.Combine(value, "songs"), true);
+                    Message.Input(
+                        string.Format(Locale.UiMessages.SongsPathMigration, Locale.Miscellaneous.NoAnswer, Locale.Miscellaneous.YesAnswer),
+                        string.Format(Locale.UiMessages.CurrentSongsPath, Path.Combine(value, "songs")),
+                        true);
                 val = val.ToLower();
-                if (val == "n")
+                if (val == Locale.Miscellaneous.NoAnswer)
                 {
                     Environment.Exit(0);
                 }

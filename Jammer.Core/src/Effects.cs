@@ -267,7 +267,7 @@ HighFreqRTRatio = 0.001
             }
             catch (Exception e)
             {
-                AnsiConsole.MarkupLine("[red]Error parsing the Effects.ini file. Please check the file for errors.[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.UiMessages.EffectsFileError}[/]");
                 AnsiConsole.MarkupLine($"[red]{e.Message}[/]");
                 Environment.Exit(1);
                 return;

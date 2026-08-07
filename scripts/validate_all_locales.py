@@ -1,48 +1,72 @@
-# locales en.ini has all the availble current locale words
-# go through all the other locale files and check if none of them are missing, add them
+import configparser
+import re
+import sys
+from pathlib import Path
 
-import os
+
+ROOT = Path(__file__).resolve().parent.parent
+LOCALES = ROOT / "locales"
+LOCALE_SOURCE = ROOT / "Jammer.Core" / "src" / "Locale.cs"
+PLACEHOLDER = re.compile(r"\{\d+(?:[^}]*)?\}")
+LOCALE_LOOKUP = re.compile(
+    r'CheckValueLocale\(\s*"(?P<section>[^"]+)"\s*,\s*"(?P<key>[^"]+)"'
+)
 
 
-def validate_all_locales() -> None:
-    with open("locales/en.ini", "r", encoding="utf-8") as file:
-        en_lines = file.readlines()
-        
-    # get the keys from en.ini
-    # ie. ToMainMenu = To Main Menu
-    
-    en_keys = [line.split("=", 1)[0].strip() for line in en_lines
-               if "=" in line and not line.lstrip().startswith((";", "#"))]
-    
-    # get all the locale files
-    locale_files = os.listdir("locales")
-    
-    for locale_file in locale_files:
-        if locale_file == "en.ini":
+def read_locale(path: Path) -> configparser.ConfigParser:
+    parser = configparser.ConfigParser(interpolation=None)
+    parser.optionxform = str
+    with path.open("r", encoding="utf-8-sig") as locale_file:
+        parser.read_file(locale_file)
+    return parser
+
+
+def entries(parser: configparser.ConfigParser) -> set[tuple[str, str]]:
+    return {(section, key) for section in parser.sections() for key in parser[section]}
+
+
+def validate_all_locales() -> bool:
+    english = read_locale(LOCALES / "en.ini")
+    english_entries = entries(english)
+    errors: list[str] = []
+
+    source = LOCALE_SOURCE.read_text(encoding="utf-8")
+    source = re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
+    source = re.sub(r"//.*", "", source)
+    code_entries = {
+        (match.group("section"), match.group("key"))
+        for match in LOCALE_LOOKUP.finditer(source)
+    }
+    for section, key in sorted(code_entries - english_entries):
+        errors.append(f"en.ini is missing [{section}] {key}, which Locale.cs uses")
+    for section, key in sorted(english_entries - code_entries):
+        errors.append(f"en.ini has unused entry [{section}] {key}")
+
+    for path in sorted(LOCALES.glob("*.ini")):
+        if path.name == "en.ini":
             continue
-        
-        with open(f"locales/{locale_file}", "r", encoding="utf-8") as file:
-            locale_lines = file.readlines()
-        
-        locale_keys = [line.split("=", 1)[0].strip() for line in locale_lines
-                       if "=" in line and not line.lstrip().startswith((";", "#"))]
-        
-        missing_keys = []
-        
-        for en_key in en_keys:
-            if en_key not in locale_keys:
-                missing_keys.append(en_key)
-        
-        if missing_keys:
-            print(f"Missing keys in {locale_file}:")
-            for missing_key in missing_keys:
-                print(f"    {missing_key}")
-            print()
-        else:
-            print(f"{locale_file} is valid!")
-    
+        locale = read_locale(path)
+        locale_entries = entries(locale)
+        for section, key in sorted(english_entries - locale_entries):
+            errors.append(f"{path.name} is missing [{section}] {key}")
+        for section, key in sorted(locale_entries - english_entries):
+            errors.append(f"{path.name} has unexpected entry [{section}] {key}")
+        for section, key in sorted(english_entries & locale_entries):
+            expected = sorted(PLACEHOLDER.findall(english[section][key]))
+            actual = sorted(PLACEHOLDER.findall(locale[section][key]))
+            if actual != expected:
+                errors.append(
+                    f"{path.name} [{section}] {key} placeholders are {actual}; expected {expected}"
+                )
+
+        if not any(error.startswith(path.name) for error in errors):
+            print(f"{path.name} is valid!")
+
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return False
+    return True
+
+
 if __name__ == "__main__":
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    os.chdir('..')
-    
-    validate_all_locales()
+    raise SystemExit(0 if validate_all_locales() else 1)

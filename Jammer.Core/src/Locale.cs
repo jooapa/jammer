@@ -187,7 +187,7 @@ namespace Jammer
             public static string YoutubeExplodeDescription = CheckValueLocale("Settings", "YoutubeExplodeDescription", "Built-in backend; no external downloader required.");
             public static string YtDlpDescription = CheckValueLocale("Settings", "YtDlpDescription", "Managed external backend with broad download support.");
             public static string SelectBackendPrompt = CheckValueLocale("Settings", "SelectBackendPrompt", "Choose the YouTube download backend.");
-            public static string YtDlpMissingPrompt = CheckValueLocale("Settings", "YtDlpMissingPrompt", "yt-dlp is missing. Install it now? Enter y to continue.");
+            public static string YtDlpMissingPrompt = CheckValueLocale("Settings", "YtDlpMissingPrompt", "yt-dlp is missing. Install it now? Enter {0} to continue.");
             public static string YtDlpMissingTitle = CheckValueLocale("Settings", "YtDlpMissingTitle", "yt-dlp required");
             public static string InstallingYtDlp = CheckValueLocale("Settings", "InstallingYtDlp", "Installing yt-dlp...");
             public static string UpdatingYtDlp = CheckValueLocale("Settings", "UpdatingYtDlp", "Updating yt-dlp...");
@@ -214,6 +214,83 @@ namespace Jammer
             public static string PageHint = CheckValueLocale("Settings", "PageHint", "Arrows/Page Up/Page Down");
             public static string FavoriteAddedMessage = CheckValueLocale("Settings", "FavoriteAddedMessage", "Favorite added. Play favorites by appending :fav to a playlist name. Disable this explanation in Settings > Interface.");
             public static string FavoriteAddedTitle = CheckValueLocale("Settings", "FavoriteAddedTitle", "Favorite song added");
+        }
+
+        public static class UiMessages
+        {
+            public static string NoSongsFoundExiting = CheckValueLocale("UiMessages", "NoSongsFoundExiting", "No songs found. Exiting...");
+            public static string AllSongsNotFound = CheckValueLocale("UiMessages", "AllSongsNotFound", "None of the songs were found. Check the playlist or add new songs.");
+            public static string NoSongsFoundTitle = CheckValueLocale("UiMessages", "NoSongsFoundTitle", "No songs found");
+            public static string SongNotFound = CheckValueLocale("UiMessages", "SongNotFound", "Song not found: {0}");
+            public static string CannotLoadSoundFont = CheckValueLocale("UiMessages", "CannotLoadSoundFont", "Cannot load the soundfont");
+            public static string SearchPlatformPrompt = CheckValueLocale("UiMessages", "SearchPlatformPrompt", "Type y for YouTube or s for SoundCloud:");
+            public static string YoutubeSearchTypePrompt = CheckValueLocale("UiMessages", "YoutubeSearchTypePrompt", "YouTube: search for a [v]ideo or [p]laylist?");
+            public static string SoundCloudSearchTypePrompt = CheckValueLocale("UiMessages", "SoundCloudSearchTypePrompt", "SoundCloud: search for a [t]rack or [p]laylist?");
+            public static string SearchResultsYoutube = CheckValueLocale("UiMessages", "SearchResultsYoutube", "YouTube results for '{0}': {1}/{2}");
+            public static string SearchResultsSoundCloud = CheckValueLocale("UiMessages", "SearchResultsSoundCloud", "SoundCloud results for '{0}': {1}/{2}");
+            public static string SearchCurrentPlaylist = CheckValueLocale("UiMessages", "SearchCurrentPlaylist", "Search for a song in the current playlist");
+            public static string SearchResultsCurrentPlaylist = CheckValueLocale("UiMessages", "SearchResultsCurrentPlaylist", "Results for '{0}' in the current playlist: {1}");
+            public static string SearchByAuthorCurrentPlaylist = CheckValueLocale("UiMessages", "SearchByAuthorCurrentPlaylist", "Search for songs by author in the current playlist");
+            public static string SearchResultsByAuthor = CheckValueLocale("UiMessages", "SearchResultsByAuthor", "Songs by authors matching '{0}': {1}");
+            public static string NoResultsFound = CheckValueLocale("UiMessages", "NoResultsFound", "No results found");
+            public static string SoundCloudClientIdMayBeInvalid = CheckValueLocale("UiMessages", "SoundCloudClientIdMayBeInvalid", "The SoundCloud client ID may have changed or may be invalid");
+            public static string ConfirmDeleteSongs = CheckValueLocale("UiMessages", "ConfirmDeleteSongs", "Recursively delete '{0}'? {1}");
+            public static string FlushSongsTitle = CheckValueLocale("UiMessages", "FlushSongsTitle", "Delete all Jammer songs");
+            public static string SongsFlushCancelled = CheckValueLocale("UiMessages", "SongsFlushCancelled", "Deleting Jammer songs was cancelled.");
+            public static string SongsFlushed = CheckValueLocale("UiMessages", "SongsFlushed", "Jammer songs were deleted.");
+            public static string SongsFolderNotFound = CheckValueLocale("UiMessages", "SongsFolderNotFound", "The Jammer songs folder was not found.");
+            public static string ThemeDoesNotExist = CheckValueLocale("UiMessages", "ThemeDoesNotExist", "Theme '{0}' does not exist.");
+            public static string UsingDefaultTheme = CheckValueLocale("UiMessages", "UsingDefaultTheme", "Using the Jammer Default theme.");
+            public static string ThemeNotValid = CheckValueLocale("UiMessages", "ThemeNotValid", "Theme '{0}' is not valid.");
+            public static string InfoTitle = CheckValueLocale("UiMessages", "InfoTitle", "Information");
+            public static string InfoToggled = CheckValueLocale("UiMessages", "InfoToggled", "The information view was toggled.");
+            public static string LogTitle = CheckValueLocale("UiMessages", "LogTitle", "Log");
+            public static string LinkSoundFontByPath = CheckValueLocale("UiMessages", "LinkSoundFontByPath", "Link to a soundfont by path");
+            public static string ImportSoundFontByPath = CheckValueLocale("UiMessages", "ImportSoundFontByPath", "Import a soundfont by path");
+            public static string EnterSoundFontPath = CheckValueLocale("UiMessages", "EnterSoundFontPath", "Enter the path to the soundfont:");
+            public static string SoundFontPathTitle = CheckValueLocale("UiMessages", "SoundFontPathTitle", "Soundfont path");
+            public static string FileDoesNotExist = CheckValueLocale("UiMessages", "FileDoesNotExist", "The file does not exist");
+            public static string SoundFontAlreadyExists = CheckValueLocale("UiMessages", "SoundFontAlreadyExists", "The soundfont already exists");
+            public static string EffectsFileError = CheckValueLocale("UiMessages", "EffectsFileError", "Could not read Effects.ini. Check the file for errors.");
+            public static string SelectionInstructions = CheckValueLocale("UiMessages", "SelectionInstructions", "Use arrows, Enter to select, Escape to cancel, and Page Up/Page Down to scroll");
+            public static string SongsPath = CheckValueLocale("UiMessages", "SongsPath", "Songs path");
+            public static string FfmpegMissing = CheckValueLocale("UiMessages", "FfmpegMissing", "FFmpeg is not installed. Install it and make sure it is available on PATH.");
+            public static string ConvertingToOgg = CheckValueLocale("UiMessages", "ConvertingToOgg", "Converting to OGG with FFmpeg...");
+            public static string TaggingSong = CheckValueLocale("UiMessages", "TaggingSong", "Adding song metadata...");
+            public static string DownloadingWithYtDlp = CheckValueLocale("UiMessages", "DownloadingWithYtDlp", "Downloading with yt-dlp...");
+            public static string GettingVideoInfo = CheckValueLocale("UiMessages", "GettingVideoInfo", "Getting video information...");
+            public static string GettingPlaylistTracks = CheckValueLocale("UiMessages", "GettingPlaylistTracks", "Getting playlist tracks...");
+            public static string ClientIdInvalidOrPlaylistPrivate = CheckValueLocale("UiMessages", "ClientIdInvalidOrPlaylistPrivate", "The client ID may be invalid, or the playlist may be private.");
+            public static string SavingPlaylistError = CheckValueLocale("UiMessages", "SavingPlaylistError", "Error saving playlist");
+            public static string Warning = CheckValueLocale("UiMessages", "Warning", "Warning");
+            public static string SongsPathMigration = CheckValueLocale("UiMessages", "SongsPathMigration", "The songs path moved from settings.json to JAMMER_SONGS_PATH. Set the environment variable now, press {0} to exit, or press {1} to use the default location.");
+            public static string CurrentSongsPath = CheckValueLocale("UiMessages", "CurrentSongsPath", "Current songs path: {0}");
+            public static string UpdateOldPlaylistPrompt = CheckValueLocale("UiMessages", "UpdateOldPlaylistPrompt", "Update playlist? {0}");
+            public static string UpdateOldPlaylistTitle = CheckValueLocale("UiMessages", "UpdateOldPlaylistTitle", "This playlist uses an old unsupported format. Update it now? A backup will be created in playlists/backups.");
+            public static string PageItems = CheckValueLocale("UiMessages", "PageItems", "Page {0} of {1} | Items {2}-{3} of {4}");
+            public static string Cancel = CheckValueLocale("UiMessages", "Cancel", "Cancel");
+            public static string PressEscapeToCancel = CheckValueLocale("UiMessages", "PressEscapeToCancel", "Press Escape to cancel");
+            public static string MoreChoices = CheckValueLocale("UiMessages", "MoreChoices", "Move up and down to reveal more options");
+            public static string CannotPlaySong = CheckValueLocale("UiMessages", "CannotPlaySong", "Error: cannot play the song");
+            public static string NoSongPlaying = CheckValueLocale("UiMessages", "NoSongPlaying", "No song is playing");
+            public static string NoSpecificPlaylistName = CheckValueLocale("UiMessages", "NoSpecificPlaylistName", "No specific playlist name");
+            public static string NextPage = CheckValueLocale("UiMessages", "NextPage", "Next page");
+            public static string PreviousPage = CheckValueLocale("UiMessages", "PreviousPage", "Previous page");
+            public static string GettingTrack = CheckValueLocale("UiMessages", "GettingTrack", "Getting track. Please wait...");
+            public static string SongPrivateOrInvalidUrl = CheckValueLocale("UiMessages", "SongPrivateOrInvalidUrl", "Error: the song may be private or the URL may be invalid. Check the log.");
+            public static string ClientIdIncorrect = CheckValueLocale("UiMessages", "ClientIdIncorrect", "Error: the client ID is incorrect. Check it in Settings > Integrations.");
+            public static string SongNotFoundPrivateOrInvalid = CheckValueLocale("UiMessages", "SongNotFoundPrivateOrInvalid", "Error: song not found. It may be private or the URL may be invalid.");
+            public static string RssFeedCanBeOpened = CheckValueLocale("UiMessages", "RssFeedCanBeOpened", "Open this RSS feed to show it in a new view.");
+            public static string RssWillSkipAfter = CheckValueLocale("UiMessages", "RssWillSkipAfter", " It will be skipped after {0} seconds.");
+            public static string NewName = CheckValueLocale("UiMessages", "NewName", "New name:");
+            public static string RenameSongInstructions = CheckValueLocale("UiMessages", "RenameSongInstructions", "Current: {0}. Use input history to see Jammer's smart rename suggestions. Leave empty or press Escape to cancel. Use 'author - title' to set both the author and title.");
+            public static string CreateNewTheme = CheckValueLocale("UiMessages", "CreateNewTheme", "Create a new theme");
+            public static string UnknownTitle = CheckValueLocale("UiMessages", "UnknownTitle", "Unknown title");
+            public static string UnknownAuthor = CheckValueLocale("UiMessages", "UnknownAuthor", "Unknown author");
+            public static string UnknownLink = CheckValueLocale("UiMessages", "UnknownLink", "Unknown link");
+            public static string NoDescription = CheckValueLocale("UiMessages", "NoDescription", "No description");
+            public static string UnknownDate = CheckValueLocale("UiMessages", "UnknownDate", "Unknown date");
+            public static string RssParseFailed = CheckValueLocale("UiMessages", "RssParseFailed", "Could not parse the RSS feed");
         }
 
         public static class CliHelp
@@ -245,6 +322,11 @@ namespace Jammer
             public static string ListAllPlaylists = CheckValueLocale("CliHelp", "ListAllPlaylists", "List all playlists");
             public static string Name = CheckValueLocale("CliHelp", "Name", "name");
             public static string Song = CheckValueLocale("CliHelp", "Song", "song");
+            public static string ShowHelp = CheckValueLocale("CliHelp", "ShowHelp", "Show this help message");
+            public static string DeleteAllSongs = CheckValueLocale("CliHelp", "DeleteAllSongs", "Delete all songs from the Jammer songs folder");
+            public static string GetSongsPath = CheckValueLocale("CliHelp", "GetSongsPath", "Show the path to the Jammer songs folder");
+            public static string PlayAllSongs = CheckValueLocale("CliHelp", "PlayAllSongs", "Play all songs from the Jammer songs folder");
+            public static string OpenSongsFolder = CheckValueLocale("CliHelp", "OpenSongsFolder", "Open the Jammer songs folder");
         }
         public static class PlaylistOptions
         {
@@ -277,6 +359,8 @@ namespace Jammer
             public static string False = CheckValueLocale("Miscellaneous", "False", "False");
             public static string Version = CheckValueLocale("Miscellaneous", "Version", "version");
             public static string YesNo = CheckValueLocale("Miscellaneous", "YesNo", "(y/n),");
+            public static string YesAnswer = CheckValueLocale("Miscellaneous", "YesAnswer", "y");
+            public static string NoAnswer = CheckValueLocale("Miscellaneous", "NoAnswer", "n");
 
 
         }

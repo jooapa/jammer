@@ -175,8 +175,8 @@ namespace Jammer
 
             if (!SetThemeUsingPreferences() && returne == 0)
             {
-                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]" + Preferences.GetTheme() + "[/] does not exist");
-                AnsiConsole.MarkupLine("[red]Error:[/] Setting theme to [yellow]Jammer Default[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Error}:[/] {Markup.Escape(string.Format(Locale.UiMessages.ThemeDoesNotExist, Preferences.GetTheme()))}");
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Error}:[/] {Locale.UiMessages.UsingDefaultTheme}");
                 SetDefaultTheme();
             }
             if (Preferences.theme != "Jammer Default")
@@ -275,7 +275,7 @@ namespace Jammer
             string path = Path.Combine(themePath, themeName + ".json");
             if (!File.Exists(path))
             {
-                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] does not exist", themeName);
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Error}:[/] {Markup.Escape(string.Format(Locale.UiMessages.ThemeDoesNotExist, themeName))}");
                 return false;
             }
 
@@ -287,7 +287,7 @@ namespace Jammer
 
             if (theme == null)
             {
-                AnsiConsole.MarkupLine("[red]Error:[/] Theme [yellow]{0}[/] is not valid", themeName);
+                AnsiConsole.MarkupLine($"[red]{Locale.OutsideItems.Error}:[/] {Markup.Escape(string.Format(Locale.UiMessages.ThemeNotValid, themeName))}");
                 return false;
             }
             Preferences.theme = themeName;

@@ -93,7 +93,7 @@ namespace Jammer
                 }
 
                 var selectionTable = new Table();
-                selectionTable.AddColumn(new TableColumn(Themes.sColor(title + " [i](Use arrows, Enter to select, ESC to cancel, PgUp/PgDn to scroll)[/]", Themes.CurrentTheme.InputBox.TitleColor ?? "")));
+                selectionTable.AddColumn(new TableColumn(Themes.sColor(title + $" [i]({Locale.UiMessages.SelectionInstructions})[/]", Themes.CurrentTheme.InputBox.TitleColor ?? "")));
                 selectionTable.Width(Start.consoleWidth);
 
                 // Calculate visible range
@@ -120,7 +120,7 @@ namespace Jammer
                 {
                     int currentPage = (selected / itemsPerPage) + 1;
                     int totalPages = (int)Math.Ceiling((double)options.Length / itemsPerPage);
-                    selectionTable.AddRow(Themes.sColor($"[dim]Page {currentPage} of {totalPages} | Items {startIndex + 1}-{endIndex} of {options.Length}[/]", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                    selectionTable.AddRow(Themes.sColor($"[dim]{string.Format(Locale.UiMessages.PageItems, currentPage, totalPages, startIndex + 1, endIndex, options.Length)}[/]", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
                 }
 
                 for (int i = startIndex; i < endIndex; i++)
@@ -175,7 +175,7 @@ namespace Jammer
                 if (!string.IsNullOrEmpty(selDesc))
                 {
                     var descTable = new Table();
-                    descTable.AddColumn(Themes.sColor("Description", Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
+                    descTable.AddColumn(Themes.sColor(Locale.Settings.Description, Themes.CurrentTheme.InputBox.InputTextColor ?? ""));
                     descTable.Width(Start.consoleWidth);
 
                     string escapedDesc = Markup.Escape(selDesc);
@@ -435,19 +435,19 @@ namespace Jammer
             AnsiConsole.Cursor.SetPosition(0, 0);
 
             // Add a Cancel option if it doesn't already exist
-            bool hasCancelOption = options.Contains("Cancel");
-            string[] optionsWithCancel = hasCancelOption ? options : new[] { "Cancel" }.Concat(options).ToArray();
+            bool hasCancelOption = options.Contains(Locale.UiMessages.Cancel);
+            string[] optionsWithCancel = hasCancelOption ? options : new[] { Locale.UiMessages.Cancel }.Concat(options).ToArray();
 
             try
             {
                 var selection = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                    .Title(title + " (Press ESC to cancel)")
-                    .MoreChoicesText(Themes.sColor("(Move up and down to reveal more options)", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
+                    .Title(title + $" ({Locale.UiMessages.PressEscapeToCancel})")
+                    .MoreChoicesText(Themes.sColor($"({Locale.UiMessages.MoreChoices})", Themes.CurrentTheme.InputBox.MultiSelectMoreChoicesTextColor))
                     .AddChoices(optionsWithCancel));
 
                 // Check if the selection is the first item (Cancel) and there are keys available
                 // This might indicate the user pressed ESC and the default was selected
-                if (selection == "Cancel" && Console.KeyAvailable)
+                if (selection == Locale.UiMessages.Cancel && Console.KeyAvailable)
                 {
                     // Peek at the next key to see if it's ESC
                     // Note: This is a workaround since we can't actually peek without consuming

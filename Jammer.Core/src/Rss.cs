@@ -75,11 +75,11 @@ namespace Jammer
                     throw new Exception("RSS channel not found.");
                 }
 
-                var title = channelNode.SelectSingleNode("title")?.InnerText ?? "Unknown Title";
+                var title = channelNode.SelectSingleNode("title")?.InnerText ?? Locale.UiMessages.UnknownTitle;
                 var author = channelNode.SelectSingleNode("author")?.InnerText ??
-                             channelNode.SelectSingleNode("managingEditor")?.InnerText ?? "Unknown Author";
-                var link = channelNode.SelectSingleNode("link")?.InnerText ?? "Unknown Link";
-                var description = channelNode.SelectSingleNode("description")?.InnerText ?? "No Description";
+                             channelNode.SelectSingleNode("managingEditor")?.InnerText ?? Locale.UiMessages.UnknownAuthor;
+                var link = channelNode.SelectSingleNode("link")?.InnerText ?? Locale.UiMessages.UnknownLink;
+                var description = channelNode.SelectSingleNode("description")?.InnerText ?? Locale.UiMessages.NoDescription;
 
                 // Extract items
                 var items = new List<IndividualRssData>();
@@ -90,9 +90,9 @@ namespace Jammer
                     {
                         try
                         {
-                            var itemTitle = itemNode.SelectSingleNode("title")?.InnerText ?? "Unknown Title";
-                            var itemDescription = itemNode.SelectSingleNode("description")?.InnerText ?? "No Description";
-                            var itemPubDate = itemNode.SelectSingleNode("pubDate")?.InnerText ?? "Unknown Date";
+                            var itemTitle = itemNode.SelectSingleNode("title")?.InnerText ?? Locale.UiMessages.UnknownTitle;
+                            var itemDescription = itemNode.SelectSingleNode("description")?.InnerText ?? Locale.UiMessages.NoDescription;
+                            var itemPubDate = itemNode.SelectSingleNode("pubDate")?.InnerText ?? Locale.UiMessages.UnknownDate;
                             var itemAuthor = itemNode.SelectSingleNode("author")?.InnerText ??
                                              itemNode.SelectSingleNode("dc:creator", namespaceManager)?.InnerText ??
                                              itemNode.SelectSingleNode("media:credit", namespaceManager)?.InnerText ??
@@ -106,7 +106,7 @@ namespace Jammer
                                            itemNode.SelectSingleNode("media:group/media:content", namespaceManager)?.Attributes["url"]?.Value ?? // Media RSS group
                                            itemNode.SelectSingleNode("link")?.InnerText ?? // Fallback to <link>
                                            itemNode.SelectSingleNode("guid")?.InnerText ?? // GUID as a fallback
-                                           "Unknown Link";
+                                           Locale.UiMessages.UnknownLink;
 
 
                             if (itemAuthor == null)
@@ -144,10 +144,10 @@ namespace Jammer
                 Log.Error($"Failed to extract RSS data: {ex.Message}");
                 return new RootRssData
                 {
-                    Title = "Unknown Title",
-                    Author = "Unknown Author",
-                    Link = "Unknown Link",
-                    Description = "Failed to parse RSS feed",
+                    Title = Locale.UiMessages.UnknownTitle,
+                    Author = Locale.UiMessages.UnknownAuthor,
+                    Link = Locale.UiMessages.UnknownLink,
+                    Description = Locale.UiMessages.RssParseFailed,
                     Content = Array.Empty<IndividualRssData>()
                 };
             }

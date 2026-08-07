@@ -162,7 +162,7 @@ namespace Jammer.Components
         {
             if (_currentPlaylist == "")
             {
-                table.AddColumn("No Specific Playlist Name");
+                table.AddColumn(Locale.UiMessages.NoSpecificPlaylistName);
             }
             else
             {

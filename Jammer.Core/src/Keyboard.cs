@@ -416,7 +416,7 @@ namespace Jammer
                             Play.MaybeNextSong();
                             break;
                         case "ToggleInfo": // toggle info
-                            Message.Data("Info", "Info is toggled");
+                            Message.Data(Locale.UiMessages.InfoToggled, Locale.UiMessages.InfoTitle);
                             drawWhole = true;
                             break;
                         case "SearchInPlaylist": // playlist options
@@ -453,7 +453,7 @@ namespace Jammer
 
 
                             string newName = Message.Input(
-                                "New name: ", $"Current: {Sanitize(ogSongTitle)}\nGo up in History to see Jammer's Smart Renames\nLeave empty or press ESC to cancel\nSeparating with 'author - title' will set the author and title",
+                                Locale.UiMessages.NewName, string.Format(Locale.UiMessages.RenameSongInstructions, Sanitize(ogSongTitle)),
                                 ogSongTitle, false, name, options: inputJreadOptions
                             );
 
@@ -559,7 +559,7 @@ namespace Jammer
                             string[] themes = Themes.GetAllThemes();
                             // move that first element is "Create a new theme" and "Jammer Default"
                             string[] newThemes = new string[themes.Length + 2];
-                            newThemes[0] = "Create a new theme";
+                            newThemes[0] = Locale.UiMessages.CreateNewTheme;
                             newThemes[1] = "Jammer Default";
                             for (int i = 0; i < themes.Length; i++)
                             {
@@ -590,11 +590,11 @@ namespace Jammer
                             }
 
                             // if the user wants to create a new theme
-                            if (chosen == "Create a new theme")
+                            if (chosen == Locale.UiMessages.CreateNewTheme)
                             {
                                 AnsiConsole.Clear();
                                 string themeName = Message.Input(Locale.Miscellaneous.EnterThemeName, Locale.Miscellaneous.NameOfYourAwesomeTheme);
-                                if (Play.EmptySpaces(themeName) || themeName == "Create a new theme" || themeName == "Jammer Default")
+                                if (Play.EmptySpaces(themeName) || themeName == Locale.UiMessages.CreateNewTheme || themeName == "Jammer Default")
                                 {
                                     drawWhole = true;
                                     break;
@@ -635,7 +635,7 @@ namespace Jammer
                             break;
                         case "ShowLog":
                             AnsiConsole.Clear();
-                            Message.Data(Log.GetLog(), "Log");
+                            Message.Data(Log.GetLog(), Locale.UiMessages.LogTitle);
                             drawWhole = true;
                             break;
                         case "Choose":
@@ -717,8 +717,8 @@ namespace Jammer
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
                             string[] newSoundFonts = new string[soundFonts.Length + 2];
-                            newSoundFonts[0] = "Link to a soundfont by path";
-                            newSoundFonts[1] = "Import soundfont by path";
+                            newSoundFonts[0] = Locale.UiMessages.LinkSoundFontByPath;
+                            newSoundFonts[1] = Locale.UiMessages.ImportSoundFontByPath;
 
                             for (int i = 0; i < soundFonts.Length; i++)
                             {
@@ -749,8 +749,8 @@ namespace Jammer
                                     drawWhole = true;
                                     chosenSoundFont = Preferences.currentSf2;
                                     break;
-                                case "Link to a soundfont by path":
-                                    string path = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                case var _ when chosenSoundFont == Locale.UiMessages.LinkSoundFontByPath:
+                                    string path = Message.Input(Locale.UiMessages.EnterSoundFontPath, Locale.UiMessages.SoundFontPathTitle);
                                     if (File.Exists(path))
                                     {
                                         SoundFont.MakeAbsoluteSfFile(path);
@@ -758,13 +758,13 @@ namespace Jammer
                                     }
                                     else
                                     {
-                                        Message.Data("The file does not exist", ":(", true);
+                                        Message.Data(Locale.UiMessages.FileDoesNotExist, ":(", true);
                                         drawWhole = true;
                                         chosenSoundFont = Preferences.currentSf2;
                                     }
                                     break;
-                                case "Import soundfont by path":
-                                    string importPath = Message.Input("Enter the path to the soundfont:", "Path to the soundfont");
+                                case var _ when chosenSoundFont == Locale.UiMessages.ImportSoundFontByPath:
+                                    string importPath = Message.Input(Locale.UiMessages.EnterSoundFontPath, Locale.UiMessages.SoundFontPathTitle);
                                     if (File.Exists(importPath))
                                     {
                                         chosenSoundFont = Preferences.currentSf2;
@@ -776,7 +776,7 @@ namespace Jammer
                                     }
                                     else
                                     {
-                                        Message.Data("The file does not exist", ":(", true);
+                                        Message.Data(Locale.UiMessages.FileDoesNotExist, ":(", true);
                                         drawWhole = true;
                                         chosenSoundFont = Preferences.currentSf2;
                                     }

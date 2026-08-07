@@ -364,16 +364,12 @@ namespace Jammer
                 if (isOldFormat)
                 {
                     string input = Message.Input(
-                        "Update Playlist? (y/n)",
-                        "Hold On a Second! 🤠" + Environment.NewLine +
-                        "This might be an old playlist format." + Environment.NewLine +
-                        "Do you want to update it to the new format?" + Environment.NewLine +
-                        "The old format is outdated and will not work at all." + Environment.NewLine +
-                        "but just incase a backup will be created to 'playlist/backups'.",
+                        string.Format(Locale.UiMessages.UpdateOldPlaylistPrompt, Locale.Miscellaneous.YesNo),
+                        Locale.UiMessages.UpdateOldPlaylistTitle,
                         true
                         );
 
-                    if (input == "y")
+                    if (input.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                     {
                         if (!Directory.Exists(Path.Combine(Utils.JammerPath, "playlists", "backups")))
                         {
@@ -877,8 +873,8 @@ namespace Jammer
                 if (Funcs.IsCurrentSongARssFeed())
                 {
                     Utils.CurSongError = false;
-                    Utils.CustomTopErrorMessage = "RSS feed can be opened, that will open a new view." +
-                    (Preferences.rssSkipAfterTime ? " Will be skipped after " + Preferences.rssSkipAfterTimeValue.ToString() + " seconds." : "") + "";
+                    Utils.CustomTopErrorMessage = Locale.UiMessages.RssFeedCanBeOpened +
+                    (Preferences.rssSkipAfterTime ? " " + string.Format(Locale.UiMessages.RssWillSkipAfter, Preferences.rssSkipAfterTimeValue) : "");
 
                     // Initialize RSS auto-skip timer if enabled
                     if (Preferences.rssSkipAfterTime)
@@ -898,7 +894,7 @@ namespace Jammer
                     {
                         if (showNoSongsFoundMessage)
                         {
-                            Message.Data("All songs were not found, please check your playlist or add new songs.", "No songs found", true);
+                            Message.Data(Locale.UiMessages.AllSongsNotFound, Locale.UiMessages.NoSongsFoundTitle, true);
                             showNoSongsFoundMessage = false;
                         }
                         songsThatWereNotFound = 0;
@@ -906,7 +902,7 @@ namespace Jammer
                         return;
                     }
 
-                    Message.Data("Song not found: " + Utils.CurrentSongPath, "Error", true);
+                    Message.Data(string.Format(Locale.UiMessages.SongNotFound, Utils.CurrentSongPath), Locale.OutsideItems.Error, true);
                     NextSong();
                     return;
                 }
@@ -956,7 +952,7 @@ namespace Jammer
             var newFont = BassMidi.FontInit(soundFontPath, FontInitFlags.Unicode);
             if (newFont == 0)
             {
-                Message.Data("Can't load the SoundFont", soundFontPath, true);
+                Message.Data(Locale.UiMessages.CannotLoadSoundFont, soundFontPath, true);
             }
             var sf = new MidiFont[]
             {

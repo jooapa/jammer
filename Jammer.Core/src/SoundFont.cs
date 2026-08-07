@@ -56,7 +56,7 @@ namespace Jammer
 
             if (Path.Exists(sfPath))
             {
-                Message.Data("Soundfont already exists", "Error", true);
+                Message.Data(Locale.UiMessages.SoundFontAlreadyExists, Locale.OutsideItems.Error, true);
                 return string.Empty;
             }
 
@@ -66,7 +66,7 @@ namespace Jammer
             }
             catch (Exception e)
             {
-                Message.Data(e.Message, "Error", true);
+                Message.Data(e.Message, Locale.OutsideItems.Error, true);
                 return string.Empty;
             }
             return Path.GetFileName(path);

@@ -9,20 +9,23 @@ namespace Jammer
         {
             if (Directory.Exists(Preferences.songsPath))
             {
-                string v = Message.Input("Are you sure you want to Recursively delete '" + Preferences.songsPath + "'? (y/n)", "Flush Jammer Songs", true);
-                if (v != "y")
+                string v = Message.Input(
+                    string.Format(Locale.UiMessages.ConfirmDeleteSongs, Preferences.songsPath, Locale.Miscellaneous.YesNo),
+                    Locale.UiMessages.FlushSongsTitle,
+                    true);
+                if (!v.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                 {
                     AnsiConsole.Clear();
-                    AnsiConsole.MarkupLine($"[red]Jammer songs flush cancelled.[/]");
+                    AnsiConsole.MarkupLine($"[red]{Locale.UiMessages.SongsFlushCancelled}[/]");
                     return;
                 }
                 Directory.Delete(Preferences.songsPath, true);
-                AnsiConsole.MarkupLine($"[green]Jammer songs flushed.[/]");
+                AnsiConsole.MarkupLine($"[green]{Locale.UiMessages.SongsFlushed}[/]");
 
             }
             else
             {
-                AnsiConsole.MarkupLine($"[red]Jammer songs folder not found.[/]");
+                AnsiConsole.MarkupLine($"[red]{Locale.UiMessages.SongsFolderNotFound}[/]");
 
             }
         }

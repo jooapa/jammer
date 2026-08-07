@@ -75,12 +75,12 @@ namespace Jammer
                     }
                     else
                     {
-                        songPath = "Error: cannot play the song";
+                        songPath = Locale.UiMessages.CannotPlaySong;
                     }
                 }
                 else if (Utils.CurrentMusic == 0)
                 {
-                    songPath = "No song is playing";
+                    songPath = Locale.UiMessages.NoSongPlaying;
                 }
                 else
                 {
@@ -419,7 +419,7 @@ namespace Jammer
             table.AddColumn(Locale.CliHelp.PlaylistCommands);
             table.AddColumn(Locale.CliHelp.Description);
             // TODO LOCALE ehkä joskus
-            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", "show this help message");
+            table.AddRow($"[grey]jammer[/] [red]-h[/][grey],[/][red] --help [/] ", Locale.CliHelp.ShowHelp);
             table.AddRow($"[grey]jammer[/] [red]-p[/][grey],[/][red] --play  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.PlayPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-c[/][grey],[/][red] --create[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.CreatePlaylist);
             table.AddRow($"[grey]jammer[/] [red]-d[/][grey],[/][red] --delete[/] <{Locale.CliHelp.Name}>", Locale.CliHelp.DeletePlaylist);
@@ -427,10 +427,10 @@ namespace Jammer
             table.AddRow($"[grey]jammer[/] [red]-r[/][grey],[/][red] --remove[/] <{Locale.CliHelp.Name}> <{Locale.CliHelp.Song}> ...", Locale.CliHelp.RemoveSongsFromPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-s[/][grey],[/][red] --show  [/] <{Locale.CliHelp.Name}>", Locale.CliHelp.ShowSongsInPlaylist);
             table.AddRow($"[grey]jammer[/] [red]-l[/][grey],[/][red] --list  [/] ", Locale.CliHelp.ListAllPlaylists);
-            table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", "delete all songs from the <jammer/songs> folder");
-            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", "get the path to the <jammer/songs> folder");
-            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", "play all songs from the <jammer/songs> folder");
-            table.AddRow($"[grey]jammer[/] [red]-so[/][grey],[/][red] --songs [/] ", "open <jammer/songs> folder");
+            table.AddRow($"[grey]jammer[/] [red]-f[/][grey],[/][red] --flush [/] ", Locale.CliHelp.DeleteAllSongs);
+            table.AddRow($"[grey]jammer[/] [red]-gp[/][grey],[/][red] --get-path [/] ", Locale.CliHelp.GetSongsPath);
+            table.AddRow($"[grey]jammer[/] [red]-hm[/][grey],[/][red] --home [/] ", Locale.CliHelp.PlayAllSongs);
+            table.AddRow($"[grey]jammer[/] [red]-so[/][grey],[/][red] --songs [/] ", Locale.CliHelp.OpenSongsFolder);
             AnsiConsole.Write(table);
         }
         public static void Version()

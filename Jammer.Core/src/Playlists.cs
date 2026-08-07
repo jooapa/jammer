@@ -20,7 +20,7 @@ namespace Jammer
             {
                 Console.WriteLine($"{Locale.OutsideItems.AlreadyExists} " + playlistPath + $". {Locale.OutsideItems.Overwrite} {Locale.Miscellaneous.YesNo}");
                 // y/n prompt
-                if (Console.ReadLine() == "y")
+                if ((Console.ReadLine() ?? "").Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                 {
                     if (File.Exists(playlistPath))
                     {
@@ -317,7 +317,7 @@ namespace Jammer
                 {
                     string input = Message.Input(Locale.Miscellaneous.YesNo, Locale.OutsideItems.AlreadyExists + " " + playlistPath + ". " + Locale.OutsideItems.Overwrite, true);
                     // y/n prompt
-                    if (input != "y")
+                    if (!input.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                     {
                         return;
                     }
@@ -370,7 +370,7 @@ namespace Jammer
                 }
                 catch (Exception ex)
                 {
-                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                    Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, Locale.UiMessages.SavingPlaylistError, true);
                 }
             }
             else
@@ -382,7 +382,7 @@ namespace Jammer
                 }
                 catch (Exception ex)
                 {
-                    Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, $"ERROR SAVING PLAYLIST", true);
+                    Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, Locale.UiMessages.SavingPlaylistError, true);
                 }
             }
         }

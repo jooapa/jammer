@@ -165,7 +165,7 @@ namespace Jammer
                         return;
                     case "--get-path":
                     case "-gp":
-                        AnsiConsole.MarkupLine("[green]Songs path: " + Preferences.songsPath + "[/]"); // TODO ADD LOCALE
+                        AnsiConsole.MarkupLine($"[green]{Locale.UiMessages.SongsPath}: {Markup.Escape(Preferences.songsPath)}[/]");
                         Environment.Exit(0);
                         return;
                     case "--songs":

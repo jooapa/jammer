@@ -152,8 +152,11 @@ namespace Jammer
 
             if (System.IO.File.Exists(downloadedPath))
             {
-                string input = Message.Input("Warning", Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " (y/n)",  true);
-                if (input != "y" && input != "yes")
+                string input = Message.Input(
+                    Locale.UiMessages.Warning,
+                    Locale.OutsideItems.AlreadyExists + " " + downloadedPath + ". " + Locale.OutsideItems.Overwrite + " " + Locale.Miscellaneous.YesNo,
+                    true);
+                if (!input.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase))
                 {
                     songPath = downloadedPath;
                     constructedSong = new Song
@@ -242,7 +245,7 @@ namespace Jammer
             }
 
             // AnsiConsole.Cursor.SetPosition(3, 2);
-            var theText = "Getting track. please wait...";
+            var theText = Locale.UiMessages.GettingTrack;
 
             TUI.PrintToTopOfPlayer(theText);
 
@@ -259,7 +262,7 @@ namespace Jammer
                     // detect if ffmpeg is installed on the system in the path
                     if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
                     {
-                        Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
+                        Message.Data(Locale.UiMessages.FfmpegMissing, Locale.OutsideItems.Error, true);
                         return;
                     }
 
@@ -274,7 +277,7 @@ namespace Jammer
                     // if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     // If using Linux
                     //Message.Data(songPath, "Debug");
-                    TUI.PrintToTopOfPlayer("Using FFMPEG to convert to OGG");
+                    TUI.PrintToTopOfPlayer(Locale.UiMessages.ConvertingToOgg);
 
                     await FFMPEGConvert(songPath, new Song
                     {
@@ -282,7 +285,7 @@ namespace Jammer
                         Author = video.Author.ChannelTitle
                     });
 
-                    TUI.PrintToTopOfPlayer("Trying to Tag song");
+                    TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
                     // TagLib
                     // try
                     // {
@@ -320,7 +323,7 @@ namespace Jammer
                 }
 
                 // Jammer.Message.Data($"{Locale.OutsideItems.Error}: " + ex.Message, "Error id:4");
-                Utils.CustomTopErrorMessage = "Error: Maybe the song is private or the URL is invalid. (check log)";
+                Utils.CustomTopErrorMessage = Locale.UiMessages.SongPrivateOrInvalidUrl;
                 Log.Error(ex.Message);
                 songPath = "";
                 constructedSong = null;
@@ -368,7 +371,7 @@ namespace Jammer
                 }
                 else
                 {
-                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error", true);
+                    Message.Data(Locale.UiMessages.FfmpegMissing, Locale.OutsideItems.Error, true);
                     return;
                 }
 
@@ -376,7 +379,7 @@ namespace Jammer
 
                 ytdl.OutputFolder = Preferences.songsPath;
                 ytdl.OutputFileTemplate = "www.%(webpage_url_domain)s watch v=%(id)s";
-                TUI.PrintToTopOfPlayer("Downloading with yt-dlp...");
+                TUI.PrintToTopOfPlayer(Locale.UiMessages.DownloadingWithYtDlp);
                 
                 // Use simple approach to download best audio
                 var result = await ytdl.RunAudioDownload(url, AudioConversionFormat.Vorbis);
@@ -409,7 +412,7 @@ namespace Jammer
                     //     }
                     // }
 
-                    TUI.PrintToTopOfPlayer("Getting video info...");
+                    TUI.PrintToTopOfPlayer(Locale.UiMessages.GettingVideoInfo);
                     
                     // Get video info for metadata
                     var infoResult = await ytdl.RunVideoDataFetch(url);
@@ -499,7 +502,7 @@ namespace Jammer
                 // detect if ffmpeg is installed on the system in the path
                 if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
                 {
-                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error id:2", true);
+                    Message.Data(Locale.UiMessages.FfmpegMissing, Locale.OutsideItems.Error, true);
                     return;
                 }
 
@@ -592,13 +595,13 @@ namespace Jammer
 
             if (Utils.SCClientIdAlreadyLookedAndItsIncorrect)
             {
-                Utils.CustomTopErrorMessage = "Error: Client ID is incorrect, please check your Client ID in Preferences.";
+                Utils.CustomTopErrorMessage = Locale.UiMessages.ClientIdIncorrect;
                 songPath = "";
                 constructedSong = null;
                 return;
             }
 
-            var theText = "Getting track. please wait...";
+            var theText = Locale.UiMessages.GettingTrack;
             TUI.PrintToTopOfPlayer(theText);
 
             var soundcloud = ReturnSoundCloudClient();
@@ -620,7 +623,7 @@ namespace Jammer
 
                         await soundcloud.DownloadAsync(track, songPath, progress);
 
-                        TUI.PrintToTopOfPlayer("Trying to Tag song");
+                        TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
 
                         try
                         {
@@ -675,10 +678,10 @@ namespace Jammer
                 if (ex.Message.Contains("401"))
                 {
                     Utils.SCClientIdAlreadyLookedAndItsIncorrect = true;
-                    Utils.CustomTopErrorMessage = "Error: Client ID is incorrect, please check your Client ID in Preferences.";}
+                    Utils.CustomTopErrorMessage = Locale.UiMessages.ClientIdIncorrect;}
                 else
                 {
-                    Utils.CustomTopErrorMessage = "Error: Song not found, maybe the song is private or the URL is invalid.";
+                    Utils.CustomTopErrorMessage = Locale.UiMessages.SongNotFoundPrivateOrInvalid;
                 }
 
                 if (Funcs.DontShowErrorWhenSongNotFound())
@@ -713,7 +716,7 @@ namespace Jammer
 
             // Get all playlist tracks
             AnsiConsole.Clear();
-            AnsiConsole.MarkupLine("Getting playlist tracks...");
+            AnsiConsole.MarkupLine(Locale.UiMessages.GettingPlaylistTracks);
             try
             {
                 var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
@@ -721,7 +724,7 @@ namespace Jammer
                 if (playlist == null)
                 {
                     Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
-                    Message.Data("Maybe your Client ID is invalid or the playlist is private", "Error id:5");
+                    Message.Data(Locale.UiMessages.ClientIdInvalidOrPlaylistPrivate, Locale.OutsideItems.Error);
                     return;
                 }
 
@@ -758,7 +761,7 @@ namespace Jammer
         {
             // Get all playlist tracks
             AnsiConsole.Clear();
-            AnsiConsole.MarkupLine("Getting playlist tracks...");
+            AnsiConsole.MarkupLine(Locale.UiMessages.GettingPlaylistTracks);
             var playlist = await youtube.Playlists.GetVideosAsync(plurl);
             Console.WriteLine(playlist[0]);
             if (playlist.Count() == 0 || playlist == null)

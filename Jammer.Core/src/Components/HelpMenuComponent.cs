@@ -306,7 +306,7 @@ namespace Jammer.Components
                         "",
                         "",
                         Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                        Themes.sColor("Next page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
+                        Themes.sColor(Locale.UiMessages.NextPage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
                     );
                 }
 
@@ -314,7 +314,7 @@ namespace Jammer.Components
                 {
                     table.AddRow(
                         Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralHelp.HeaderTextColor),
-                        Themes.sColor("Previous page", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                        Themes.sColor(Locale.UiMessages.PreviousPage, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
                         "",
                         ""
                     );

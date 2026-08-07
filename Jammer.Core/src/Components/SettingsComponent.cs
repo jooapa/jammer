@@ -268,8 +268,10 @@ namespace Jammer.Components
             await RefreshYtDlpStatusAsync();
             if (!_ytDlpStatus.IsAvailable)
             {
-                string answer = Message.Input(Locale.Settings.YtDlpMissingPrompt, Locale.Settings.YtDlpMissingTitle).Trim();
-                if (!answer.Equals("y", StringComparison.OrdinalIgnoreCase)) return;
+                string answer = Message.Input(
+                    string.Format(Locale.Settings.YtDlpMissingPrompt, Locale.Miscellaneous.YesAnswer),
+                    Locale.Settings.YtDlpMissingTitle).Trim();
+                if (!answer.Equals(Locale.Miscellaneous.YesAnswer, StringComparison.OrdinalIgnoreCase)) return;
                 await InstallYtDlpAsync(false);
                 if (!_ytDlpStatus.IsAvailable) return;
             }
