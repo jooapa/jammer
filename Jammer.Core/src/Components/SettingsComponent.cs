@@ -12,7 +12,8 @@ namespace Jammer.Components
     public sealed record SettingsCategoryDescriptor(
         Func<string> Name,
         Func<string> Description,
-        Func<IReadOnlyList<SettingDescriptor>> Settings);
+        Func<IReadOnlyList<SettingDescriptor>> Settings,
+        char Shortcut = '\0');
 
     /// <summary>Category-based, descriptor-driven settings UI and input handler.</summary>
     public sealed class SettingsComponent : IUIComponent
@@ -49,9 +50,9 @@ namespace Jammer.Components
                     Themes.sColor(Locale.Settings.Description, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
                     Themes.sColor(Locale.Settings.Open, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
                 AddRows(table, categories.Count, index => (
-                    categories[index].Name(),
+                    CategoryNameWithShortcut(categories[index]),
                     categories[index].Description(),
-                    Shortcut(index) + " " + Locale.Settings.ToOpen));
+                    Locale.Settings.ToOpen));
             }
             else
             {
@@ -100,17 +101,19 @@ namespace Jammer.Components
                 return false;
             }
 
-            int index = LetterIndex(key.Key);
             int firstVisible = _currentPage * _pageSize;
             int lastVisible = Math.Min(firstVisible + _pageSize, count);
-            if (index < firstVisible || index >= lastVisible)
-            {
-                return false;
-            }
 
             if (_currentCategory == null)
             {
-                _currentCategory = BuildCategories()[index];
+                IReadOnlyList<SettingsCategoryDescriptor> categories = BuildCategories();
+                int categoryIndex = FindCategoryIndex(categories, key.Key);
+                if (categoryIndex < firstVisible || categoryIndex >= lastVisible)
+                {
+                    return false;
+                }
+
+                _currentCategory = categories[categoryIndex];
                 _currentPage = 0;
                 if (_currentCategory.Name() == Locale.Settings.Integrations)
                 {
@@ -119,7 +122,13 @@ namespace Jammer.Components
             }
             else
             {
-                SettingDescriptor setting = _currentCategory.Settings()[index];
+                int settingIndex = LetterIndex(key.Key);
+                if (settingIndex < firstVisible || settingIndex >= lastVisible)
+                {
+                    return false;
+                }
+
+                SettingDescriptor setting = _currentCategory.Settings()[settingIndex];
                 try
                 {
                     await setting.Activate();
@@ -139,8 +148,9 @@ namespace Jammer.Components
             return false;
         }
 
-        private static IReadOnlyList<SettingsCategoryDescriptor> BuildCategories() =>
-            new SettingsCategoryDescriptor[]
+        private static IReadOnlyList<SettingsCategoryDescriptor> BuildCategories()
+        {
+            SettingsCategoryDescriptor[] categories =
             {
                 new(() => Locale.Settings.Playback, () => Locale.Settings.PlaybackDescription, BuildPlaybackSettings),
                 new(() => Locale.Settings.Interface, () => Locale.Settings.InterfaceDescription, BuildInterfaceSettings),
@@ -148,6 +158,98 @@ namespace Jammer.Components
                 new(() => Locale.Settings.Integrations, () => Locale.Settings.IntegrationsDescription, BuildIntegrationSettings),
                 new(() => Locale.Settings.Advanced, () => Locale.Settings.AdvancedDescription, BuildAdvancedSettings)
             };
+
+            return AssignCategoryShortcuts(categories);
+        }
+
+        private static IReadOnlyList<SettingsCategoryDescriptor> AssignCategoryShortcuts(SettingsCategoryDescriptor[] categories)
+        {
+            var used = new HashSet<char>();
+            var firstLetters = categories
+                .Select(category => FirstShortcutLetter(category.Name()))
+                .ToArray();
+
+            // Reserve unique first letters before resolving collisions so later categories
+            // cannot consume an obvious mnemonic belonging to another category.
+            foreach (char firstLetter in firstLetters.Where(letter => letter != '\0').Distinct())
+            {
+                if (firstLetters.Count(letter => letter == firstLetter) == 1)
+                {
+                    used.Add(firstLetter);
+                }
+            }
+
+            var assignments = new Dictionary<SettingsCategoryDescriptor, char>();
+            foreach (var group in categories
+                .Select((category, index) => (category, index, firstLetter: firstLetters[index]))
+                .GroupBy(item => item.firstLetter))
+            {
+                foreach (var item in group.OrderBy(item => item.category.Name(), StringComparer.CurrentCultureIgnoreCase))
+                {
+                    char shortcut = group.Count() == 1 && item.firstLetter != '\0'
+                        ? item.firstLetter
+                        : FindAvailableShortcut(item.category.Name(), used);
+                    assignments[item.category] = shortcut;
+                    used.Add(shortcut);
+                }
+            }
+
+            return categories
+                .Select(category => category with { Shortcut = assignments[category] })
+                .ToArray();
+        }
+
+        private static char FirstShortcutLetter(string name) =>
+            name.Select(char.ToUpperInvariant).FirstOrDefault(IsShortcutLetter);
+
+        private static char FindAvailableShortcut(string name, HashSet<char> used)
+        {
+            foreach (char letter in name.Select(char.ToUpperInvariant))
+            {
+                if (IsShortcutLetter(letter) && !used.Contains(letter))
+                {
+                    return letter;
+                }
+            }
+
+            return Enumerable.Range('A', 26)
+                .Select(value => (char)value)
+                .First(letter => !used.Contains(letter));
+        }
+
+        private static bool IsShortcutLetter(char value) => value is >= 'A' and <= 'Z';
+
+        private static string CategoryNameWithShortcut(SettingsCategoryDescriptor category)
+        {
+            string name = category.Name();
+            int shortcutIndex = name.IndexOf(category.Shortcut.ToString(), StringComparison.CurrentCultureIgnoreCase);
+            if (shortcutIndex < 0)
+            {
+                return $"[{category.Shortcut}] {name}";
+            }
+
+            return name[..shortcutIndex] + $"[{category.Shortcut}]" + name[(shortcutIndex + 1)..];
+        }
+
+        private static int FindCategoryIndex(IReadOnlyList<SettingsCategoryDescriptor> categories, ConsoleKey key)
+        {
+            string pressedKey = key.ToString();
+            if (pressedKey.Length != 1)
+            {
+                return -1;
+            }
+
+            char pressedLetter = char.ToUpperInvariant(pressedKey[0]);
+            for (int index = 0; index < categories.Count; index++)
+            {
+                if (categories[index].Shortcut == pressedLetter)
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
 
         private static IReadOnlyList<SettingDescriptor> BuildPlaybackSettings() =>
             new SettingDescriptor[]

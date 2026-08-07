@@ -13,6 +13,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Jammer.Core\Jammer.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\locales\*.ini">
+      <Link>locales\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
   
 
 </Project>

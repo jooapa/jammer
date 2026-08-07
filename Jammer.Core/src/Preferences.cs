@@ -173,9 +173,11 @@ namespace Jammer
             }
             if (!Directory.Exists(Path.Combine(JammerPath, "locales")))
             {
-                Log.Error("Soundfonts folder does not exist, creating one...");
+                Log.Error("Locales folder does not exist, creating one...");
                 Directory.CreateDirectory(Path.Combine(JammerPath, "locales"));
             }
+
+            IniFileHandling.EnsureLocaleFilesAvailable();
 
 
             // check if settings.json has every data
@@ -198,7 +200,7 @@ namespace Jammer
             }
 
             // load if not folder empty
-            if (Directory.GetFiles(Path.Combine(JammerPath, "locales")).Length > 0)
+            if (Directory.EnumerateFiles(Path.Combine(JammerPath, "locales"), "*.ini").Any())
             {
                 // load current locale
                 IniFileHandling.SetLocaleData();

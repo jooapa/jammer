@@ -528,6 +528,10 @@ namespace Jammer
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.LanguageChange.BorderColor));
             table.AddColumn(Locale.LocaleKeybind.Description);
             string[] _elements = IniFileHandling.ReadAll_Locales();
+            if (_elements.Length == 0)
+            {
+                return;
+            }
 
             // Loop through the _elements array
             for (int i = 0; i < _elements.Length; i++)

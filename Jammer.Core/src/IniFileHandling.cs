@@ -578,6 +578,7 @@ ExitRssFeed = E
         // country code. en, fi, se, de etc...
         public static void Ini_LoadNewLocale()
         {
+            EnsureLocaleFilesAvailable();
             DirectoryInfo? di;
             try
             {
@@ -589,10 +590,10 @@ ExitRssFeed = E
                 return;
             }
 
-            FileInfo[]? files = null;
+            FileInfo[] files;
             try
             {
-                files = di.GetFiles("*.ini");
+                files = di.GetFiles("*.ini").OrderBy(file => file.Name, StringComparer.OrdinalIgnoreCase).ToArray();
             }
             catch
             {
@@ -600,22 +601,19 @@ ExitRssFeed = E
                 return;
             }
 
-            //Message.Data(ScrollIndexLanguage.ToString(), ScrollIndexLanguage.ToString());
-
-            string country_code = "en";
-            for (int i = 0; i < files?.Length; i++)
+            if (files.Length == 0)
             {
-                if (i == ScrollIndexLanguage)
-                {
-                    string filename = Path.GetFileName(files[i].ToString());
-                    char c = '.';
-                    int pos = filename.IndexOf(c);
-                    country_code = filename.Substring(0, pos);
-
-                    // Message.Data(country_code, country_code);
-                    break;
-                }
+                Start.playerView = "default";
+                Message.Data(Locale.OutsideItems.NoLocaleInDir, Locale.OutsideItems.Error, true);
+                return;
             }
+
+            if (ScrollIndexLanguage < 0 || ScrollIndexLanguage >= files.Length)
+            {
+                ScrollIndexLanguage = 0;
+            }
+
+            string country_code = Path.GetFileNameWithoutExtension(files[ScrollIndexLanguage].Name);
             try
             {
                 LocaleData = parser.ReadFile(Path.Combine(Utils.JammerPath, "locales", $"{country_code}.ini"), System.Text.Encoding.UTF8);
@@ -659,6 +657,7 @@ ExitRssFeed = E
             List<string> results = new();
             DirectoryInfo? di = null;
             string path = Path.Combine(Utils.JammerPath, "locales");
+            EnsureLocaleFilesAvailable();
 
             if (!Directory.Exists(path))
             {
@@ -669,13 +668,34 @@ ExitRssFeed = E
                 return results.ToArray();
             }
 
-            di = new DirectoryInfo(path);
-            FileInfo[] files = di.GetFiles("*.ini");
+            FileInfo[] files;
+            try
+            {
+                di = new DirectoryInfo(path);
+                files = di.GetFiles("*.ini").OrderBy(file => file.Name, StringComparer.OrdinalIgnoreCase).ToArray();
+            }
+            catch (Exception ex)
+            {
+                LocaleAmount = 0;
+                ScrollIndexLanguage = 0;
+                Start.playerView = "default";
+                Log.Error($"Could not read locale files from '{path}': {ex.Message}");
+                Message.Data(Locale.OutsideItems.NoLocaleInDir, Locale.OutsideItems.Error, true);
+                return results.ToArray();
+            }
             LocaleAmount = files.Length;
 
             if (LocaleAmount == 0)
             {
-                throw new Exception(Locale.OutsideItems.NoLocaleInDir);
+                ScrollIndexLanguage = 0;
+                Start.playerView = "default";
+                Message.Data(Locale.OutsideItems.NoLocaleInDir, Locale.OutsideItems.Error, true);
+                return results.ToArray();
+            }
+
+            if (ScrollIndexLanguage < 0 || ScrollIndexLanguage >= LocaleAmount)
+            {
+                ScrollIndexLanguage = 0;
             }
 
             int maximum = 15;
@@ -698,6 +718,44 @@ ExitRssFeed = E
             }
 
             return results.ToArray(); // Convert List<string> to string[]
+        }
+
+        public static void EnsureLocaleFilesAvailable()
+        {
+            string bundledLocalesPath = Path.Combine(AppContext.BaseDirectory, "locales");
+            string userLocalesPath = Path.Combine(Utils.JammerPath, "locales");
+            try
+            {
+                CopyMissingLocaleFiles(bundledLocalesPath, userLocalesPath);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Could not copy bundled locale files: {ex.Message}");
+            }
+        }
+
+        public static int CopyMissingLocaleFiles(string sourceDirectory, string destinationDirectory)
+        {
+            if (!Directory.Exists(sourceDirectory))
+            {
+                return 0;
+            }
+
+            Directory.CreateDirectory(destinationDirectory);
+            int copied = 0;
+            foreach (string sourceFile in Directory.EnumerateFiles(sourceDirectory, "*.ini", SearchOption.TopDirectoryOnly))
+            {
+                string destinationFile = Path.Combine(destinationDirectory, Path.GetFileName(sourceFile));
+                if (File.Exists(destinationFile))
+                {
+                    continue;
+                }
+
+                File.Copy(sourceFile, destinationFile);
+                copied++;
+            }
+
+            return copied;
         }
     }
 }
