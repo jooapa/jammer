@@ -258,19 +258,26 @@ namespace Jammer
                 }
                 if (playerView.Equals("settings"))
                 {
-                    bool leaveSettings = await SettingsComponent.HandleKeyAsync(key, Action == "ToMainMenu");
-                    Action = "";
-                    if (leaveSettings)
+                    bool leaveSettings = false;
+                    try
                     {
-                        playerView = "default";
-                        drawWhole = true;
+                        leaveSettings = await SettingsComponent.HandleKeyAsync(key, Action == "ToMainMenu");
                     }
-                    else
+                    finally
                     {
-                        // Settings actions can be asynchronous. Redraw immediately after
-                        // they finish so the main loop cannot discard the redraw request.
-                        AnsiConsole.Clear();
-                        TUI.RefreshCurrentView();
+                        Action = "";
+                        if (leaveSettings)
+                        {
+                            playerView = "default";
+                            AnsiConsole.Clear();
+                            TUI.RefreshCurrentView();
+                        }
+                        else
+                        {
+                            // Always restore the complete settings screen after any key,
+                            // submenu, asynchronous action, cancellation, or failure.
+                            SettingsComponent.Redraw();
+                        }
                     }
                 }
                 else

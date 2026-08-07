@@ -30,6 +30,14 @@ namespace Jammer.Components
         {
             _currentCategory = null;
             _currentPage = 0;
+            Redraw();
+        }
+
+        public static void Redraw()
+        {
+            if (Start.playerView != "settings") return;
+            AnsiConsole.Clear();
+            TUI.RefreshCurrentView();
         }
 
         public Table Render(LayoutConfig layout)
@@ -78,7 +86,6 @@ namespace Jammer.Components
                 {
                     _currentCategory = null;
                     _currentPage = 0;
-                    AnsiConsole.Clear();
                     return false;
                 }
                 return true;
@@ -91,13 +98,11 @@ namespace Jammer.Components
             if (key.Key is ConsoleKey.PageDown or ConsoleKey.RightArrow or ConsoleKey.DownArrow)
             {
                 _currentPage = (_currentPage + 1) % totalPages;
-                AnsiConsole.Clear();
                 return false;
             }
             if (key.Key is ConsoleKey.PageUp or ConsoleKey.LeftArrow or ConsoleKey.UpArrow)
             {
                 _currentPage = (_currentPage - 1 + totalPages) % totalPages;
-                AnsiConsole.Clear();
                 return false;
             }
 
@@ -144,7 +149,6 @@ namespace Jammer.Components
                 }
             }
 
-            AnsiConsole.Clear();
             return false;
         }
 
@@ -390,7 +394,7 @@ namespace Jammer.Components
         private static async Task InstallYtDlpAsync(bool update)
         {
             string operation = update ? Locale.Settings.UpdatingYtDlp : Locale.Settings.InstallingYtDlp;
-            var progress = new Progress<double>(value => TUI.PrintToTopOfPlayer($"{operation} {value:P0}"));
+            var progress = new InlineProgress<double>(value => TUI.PrintToTopOfPlayer($"{operation} {value:P0}"));
             _ytDlpStatus = await YtDlp.InstallAsync(true, progress);
             _ytDlpStatusChecked = true;
             Message.Data(
@@ -487,6 +491,15 @@ namespace Jammer.Components
         private static void ShowInvalidInput() => Message.Data(
             $"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.",
             Locale.OutsideItems.InvalidInput);
+
+        private sealed class InlineProgress<T> : IProgress<T>
+        {
+            private readonly Action<T> _report;
+
+            public InlineProgress(Action<T> report) => _report = report;
+
+            public void Report(T value) => _report(value);
+        }
 
         public static void DrawSettingsToConsole(LayoutConfig layout)
         {
