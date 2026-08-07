@@ -20,7 +20,10 @@ self-contained, single-file `dotnet publish` and is useful for cross-RID validat
 
 Packaging constraints are enforced:
 
-- Linux AppImage creation requires a Linux x64 host and `appimagetool` on `PATH`.
+- Linux AppImage creation requires a Linux x64 host. The build uses `appimagetool` from
+  `PATH` when available; otherwise it downloads the official x86_64 AppImage into
+  `<output>/tools/` and caches it there. The first packaging run therefore needs network
+  access when `appimagetool` is not already installed.
 - Windows installer creation requires Windows and `makensis` on `PATH`.
 - macOS archives require macOS and universal `libbass.dylib`, `libbassmidi.dylib`, and
   `libbassopus.dylib` under `libs/macos/universal/`. BASS AAC is not used on macOS. Both
