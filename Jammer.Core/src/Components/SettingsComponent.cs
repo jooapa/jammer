@@ -421,7 +421,6 @@ namespace Jammer.Components
             Preferences.clientID = clientId;
             Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
             Preferences.SaveSettings();
-            Message.Data(Locale.Settings.SoundCloudIdUpdated, Locale.Settings.SoundCloudIdTitle, false, false);
         }
 
         private static Task ResetSoundCloudIdAsync()

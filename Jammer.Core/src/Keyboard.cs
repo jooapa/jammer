@@ -260,10 +260,17 @@ namespace Jammer
                 {
                     bool leaveSettings = await SettingsComponent.HandleKeyAsync(key, Action == "ToMainMenu");
                     Action = "";
-                    drawWhole = true;
                     if (leaveSettings)
                     {
                         playerView = "default";
+                        drawWhole = true;
+                    }
+                    else
+                    {
+                        // Settings actions can be asynchronous. Redraw immediately after
+                        // they finish so the main loop cannot discard the redraw request.
+                        AnsiConsole.Clear();
+                        TUI.RefreshCurrentView();
                     }
                 }
                 else
