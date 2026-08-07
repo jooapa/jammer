@@ -36,9 +36,10 @@ function Require-Command([string]$Name, [string]$Guidance) {
 }
 
 function Invoke-External([string]$Command, [string[]]$Arguments) {
-    & $Command @Arguments
-    if ($LASTEXITCODE -ne 0) {
-        throw "Command failed with exit code $LASTEXITCODE`: $Command $($Arguments -join ' ')"
+    & $Command @Arguments | Out-Host
+    $exitCode = $LASTEXITCODE
+    if ($exitCode -ne 0) {
+        throw "Command failed with exit code $exitCode`: $Command $($Arguments -join ' ')"
     }
 }
 
@@ -136,7 +137,7 @@ function Package-MacOS([string]$Rid, [string]$PublishDirectory) {
     }
     $Lipo = Require-Command 'lipo' 'Xcode command-line tools are required to validate macOS native architectures.'
     foreach ($name in $required) {
-        Invoke-External $Lipo @('-verify_arch', 'x86_64', 'arm64', (Join-Path $nativeRoot $name))
+        Invoke-External $Lipo @((Join-Path $nativeRoot $name), '-verify_arch', 'x86_64', 'arm64')
     }
     $bundleName = "jammer-$Version-$Rid"
     $stage = Join-Path $OutputRoot "staging/$bundleName"
