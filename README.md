@@ -331,6 +331,11 @@ install/repair and update actions. Set `JAMMER_YTDLP_BIN` only when you intentio
 Jammer to use a separately managed executable. yt-dlp cache data is kept in
 `<JammerPath>/cache/yt-dlp`.
 
+For current YouTube extraction, Jammer automatically detects Deno, Node.js, or QuickJS
+and passes the first available runtime to yt-dlp. Deno is preferred; Node.js 22 or newer
+is also supported. Audio conversion automatically chooses `libopus` or `libvorbis` based
+on the encoders reported by FFmpeg, avoiding a hard dependency on either one.
+
 ## Star History
 
 <a href="https://star-history.com/#jooapa/jammer&Date">

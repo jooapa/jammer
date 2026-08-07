@@ -107,6 +107,31 @@ public sealed class YtDlpManagerTests : IDisposable
             path => Path.GetFileName(path).StartsWith(".", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void JavaScriptRuntimeResolverPrefersDenoThenNode()
+    {
+        string first = Path.Combine(_root, "first");
+        string second = Path.Combine(_root, "second");
+        Directory.CreateDirectory(first);
+        Directory.CreateDirectory(second);
+        File.WriteAllText(Path.Combine(first, "node"), "node");
+        File.WriteAllText(Path.Combine(second, "deno"), "deno");
+
+        string? result = YtDlpJavaScriptRuntimeResolver.Resolve(string.Join(Path.PathSeparator, first, second));
+
+        Assert.Equal($"deno:{Path.Combine(second, "deno")}", result);
+    }
+
+    [Fact]
+    public void JavaScriptRuntimeResolverUsesNodeWhenDenoIsMissing()
+    {
+        Directory.CreateDirectory(_root);
+        string node = Path.Combine(_root, "node");
+        File.WriteAllText(node, "node");
+
+        Assert.Equal($"node:{node}", YtDlpJavaScriptRuntimeResolver.Resolve(_root));
+    }
+
     private static byte[] CreateMacArchive()
     {
         using var stream = new MemoryStream();

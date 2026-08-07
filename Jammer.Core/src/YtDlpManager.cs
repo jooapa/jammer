@@ -5,6 +5,48 @@ using System.Runtime.InteropServices;
 
 namespace Jammer
 {
+    public static class YtDlpJavaScriptRuntimeResolver
+    {
+        public static string? Resolve(string? searchPath = null)
+        {
+            foreach ((string Runtime, string Executable) candidate in new[]
+            {
+                ("deno", "deno"),
+                ("node", "node"),
+                ("quickjs", "qjs")
+            })
+            {
+                string? path = FindExecutable(candidate.Executable, searchPath);
+                if (path != null) return $"{candidate.Runtime}:{path}";
+            }
+            return null;
+        }
+
+        public static string? FindExecutable(string executable, string? searchPath = null)
+        {
+            IEnumerable<string> directories = (searchPath ?? Environment.GetEnvironmentVariable("PATH") ?? "")
+                .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (OperatingSystem.IsMacOS())
+            {
+                directories = directories.Concat(new[] { "/opt/homebrew/bin", "/usr/local/bin" });
+            }
+
+            string[] extensions = OperatingSystem.IsWindows()
+                ? (Environment.GetEnvironmentVariable("PATHEXT") ?? ".EXE;.CMD;.BAT")
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                : new[] { "" };
+            foreach (string directory in directories.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                foreach (string extension in extensions)
+                {
+                    string candidate = Path.Combine(directory, executable + extension.ToLowerInvariant());
+                    if (File.Exists(candidate)) return Path.GetFullPath(candidate);
+                }
+            }
+            return null;
+        }
+    }
+
     public enum YtDlpPlatform
     {
         WindowsX64,

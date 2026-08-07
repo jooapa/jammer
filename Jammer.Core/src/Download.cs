@@ -384,41 +384,27 @@ namespace Jammer
                 {
                     CacheDir = Utils.YtDlpCachePath
                 };
+                string? javaScriptRuntime = YtDlpJavaScriptRuntimeResolver.Resolve();
+                if (javaScriptRuntime != null)
+                {
+                    ytDlpOptions.AddCustomOption<string>("--js-runtimes", javaScriptRuntime);
+                    Debug.dprint("Using yt-dlp JavaScript runtime: " + javaScriptRuntime);
+                }
                 TUI.PrintToTopOfPlayer(Locale.UiMessages.DownloadingWithYtDlp);
-                
-                // Use simple approach to download best audio
+
+                AudioConversionFormat audioFormat = ResolveYtDlpAudioFormat(ffmpegPath);
                 var result = await ytdl.RunAudioDownload(
                     url,
-                    AudioConversionFormat.Vorbis,
+                    audioFormat,
                     overrideOptions: ytDlpOptions);
 
                 if (result.Success && result.Data != null)
                 {
-                    // Move the downloaded file to our expected path
-                    // var downloadedFile = result.Data;
-                    // if (System.IO.File.Exists(downloadedFile))
-                    // {
-                    //     // Convert to OGG if needed
-                    //     if (!downloadedFile.EndsWith(".ogg"))
-                    //     {
-                    //         // TUI.PrintToTopOfPlayer("Converting to OGG with ffmpeg...");
-                    //         // await FFMPEGConvert(downloadedFile);
-                            
-                    //         // Replace original with converted
-                    //         if (System.IO.File.Exists(songPath))
-                    //         {
-                    //             System.IO.File.Delete(downloadedFile);
-                    //         }
-                    //         else
-                    //         {
-                    //             System.IO.File.Move(downloadedFile, songPath);
-                    //         }
-                    //     }
-                    //     else
-                    //     {
-                    //         System.IO.File.Move(downloadedFile, songPath);
-                    //     }
-                    // }
+                    string downloadedFile = result.Data;
+                    if (!System.IO.File.Exists(downloadedFile))
+                        throw new FileNotFoundException("yt-dlp reported success but its output file was not found.", downloadedFile);
+                    if (!Path.GetFullPath(downloadedFile).Equals(Path.GetFullPath(songPath), StringComparison.Ordinal))
+                        System.IO.File.Move(downloadedFile, songPath, true);
 
                     TUI.PrintToTopOfPlayer(Locale.UiMessages.GettingVideoInfo);
                     
@@ -456,10 +442,51 @@ namespace Jammer
                 }
 
                 Utils.CustomTopErrorMessage = "Error: yt-dlp download failed. (check log)";
-                Log.Error(ex.Message + " :: Could be that the youtube has changed once again something in their backend so this version of yt-dlp doesnt work?. or could also be that url is invalid or private or live.");
+                Log.Error("yt-dlp download failed: " + ex);
                 songPath = "";
                 constructedSong = null;
             }
+        }
+
+        private static AudioConversionFormat ResolveYtDlpAudioFormat(string ffmpegPath)
+        {
+            string encoders = GetFFmpegEncoders(ffmpegPath);
+            if (Regex.IsMatch(encoders, @"\blibopus\b", RegexOptions.IgnoreCase))
+                return AudioConversionFormat.Opus;
+            if (Regex.IsMatch(encoders, @"\blibvorbis\b", RegexOptions.IgnoreCase))
+                return AudioConversionFormat.Vorbis;
+            throw new InvalidOperationException(
+                $"FFmpeg at '{ffmpegPath}' has neither the libopus nor libvorbis audio encoder required by Jammer.");
+        }
+
+        private static string GetFFmpegEncoders(string ffmpegPath)
+        {
+            using var process = new System.Diagnostics.Process
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = ffmpegPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            process.StartInfo.ArgumentList.Add("-hide_banner");
+            process.StartInfo.ArgumentList.Add("-encoders");
+            if (!process.Start()) throw new InvalidOperationException($"Could not start FFmpeg at '{ffmpegPath}'.");
+            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+            Task<string> errorTask = process.StandardError.ReadToEndAsync();
+            if (!process.WaitForExit(10_000))
+            {
+                process.Kill(true);
+                throw new TimeoutException($"FFmpeg at '{ffmpegPath}' did not list its encoders within 10 seconds.");
+            }
+            string output = outputTask.GetAwaiter().GetResult();
+            string error = errorTask.GetAwaiter().GetResult();
+            if (process.ExitCode != 0)
+                throw new InvalidOperationException($"FFmpeg at '{ffmpegPath}' could not list its encoders: {error.Trim()}");
+            return output + Environment.NewLine + error;
         }
 
         private static string ResolveFFmpegPath()
