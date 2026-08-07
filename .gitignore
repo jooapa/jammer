@@ -152,8 +152,9 @@ _NCrunch*
 Jammer-Setup_V1.X.X.exe
 nsis/Jammer.exe
 nsis/*.ico
+artifacts/
+appimagetool*.AppImage
 .vscode/launch.json
 .vscode/tasks.json
 
 .vs/
-

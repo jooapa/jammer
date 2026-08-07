@@ -1,7 +1,9 @@
 using ManagedBass;
 using Spectre.Console;
 using System.IO;
+#if !NO_SHARPHOOK
 using SharpHook;
+#endif
 using System.Diagnostics.CodeAnalysis;
 using Jammer.Components;
 using JRead;
@@ -256,200 +258,12 @@ namespace Jammer
                 }
                 if (playerView.Equals("settings"))
                 {
-                    // Handle settings page navigation first
-                    if (key.Key == ConsoleKey.PageDown || key.Key == ConsoleKey.RightArrow)
-                    {
-                        SettingsComponent.NextSettingsPage();
-                        drawWhole = true;
-                        Action = ""; // Clear action
-                    }
-                    else if (key.Key == ConsoleKey.PageUp || key.Key == ConsoleKey.LeftArrow)
-                    {
-                        SettingsComponent.PreviousSettingsPage();
-                        drawWhole = true;
-                        Action = ""; // Clear action
-                    }
-                    else
-                    {
-                        switch (key.Key)
-                        {
-                            case Keybindings.SettingsKeys.ForwardSecondAmount:
-                                string forwardSecondsString = Message.Input("", Locale.OutsideItems.EnterForwardSeconds);
-                                if (int.TryParse(forwardSecondsString, out int forwardSeconds))
-                                {
-                                    Preferences.forwardSeconds = forwardSeconds;
-                                    Preferences.SaveSettings();
-                                }
-                                else
-                                {
-
-                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                }
-
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.BackwardSecondAmount:
-
-                                string rewindSecondsString = Message.Input("", Locale.OutsideItems.EnterBackwardSeconds);
-                                if (int.TryParse(rewindSecondsString, out int rewindSeconds))
-                                {
-                                    Preferences.rewindSeconds = rewindSeconds;
-                                    Preferences.SaveSettings();
-                                }
-                                else
-                                {
-                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                }
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.ChangeVolumeAmount:
-                                string volumeChangeString = Jammer.Message.Input("", Locale.OutsideItems.EnterVolumeChange);
-                                if (int.TryParse(volumeChangeString, out int volumeChange))
-                                {
-                                    float changeVolumeByFloat = float.Parse(volumeChange.ToString()) / 100;
-                                    Preferences.changeVolumeBy = changeVolumeByFloat;
-                                    Preferences.SaveSettings();
-                                }
-                                else
-                                {
-                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                }
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.SoundCloudClientID:
-                                if (Preferences.clientID == "")
-                                {
-
-                                }
-                                SoundCloudExplode.SoundCloudClient client = new SoundCloudExplode.SoundCloudClient();
-
-                                string soundcloudClientID = Jammer.Message.Input(
-                                    "Enter your Soundcloud Client ID:",
-                                    "Current Soundcloud Client ID: " + (string.IsNullOrEmpty(Preferences.clientID) ? client.ClientId : Preferences.clientID) + "\n" +
-                                    "type 'cancel' to cancel" + "\n" +
-                                    "type 'reset' to reset to default"
-                                );
-
-                                if (soundcloudClientID == "cancel")
-                                {
-                                    drawWhole = true;
-                                    break;
-                                }
-
-                                if (soundcloudClientID == "reset")
-                                {
-                                    Preferences.clientID = "";
-                                    Preferences.SaveSettings();
-                                    drawWhole = true;
-                                    break;
-                                }
-
-                                Preferences.clientID = soundcloudClientID;
-                                Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
-
-                                Preferences.SaveSettings();
-
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.Autosave:
-                                Preferences.isAutoSave = !Preferences.isAutoSave;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.LoadEffects:
-                                Effects.ReadEffects();
-                                if (Utils.Songs.Length > 0)
-                                {
-                                    Play.SetEffectsToChannel();
-                                }
-                                break;
-                            case Keybindings.SettingsKeys.ToggleMediaButtons:
-                                Preferences.isMediaButtons = !Preferences.isMediaButtons;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.ToggleVisualizer:
-                                Preferences.isVisualizer = !Preferences.isVisualizer;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.LoadVisualizer:
-                                Visual.Read();
-                                break;
-                            case Keybindings.SettingsKeys.KeyModifierHelper:
-                                Preferences.isModifierKeyHelper = !Preferences.isModifierKeyHelper;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.FetchClientID:
-                                string clientID = await SCClientIdFetcher.GetClientId();
-                                if (string.IsNullOrEmpty(clientID))
-                                {
-                                    Message.Data("Client ID not found", "Error :(", true, false);
-                                    drawWhole = true;
-                                    break;
-
-                                }
-                                Preferences.clientID = clientID;
-                                Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
-                                Preferences.SaveSettings();
-                                Message.Data("Client ID fetched and set as: " + clientID, "Success!", false, false);
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.SkipErrors:
-                                Preferences.isSkipErrors = !Preferences.isSkipErrors;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.TogglePlaylistPosition:
-                                Preferences.showPlaylistPosition = !Preferences.showPlaylistPosition;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.RssSkipAfterTime:
-                                Preferences.rssSkipAfterTime = !Preferences.rssSkipAfterTime;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.RssSkipAfterTimeValue:
-                                string rssSkipAfterTimeValueString = Message.Input(
-                                    "",
-                                    "Enter the amount of seconds after rss feed is skipped. Current: " + Preferences.rssSkipAfterTimeValue.ToString() + " seconds."
-                                );
-                                if (int.TryParse(rssSkipAfterTimeValueString, out int rssSkipAfterTimeValue))
-                                {
-                                    Preferences.rssSkipAfterTimeValue = rssSkipAfterTimeValue;
-                                    Preferences.SaveSettings();
-                                }
-                                else
-                                {
-                                    Message.Data($"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.", Locale.OutsideItems.InvalidInput);
-                                }
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.QuickSearch:
-                                Preferences.isQuickSearch = !Preferences.isQuickSearch;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.FavoriteExplainer:
-                                Preferences.favoriteExplainer = !Preferences.favoriteExplainer;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                            case Keybindings.SettingsKeys.QuickPlayFromSearch:
-                                Preferences.isQuickPlayFromSearch = !Preferences.isQuickPlayFromSearch;
-                                Preferences.SaveSettings();
-                                drawWhole = true;
-                                break;
-                        }
-                    }
-
-                    // able to return to default view
-                    if (Action == "ToMainMenu")
+                    bool leaveSettings = await SettingsComponent.HandleKeyAsync(key, Action == "ToMainMenu");
+                    Action = "";
+                    drawWhole = true;
+                    if (leaveSettings)
                     {
                         playerView = "default";
-                        drawWhole = true;
                     }
                 }
                 else
@@ -593,6 +407,7 @@ namespace Jammer
                                 break;
                             }
                             playerView = "settings";
+                            SettingsComponent.Open();
                             break;
                         case "ToSongStart": // goto song start
                             Play.SeekSong(0, false);
@@ -898,42 +713,6 @@ namespace Jammer
                             Play.PlaySong(Utils.Songs, Utils.CurrentSongIndex);
 
                             break;
-                        case "BackEndChange":
-                            AnsiConsole.Clear();
-
-                            var backEndsList = new CustomSelectInput[]
-                            {
-                                new() {
-                                    DataURI = "YT-DLP",
-                                    Title = "YT-DLP",
-                                    Author = "YT-DLP",
-                                    Description = "Powerful backend with excellent download support. Requires YT-DLP to be installed separately (add to PATH, set JAMMER_YTDLP_BIN environment variable, or place in Jammer folder on Windows)."
-                                },
-                                new() {
-                                    DataURI = "YoutubeExplode",
-                                    Title = "YoutubeExplode",
-                                    Author = "Tyrrrz",
-                                    Description = "Can be a bit not up to date with Youtube changes, but does not require separate installation."
-                                },
-                            };
-
-                            string chosenBackEnd = Message.CustomMenuSelect(backEndsList, "Choose the backend you want to use for Youtube.");
-
-                            switch (chosenBackEnd)
-                            {
-                                case "YoutubeExplode":
-                                    Preferences.backEndType = BackEndTypeYT.YoutubeExplode;
-                                    break;
-                                case "VideoLibrary":
-                                    break;
-                                case "YT-DLP":
-                                    Preferences.backEndType = BackEndTypeYT.YoutubeDL;
-                                    break;
-                            }
-
-                            Preferences.SaveSettings();
-                            drawWhole = true;
-                            break;
                         case "ChangeSoundFont":
                             AnsiConsole.Clear();
                             string[] soundFonts = SoundFont.GetSoundFonts();
@@ -1106,7 +885,8 @@ namespace Jammer
             return true;
         }
 
-        public static void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
+#if !NO_SHARPHOOK
+        private static void OnKeyReleased(object? sender, KeyboardHookEventArgs e)
         {
             if (Preferences.isMediaButtons)
             {
@@ -1129,6 +909,7 @@ namespace Jammer
                 }
             }
         }
+#endif
 
         public static void ClearKeyboardBuffer()
         {
@@ -1138,12 +919,19 @@ namespace Jammer
             }
         }
 
-        public static async void InitializeSharpHook()
+#if !NO_SHARPHOOK
+        public static async void InitializeMediaButtonHook()
         {
             var hook = new TaskPoolGlobalHook();
             hook.KeyReleased += OnKeyReleased;     // EventHandler<KeyboardHookEventArgs>
             await hook.RunAsync();
         }
+#else
+        public static void InitializeMediaButtonHook()
+        {
+            Log.Info("Global media buttons are disabled on macOS.");
+        }
+#endif
 
     }
 }

@@ -100,7 +100,7 @@ namespace Jammer
 
             // Initialize the keyboard hook
             Log.Info("Initializing keyboard hook");
-            InitializeSharpHook();
+            InitializeMediaButtonHook();
             // Or specify a specific name in the current dir
             state = MainStates.idle; // Start in idle state if no songs are given
             if (Utils.Songs.Length != 0)
@@ -409,4 +409,3 @@ namespace Jammer
         }
     }
 }
-

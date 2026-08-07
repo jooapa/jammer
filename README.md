@@ -241,7 +241,8 @@ You can change the client id by going to the settings and changing the client id
 - start playing some random song
 - you start to see some entries in the network tab. you should see some thing like `me?client_id=wDSKS1Bp8WmdlRPkZ7NQXGs67PMXl2Nd`
 
-or you can use the automatic client id fetcher, that is located in the settings menu. *(Might crash on linux)*
+Or use Settings → Integrations → Fetch SoundCloud client ID. Jammer fetches the public
+SoundCloud JavaScript assets over HTTP; it does not download or launch a browser.
 
 ## YouTube Download Backends
 
@@ -253,35 +254,14 @@ The default backend that works out of the box without any additional setup.
 ### yt-dlp Backend
 An alternative backend that uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) for downloading YouTube content.
 
-**Setup Requirements:**
+Choose it from Settings → Integrations. Jammer validates the configured executable and,
+when necessary, downloads the official release atomically into the user-writable
+`<JammerPath>/tools` directory. It does not write into the application installation.
 
-#### Windows:
-
-##### In Jammer installation folder
-- Download `yt-dlp.exe` from the [official releases](https://github.com/yt-dlp/yt-dlp/releases)
-- Place the `yt-dlp.exe` file in the same folder as `jammer.exe`
-
-##### Environment Variable
-- Alternatively, place the `yt-dlp.exe` binary to environment variable `JAMMER_YTDLP_BIN`
-
-#### Linux/macOS
-
-##### Global Installation
-- Install yt-dlp and ensure it's available in your system PATH:
-```bash
-# Using pip
-pip install yt-dlp
-
-# Or using your package manager
-# Ubuntu/Debian
-sudo apt install yt-dlp
-```
-
-##### Local Installation
-- place the `yt-dlp` binary to environment variable `JAMMER_YTDLP_BIN`
-
-#### Switching Backends
-You can change between backends by pressing `B` (default keybind) while Jammer is running.
+Resolution order is: a valid `JAMMER_YTDLP_BIN` override, Jammer's managed binary, an
+executable on `PATH`, then automatic installation. The Integrations screen also provides
+install/repair and update actions. Set `JAMMER_YTDLP_BIN` only when you intentionally want
+Jammer to use a separately managed executable.
 
 ## Star History
 
@@ -327,59 +307,26 @@ See `scripts/README.md` for helper script documentation, including how to use `s
 dotnet run --project Jammer.CLI -- [args]
 ```
 
-### Build
+### Release builds
 
-#### Windows
+PowerShell 7 is the single build entry point. The version comes from `VERSION`; use
+`-Version` for a one-off override. Outputs are written to `artifacts/` by default.
 
-```bash
-dotnet publish -r win10-x64 -c Release /p:PublishSingleFile=true -p:DefineConstants="CLI_UI" --self-contained
+```powershell
+pwsh ./scripts/build.ps1 -Target linux-x64
+pwsh ./scripts/build.ps1 -Target win-x64
+pwsh ./scripts/build.ps1 -Target osx-x64
+pwsh ./scripts/build.ps1 -Target osx-arm64
+pwsh ./scripts/build.ps1 -Target all
 ```
 
-##### Linux
-
-Add **BASS** and **BASS_AAC** libraries to the executable folder and to $LD_LIBRARY_PATH.
-
-```bash
-dotnet publish -r linux-x64 -c Release /p:PublishSingleFile=true -p:UseForms=false -p:DefineConstants="CLI_UI" --self-contained
-```
-
-##### Linux AppImage release
-
-AppImage requires fuse. To install fuse
-
-```bash
-sudo apt install libfuse2
-```
-
-To install appimagetool
-
-```bash
-wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-chmod 700 appimagetool-x86_64.AppImage
-```
-
-To create AppImage run `build-appimage.sh`
-
-or if you want to build it from usb
-
-```bash
-sh -c "$(wget -O- https://raw.githubusercontent.com/jooapa/jammer/main/usb-appimage.sh)"
-```
-
-##### Build script for NSIS installer
-
-```shell
-.\Jammer.CLI\buildcli.bat
-```
-
-you can use `update.py` to change the version of the app.
-
-```bash
-                 |-Major
-                 ||--Minor
-                 |||---Patch
-python update.py 101
-```
+AppImage packaging requires Linux x64 and `appimagetool`; the Windows installer requires
+Windows and `makensis`. Both macOS targets use only `libbass.dylib`, `libbassmidi.dylib`,
+and `libbassopus.dylib` from `libs/macos/universal`; BASS AAC is not used on macOS.
+Missing libraries make the script refuse to claim a runnable macOS archive. Install
+`ffmpeg` separately and keep it on `PATH`.
+Use `-SkipPackage` to validate cross-RID .NET publishing without packaging. macOS output
+is unsigned and unnotarized; signing and notarization remain release-operator steps.
 
 ## Known Issues
 

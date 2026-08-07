@@ -1,5 +1,7 @@
 using ManagedBass;
+#if !NO_BASS_AAC
 using ManagedBass.Aac;
+#endif
 using ManagedBass.DirectX8;
 using ManagedBass.Midi;
 using ManagedBass.Opus;
@@ -817,18 +819,22 @@ namespace Jammer
             // flags
             BassFlags flags = BassFlags.Default;
 
+#if !NO_BASS_AAC
             BassAac.PlayAudioFromMp4 = true;
             BassAac.AacSupportMp4 = true;
+#endif
 
             ////
             Utils.CurrentMusic = Bass.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
+#if !NO_BASS_AAC
             if (Utils.CurrentMusic == 0)
                 Utils.CurrentMusic = BassAac.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
             if (Utils.CurrentMusic == 0)
                 Utils.CurrentMusic = BassAac.CreateMp4Stream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
+#endif
             if (Utils.CurrentMusic == 0)
                 Utils.CurrentMusic = BassOpus.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
 

@@ -107,7 +107,6 @@ namespace Jammer
         public static string VolumeUpByOne = CheckValue("VolumeUpByOne", "Shift + UpArrow");
         public static string VolumeDownByOne = CheckValue("VolumeDownByOne", "Shift + DownArrow");
         public static string ExitRssFeed = CheckValue("ExitRssFeed", "E");
-        public static string BackEndChange = CheckValue("BackEndChange", "B");
 
         public static string CheckValue(string value, string defaultValue)
         {
@@ -154,26 +153,5 @@ namespace Jammer
             return string.Join(" + ", parts);
         }
 
-        public static class SettingsKeys
-        {
-            public const ConsoleKey ForwardSecondAmount = ConsoleKey.A;
-            public const ConsoleKey BackwardSecondAmount = ConsoleKey.B;
-            public const ConsoleKey ChangeVolumeAmount = ConsoleKey.C;
-            public const ConsoleKey Autosave = ConsoleKey.D;
-            public const ConsoleKey LoadEffects = ConsoleKey.E;
-            public const ConsoleKey ToggleMediaButtons = ConsoleKey.F;
-            public const ConsoleKey ToggleVisualizer = ConsoleKey.G;
-            public const ConsoleKey LoadVisualizer = ConsoleKey.H;
-            public const ConsoleKey SoundCloudClientID = ConsoleKey.I;
-            public const ConsoleKey FetchClientID = ConsoleKey.J;
-            public const ConsoleKey KeyModifierHelper = ConsoleKey.K;
-            public const ConsoleKey SkipErrors = ConsoleKey.L;
-            public const ConsoleKey TogglePlaylistPosition = ConsoleKey.M;
-            public const ConsoleKey RssSkipAfterTime = ConsoleKey.N;
-            public const ConsoleKey RssSkipAfterTimeValue = ConsoleKey.O;
-            public const ConsoleKey QuickSearch = ConsoleKey.P;
-            public const ConsoleKey FavoriteExplainer = ConsoleKey.Q;
-            public const ConsoleKey QuickPlayFromSearch = ConsoleKey.R;
-        }
     }
 }

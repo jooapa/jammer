@@ -145,6 +145,75 @@ namespace Jammer
             public static string ToChange = CheckValueLocale("Settings", "ToChange", "To Change");
             public static string ToToggle = CheckValueLocale("Settings", "ToToggle", "To Toggle");
             public static string FavoriteNotificationTimeout = CheckValueLocale("Settings", "FavoriteNotificationTimeout", "Favorite notification timeout");
+            public static string Category = CheckValueLocale("Settings", "Category", "Category");
+            public static string Description = CheckValueLocale("Settings", "Description", "Description");
+            public static string Open = CheckValueLocale("Settings", "Open", "Open");
+            public static string ToOpen = CheckValueLocale("Settings", "ToOpen", "to open");
+            public static string Playback = CheckValueLocale("Settings", "Playback", "Playback");
+            public static string PlaybackDescription = CheckValueLocale("Settings", "PlaybackDescription", "Seeking, volume, and saving");
+            public static string Interface = CheckValueLocale("Settings", "Interface", "Interface");
+            public static string InterfaceDescription = CheckValueLocale("Settings", "InterfaceDescription", "Visualizer and display behavior");
+            public static string LibraryFeeds = CheckValueLocale("Settings", "LibraryFeeds", "Library and feeds");
+            public static string LibraryFeedsDescription = CheckValueLocale("Settings", "LibraryFeedsDescription", "Search, favorites, and RSS feeds");
+            public static string Integrations = CheckValueLocale("Settings", "Integrations", "Integrations");
+            public static string IntegrationsDescription = CheckValueLocale("Settings", "IntegrationsDescription", "YouTube, yt-dlp, and SoundCloud");
+            public static string Advanced = CheckValueLocale("Settings", "Advanced", "Advanced");
+            public static string AdvancedDescription = CheckValueLocale("Settings", "AdvancedDescription", "Effects, key helpers, and errors");
+            public static string MediaButtons = CheckValueLocale("Settings", "MediaButtons", "Media buttons");
+            public static string Visualizer = CheckValueLocale("Settings", "Visualizer", "Visualizer");
+            public static string ReloadVisualizer = CheckValueLocale("Settings", "ReloadVisualizer", "Reload visualizer settings");
+            public static string PlaylistPosition = CheckValueLocale("Settings", "PlaylistPosition", "Show playlist position");
+            public static string FavoriteExplainer = CheckValueLocale("Settings", "FavoriteExplainer", "Favorite explanation");
+            public static string RssSkip = CheckValueLocale("Settings", "RssSkip", "Skip RSS items after a delay");
+            public static string RssSkipSeconds = CheckValueLocale("Settings", "RssSkipSeconds", "RSS skip delay");
+            public static string EnterRssSkipSeconds = CheckValueLocale("Settings", "EnterRssSkipSeconds", "Enter the RSS skip delay in seconds");
+            public static string QuickSearch = CheckValueLocale("Settings", "QuickSearch", "Quick search");
+            public static string QuickPlaySearch = CheckValueLocale("Settings", "QuickPlaySearch", "Quick play from search");
+            public static string ReloadEffects = CheckValueLocale("Settings", "ReloadEffects", "Reload effects settings");
+            public static string ModifierHelpers = CheckValueLocale("Settings", "ModifierHelpers", "Key modifier helpers");
+            public static string SkipErrors = CheckValueLocale("Settings", "SkipErrors", "Skip playback errors");
+            public static string ToRun = CheckValueLocale("Settings", "ToRun", "to run");
+            public static string ToSelect = CheckValueLocale("Settings", "ToSelect", "to select");
+            public static string ToRefresh = CheckValueLocale("Settings", "ToRefresh", "to refresh");
+            public static string StatusOnly = CheckValueLocale("Settings", "StatusOnly", "status");
+            public static string YouTubeBackend = CheckValueLocale("Settings", "YouTubeBackend", "YouTube backend");
+            public static string YtDlpStatus = CheckValueLocale("Settings", "YtDlpStatus", "yt-dlp status");
+            public static string InstallRepairYtDlp = CheckValueLocale("Settings", "InstallRepairYtDlp", "Install or repair yt-dlp");
+            public static string UpdateYtDlp = CheckValueLocale("Settings", "UpdateYtDlp", "Update yt-dlp");
+            public static string SoundCloudStatus = CheckValueLocale("Settings", "SoundCloudStatus", "SoundCloud client ID status");
+            public static string ManualSoundCloudId = CheckValueLocale("Settings", "ManualSoundCloudId", "Enter SoundCloud client ID");
+            public static string FetchSoundCloudId = CheckValueLocale("Settings", "FetchSoundCloudId", "Fetch SoundCloud client ID");
+            public static string ResetSoundCloudId = CheckValueLocale("Settings", "ResetSoundCloudId", "Use library SoundCloud client ID");
+            public static string YoutubeExplodeDescription = CheckValueLocale("Settings", "YoutubeExplodeDescription", "Built-in backend; no external downloader required.");
+            public static string YtDlpDescription = CheckValueLocale("Settings", "YtDlpDescription", "Managed external backend with broad download support.");
+            public static string SelectBackendPrompt = CheckValueLocale("Settings", "SelectBackendPrompt", "Choose the YouTube download backend.");
+            public static string YtDlpMissingPrompt = CheckValueLocale("Settings", "YtDlpMissingPrompt", "yt-dlp is missing. Install it now? Enter y to continue.");
+            public static string YtDlpMissingTitle = CheckValueLocale("Settings", "YtDlpMissingTitle", "yt-dlp required");
+            public static string InstallingYtDlp = CheckValueLocale("Settings", "InstallingYtDlp", "Installing yt-dlp...");
+            public static string UpdatingYtDlp = CheckValueLocale("Settings", "UpdatingYtDlp", "Updating yt-dlp...");
+            public static string YtDlpReadyMessage = CheckValueLocale("Settings", "YtDlpReadyMessage", "yt-dlp {0} is ready.");
+            public static string YtDlpReadyTitle = CheckValueLocale("Settings", "YtDlpReadyTitle", "yt-dlp ready");
+            public static string CheckingStatus = CheckValueLocale("Settings", "CheckingStatus", "Checking...");
+            public static string AvailableStatus = CheckValueLocale("Settings", "AvailableStatus", "Available: {0} ({1})");
+            public static string NotInstalled = CheckValueLocale("Settings", "NotInstalled", "Not installed");
+            public static string SoundCloudIdPrompt = CheckValueLocale("Settings", "SoundCloudIdPrompt", "Enter exactly 32 ASCII letters or digits.");
+            public static string SoundCloudIdTitle = CheckValueLocale("Settings", "SoundCloudIdTitle", "SoundCloud client ID");
+            public static string InvalidSoundCloudId = CheckValueLocale("Settings", "InvalidSoundCloudId", "The client ID must contain exactly 32 ASCII letters or digits.");
+            public static string FetchingSoundCloudId = CheckValueLocale("Settings", "FetchingSoundCloudId", "Fetching SoundCloud client ID...");
+            public static string SoundCloudIdUpdated = CheckValueLocale("Settings", "SoundCloudIdUpdated", "The SoundCloud client ID was updated.");
+            public static string LibraryDefaultStatus = CheckValueLocale("Settings", "LibraryDefaultStatus", "Library default: {0}");
+            public static string CustomStatus = CheckValueLocale("Settings", "CustomStatus", "Custom: {0}");
+            public static string IntegrationError = CheckValueLocale("Settings", "IntegrationError", "Integration error");
+            public static string OperationFailed = CheckValueLocale("Settings", "OperationFailed", "The operation failed. See the log for details.");
+            public static string OperationCancelled = CheckValueLocale("Settings", "OperationCancelled", "Operation cancelled");
+            public static string ManagedToolSource = CheckValueLocale("Settings", "ManagedToolSource", "managed by Jammer");
+            public static string PathToolSource = CheckValueLocale("Settings", "PathToolSource", "system PATH");
+            public static string OverrideToolSource = CheckValueLocale("Settings", "OverrideToolSource", "environment override");
+            public static string BackHint = CheckValueLocale("Settings", "BackHint", "Escape: back");
+            public static string PageStatus = CheckValueLocale("Settings", "PageStatus", "Page {0}/{1}");
+            public static string PageHint = CheckValueLocale("Settings", "PageHint", "Arrows/Page Up/Page Down");
+            public static string FavoriteAddedMessage = CheckValueLocale("Settings", "FavoriteAddedMessage", "Favorite added. Play favorites by appending :fav to a playlist name. Disable this explanation in Settings > Interface.");
+            public static string FavoriteAddedTitle = CheckValueLocale("Settings", "FavoriteAddedTitle", "Favorite song added");
         }
 
         public static class CliHelp
@@ -160,7 +229,6 @@ namespace Jammer
             public static string ShowPlaylistCommands = CheckValueLocale("CliHelp", "ShowPlaylistCommands", "Show playlist commands");
             public static string OpenJammerFolder = CheckValueLocale("CliHelp", "OpenJammerFolder", "Open Jammer folder");
             public static string AutoUpdateJammer = CheckValueLocale("CliHelp", "AutoUpdateJammer", "Auto Update Jammer");
-            public static string TestPuppeteer = CheckValueLocale("CliHelp", "TestPuppeteer", "Run Puppeteer self-test");
             public static string ShowJammerVersion = CheckValueLocale("CliHelp", "ShowJammerVersion", "Show Jammer version");
             public static string Url = CheckValueLocale("CliHelp", "Url", "url");
             public static string File = CheckValueLocale("CliHelp", "File", "file");
@@ -379,8 +447,6 @@ namespace Jammer
             public static string ExitRssFeed = CheckValueLocale("EditKeysTexts", "ExitRssFeed", "Exit RSS feed");
             public static string SearchInPlaylist = CheckValueLocale("EditKeysTexts", "SearchInPlaylist", "Search in playlist");
             public static string SearchByAuthor = CheckValueLocale("EditKeysTexts", "SearchByAuthor", "Search by author");
-            public static string BackEndChange = CheckValueLocale("EditKeysTexts", "BackEndChange", "Change backend");
-
         }
         static string CheckValueLocale(string key, string value, string defaultString)
         {

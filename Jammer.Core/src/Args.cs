@@ -158,19 +158,6 @@ namespace Jammer
                         AnsiConsole.MarkupLine($"[green]Jammer {Locale.Miscellaneous.Version}: " + Utils.Version + "[/]");
                         Environment.Exit(0);
                         return;
-                    case "--test-puppeteer":
-                        try
-                        {
-                            string report = SCClientIdFetcher.RunSelfTestAsync().GetAwaiter().GetResult();
-                            AnsiConsole.WriteLine(report);
-                            Environment.Exit(0);
-                        }
-                        catch (Exception ex)
-                        {
-                            AnsiConsole.WriteLine("Puppeteer self-test failed: " + ex.Message);
-                            Environment.Exit(1);
-                        }
-                        return;
                     case "--flush":
                     case "-f":
                         Songs.Flush();

@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <JammerVersionFile>$(MSBuildThisFileDirectory)VERSION</JammerVersionFile>
+    <JammerVersion Condition="'$(JammerVersion)' == ''">$([System.IO.File]::ReadAllText('$(JammerVersionFile)').Trim())</JammerVersion>
+    <Version>$(JammerVersion)</Version>
+    <InformationalVersion>$(JammerVersion)</InformationalVersion>
+  </PropertyGroup>
+</Project>

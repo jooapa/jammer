@@ -2,6 +2,33 @@
 
 This directory contains helper scripts for building, running, packaging, and local development tasks.
 
+## Release builds
+
+Run all release builds through PowerShell 7:
+
+```powershell
+pwsh ./scripts/build.ps1 -Target linux-x64
+pwsh ./scripts/build.ps1 -Target win-x64
+pwsh ./scripts/build.ps1 -Target osx-x64
+pwsh ./scripts/build.ps1 -Target osx-arm64
+pwsh ./scripts/build.ps1 -Target all
+```
+
+Useful options include `-Configuration Debug`, `-Clean`, `-OutputDirectory <path>`,
+`-Version <version>`, and `-SkipPackage`. `-SkipPackage` still runs the explicit,
+self-contained, single-file `dotnet publish` and is useful for cross-RID validation.
+
+Packaging constraints are enforced:
+
+- Linux AppImage creation requires a Linux x64 host and `appimagetool` on `PATH`.
+- Windows installer creation requires Windows and `makensis` on `PATH`.
+- macOS archives require macOS and universal `libbass.dylib`, `libbassmidi.dylib`, and
+  `libbassopus.dylib` under `libs/macos/universal/`. BASS AAC is not used on macOS. Both
+  x64 and arm64 slices are verified with `lipo`; archives are unsigned and unnotarized.
+  Install `ffmpeg` separately and keep it on `PATH`.
+
+The script never bundles yt-dlp. Jammer installs it into its user-writable tools directory.
+
 ## Local .NET install on unsupported Linux distros
 
 If your distro does not provide a usable `dotnet` package, you can use `dotnet-install.sh` to install a local .NET SDK without changing system packages.

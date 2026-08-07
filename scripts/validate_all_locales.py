@@ -11,7 +11,8 @@ def validate_all_locales() -> None:
     # get the keys from en.ini
     # ie. ToMainMenu = To Main Menu
     
-    en_keys = [line.split("=")[0].strip() for line in en_lines]
+    en_keys = [line.split("=", 1)[0].strip() for line in en_lines
+               if "=" in line and not line.lstrip().startswith((";", "#"))]
     
     # get all the locale files
     locale_files = os.listdir("locales")
@@ -23,7 +24,8 @@ def validate_all_locales() -> None:
         with open(f"locales/{locale_file}", "r", encoding="utf-8") as file:
             locale_lines = file.readlines()
         
-        locale_keys = [line.split("=")[0].strip() for line in locale_lines]
+        locale_keys = [line.split("=", 1)[0].strip() for line in locale_lines
+                       if "=" in line and not line.lstrip().startswith((";", "#"))]
         
         missing_keys = []
         

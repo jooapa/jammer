@@ -19,6 +19,7 @@ namespace Jammer
         public static Song? constructedSong = null;
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
+        private static readonly YtDlpManager YtDlp = new();
 
         public static (string, Song?) DownloadSong(string url)
         {
@@ -253,11 +254,7 @@ namespace Jammer
 
                 if (streamInfo != null)
                 {
-                    var ffmpegPath = "ffmpeg";
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
-                    }
+                    string ffmpegPath = ResolveFFmpegPath();
 
                     // detect if ffmpeg is installed on the system in the path
                     if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
@@ -354,62 +351,25 @@ namespace Jammer
             try
             {
                 var ytdl = new YoutubeDL();
+                var installProgress = new Progress<double>(value =>
+                    TUI.PrintToTopOfPlayer($"{Locale.Settings.InstallingYtDlp} {value:P0}"));
+                YtDlpResolution resolution = await YtDlp.ResolveAsync(true, installProgress);
+                if (!resolution.IsAvailable)
+                {
+                    throw new InvalidOperationException(Locale.Settings.NotInstalled);
+                }
+                ytdl.YoutubeDLPath = resolution.Path!;
 
-                // Set yt-dlp executable path if needed
-                // First check environment variable
-                string? ytdlpEnvPath = Environment.GetEnvironmentVariable("JAMMER_YTDLP_BIN");
-                
-                if (!string.IsNullOrEmpty(ytdlpEnvPath) && System.IO.File.Exists(ytdlpEnvPath))
+                // Prefer the packaged ffmpeg and fall back to PATH.
+                string ffmpegPath = ResolveFFmpegPath();
+                if (System.IO.File.Exists(ffmpegPath) || IsFFmpegInstalled())
                 {
-                    ytdl.YoutubeDLPath = ytdlpEnvPath;
+                    ytdl.FFmpegPath = ffmpegPath;
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                else
                 {
-                    // Check local directory for yt-dlp.exe
-                    var ytdlpPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "yt-dlp.exe");
-                    if (System.IO.File.Exists(ytdlpPath))
-                    {
-                        ytdl.YoutubeDLPath = ytdlpPath;
-                    }
-                    else if (!IfYtdlpInstalled())
-                    {
-                        Message.Data("yt-dlp is not installed on your system. Please install it globally or place yt-dlp.exe in the same folder as jammer.exe, or set JAMMER_YTDLP_BIN environment variable.", "Error", true);
-                        return;
-                    }
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    // Check for global yt-dlp installation
-                    if (!IfYtdlpInstalled())
-                    {
-                        Message.Data("yt-dlp is not installed on your system. Please install it globally or set JAMMER_YTDLP_BIN environment variable to the yt-dlp binary path.", "Error", true);
-                        return;
-                    }
-                    ytdl.YoutubeDLPath = "yt-dlp";
-                }
-
-                // Set ffmpeg path
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    var ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
-                    if (System.IO.File.Exists(ffmpegPath))
-                    {
-                        ytdl.FFmpegPath = ffmpegPath;
-                    }
-                    else{
-                        Message.Data("FFmpeg should come with Jammer setup. Reinstall using the setup, or place ffmpeg.exe in the same folder as jammer.exe.", "Error", true);
-                        return;
-                    }
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    // check for ffmpeg
-                    if (!IsFFmpegInstalled())
-                    {
-                        Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error", true);
-                        return;
-                    }
-                    ytdl.FFmpegPath = "ffmpeg";
+                    Message.Data("FFmpeg is not installed on your system. Please install it for so that the converting works.", "Error", true);
+                    return;
                 }
 
                 Debug.dprint("Using yt-dlp at: " + ytdl.YoutubeDLPath);
@@ -491,6 +451,13 @@ namespace Jammer
             }
         }
 
+        private static string ResolveFFmpegPath()
+        {
+            string fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg";
+            string packaged = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            return System.IO.File.Exists(packaged) ? packaged : fileName;
+        }
+
         private static bool IsFFmpegInstalled()
         {
             try
@@ -520,35 +487,6 @@ namespace Jammer
             }
         }
 
-        private static bool IfYtdlpInstalled()
-        {
-            try
-            {
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "yt-dlp",
-                    Arguments = "--version",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-            
-                using System.Diagnostics.Process? process = System.Diagnostics.Process.Start(startInfo);
-                if (process == null)
-                {
-                    return false;
-                }
-                
-                process.WaitForExit();
-                return process.ExitCode == 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         private static Task FFMPEGConvert(string songPath, Song? metadata = null)
         {
             return Task.Run(() =>
@@ -556,11 +494,7 @@ namespace Jammer
 
                 string tempSongPath = songPath + ".ogg";
 
-                string ffmpegPath = "ffmpeg";
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
-                }
+                string ffmpegPath = ResolveFFmpegPath();
 
                 // detect if ffmpeg is installed on the system in the path
                 if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))

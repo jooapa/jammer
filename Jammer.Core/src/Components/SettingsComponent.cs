@@ -1,368 +1,395 @@
 using Spectre.Console;
+using System.Text.RegularExpressions;
 
 namespace Jammer.Components
 {
-    /// <summary>
-    /// Represents a single setting item
-    /// </summary>
-    public class SettingItem
-    {
-        public string Name { get; set; } = "";
-        public string CurrentValue { get; set; } = "";
-        public string ChangeKey { get; set; } = "";
-        public string ChangeDescription { get; set; } = "";
-    }
+    public sealed record SettingDescriptor(
+        Func<string> Name,
+        Func<string> Value,
+        Func<Task> Activate,
+        Func<string> Description);
 
-    /// <summary>
-    /// Component responsible for rendering the settings menu
-    /// Extracted from TUI.DrawSettings method
-    /// </summary>
-    public class SettingsComponent : IUIComponent
-    {
-        private static int _currentPage = 1;
-        private static int _totalPages = 1;
-        private static readonly int _settingsPerPage = 6; // Configurable page size
-        private static List<SettingItem> _settings = new List<SettingItem>();
+    public sealed record SettingsCategoryDescriptor(
+        Func<string> Name,
+        Func<string> Description,
+        Func<IReadOnlyList<SettingDescriptor>> Settings);
 
-        static SettingsComponent()
+    /// <summary>Category-based, descriptor-driven settings UI and input handler.</summary>
+    public sealed class SettingsComponent : IUIComponent
+    {
+        private static readonly Regex ClientIdRegex = new("^[A-Za-z0-9]{32}$", RegexOptions.Compiled);
+        private static readonly YtDlpManager YtDlp = new();
+        private static SettingsCategoryDescriptor? _currentCategory;
+        private static int _currentPage;
+        private static int _pageSize = 6;
+        private static YtDlpResolution _ytDlpStatus = new(null, "missing", null);
+        private static bool _ytDlpStatusChecked;
+
+        public static void Open()
         {
-            InitializeSettings();
-            CalculateTotalPages();
+            _currentCategory = null;
+            _currentPage = 0;
         }
 
         public Table Render(LayoutConfig layout)
         {
-            var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
+            _pageSize = Math.Max(2, Math.Min(8, layout.ConsoleHeight - 8));
+            IReadOnlyList<SettingsCategoryDescriptor> categories = BuildCategories();
+            var table = new Table
+            {
+                Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle),
+                Width = layout.ConsoleWidth
+            };
             table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
-            table.Width = layout.ConsoleWidth;
 
-            BuildSettingsContent(table);
+            if (_currentCategory == null)
+            {
+                table.AddColumns(
+                    Themes.sColor(Locale.Settings.Category, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
+                    Themes.sColor(Locale.Settings.Description, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
+                    Themes.sColor(Locale.Settings.Open, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
+                AddRows(table, categories.Count, index => (
+                    categories[index].Name(),
+                    categories[index].Description(),
+                    Shortcut(index) + " " + Locale.Settings.ToOpen));
+            }
+            else
+            {
+                IReadOnlyList<SettingDescriptor> settings = _currentCategory.Settings();
+                table.AddColumns(
+                    Themes.sColor(_currentCategory.Name(), Themes.CurrentTheme.GeneralSettings.SettingTextColor),
+                    Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
+                    Themes.sColor(Locale.Settings.ChangeValue, Themes.CurrentTheme.GeneralSettings.HeaderTextColor));
+                AddRows(table, settings.Count, index => (
+                    settings[index].Name(),
+                    settings[index].Value(),
+                    Shortcut(index) + " " + settings[index].Description()));
+            }
+
             return table;
         }
 
-        private void BuildSettingsContent(Table table)
+        public static async Task<bool> HandleKeyAsync(ConsoleKeyInfo key, bool backRequested)
         {
-            // Add table headers
-            table.AddColumns(
-                Themes.sColor(Locale.Settings._Settings, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
-                Themes.sColor(Locale.Settings.Value, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
-                Themes.sColor(Locale.Settings.ChangeValue + $" ({_currentPage}/{_totalPages})", Themes.CurrentTheme.GeneralSettings.HeaderTextColor)
-            );
-
-            // Calculate which settings to show on current page
-            var startIndex = (_currentPage - 1) * _settingsPerPage;
-            var endIndex = Math.Min(startIndex + _settingsPerPage, _settings.Count);
-
-            // Add settings for current page
-            for (int i = startIndex; i < endIndex; i++)
+            if (backRequested || key.Key == ConsoleKey.Escape)
             {
-                var setting = _settings[i];
-                AddSettingRow(table, setting.Name, setting.CurrentValue, setting.ChangeKey, setting.ChangeDescription);
+                if (_currentCategory != null)
+                {
+                    _currentCategory = null;
+                    _currentPage = 0;
+                    AnsiConsole.Clear();
+                    return false;
+                }
+                return true;
             }
 
-            // Add navigation hints
-            AddNavigationHints(table);
-        }
-
-        private static void InitializeSettings()
-        {
-            _settings.Clear();
-
-            // Core playback settings
-            _settings.Add(new SettingItem
+            int count = _currentCategory == null
+                ? BuildCategories().Count
+                : _currentCategory.Settings().Count;
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)count / _pageSize));
+            if (key.Key is ConsoleKey.PageDown or ConsoleKey.RightArrow or ConsoleKey.DownArrow)
             {
-                Name = Locale.Settings.Forwardseconds,
-                CurrentValue = $"{Preferences.forwardSeconds} sec",
-                ChangeKey = Keybindings.SettingsKeys.ForwardSecondAmount.ToString(),
-                ChangeDescription = Locale.Settings.ToChange
-            });
-
-            _settings.Add(new SettingItem
+                _currentPage = (_currentPage + 1) % totalPages;
+                AnsiConsole.Clear();
+                return false;
+            }
+            if (key.Key is ConsoleKey.PageUp or ConsoleKey.LeftArrow or ConsoleKey.UpArrow)
             {
-                Name = Locale.Settings.Rewindseconds,
-                CurrentValue = $"{Preferences.rewindSeconds} sec",
-                ChangeKey = Keybindings.SettingsKeys.BackwardSecondAmount.ToString(),
-                ChangeDescription = Locale.Settings.ToChange
-            });
+                _currentPage = (_currentPage - 1 + totalPages) % totalPages;
+                AnsiConsole.Clear();
+                return false;
+            }
 
-            _settings.Add(new SettingItem
+            int index = LetterIndex(key.Key);
+            int firstVisible = _currentPage * _pageSize;
+            int lastVisible = Math.Min(firstVisible + _pageSize, count);
+            if (index < firstVisible || index >= lastVisible)
             {
-                Name = Locale.Settings.ChangeVolumeBy,
-                CurrentValue = $"{Preferences.changeVolumeBy * 100} %",
-                ChangeKey = Keybindings.SettingsKeys.ChangeVolumeAmount.ToString(),
-                ChangeDescription = Locale.Settings.ToChange
-            });
+                return false;
+            }
 
-            _settings.Add(new SettingItem
+            if (_currentCategory == null)
             {
-                Name = Locale.Settings.AutoSave,
-                CurrentValue = Preferences.isAutoSave ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.Autosave.ToString(),
-                ChangeDescription = Locale.Settings.ToToggle
-            });
-
-            // Advanced settings
-            _settings.Add(new SettingItem
-            {
-                Name = "Load Effects",
-                CurrentValue = "",
-                ChangeKey = Keybindings.SettingsKeys.LoadEffects.ToString(),
-                ChangeDescription = "To Load Effects settings"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Media Buttons",
-                CurrentValue = Preferences.isMediaButtons ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.ToggleMediaButtons.ToString(),
-                ChangeDescription = "To Toggle Media Buttons"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Visualizer",
-                CurrentValue = Preferences.isVisualizer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.ToggleVisualizer.ToString(),
-                ChangeDescription = "To Toggle Visualizer"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Load Visualizer",
-                CurrentValue = "",
-                ChangeKey = Keybindings.SettingsKeys.LoadVisualizer.ToString(),
-                ChangeDescription = "To Load Visualizer settings"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Set Soundcloud Client ID",
-                CurrentValue = "",
-                ChangeKey = Keybindings.SettingsKeys.SoundCloudClientID.ToString(),
-                ChangeDescription = "To Set Soundcloud Client ID"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Fetch Client ID",
-                CurrentValue = "",
-                ChangeKey = Keybindings.SettingsKeys.FetchClientID.ToString(),
-                ChangeDescription = "To Fetch and set Soundcloud Client ID"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Key Modifier Helpers",
-                CurrentValue = Preferences.isModifierKeyHelper ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.KeyModifierHelper.ToString(),
-                ChangeDescription = "To Toggle Key Helpers (restart required)"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Skip Errors",
-                CurrentValue = Preferences.isSkipErrors ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.SkipErrors.ToString(),
-                ChangeDescription = "To Toggle Skip Errors"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Playlist Position",
-                CurrentValue = Preferences.showPlaylistPosition ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.TogglePlaylistPosition.ToString(),
-                ChangeDescription = "To Toggle Playlist Position"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Skip Rss after some time",
-                CurrentValue = Preferences.rssSkipAfterTime.ToString(),
-                ChangeKey = Keybindings.SettingsKeys.RssSkipAfterTime.ToString(),
-                ChangeDescription = "To Toggle Skip Rss after some time"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Amount of time to skip Rss",
-                CurrentValue = Preferences.rssSkipAfterTimeValue.ToString(),
-                ChangeKey = Keybindings.SettingsKeys.RssSkipAfterTimeValue.ToString(),
-                ChangeDescription = "To Set Amount of time to skip Rss"
-            });
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Quick Search",
-                CurrentValue = Preferences.isQuickSearch ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.QuickSearch.ToString(),
-                ChangeDescription = "To Toggle (will autoplay search result if exact match)"
-            });
-
-            _settings.Add(new SettingItem
-            {
-                Name = "Favorite Explainer",
-                CurrentValue = Preferences.favoriteExplainer ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.FavoriteExplainer.ToString(),
-                ChangeDescription = "To Toggle (show explainer when favoriting a song)"
-            });
-            _settings.Add(new SettingItem
-            {
-                Name = "Toggle Quick Play From Search",
-                CurrentValue = Preferences.isQuickPlayFromSearch ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
-                ChangeKey = Keybindings.SettingsKeys.QuickPlayFromSearch.ToString(),
-                ChangeDescription = "To Toggle (automatically play the first search result when searching)"
-            });
-        }
-
-        private static void CalculateTotalPages()
-        {
-            _totalPages = Math.Max(1, (int)Math.Ceiling((double)_settings.Count / _settingsPerPage));
-        }
-
-        private void AddNavigationHints(Table table)
-        {
-            // Add empty row for spacing
-            table.AddRow("", "", "");
-
-            if (_totalPages > 1)
-            {
-                if (_currentPage < _totalPages)
+                _currentCategory = BuildCategories()[index];
+                _currentPage = 0;
+                if (_currentCategory.Name() == Locale.Settings.Integrations)
                 {
-                    table.AddRow(
-                        "",
-                        "",
-                        Themes.sColor("PgDn/→", Themes.CurrentTheme.GeneralSettings.HeaderTextColor) + " " +
-                        Themes.sColor("Next page", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor)
-                    );
-                }
-
-                if (_currentPage > 1)
-                {
-                    table.AddRow(
-                        Themes.sColor("PgUp/←", Themes.CurrentTheme.GeneralSettings.HeaderTextColor) + " " +
-                        Themes.sColor("Previous page", Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor),
-                        "",
-                        ""
-                    );
+                    await RefreshYtDlpStatusAsync();
                 }
             }
-        }
-
-        /// <summary>
-        /// Adds a new setting to the settings list. Call RefreshPagination() after adding settings.
-        /// </summary>
-        public static void AddSetting(string name, string currentValue, string changeKey, string changeDescription)
-        {
-            _settings.Add(new SettingItem
+            else
             {
-                Name = name,
-                CurrentValue = currentValue,
-                ChangeKey = changeKey,
-                ChangeDescription = changeDescription
-            });
-        }
-
-        /// <summary>
-        /// Refreshes pagination after adding or removing settings
-        /// </summary>
-        public static void RefreshPagination()
-        {
-            CalculateTotalPages();
-            // Ensure current page is still valid
-            if (_currentPage > _totalPages)
-            {
-                _currentPage = _totalPages;
+                SettingDescriptor setting = _currentCategory.Settings()[index];
+                try
+                {
+                    await setting.Activate();
+                }
+                catch (OperationCanceledException)
+                {
+                    Log.Info(Locale.Settings.OperationCancelled);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.ToString());
+                    Message.Data(Locale.Settings.OperationFailed, Locale.Settings.IntegrationError, true, false);
+                }
             }
+
+            AnsiConsole.Clear();
+            return false;
         }
 
-        private void AddSettingRow(Table table, string settingName, string currentValue, string changeKey, string changeDescription)
+        private static IReadOnlyList<SettingsCategoryDescriptor> BuildCategories() =>
+            new SettingsCategoryDescriptor[]
+            {
+                new(() => Locale.Settings.Playback, () => Locale.Settings.PlaybackDescription, BuildPlaybackSettings),
+                new(() => Locale.Settings.Interface, () => Locale.Settings.InterfaceDescription, BuildInterfaceSettings),
+                new(() => Locale.Settings.LibraryFeeds, () => Locale.Settings.LibraryFeedsDescription, BuildLibrarySettings),
+                new(() => Locale.Settings.Integrations, () => Locale.Settings.IntegrationsDescription, BuildIntegrationSettings),
+                new(() => Locale.Settings.Advanced, () => Locale.Settings.AdvancedDescription, BuildAdvancedSettings)
+            };
+
+        private static IReadOnlyList<SettingDescriptor> BuildPlaybackSettings() =>
+            new SettingDescriptor[]
+            {
+                IntegerSetting(() => Locale.Settings.Forwardseconds, () => Preferences.forwardSeconds, value => Preferences.forwardSeconds = value, () => Locale.OutsideItems.EnterForwardSeconds, () => " " + Locale.Help.Seconds),
+                IntegerSetting(() => Locale.Settings.Rewindseconds, () => Preferences.rewindSeconds, value => Preferences.rewindSeconds = value, () => Locale.OutsideItems.EnterBackwardSeconds, () => " " + Locale.Help.Seconds),
+                new(() => Locale.Settings.ChangeVolumeBy, () => $"{Preferences.changeVolumeBy * 100:0} %", async () =>
+                {
+                    string input = Message.Input("", Locale.OutsideItems.EnterVolumeChange);
+                    if (int.TryParse(input, out int value) && value > 0)
+                    {
+                        Preferences.changeVolumeBy = value / 100f;
+                        Preferences.SaveSettings();
+                    }
+                    else ShowInvalidInput();
+                    await Task.CompletedTask;
+                }, () => Locale.Settings.ToChange),
+                ToggleSetting(() => Locale.Settings.AutoSave, () => Preferences.isAutoSave, value => Preferences.isAutoSave = value)
+            };
+
+        private static IReadOnlyList<SettingDescriptor> BuildInterfaceSettings()
         {
+            var settings = new List<SettingDescriptor>
+            {
+                ToggleSetting(() => Locale.Settings.Visualizer, () => Preferences.isVisualizer, value => Preferences.isVisualizer = value),
+                ActionSetting(() => Locale.Settings.ReloadVisualizer, () => Visual.Read()),
+                ToggleSetting(() => Locale.Settings.PlaylistPosition, () => Preferences.showPlaylistPosition, value => Preferences.showPlaylistPosition = value),
+                ToggleSetting(() => Locale.Settings.FavoriteExplainer, () => Preferences.favoriteExplainer, value => Preferences.favoriteExplainer = value)
+            };
+            if (!OperatingSystem.IsMacOS())
+            {
+                settings.Insert(0, ToggleSetting(
+                    () => Locale.Settings.MediaButtons,
+                    () => Preferences.isMediaButtons,
+                    value => Preferences.isMediaButtons = value));
+            }
+            return settings;
+        }
+
+        private static IReadOnlyList<SettingDescriptor> BuildLibrarySettings() =>
+            new SettingDescriptor[]
+            {
+                ToggleSetting(() => Locale.Settings.RssSkip, () => Preferences.rssSkipAfterTime, value => Preferences.rssSkipAfterTime = value),
+                IntegerSetting(() => Locale.Settings.RssSkipSeconds, () => Preferences.rssSkipAfterTimeValue, value => Preferences.rssSkipAfterTimeValue = value, () => Locale.Settings.EnterRssSkipSeconds, () => " " + Locale.Help.Seconds),
+                ToggleSetting(() => Locale.Settings.QuickSearch, () => Preferences.isQuickSearch, value => Preferences.isQuickSearch = value),
+                ToggleSetting(() => Locale.Settings.QuickPlaySearch, () => Preferences.isQuickPlayFromSearch, value => Preferences.isQuickPlayFromSearch = value)
+            };
+
+        private static IReadOnlyList<SettingDescriptor> BuildAdvancedSettings() =>
+            new SettingDescriptor[]
+            {
+                new(() => Locale.Settings.ReloadEffects, () => "", async () =>
+                {
+                    Effects.ReadEffects();
+                    if (Utils.Songs.Length > 0) Play.SetEffectsToChannel();
+                    await Task.CompletedTask;
+                }, () => Locale.Settings.ToRun),
+                ToggleSetting(() => Locale.Settings.ModifierHelpers, () => Preferences.isModifierKeyHelper, value => Preferences.isModifierKeyHelper = value),
+                ToggleSetting(() => Locale.Settings.SkipErrors, () => Preferences.isSkipErrors, value => Preferences.isSkipErrors = value)
+            };
+
+        private static IReadOnlyList<SettingDescriptor> BuildIntegrationSettings() =>
+            new SettingDescriptor[]
+            {
+                new(() => Locale.Settings.YouTubeBackend, BackendValue, SelectBackendAsync, () => Locale.Settings.ToSelect),
+                new(() => Locale.Settings.YtDlpStatus, YtDlpStatusValue, RefreshYtDlpStatusAsync, () => Locale.Settings.ToRefresh),
+                new(() => Locale.Settings.InstallRepairYtDlp, () => "", () => InstallYtDlpAsync(false), () => Locale.Settings.ToRun),
+                new(() => Locale.Settings.UpdateYtDlp, () => "", () => InstallYtDlpAsync(true), () => Locale.Settings.ToRun),
+                new(() => Locale.Settings.SoundCloudStatus, SoundCloudStatusValue, () => Task.CompletedTask, () => Locale.Settings.StatusOnly),
+                new(() => Locale.Settings.ManualSoundCloudId, () => "", SetSoundCloudIdAsync, () => Locale.Settings.ToChange),
+                new(() => Locale.Settings.FetchSoundCloudId, () => "", FetchSoundCloudIdAsync, () => Locale.Settings.ToRun),
+                new(() => Locale.Settings.ResetSoundCloudId, () => "", ResetSoundCloudIdAsync, () => Locale.Settings.ToRun)
+            };
+
+        private static SettingDescriptor ToggleSetting(Func<string> name, Func<bool> get, Action<bool> set) =>
+            new(name,
+                () => get() ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
+                () =>
+                {
+                    set(!get());
+                    Preferences.SaveSettings();
+                    return Task.CompletedTask;
+                },
+                () => Locale.Settings.ToToggle);
+
+        private static SettingDescriptor IntegerSetting(Func<string> name, Func<int> get, Action<int> set, Func<string> prompt, Func<string> suffix) =>
+            new(name, () => get() + suffix(), async () =>
+            {
+                string input = Message.Input("", prompt());
+                if (int.TryParse(input, out int value) && value >= 0)
+                {
+                    set(value);
+                    Preferences.SaveSettings();
+                }
+                else ShowInvalidInput();
+                await Task.CompletedTask;
+            }, () => Locale.Settings.ToChange);
+
+        private static SettingDescriptor ActionSetting(Func<string> name, Action action) =>
+            new(name, () => "", () => { action(); return Task.CompletedTask; }, () => Locale.Settings.ToRun);
+
+        private static async Task SelectBackendAsync()
+        {
+            var options = new[]
+            {
+                new CustomSelectInput { DataURI = "YoutubeExplode", Title = "YoutubeExplode", Author = "Tyrrrz", Description = Locale.Settings.YoutubeExplodeDescription },
+                new CustomSelectInput { DataURI = "yt-dlp", Title = "yt-dlp", Author = "yt-dlp", Description = Locale.Settings.YtDlpDescription }
+            };
+            string choice = Message.CustomMenuSelect(options, Locale.Settings.SelectBackendPrompt);
+            if (choice == "YoutubeExplode")
+            {
+                Preferences.backEndType = BackEndTypeYT.YoutubeExplode;
+                Preferences.SaveSettings();
+                return;
+            }
+            if (choice != "yt-dlp") return;
+
+            await RefreshYtDlpStatusAsync();
+            if (!_ytDlpStatus.IsAvailable)
+            {
+                string answer = Message.Input(Locale.Settings.YtDlpMissingPrompt, Locale.Settings.YtDlpMissingTitle).Trim();
+                if (!answer.Equals("y", StringComparison.OrdinalIgnoreCase)) return;
+                await InstallYtDlpAsync(false);
+                if (!_ytDlpStatus.IsAvailable) return;
+            }
+            Preferences.backEndType = BackEndTypeYT.YoutubeDL;
+            Preferences.SaveSettings();
+        }
+
+        private static async Task RefreshYtDlpStatusAsync()
+        {
+            _ytDlpStatus = await YtDlp.ResolveAsync(false);
+            _ytDlpStatusChecked = true;
+        }
+
+        private static async Task InstallYtDlpAsync(bool update)
+        {
+            string operation = update ? Locale.Settings.UpdatingYtDlp : Locale.Settings.InstallingYtDlp;
+            var progress = new Progress<double>(value => TUI.PrintToTopOfPlayer($"{operation} {value:P0}"));
+            _ytDlpStatus = await YtDlp.InstallAsync(true, progress);
+            _ytDlpStatusChecked = true;
+            Message.Data(
+                string.Format(Locale.Settings.YtDlpReadyMessage, _ytDlpStatus.Version),
+                Locale.Settings.YtDlpReadyTitle,
+                false,
+                false);
+        }
+
+        private static async Task SetSoundCloudIdAsync()
+        {
+            string input = Message.Input(Locale.Settings.SoundCloudIdPrompt, Locale.Settings.SoundCloudIdTitle).Trim();
+            if (!ClientIdRegex.IsMatch(input))
+            {
+                Message.Data(Locale.Settings.InvalidSoundCloudId, Locale.OutsideItems.InvalidInput, true, false);
+                return;
+            }
+            Preferences.clientID = input;
+            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+            Preferences.SaveSettings();
+            await Task.CompletedTask;
+        }
+
+        private static async Task FetchSoundCloudIdAsync()
+        {
+            TUI.PrintToTopOfPlayer(Locale.Settings.FetchingSoundCloudId);
+            string clientId = await SCClientIdFetcher.GetClientId();
+            Preferences.clientID = clientId;
+            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+            Preferences.SaveSettings();
+            Message.Data(Locale.Settings.SoundCloudIdUpdated, Locale.Settings.SoundCloudIdTitle, false, false);
+        }
+
+        private static Task ResetSoundCloudIdAsync()
+        {
+            Preferences.clientID = "";
+            Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+            Preferences.SaveSettings();
+            return Task.CompletedTask;
+        }
+
+        private static string BackendValue() => Preferences.backEndType == BackEndTypeYT.YoutubeDL ? "yt-dlp" : "YoutubeExplode";
+
+        private static string YtDlpStatusValue()
+        {
+            if (!_ytDlpStatusChecked) return Locale.Settings.CheckingStatus;
+            string source = _ytDlpStatus.Source switch
+            {
+                "managed" => Locale.Settings.ManagedToolSource,
+                "PATH" => Locale.Settings.PathToolSource,
+                "JAMMER_YTDLP_BIN" => Locale.Settings.OverrideToolSource,
+                _ => _ytDlpStatus.Source
+            };
+            return _ytDlpStatus.IsAvailable
+                ? string.Format(Locale.Settings.AvailableStatus, _ytDlpStatus.Version, source)
+                : Locale.Settings.NotInstalled;
+        }
+
+        private static string SoundCloudStatusValue()
+        {
+            if (string.IsNullOrEmpty(Preferences.clientID))
+            {
+                string libraryId = new SoundCloudExplode.SoundCloudClient().ClientId;
+                return string.Format(Locale.Settings.LibraryDefaultStatus, MaskClientId(libraryId));
+            }
+            return string.Format(Locale.Settings.CustomStatus, MaskClientId(Preferences.clientID));
+        }
+
+        private static string MaskClientId(string value) => value.Length < 8 ? value : value[..4] + "..." + value[^4..];
+
+        private static void AddRows(Table table, int count, Func<int, (string Name, string Value, string Action)> rowFactory)
+        {
+            int totalPages = Math.Max(1, (int)Math.Ceiling((double)count / _pageSize));
+            if (_currentPage >= totalPages) _currentPage = totalPages - 1;
+            int start = _currentPage * _pageSize;
+            int end = Math.Min(start + _pageSize, count);
+            for (int index = start; index < end; index++)
+            {
+                var row = rowFactory(index);
+                table.AddRow(
+                    Themes.sColor(Markup.Escape(row.Name), Themes.CurrentTheme.GeneralSettings.SettingTextColor),
+                    Themes.sColor(Markup.Escape(row.Value), Themes.CurrentTheme.GeneralSettings.SettingValueColor),
+                    Themes.sColor(Markup.Escape(row.Action), Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor));
+            }
+            table.AddEmptyRow();
             table.AddRow(
-                Themes.sColor(settingName, Themes.CurrentTheme.GeneralSettings.SettingTextColor),
-                Themes.sColor(currentValue, Themes.CurrentTheme.GeneralSettings.SettingValueColor),
-                Themes.sColor($"{changeKey} ", Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor) +
-                Themes.sColor(changeDescription, Themes.CurrentTheme.GeneralSettings.SettingChangeValueColor)
-            );
+                Themes.sColor(Locale.Settings.BackHint, Themes.CurrentTheme.GeneralSettings.HeaderTextColor),
+                totalPages > 1 ? string.Format(Locale.Settings.PageStatus, _currentPage + 1, totalPages) : "",
+                totalPages > 1 ? Locale.Settings.PageHint : "");
         }
 
-        public Table CreateNavigationTable()
-        {
-            var table = new Table();
-            table.Border = Themes.bStyle(Themes.CurrentTheme.GeneralSettings.BorderStyle);
-            table.BorderColor(Themes.bColor(Themes.CurrentTheme.GeneralSettings.BorderColor));
+        private static string Shortcut(int index) => $"{(char)('A' + index)}";
+        private static int LetterIndex(ConsoleKey key) => key is >= ConsoleKey.A and <= ConsoleKey.Z ? (int)key - (int)ConsoleKey.A : -1;
 
-            table.AddColumn(
-                Locale.Help.ToMainMenu + ": " +
-                Themes.sColor(Keybindings.ToMainMenu, Themes.CurrentTheme.GeneralSettings.SettingChangeValueValueColor)
-            );
+        private static void ShowInvalidInput() => Message.Data(
+            $"[red]{Locale.OutsideItems.InvalidInput}.[/] {Locale.OutsideItems.PressToContinue}.",
+            Locale.OutsideItems.InvalidInput);
 
-            return table;
-        }
-
-        public static void NextSettingsPage()
-        {
-            AnsiConsole.Clear();
-            _currentPage = (_currentPage % _totalPages) + 1;
-        }
-
-        public static void PreviousSettingsPage()
-        {
-            AnsiConsole.Clear();
-            _currentPage = _currentPage > 1 ? _currentPage - 1 : _totalPages;
-        }
-
-        public static void SetSettingsPage(int page)
-        {
-            if (page >= 1 && page <= _totalPages)
-            {
-                _currentPage = page;
-            }
-        }
-
-        public static int GetCurrentPage()
-        {
-            return _currentPage;
-        }
-
-        public static int GetTotalPages()
-        {
-            return _totalPages;
-        }
-
-        /// <summary>
-        /// Gets the current settings per page configuration
-        /// </summary>
-        public static int GetSettingsPerPage()
-        {
-            return _settingsPerPage;
-        }
-
-        /// <summary>
-        /// Updates settings values and refreshes pagination
-        /// </summary>
-        public static void RefreshSettings()
-        {
-            InitializeSettings();
-            CalculateTotalPages();
-        }
-
-        /// <summary>
-        /// Renders the complete settings screen to console
-        /// </summary>
-        /// <param name="layout">Layout configuration</param>
         public static void DrawSettingsToConsole(LayoutConfig layout)
         {
             var component = new SettingsComponent();
-            InitializeSettings(); // reload correct settings. might have been changed
-
-            // Render main settings table
-            var settingsTable = component.Render(layout);
             AnsiConsole.Cursor.SetPosition(0, 0);
-            AnsiConsole.Write(settingsTable);
-
-            // Render navigation table
-            var navigationTable = component.CreateNavigationTable();
-            AnsiConsole.Write(navigationTable);
+            AnsiConsole.Write(component.Render(layout));
         }
     }
 }

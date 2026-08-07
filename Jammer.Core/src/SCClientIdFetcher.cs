@@ -1,215 +1,121 @@
-using PuppeteerSharp;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 
 namespace Jammer
 {
-    public static class SCClientIdFetcher
+    /// <summary>Finds the public SoundCloud client ID from the site's JavaScript assets.</summary>
+    public sealed class SCClientIdFetcher
     {
-        private const string DefaultSoundCloudUrl = "https://soundcloud.com/";
-        private const string SmokeTestUrl = "https://example.com/";
-        private const int DefaultTimeoutMs = 30000;
+        private static readonly Uri SoundCloudUri = new("https://soundcloud.com/");
+        private static readonly Regex ScriptRegex = new(
+            @"(?:src\s*=\s*[""'])(?<url>(?:https?:)?//a-v2\.sndcdn\.com/assets/[^""']+\.js(?:\?[^""']*)?|/assets/[^""']+\.js(?:\?[^""']*)?)[""']",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ClientIdRegex = new(
+            @"client_id\s*[:=]\s*[""'](?<id>[A-Za-z0-9]{32})[""']",
+            RegexOptions.Compiled);
+        private static readonly Regex ClientIdFallbackRegex = new(
+            @"[""']client_id[""']\s*:\s*[""'](?<id>[A-Za-z0-9]{32})[""']",
+            RegexOptions.Compiled);
+        private static readonly HttpClient SharedHttpClient = CreateHttpClient();
 
-        public static async Task<string> MonitorNetwork(string url, bool useUiMessages = true, int timeoutMs = DefaultTimeoutMs)
+        private readonly HttpClient _httpClient;
+
+        public SCClientIdFetcher(HttpClient? httpClient = null)
         {
-            ReportStatus("Starting Puppeteer...", "Please wait.", useUiMessages);
+            _httpClient = httpClient ?? SharedHttpClient;
+        }
 
-            var fetcher = new BrowserFetcher();
-            var installedBrowser = await fetcher.DownloadAsync();
-            string executablePath = installedBrowser.GetExecutablePath();
+        public static Task<string> GetClientId(CancellationToken cancellationToken = default) =>
+            new SCClientIdFetcher().FetchAsync(cancellationToken);
 
-            ReportStatus("Launching browser...", "Please wait..", useUiMessages);
-
-            IBrowser browser;
-            string launchMode;
-            (browser, launchMode) = await LaunchBrowserWithFallbackAsync(executablePath);
-
-            await using (browser.ConfigureAwait(false))
+        public async Task<string> FetchAsync(CancellationToken cancellationToken = default)
+        {
+            string html = await GetStringAsync(SoundCloudUri, cancellationToken);
+            IReadOnlyList<Uri> scripts = ExtractScriptUrls(html, SoundCloudUri);
+            if (scripts.Count == 0)
             {
-                Log.Info($"Puppeteer launched using mode: {launchMode}");
-                ReportStatus("Opening page...", "Please wait...", useUiMessages);
-
-                await using var page = await browser.NewPageAsync();
-                var clientIdTask = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-                page.Request += (_, e) =>
-                {
-                    string requestUrl = e.Request.Url;
-
-                    if (requestUrl.Contains("client_id"))
-                    {
-                        var clientIdMatch = Regex.Match(requestUrl, @"client_id=([^&]+)");
-                        if (clientIdMatch.Success)
-                        {
-                            clientIdTask.TrySetResult(clientIdMatch.Groups[1].Value);
-                        }
-                    }
-                };
-
-                await page.GoToAsync(url, new NavigationOptions
-                {
-                    Timeout = timeoutMs,
-                    WaitUntil = new[] { WaitUntilNavigation.DOMContentLoaded }
-                });
-
-                var completedTask = await Task.WhenAny(clientIdTask.Task, Task.Delay(timeoutMs));
-                if (completedTask != clientIdTask.Task)
-                {
-                    throw new TimeoutException("Timed out waiting for a SoundCloud request containing client_id.");
-                }
-
-                return await clientIdTask.Task;
+                throw new InvalidOperationException("SoundCloud did not expose any JavaScript asset URLs.");
             }
-        }
 
-        public static async Task<string> GetClientId()
-        {
-            return await MonitorNetwork(DefaultSoundCloudUrl);
-        }
-
-        public static async Task<string> RunSelfTestAsync(int timeoutMs = DefaultTimeoutMs)
-        {
-            var report = new StringBuilder();
-            var fetcher = new BrowserFetcher();
-            Action<string> progress = CreateProgressReporter();
-
-            report.AppendLine("Puppeteer self-test starting");
-            progress("Puppeteer self-test starting");
-            report.AppendLine($"Cache directory: {fetcher.CacheDir}");
-            progress($"Using cache directory: {fetcher.CacheDir}");
-
-            progress("Downloading or locating Chromium...");
-            var installedBrowser = await fetcher.DownloadAsync();
-            string executablePath = installedBrowser.GetExecutablePath();
-
-            report.AppendLine($"Chromium executable: {executablePath}");
-            progress($"Chromium ready: {executablePath}");
-
-            progress("Launching browser...");
-            IBrowser browser;
-            string launchMode;
-            (browser, launchMode) = await LaunchBrowserWithFallbackAsync(executablePath);
-
-            await using (browser.ConfigureAwait(false))
+            for (int index = scripts.Count - 1; index >= 0; index--)
             {
-                report.AppendLine($"Launch mode: {launchMode}");
-                progress($"Browser launched using mode: {launchMode}");
-                report.AppendLine($"Browser version: {await browser.GetVersionAsync()}");
-                progress("Browser launch succeeded");
-
-                progress("Running smoke test against example.com...");
-                await using var smokePage = await browser.NewPageAsync();
-                await smokePage.GoToAsync(SmokeTestUrl, new NavigationOptions
+                string script = await GetStringAsync(scripts[index], cancellationToken);
+                string? clientId = ExtractClientId(script);
+                if (clientId != null)
                 {
-                    Timeout = timeoutMs,
-                    WaitUntil = new[] { WaitUntilNavigation.Networkidle0 }
-                });
-
-                report.AppendLine($"Smoke test title: {await smokePage.GetTitleAsync()}");
-                progress("Smoke test completed successfully");
-
-                progress("Opening SoundCloud and watching network requests...");
-                await using var soundCloudPage = await browser.NewPageAsync();
-                var clientIdTask = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
-                int requestsSeen = 0;
-
-                soundCloudPage.Request += (_, e) =>
-                {
-                    requestsSeen++;
-                    string requestUrl = e.Request.Url;
-
-                    if (requestUrl.Contains("client_id"))
-                    {
-                        var clientIdMatch = Regex.Match(requestUrl, @"client_id=([^&]+)");
-                        if (clientIdMatch.Success)
-                        {
-                            clientIdTask.TrySetResult(clientIdMatch.Groups[1].Value);
-                        }
-                    }
-                };
-
-                try
-                {
-                    await soundCloudPage.GoToAsync(DefaultSoundCloudUrl, new NavigationOptions
-                    {
-                        Timeout = timeoutMs,
-                        WaitUntil = new[] { WaitUntilNavigation.DOMContentLoaded }
-                    });
-
-                    var completedTask = await Task.WhenAny(clientIdTask.Task, Task.Delay(timeoutMs));
-                    report.AppendLine($"SoundCloud requests observed: {requestsSeen}");
-
-                    if (completedTask == clientIdTask.Task)
-                    {
-                        string clientId = await clientIdTask.Task;
-                        report.AppendLine($"SoundCloud client_id detected: {clientId}");
-                        progress("SoundCloud client_id detected successfully");
-                    }
-                    else
-                    {
-                        report.AppendLine("SoundCloud client_id not detected within timeout");
-                        progress("SoundCloud loaded, but client_id was not detected before timeout");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    report.AppendLine($"SoundCloud check failed: {ex.Message}");
-                    progress("SoundCloud check failed: " + ex.Message);
+                    return clientId;
                 }
             }
 
-            return report.ToString().TrimEnd();
+            throw new InvalidOperationException("No valid SoundCloud client ID was found in the site's JavaScript assets.");
         }
 
-        private static Action<string> CreateProgressReporter()
+        public static IReadOnlyList<Uri> ExtractScriptUrls(string html, Uri baseUri)
         {
-            return message =>
+            var result = new List<Uri>();
+            foreach (Match match in ScriptRegex.Matches(WebUtility.HtmlDecode(html)))
             {
-                Console.WriteLine("[puppeteer] " + message);
-                Console.Out.Flush();
+                string value = match.Groups["url"].Value;
+                if (value.StartsWith("//", StringComparison.Ordinal))
+                {
+                    value = "https:" + value;
+                }
+
+                if (!Uri.TryCreate(baseUri, value, out Uri? uri) ||
+                    !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                // Relative /assets URLs are accepted only after resolving them onto the CDN.
+                if (uri.Host.Equals("soundcloud.com", StringComparison.OrdinalIgnoreCase) && value.StartsWith("/assets/"))
+                {
+                    uri = new Uri("https://a-v2.sndcdn.com" + value);
+                }
+
+                if (uri.Host.Equals("a-v2.sndcdn.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(uri);
+                }
+            }
+
+            return result;
+        }
+
+        public static string? ExtractClientId(string script)
+        {
+            Match match = ClientIdRegex.Match(script);
+            if (!match.Success)
+            {
+                match = ClientIdFallbackRegex.Match(script);
+            }
+
+            return match.Success ? match.Groups["id"].Value : null;
+        }
+
+        private async Task<string> GetStringAsync(Uri uri, CancellationToken cancellationToken)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, uri);
+            request.Headers.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+            using HttpResponseMessage response = await _httpClient.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+
+        private static HttpClient CreateHttpClient()
+        {
+            var handler = new SocketsHttpHandler
+            {
+                AllowAutoRedirect = true,
+                AutomaticDecompression = DecompressionMethods.All,
+                ConnectTimeout = TimeSpan.FromSeconds(10)
             };
-        }
-
-        private static async Task<(IBrowser Browser, string LaunchMode)> LaunchBrowserWithFallbackAsync(string executablePath)
-        {
-            try
-            {
-                return (await Puppeteer.LaunchAsync(CreateLaunchOptions(executablePath, disableSandbox: false)), "default");
-            }
-            catch (Exception ex) when (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                Log.Error("Default Puppeteer launch failed: " + ex.Message);
-                return (await Puppeteer.LaunchAsync(CreateLaunchOptions(executablePath, disableSandbox: true)), "linux-no-sandbox-fallback");
-            }
-        }
-
-        private static LaunchOptions CreateLaunchOptions(string executablePath, bool disableSandbox)
-        {
-            var options = new LaunchOptions
-            {
-                Headless = true,
-                ExecutablePath = executablePath
-            };
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                options.Args = disableSandbox
-                    ? new[] { "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu" }
-                    : new[] { "--disable-dev-shm-usage", "--disable-gpu" };
-            }
-
-            return options;
-        }
-
-        private static void ReportStatus(string title, string message, bool useUiMessages)
-        {
-            Log.Info(title + " " + message);
-
-            if (useUiMessages)
-            {
-                Message.Data(title, message, false, false);
-            }
+            return new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
         }
     }
 }
