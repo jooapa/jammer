@@ -158,3 +158,5 @@ appimagetool*.AppImage
 .vscode/tasks.json
 
 .vs/
+
+__pycache__/

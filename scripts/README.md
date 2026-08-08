@@ -14,9 +14,16 @@ pwsh ./scripts/build.ps1 -Target osx-arm64
 pwsh ./scripts/build.ps1 -Target all
 ```
 
-Useful options include `-Configuration Debug`, `-Clean`, `-OutputDirectory <path>`,
-`-Version <version>`, and `-SkipPackage`. `-SkipPackage` still runs the explicit,
-self-contained, single-file `dotnet publish` and is useful for cross-RID validation.
+A Python 3 equivalent is also available:
+
+```bash
+python3 ./scripts/build.py -t linux-x64
+python3 ./scripts/build.py -t all
+```
+
+Useful options include `-c Debug`, `-C`, `-o <path>`, `-v <version>`, and `-s`.
+`-s` still runs the explicit, self-contained, single-file `dotnet publish` and is
+useful for cross-RID validation.
 
 Packaging constraints are enforced:
 

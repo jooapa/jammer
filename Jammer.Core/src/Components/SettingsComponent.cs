@@ -375,7 +375,7 @@ namespace Jammer.Components
 
         private static Task SetSpotifyClientIdAsync()
         {
-            string input = Message.Input(Locale.Settings.SpotifyClientIdPrompt, Locale.Settings.SpotifyClientIdTitle).Trim();
+            string input = Message.Input("", Locale.Settings.SpotifyClientIdPrompt).Trim();
             if (string.IsNullOrWhiteSpace(input)) return Task.CompletedTask;
             Preferences.spotifyClientID = input;
             Preferences.SaveSettings();
