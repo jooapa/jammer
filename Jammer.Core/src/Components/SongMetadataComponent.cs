@@ -161,6 +161,11 @@ namespace Jammer.Components
                     EditSpeedAsync,
                     () => Locale.Settings.ToChange),
                 new(
+                    () => Locale.SongMetadata.Pitch,
+                    () => $"{_workingCopy.Pitch:0.0}",
+                    EditPitchAsync,
+                    () => Locale.Settings.ToChange),
+                new(
                     () => Locale.SongMetadata.Reversed,
                     () => _workingCopy.Reversed ? Locale.Miscellaneous.True : Locale.Miscellaneous.False,
                     () => { _workingCopy.Reversed = !_workingCopy.Reversed; return Task.CompletedTask; },
@@ -300,6 +305,20 @@ namespace Jammer.Components
             else
             {
                 Message.Data(Locale.SongMetadata.InvalidSpeed, Locale.OutsideItems.InvalidInput, true, false);
+            }
+            return Task.CompletedTask;
+        }
+
+        private static Task EditPitchAsync()
+        {
+            string input = Message.InputFloat(Locale.SongMetadata.EnterPitch, _workingCopy.Pitch, "0.0");
+            if (float.TryParse(input, out float value) && value >= -24.0f && value <= 24.0f)
+            {
+                _workingCopy.Pitch = value;
+            }
+            else
+            {
+                Message.Data(Locale.SongMetadata.InvalidPitch, Locale.OutsideItems.InvalidInput, true, false);
             }
             return Task.CompletedTask;
         }

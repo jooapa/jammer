@@ -8,6 +8,7 @@ namespace Jammer
     public class SongPlaybackMetadata
     {
         public float Speed { get; set; } = 1.0f;
+        public float Pitch { get; set; } = 0.0f;
         public bool Reversed { get; set; } = false;
 
         /// <summary>

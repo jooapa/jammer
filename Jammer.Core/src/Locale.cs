@@ -567,6 +567,7 @@ namespace Jammer
             public static string Title = CheckValueLocale("SongMetadata", "Title", "Song Metadata");
             public static string EffectsTitle = CheckValueLocale("SongMetadata", "EffectsTitle", "Custom Effects");
             public static string Speed = CheckValueLocale("SongMetadata", "Speed", "Speed");
+            public static string Pitch = CheckValueLocale("SongMetadata", "Pitch", "Pitch");
             public static string Reversed = CheckValueLocale("SongMetadata", "Reversed", "Reversed");
             public static string TrimStart = CheckValueLocale("SongMetadata", "TrimStart", "Trim start");
             public static string TrimEnd = CheckValueLocale("SongMetadata", "TrimEnd", "Trim end");
@@ -574,6 +575,8 @@ namespace Jammer
             public static string EditEffects = CheckValueLocale("SongMetadata", "EditEffects", "Edit custom effects");
             public static string EnterSpeed = CheckValueLocale("SongMetadata", "EnterSpeed", "Enter speed (0.25 - 4.00):");
             public static string InvalidSpeed = CheckValueLocale("SongMetadata", "InvalidSpeed", "Speed must be between 0.25 and 4.00.");
+            public static string EnterPitch = CheckValueLocale("SongMetadata", "EnterPitch", "Enter pitch (-24 to 24 semitones):");
+            public static string InvalidPitch = CheckValueLocale("SongMetadata", "InvalidPitch", "Pitch must be between -24 and 24 semitones.");
             public static string EnterTrimStart = CheckValueLocale("SongMetadata", "EnterTrimStart", "Enter trim start (seconds:milliseconds or leave blank):");
             public static string EnterTrimEnd = CheckValueLocale("SongMetadata", "EnterTrimEnd", "Enter trim end (seconds:milliseconds or leave blank):");
             public static string InvalidTime = CheckValueLocale("SongMetadata", "InvalidTime", "Invalid time format. Use seconds:milliseconds, e.g. 10:500.");

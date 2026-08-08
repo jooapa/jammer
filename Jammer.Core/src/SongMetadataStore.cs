@@ -113,6 +113,7 @@ namespace Jammer
 
             bool isDefault =
                 metadata.Speed == 1.0f &&
+                metadata.Pitch == 0.0f &&
                 !metadata.Reversed &&
                 string.IsNullOrWhiteSpace(metadata.TrimStart) &&
                 string.IsNullOrWhiteSpace(metadata.TrimEnd) &&

@@ -898,13 +898,20 @@ namespace Jammer
                         }
                     }
 
-                    if (metadata.Speed != 1.0f && Utils.CurrentMusic != 0)
+                    if ((metadata.Speed != 1.0f || metadata.Pitch != 0.0f) && Utils.CurrentMusic != 0)
                     {
                         wrapped = BassFx.TempoCreate(Utils.CurrentMusic, BassFlags.Default);
                         if (wrapped != 0)
                         {
                             Utils.CurrentMusic = wrapped;
-                            Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Tempo, (metadata.Speed - 1.0f) * 100f);
+                            if (metadata.Speed != 1.0f)
+                            {
+                                Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Tempo, (metadata.Speed - 1.0f) * 100f);
+                            }
+                            if (metadata.Pitch != 0.0f)
+                            {
+                                Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Pitch, metadata.Pitch);
+                            }
                         }
                     }
                 }
