@@ -39,6 +39,7 @@
     <PackageReference Include="m3uParser.NET" Version="1.0.17" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Aac" Version="3.1.1" Condition="'$(DisableBassAac)' != 'true'" />
+    <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Midi" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Opus" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

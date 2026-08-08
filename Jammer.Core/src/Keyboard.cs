@@ -13,7 +13,7 @@ namespace Jammer
     public partial class Start
     {
         public static string Action = "";
-        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage
+        public static string playerView = "default"; // default, all, help, settings, fake, editkeybindings, changelanguage, songmetadata
         public static async Task CheckKeyboardAsync()
         {
             if (Console.KeyAvailable || Action != "")
@@ -280,6 +280,28 @@ namespace Jammer
                         }
                     }
                 }
+                else if (playerView.Equals("songmetadata"))
+                {
+                    bool leaveSongMetadata = false;
+                    try
+                    {
+                        leaveSongMetadata = await SongMetadataComponent.HandleKeyAsync(key, Action == "ToMainMenu");
+                    }
+                    finally
+                    {
+                        Action = "";
+                        if (leaveSongMetadata)
+                        {
+                            playerView = "default";
+                            AnsiConsole.Clear();
+                            TUI.RefreshCurrentView();
+                        }
+                        else
+                        {
+                            SongMetadataComponent.Redraw();
+                        }
+                    }
+                }
                 else
                     switch (Action)
                     {
@@ -440,6 +462,21 @@ namespace Jammer
                         case "SearchByAuthor": // search by author
                             Search.SearchByAuthorAsync();
                             drawWhole = true;
+                            break;
+                        case "EditSongMetadata":
+                            if (playerView == "songmetadata")
+                            {
+                                AnsiConsole.Clear();
+                                playerView = "default";
+                                break;
+                            }
+                            if (Funcs.IsInsideOfARssFeed() || Utils.Songs.Length == 0 || string.IsNullOrWhiteSpace(Utils.Songs[Utils.CurrentSongIndex]))
+                            {
+                                break;
+                            }
+                            AnsiConsole.Clear();
+                            playerView = "songmetadata";
+                            SongMetadataComponent.Open();
                             break;
                         case "RenameSong": // rename song                            
                             var smartSong = Funcs.SmartRename(

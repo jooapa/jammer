@@ -384,6 +384,7 @@ namespace Jammer
             public static string YesNo = CheckValueLocale("Miscellaneous", "YesNo", "(y/n),");
             public static string YesAnswer = CheckValueLocale("Miscellaneous", "YesAnswer", "y");
             public static string NoAnswer = CheckValueLocale("Miscellaneous", "NoAnswer", "n");
+            public static string None = CheckValueLocale("Miscellaneous", "None", "None");
 
 
         }
@@ -554,7 +555,78 @@ namespace Jammer
             public static string ExitRssFeed = CheckValueLocale("EditKeysTexts", "ExitRssFeed", "Exit RSS feed");
             public static string SearchInPlaylist = CheckValueLocale("EditKeysTexts", "SearchInPlaylist", "Search in playlist");
             public static string SearchByAuthor = CheckValueLocale("EditKeysTexts", "SearchByAuthor", "Search by author");
+            public static string EditSongMetadata = CheckValueLocale("EditKeysTexts", "EditSongMetadata", "Edit song metadata");
         }
+
+        public static class SongMetadata
+        {
+            public static string Title = CheckValueLocale("SongMetadata", "Title", "Song Metadata");
+            public static string EffectsTitle = CheckValueLocale("SongMetadata", "EffectsTitle", "Custom Effects");
+            public static string Speed = CheckValueLocale("SongMetadata", "Speed", "Speed");
+            public static string Reversed = CheckValueLocale("SongMetadata", "Reversed", "Reversed");
+            public static string TrimStart = CheckValueLocale("SongMetadata", "TrimStart", "Trim start");
+            public static string TrimEnd = CheckValueLocale("SongMetadata", "TrimEnd", "Trim end");
+            public static string CustomEffects = CheckValueLocale("SongMetadata", "CustomEffects", "Custom effects");
+            public static string EditEffects = CheckValueLocale("SongMetadata", "EditEffects", "Edit custom effects");
+            public static string EnterSpeed = CheckValueLocale("SongMetadata", "EnterSpeed", "Enter speed (0.25 - 4.00):");
+            public static string InvalidSpeed = CheckValueLocale("SongMetadata", "InvalidSpeed", "Speed must be between 0.25 and 4.00.");
+            public static string EnterTrimStart = CheckValueLocale("SongMetadata", "EnterTrimStart", "Enter trim start (seconds:milliseconds or leave blank):");
+            public static string EnterTrimEnd = CheckValueLocale("SongMetadata", "EnterTrimEnd", "Enter trim end (seconds:milliseconds or leave blank):");
+            public static string InvalidTime = CheckValueLocale("SongMetadata", "InvalidTime", "Invalid time format. Use seconds:milliseconds, e.g. 10:500.");
+        }
+
+        public static class Effects
+        {
+            public static string Chorus = CheckValueLocale("Effects", "Chorus", "Chorus");
+            public static string ChorusFrequency = CheckValueLocale("Effects", "ChorusFrequency", "  Frequency");
+            public static string ChorusWetDryMix = CheckValueLocale("Effects", "ChorusWetDryMix", "  Wet/dry mix");
+            public static string ChorusDepth = CheckValueLocale("Effects", "ChorusDepth", "  Depth");
+            public static string ChorusFeedback = CheckValueLocale("Effects", "ChorusFeedback", "  Feedback");
+            public static string ChorusDelay = CheckValueLocale("Effects", "ChorusDelay", "  Delay");
+
+            public static string Compressor = CheckValueLocale("Effects", "Compressor", "Compressor");
+            public static string CompressorGain = CheckValueLocale("Effects", "CompressorGain", "  Gain");
+            public static string CompressorAttack = CheckValueLocale("Effects", "CompressorAttack", "  Attack");
+            public static string CompressorRelease = CheckValueLocale("Effects", "CompressorRelease", "  Release");
+            public static string CompressorThreshold = CheckValueLocale("Effects", "CompressorThreshold", "  Threshold");
+            public static string CompressorRatio = CheckValueLocale("Effects", "CompressorRatio", "  Ratio");
+            public static string CompressorPredelay = CheckValueLocale("Effects", "CompressorPredelay", "  Predelay");
+
+            public static string Distortion = CheckValueLocale("Effects", "Distortion", "Distortion");
+            public static string DistortionGain = CheckValueLocale("Effects", "DistortionGain", "  Gain");
+            public static string DistortionEdge = CheckValueLocale("Effects", "DistortionEdge", "  Edge");
+            public static string DistortionPostEQ = CheckValueLocale("Effects", "DistortionPostEQ", "  Post-EQ center");
+
+            public static string Echo = CheckValueLocale("Effects", "Echo", "Echo");
+            public static string EchoWetDryMix = CheckValueLocale("Effects", "EchoWetDryMix", "  Wet/dry mix");
+            public static string EchoFeedback = CheckValueLocale("Effects", "EchoFeedback", "  Feedback");
+            public static string EchoLeftDelay = CheckValueLocale("Effects", "EchoLeftDelay", "  Left delay");
+            public static string EchoRightDelay = CheckValueLocale("Effects", "EchoRightDelay", "  Right delay");
+            public static string EchoPanDelay = CheckValueLocale("Effects", "EchoPanDelay", "  Pan delay");
+
+            public static string Flanger = CheckValueLocale("Effects", "Flanger", "Flanger");
+            public static string FlangerWetDryMix = CheckValueLocale("Effects", "FlangerWetDryMix", "  Wet/dry mix");
+            public static string FlangerDepth = CheckValueLocale("Effects", "FlangerDepth", "  Depth");
+            public static string FlangerFeedback = CheckValueLocale("Effects", "FlangerFeedback", "  Feedback");
+            public static string FlangerFrequency = CheckValueLocale("Effects", "FlangerFrequency", "  Frequency");
+            public static string FlangerDelay = CheckValueLocale("Effects", "FlangerDelay", "  Delay");
+
+            public static string Gargle = CheckValueLocale("Effects", "Gargle", "Gargle");
+            public static string GargleRate = CheckValueLocale("Effects", "GargleRate", "  Rate");
+            public static string GargleWaveShape = CheckValueLocale("Effects", "GargleWaveShape", "  Wave shape");
+
+            public static string ParamEQ = CheckValueLocale("Effects", "ParamEQ", "Param EQ");
+            public static string ParamEQCenter = CheckValueLocale("Effects", "ParamEQCenter", "  Center");
+            public static string ParamEQBandwidth = CheckValueLocale("Effects", "ParamEQBandwidth", "  Bandwidth");
+            public static string ParamEQGain = CheckValueLocale("Effects", "ParamEQGain", "  Gain");
+
+            public static string Reverb = CheckValueLocale("Effects", "Reverb", "Reverb");
+            public static string ReverbInGain = CheckValueLocale("Effects", "ReverbInGain", "  In gain");
+            public static string ReverbMix = CheckValueLocale("Effects", "ReverbMix", "  Reverb mix");
+            public static string ReverbTime = CheckValueLocale("Effects", "ReverbTime", "  Reverb time");
+            public static string ReverbHighFreqRT = CheckValueLocale("Effects", "ReverbHighFreqRT", "  High freq RT ratio");
+        }
+
         static string CheckValueLocale(string key, string value, string defaultString)
         {
             string finalValue = IniFileHandling.ReadIni_LocaleData(key, value);

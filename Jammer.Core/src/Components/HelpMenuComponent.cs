@@ -286,6 +286,14 @@ namespace Jammer.Components
                 ModDescription = Themes.sColor("Exit RSS", Themes.CurrentTheme.GeneralHelp.DescriptionTextColor)
             });
 
+            _helpItems.Add(new HelpItem
+            {
+                ControlKeys = DrawHelpTextColouring(keybindings["EditSongMetadata"]),
+                Description = Themes.sColor(Locale.EditKeysTexts.EditSongMetadata, Themes.CurrentTheme.GeneralHelp.DescriptionTextColor),
+                ModControlKeys = "",
+                ModDescription = ""
+            });
+
         }
 
         private static void CalculateTotalPages()
@@ -385,6 +393,7 @@ namespace Jammer.Components
                 ["SearchByAuthor"] = Keybindings.SearchByAuthor.Replace(" ", "").Split(separator),
                 ["Search"] = Keybindings.Search.Replace(" ", "").Split(separator),
                 ["RenameSong"] = Keybindings.RenameSong.Replace(" ", "").Split(separator),
+                ["EditSongMetadata"] = Keybindings.EditSongMetadata.Replace(" ", "").Split(separator),
                 ["QuickSwitchPlaylist"] = Keybindings.QuickSwitchPlaylist.Replace(" ", "").Split(separator),
                 ["Help"] = Keybindings.Help.Replace(" ", "").Split(separator),
                 ["EditKeybindings"] = Keybindings.EditKeybindings.Replace(" ", "").Split(separator),

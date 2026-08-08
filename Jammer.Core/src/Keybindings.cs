@@ -74,6 +74,7 @@ namespace Jammer
         public static string SearchInPlaylist = CheckValue("SearchInPlaylist", "F3");
         public static string SearchByAuthor = CheckValue("SearchByAuthor", "Shift + F3");
         public static string RenameSong = CheckValue("RenameSong", "F2");
+        public static string EditSongMetadata = CheckValue("EditSongMetadata", "E");
 
         // public static string ForwardSecondAmount = CheckValue("ForwardSecondAmount", "1");
         // public static string BackwardSecondAmount = CheckValue("BackwardSecondAmount", "2");
@@ -106,7 +107,7 @@ namespace Jammer
         public static string HardDeleteCurrentSong = CheckValue("HardDeleteCurrentSong", "Shift + Delete");
         public static string VolumeUpByOne = CheckValue("VolumeUpByOne", "Shift + UpArrow");
         public static string VolumeDownByOne = CheckValue("VolumeDownByOne", "Shift + DownArrow");
-        public static string ExitRssFeed = CheckValue("ExitRssFeed", "E");
+        public static string ExitRssFeed = CheckValue("ExitRssFeed", "Ctrl + E");
 
         public static string CheckValue(string value, string defaultValue)
         {

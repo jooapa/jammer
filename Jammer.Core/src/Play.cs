@@ -5,7 +5,7 @@ using ManagedBass.Aac;
 using ManagedBass.DirectX8;
 using ManagedBass.Midi;
 using ManagedBass.Opus;
-// using ManagedBass.Fx;
+using ManagedBass.Fx;
 using Spectre.Console;
 using System.ComponentModel;
 using System.IO;
@@ -812,30 +812,41 @@ namespace Jammer
             // MARK: StartPlaying
             ResetMusic();
 
+            string songEntry = Utils.Songs[Utils.CurrentSongIndex];
+            string songUri = songEntry;
+            if (songEntry.Contains(Utils.JammerFileDelimeter))
+            {
+                songUri = songEntry.Split(Utils.JammerFileDelimeter)[0];
+            }
+            var metadata = SongMetadataStore.Get(songUri);
+            bool needsFxWrapper = metadata.Speed != 1.0f || metadata.Reversed;
+
             // Message.Data(Utils.currentSong, "Playing: ");
             // flags
-            BassFlags flags = BassFlags.Default;
+            BassFlags flags = needsFxWrapper ? BassFlags.Decode : BassFlags.Default;
 
 #if !NO_BASS_AAC
             BassAac.PlayAudioFromMp4 = true;
             BassAac.AacSupportMp4 = true;
 #endif
 
+            int sourceStream = 0;
+
             ////
-            Utils.CurrentMusic = Bass.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+            sourceStream = Bass.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
 #if !NO_BASS_AAC
-            if (Utils.CurrentMusic == 0)
-                Utils.CurrentMusic = BassAac.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+            if (sourceStream == 0)
+                sourceStream = BassAac.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
-            if (Utils.CurrentMusic == 0)
-                Utils.CurrentMusic = BassAac.CreateMp4Stream(Utils.CurrentSongPath, 0, 0, flags);
+            if (sourceStream == 0)
+                sourceStream = BassAac.CreateMp4Stream(Utils.CurrentSongPath, 0, 0, flags);
             //Message.Data(Utils.currentMusic.ToString(), "Current Music");
 #endif
-            if (Utils.CurrentMusic == 0)
-                Utils.CurrentMusic = BassOpus.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+            if (sourceStream == 0)
+                sourceStream = BassOpus.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
 
-            if (Utils.CurrentMusic == 0)
+            if (sourceStream == 0)
             {
                 int newFont;
                 newFont = BassMidi.FontInit(Path.Combine(Utils.SoundFontsPath, Preferences.GetCurrentSf2()), FontInitFlags.Unicode);
@@ -860,7 +871,48 @@ namespace Jammer
                 {
                     throw new Exception("Can't set the SoundFont");
                 }
-                Utils.CurrentMusic = BassMidi.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+                sourceStream = BassMidi.CreateStream(Utils.CurrentSongPath, 0, 0, flags);
+
+                // MIDI streams do not support tempo/reverse wrappers; disable FX wrapper for MIDI.
+                if (sourceStream != 0)
+                {
+                    needsFxWrapper = false;
+                }
+            }
+
+            Utils.CurrentMusic = sourceStream;
+
+            if (needsFxWrapper && sourceStream != 0)
+            {
+                try
+                {
+                    int wrapped = sourceStream;
+
+                    if (metadata.Reversed)
+                    {
+                        wrapped = BassFx.ReverseCreate(wrapped, 2.0f, BassFlags.Default);
+                        if (wrapped != 0)
+                        {
+                            sourceStream = wrapped;
+                            Utils.CurrentMusic = wrapped;
+                        }
+                    }
+
+                    if (metadata.Speed != 1.0f && Utils.CurrentMusic != 0)
+                    {
+                        wrapped = BassFx.TempoCreate(Utils.CurrentMusic, BassFlags.Default);
+                        if (wrapped != 0)
+                        {
+                            Utils.CurrentMusic = wrapped;
+                            Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Tempo, (metadata.Speed - 1.0f) * 100f);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Failed to apply playback metadata FX: {ex}");
+                    Utils.CurrentMusic = sourceStream;
+                }
             }
 
             // create stream
@@ -925,7 +977,14 @@ namespace Jammer
             Bass.ChannelSetAttribute(Utils.CurrentMusic, ChannelAttribute.Volume, Preferences.GetVolume());
 
             // set FXs
-            SetFXs();
+            if (metadata.UseCustomEffects)
+            {
+                SetFXs(metadata.Effects);
+            }
+            else
+            {
+                SetFXs();
+            }
 
             // set sync
             Bass.ChannelSetSync(Utils.CurrentMusic, SyncFlags.End, 0, (a, b, c, d) =>
@@ -935,12 +994,33 @@ namespace Jammer
                 Start.prevMusicTimePlayed = -1;
             }, IntPtr.Zero);
 
+            // Trim end sync
+            if (metadata.TrimEndSeconds.HasValue && Utils.CurrentMusic != 0)
+            {
+                long trimEndBytes = Bass.ChannelSeconds2Bytes(Utils.CurrentMusic, metadata.TrimEndSeconds.Value);
+                long lengthBytes = Bass.ChannelGetLength(Utils.CurrentMusic);
+                if (trimEndBytes > 0 && trimEndBytes < lengthBytes)
+                {
+                    Bass.ChannelSetSync(Utils.CurrentMusic, SyncFlags.Position, trimEndBytes, (a, b, c, d) =>
+                    {
+                        MaybeNextSong();
+                        Start.drawWhole = true;
+                        Start.prevMusicTimePlayed = -1;
+                    }, IntPtr.Zero);
+                }
+            }
 
             Start.state = MainStates.playing;
             // play stream
             Start.prevMusicTimePlayed = -1;
             PlayDrawReset();
             Bass.ChannelPlay(Utils.CurrentMusic);
+
+            // Seek to trim start after playback begins.
+            if (metadata.TrimStartSeconds.HasValue && Utils.CurrentMusic != 0)
+            {
+                SeekSong((float)metadata.TrimStartSeconds.Value, false);
+            }
 
 
             // TUI.RefreshCurrentView();
@@ -972,6 +1052,11 @@ namespace Jammer
 
         public static void SetFXs()
         {
+            SetFXs(null);
+        }
+
+        public static void SetFXs(SongEffectSettings? songEffects)
+        {
             // MARK: - EFFECT FX EXAMPLES
             // DXReverbParameters reverb = new()
             // {
@@ -983,112 +1068,120 @@ namespace Jammer
             // int reverbHandle = Bass.ChannelSetFX(Utils.currentMusic, EffectType.DXReverb, 1);
             // Bass.FXSetParameters(reverbHandle, reverb);
 
-            if (Effects.isChorus)
+            bool isChorus = songEffects?.IsChorus ?? Effects.isChorus;
+            if (isChorus)
             {
                 DXChorusParameters chorus = new()
                 {
-                    fWetDryMix = Effects.chorusWetDryMix,
-                    fDepth = Effects.chorusDepth,
-                    fFeedback = Effects.chorusFeedback,
-                    fFrequency = Effects.chorusFrequency,
-                    fDelay = Effects.chorusDelay
+                    fWetDryMix = songEffects?.ChorusWetDryMix ?? Effects.chorusWetDryMix,
+                    fDepth = songEffects?.ChorusDepth ?? Effects.chorusDepth,
+                    fFeedback = songEffects?.ChorusFeedback ?? Effects.chorusFeedback,
+                    fFrequency = songEffects?.ChorusFrequency ?? Effects.chorusFrequency,
+                    fDelay = songEffects?.ChorusDelay ?? Effects.chorusDelay
                 };
 
                 int chorusHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Chorus, 1);
                 Bass.FXSetParameters(chorusHandle, chorus);
             }
 
-            if (Effects.isCompressor)
+            bool isCompressor = songEffects?.IsCompressor ?? Effects.isCompressor;
+            if (isCompressor)
             {
                 DXCompressorParameters compressor = new()
                 {
-                    fGain = Effects.compressorGain,
-                    fAttack = Effects.compressorAttack,
-                    fRelease = Effects.compressorRelease,
-                    fThreshold = Effects.compressorThreshold,
-                    fRatio = Effects.compressorRatio,
-                    fPredelay = Effects.compressorPredelay
+                    fGain = songEffects?.CompressorGain ?? Effects.compressorGain,
+                    fAttack = songEffects?.CompressorAttack ?? Effects.compressorAttack,
+                    fRelease = songEffects?.CompressorRelease ?? Effects.compressorRelease,
+                    fThreshold = songEffects?.CompressorThreshold ?? Effects.compressorThreshold,
+                    fRatio = songEffects?.CompressorRatio ?? Effects.compressorRatio,
+                    fPredelay = songEffects?.CompressorPredelay ?? Effects.compressorPredelay
                 };
 
                 int compressorHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Compressor, 1);
                 Bass.FXSetParameters(compressorHandle, compressor);
             }
 
-            if (Effects.isDistortion)
+            bool isDistortion = songEffects?.IsDistortion ?? Effects.isDistortion;
+            if (isDistortion)
             {
                 DXDistortionParameters distortion = new()
                 {
-                    fGain = Effects.distortionGain,
-                    fEdge = Effects.distortionEdge,
-                    fPostEQCenterFrequency = Effects.distortionPostEQCenterFrequency
+                    fGain = songEffects?.DistortionGain ?? Effects.distortionGain,
+                    fEdge = songEffects?.DistortionEdge ?? Effects.distortionEdge,
+                    fPostEQCenterFrequency = songEffects?.DistortionPostEQCenterFrequency ?? Effects.distortionPostEQCenterFrequency
                 };
 
                 int distortionHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Distortion, 1);
                 Bass.FXSetParameters(distortionHandle, distortion);
             }
 
-            if (Effects.isEcho)
+            bool isEcho = songEffects?.IsEcho ?? Effects.isEcho;
+            if (isEcho)
             {
                 DXEchoParameters echo = new()
                 {
-                    fWetDryMix = Effects.echoWetDryMix,
-                    fFeedback = Effects.echoFeedback,
-                    fLeftDelay = Effects.echoLeftDelay,
-                    fRightDelay = Effects.echoRightDelay,
-                    lPanDelay = Effects.echoPanDelay
+                    fWetDryMix = songEffects?.EchoWetDryMix ?? Effects.echoWetDryMix,
+                    fFeedback = songEffects?.EchoFeedback ?? Effects.echoFeedback,
+                    fLeftDelay = songEffects?.EchoLeftDelay ?? Effects.echoLeftDelay,
+                    fRightDelay = songEffects?.EchoRightDelay ?? Effects.echoRightDelay,
+                    lPanDelay = songEffects?.EchoPanDelay ?? Effects.echoPanDelay
                 };
 
                 int echoHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.Echo, 1);
                 Bass.FXSetParameters(echoHandle, echo);
             }
 
-            if (Effects.isFlanger)
+            bool isFlanger = songEffects?.IsFlanger ?? Effects.isFlanger;
+            if (isFlanger)
             {
                 DXFlangerParameters flanger = new()
                 {
-                    fWetDryMix = Effects.flangerWetDryMix,
-                    fDepth = Effects.flangerDepth,
-                    fFeedback = Effects.flangerFeedback,
-                    fFrequency = Effects.flangerFrequency,
-                    fDelay = Effects.flangerDelay,
+                    fWetDryMix = songEffects?.FlangerWetDryMix ?? Effects.flangerWetDryMix,
+                    fDepth = songEffects?.FlangerDepth ?? Effects.flangerDepth,
+                    fFeedback = songEffects?.FlangerFeedback ?? Effects.flangerFeedback,
+                    fFrequency = songEffects?.FlangerFrequency ?? Effects.flangerFrequency,
+                    fDelay = songEffects?.FlangerDelay ?? Effects.flangerDelay,
                 };
 
                 int flangerHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXFlanger, 1);
                 Bass.FXSetParameters(flangerHandle, flanger);
             }
 
-            if (Effects.isGargle)
+            bool isGargle = songEffects?.IsGargle ?? Effects.isGargle;
+            if (isGargle)
             {
                 DXGargleParameters gargle = new()
                 {
-                    dwRateHz = Effects.gargleRate,
+                    dwRateHz = songEffects?.GargleRate ?? Effects.gargleRate,
                 };
 
                 int gargleHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXGargle, 1);
                 Bass.FXSetParameters(gargleHandle, gargle);
             }
 
-            if (Effects.isParamEQ)
+            bool isParamEQ = songEffects?.IsParamEQ ?? Effects.isParamEQ;
+            if (isParamEQ)
             {
                 DXParamEQParameters paramEq = new()
                 {
-                    fCenter = Effects.paramEQCenter,
-                    fBandwidth = Effects.paramEQBandwidth,
-                    fGain = Effects.paramEQGain
+                    fCenter = songEffects?.ParamEQCenter ?? Effects.paramEQCenter,
+                    fBandwidth = songEffects?.ParamEQBandwidth ?? Effects.paramEQBandwidth,
+                    fGain = songEffects?.ParamEQGain ?? Effects.paramEQGain
                 };
 
                 int paramEqHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXParamEQ, 1);
                 Bass.FXSetParameters(paramEqHandle, paramEq);
             }
 
-            if (Effects.isReverb)
+            bool isReverb = songEffects?.IsReverb ?? Effects.isReverb;
+            if (isReverb)
             {
                 DXReverbParameters reverb = new()
                 {
-                    fInGain = Effects.reverbInGain,
-                    fReverbMix = Effects.reverbReverbMix,
-                    fReverbTime = Effects.reverbReverbTime,
-                    fHighFreqRTRatio = Effects.reverbHighFreqRTRatio
+                    fInGain = songEffects?.ReverbInGain ?? Effects.reverbInGain,
+                    fReverbMix = songEffects?.ReverbReverbMix ?? Effects.reverbReverbMix,
+                    fReverbTime = songEffects?.ReverbReverbTime ?? Effects.reverbReverbTime,
+                    fHighFreqRTRatio = songEffects?.ReverbHighFreqRTRatio ?? Effects.reverbHighFreqRTRatio
                 };
 
                 int reverbHandle = Bass.ChannelSetFX(Utils.CurrentMusic, EffectType.DXReverb, 1);

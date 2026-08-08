@@ -64,7 +64,8 @@ Search = Ctrl + Y
 ShowLog = Ctrl + L
 HardDeleteCurrentSong = Shift + Delete
 RenameSong = F2
-ExitRssFeed = E
+EditSongMetadata = E
+ExitRssFeed = Ctrl + E
 ";
 
         private static readonly FileIniDataParser parser = new FileIniDataParser();
@@ -366,7 +367,7 @@ ExitRssFeed = E
                         }
                     }
                     // Message.Data($"{currentKeyPress} {key_pressed_string}", "Debug");
-                    if (currentKeyPress.Equals(key_pressed_string))
+                    if (currentKeyPress.Equals(key_pressed_string, StringComparison.OrdinalIgnoreCase))
                     {
                         bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                         bool isShiftAltModifier = altModifier && shiftModifier;
@@ -449,11 +450,11 @@ ExitRssFeed = E
                             altModifier = true;
                             break;
                         default:
-                            currentKeyPress = lowerCasePart;
+                            currentKeyPress = part;
                             break;
                     }
                 }
-                if (currentKeyPress.Equals(key_pressed_string))
+                if (currentKeyPress.Equals(key_pressed_string, StringComparison.OrdinalIgnoreCase))
                 {
                     bool isShiftCtrlModifier = ctrlModifier && shiftModifier;
                     bool isShiftAltModifier = altModifier && shiftModifier;

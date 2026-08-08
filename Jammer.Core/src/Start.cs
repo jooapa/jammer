@@ -98,6 +98,9 @@ namespace Jammer
             }
             Log.Info("BASS initialized");
 
+            // Load per-song playback metadata
+            SongMetadataStore.Load();
+
             // Initialize the keyboard hook
             Log.Info("Initializing keyboard hook");
             InitializeMediaButtonHook();

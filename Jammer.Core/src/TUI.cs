@@ -368,6 +368,12 @@ namespace Jammer
             SettingsComponent.DrawSettingsToConsole(layout);
         }
 
+        static public void DrawSongMetadata()
+        {
+            var layout = new LayoutConfig(Start.consoleWidth, Start.consoleHeight);
+            SongMetadataComponent.DrawSongMetadataToConsole(layout);
+        }
+
         private static void DrawHelpSettingInfo()
         {
             // AnsiConsole.Markup($"{Locale.Help.Press} [red]{Keybindings.Help}[/] {Locale.Help.ToHideHelp}");
@@ -586,6 +592,10 @@ namespace Jammer
             else if (Start.playerView == "changelanguage")
             {
                 ChangeLanguage();
+            }
+            else if (Start.playerView == "songmetadata")
+            {
+                DrawSongMetadata();
             }
         }
     }
