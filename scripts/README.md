@@ -25,9 +25,10 @@ Packaging constraints are enforced:
   `<output>/tools/` and caches it there. The first packaging run therefore needs network
   access when `appimagetool` is not already installed.
 - Windows installer creation requires Windows and `makensis` on `PATH`.
-- macOS archives require macOS and universal `libbass.dylib`, `libbassmidi.dylib`, and
+- macOS archives can be cross-packaged on Linux or built on macOS and require universal
+  `libbass.dylib`, `libbassmidi.dylib`, and
   `libbassopus.dylib` under `libs/macos/universal/`. BASS AAC is not used on macOS. Both
-  x64 and arm64 slices are verified with `lipo`; archives are unsigned and unnotarized.
+  x64 and arm64 slices are verified before packaging; archives are unsigned and unnotarized.
   Install `ffmpeg` separately and keep it on `PATH`.
 
 The script never bundles yt-dlp. Jammer installs it into its user-writable tools directory.

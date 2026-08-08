@@ -408,7 +408,8 @@ pwsh ./scripts/build.ps1 -Target all
 AppImage packaging requires Linux x64. It uses `appimagetool` from `PATH` or automatically
 downloads and caches the official x86_64 build under `artifacts/tools/`; the first run
 therefore needs network access. The Windows installer requires Windows and `makensis`.
-Both macOS targets use only `libbass.dylib`, `libbassmidi.dylib`,
+Both macOS targets can be cross-packaged on Linux or built on macOS. They use only
+`libbass.dylib`, `libbassmidi.dylib`,
 and `libbassopus.dylib` from `libs/macos/universal`; BASS AAC is not used on macOS.
 Missing libraries make the script refuse to claim a runnable macOS archive. Install
 `ffmpeg` separately and keep it on `PATH`.

@@ -74,6 +74,11 @@ function Publish-Target([string]$Rid) {
         "-p:Version=$Version",
         "-p:InformationalVersion=$Version"
     )
+    if ($Rid -eq 'osx-x64' -or $Rid -eq 'osx-arm64') {
+        # RuntimeIdentifier is not propagated to a referenced project's compile in all
+        # SDK versions. Keep its package graph and compile symbols in sync explicitly.
+        $arguments += @('-p:DisableSharpHook=true', '-p:DisableBassAac=true')
+    }
     Invoke-External $Dotnet $arguments
     return $publishDirectory
 }
@@ -179,17 +184,46 @@ function Package-Windows([string]$PublishDirectory) {
     Copy-Required (Join-Path $stage "Jammer-Setup_V$Version.exe") (Join-Path $OutputRoot "Jammer-Setup_V$Version.exe")
 }
 
+function Assert-UniversalMacOSLibrary([string]$Path) {
+    $data = [IO.File]::ReadAllBytes($Path)
+    if ($data.Length -lt 28) { throw "macOS native library is too small to be a universal binary: $Path" }
+
+    function Read-BigEndianUInt32([byte[]]$Bytes, [int]$Offset) {
+        return [uint32]($Bytes[$Offset] * 0x1000000 + $Bytes[$Offset + 1] * 0x10000 + $Bytes[$Offset + 2] * 0x100 + $Bytes[$Offset + 3])
+    }
+
+    $magic = Read-BigEndianUInt32 $data 0
+    $entrySize = if ($magic -eq [uint32]3405691582) { 20 } elseif ($magic -eq [uint32]3405691583) { 32 } else {
+        throw "macOS native library is not a universal Mach-O binary: $Path"
+    }
+    $architectureCount = Read-BigEndianUInt32 $data 4
+    if ($architectureCount -gt [int](($data.Length - 8) / $entrySize)) {
+        throw "macOS native library has an invalid universal Mach-O header: $Path"
+    }
+
+    $architectures = [Collections.Generic.HashSet[uint32]]::new()
+    for ($index = 0; $index -lt $architectureCount; $index++) {
+        $null = $architectures.Add((Read-BigEndianUInt32 $data (8 + $index * $entrySize)))
+    }
+    $x64CpuType = [uint32]0x01000007
+    $arm64CpuType = [uint32]0x0100000c
+    if (-not $architectures.Contains($x64CpuType) -or -not $architectures.Contains($arm64CpuType)) {
+        throw "macOS native library must contain both x86_64 and arm64 slices: $Path"
+    }
+}
+
 function Package-MacOS([string]$Rid, [string]$PublishDirectory) {
-    if ($HostPlatform -ne 'macos') { throw 'macOS distribution packaging must run on macOS. Use -SkipPackage elsewhere to validate publishing.' }
+    if ($HostPlatform -ne 'macos' -and $HostPlatform -ne 'linux') {
+        throw 'macOS distribution packaging must run on macOS or Linux. Use -SkipPackage elsewhere to validate publishing.'
+    }
     $nativeRoot = Join-Path $RepositoryRoot 'libs/macos/universal'
     $required = @('libbass.dylib', 'libbassmidi.dylib', 'libbassopus.dylib')
     $missing = @($required | Where-Object { -not (Test-Path (Join-Path $nativeRoot $_)) })
     if ($missing.Count -gt 0) {
         throw "Cannot package ${Rid}: missing native files in ${nativeRoot}: $($missing -join ', '). macOS native files must be universal binaries; no runnable archive was created."
     }
-    $Lipo = Require-Command 'lipo' 'Xcode command-line tools are required to validate macOS native architectures.'
     foreach ($name in $required) {
-        Invoke-External $Lipo @((Join-Path $nativeRoot $name), '-verify_arch', 'x86_64', 'arm64')
+        Assert-UniversalMacOSLibrary (Join-Path $nativeRoot $name)
     }
     $bundleName = "jammer-$Version-$Rid"
     $stage = Join-Path $OutputRoot "staging/$bundleName"
