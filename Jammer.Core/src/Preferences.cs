@@ -51,6 +51,8 @@ namespace Jammer
         public static bool isQuickPlayFromSearch = GetEnableQuickPlayFromSearch();
         public static string spotifyClientID = GetSpotifyClientId();
         public static SpotifyResolutionProvider spotifyResolutionProvider = GetSpotifyResolutionProvider();
+        public static int intInputStep = GetIntInputStep();
+        public static float floatInputStep = GetFloatInputStep();
 
         private const int DefaultFavoriteNotificationTimeoutMs = 1000;
 
@@ -252,6 +254,8 @@ namespace Jammer
             settings.EnableQuickPlayFromSearch = isQuickPlayFromSearch;
             settings.spotifyClientID = spotifyClientID;
             settings.spotifyResolutionProvider = spotifyResolutionProvider;
+            settings.intInputStep = intInputStep;
+            settings.floatInputStep = floatInputStep;
 
             var options = new JsonSerializerOptions
             {
@@ -592,6 +596,22 @@ namespace Jammer
             return settings?.spotifyResolutionProvider ?? SpotifyResolutionProvider.YouTube;
         }
 
+        static public int GetIntInputStep()
+        {
+            if (!File.Exists(Utils.SettingsFilePath)) return 1;
+            string jsonString = File.ReadAllText(Utils.SettingsFilePath);
+            Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            return settings?.intInputStep ?? 1;
+        }
+
+        static public float GetFloatInputStep()
+        {
+            if (!File.Exists(Utils.SettingsFilePath)) return 0.1f;
+            string jsonString = File.ReadAllText(Utils.SettingsFilePath);
+            Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
+            return settings?.floatInputStep ?? 0.1f;
+        }
+
         static public void OpenJammerFolder()
         {
             string JammerPath = Utils.JammerPath;
@@ -663,6 +683,8 @@ namespace Jammer
             public bool? EnableQuickPlayFromSearch { get; set; }
             public string? spotifyClientID { get; set; }
             public SpotifyResolutionProvider? spotifyResolutionProvider { get; set; }
+            public int? intInputStep { get; set; }
+            public float? floatInputStep { get; set; }
         }
     }
 }

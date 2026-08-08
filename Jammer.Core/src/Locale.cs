@@ -174,6 +174,10 @@ namespace Jammer
             public static string ReloadEffects = CheckValueLocale("Settings", "ReloadEffects", "Reload effects settings");
             public static string ModifierHelpers = CheckValueLocale("Settings", "ModifierHelpers", "Key modifier helpers");
             public static string SkipErrors = CheckValueLocale("Settings", "SkipErrors", "Skip playback errors");
+            public static string IntInputStep = CheckValueLocale("Settings", "IntInputStep", "Integer input step");
+            public static string FloatInputStep = CheckValueLocale("Settings", "FloatInputStep", "Float input step");
+            public static string EnterIntInputStep = CheckValueLocale("Settings", "EnterIntInputStep", "Enter the integer input step amount");
+            public static string EnterFloatInputStep = CheckValueLocale("Settings", "EnterFloatInputStep", "Enter the float input step amount");
             public static string ToRun = CheckValueLocale("Settings", "ToRun", "to run");
             public static string ToSelect = CheckValueLocale("Settings", "ToSelect", "to select");
             public static string ToRefresh = CheckValueLocale("Settings", "ToRefresh", "to refresh");

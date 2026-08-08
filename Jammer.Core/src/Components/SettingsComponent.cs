@@ -194,7 +194,7 @@ namespace Jammer.Components
                 IntegerSetting(() => Locale.Settings.Rewindseconds, () => Preferences.rewindSeconds, value => Preferences.rewindSeconds = value, () => Locale.OutsideItems.EnterBackwardSeconds, () => " " + Locale.Help.Seconds),
                 new(() => Locale.Settings.ChangeVolumeBy, () => $"{Preferences.changeVolumeBy * 100:0} %", async () =>
                 {
-                    string input = Message.Input("", Locale.OutsideItems.EnterVolumeChange);
+                    string input = Message.InputInt(Locale.OutsideItems.EnterVolumeChange, (int)(Preferences.changeVolumeBy * 100));
                     if (int.TryParse(input, out int value) && value > 0)
                     {
                         Preferences.changeVolumeBy = value / 100f;
@@ -244,7 +244,9 @@ namespace Jammer.Components
                     await Task.CompletedTask;
                 }, () => Locale.Settings.ToRun),
                 ToggleSetting(() => Locale.Settings.ModifierHelpers, () => Preferences.isModifierKeyHelper, value => Preferences.isModifierKeyHelper = value),
-                ToggleSetting(() => Locale.Settings.SkipErrors, () => Preferences.isSkipErrors, value => Preferences.isSkipErrors = value)
+                ToggleSetting(() => Locale.Settings.SkipErrors, () => Preferences.isSkipErrors, value => Preferences.isSkipErrors = value),
+                IntegerSetting(() => Locale.Settings.IntInputStep, () => Preferences.intInputStep, value => Preferences.intInputStep = value, () => Locale.Settings.EnterIntInputStep, () => ""),
+                FloatSetting(() => Locale.Settings.FloatInputStep, () => Preferences.floatInputStep, value => Preferences.floatInputStep = value, () => Locale.Settings.EnterFloatInputStep, () => "")
             };
 
         private static IReadOnlyList<SettingDescriptor> BuildIntegrationSettings() =>
@@ -280,8 +282,21 @@ namespace Jammer.Components
         private static SettingDescriptor IntegerSetting(Func<string> name, Func<int> get, Action<int> set, Func<string> prompt, Func<string> suffix) =>
             new(name, () => get() + suffix(), async () =>
             {
-                string input = Message.Input("", prompt());
+                string input = Message.InputInt(prompt(), get());
                 if (int.TryParse(input, out int value) && value >= 0)
+                {
+                    set(value);
+                    Preferences.SaveSettings();
+                }
+                else ShowInvalidInput();
+                await Task.CompletedTask;
+            }, () => Locale.Settings.ToChange);
+
+        private static SettingDescriptor FloatSetting(Func<string> name, Func<float> get, Action<float> set, Func<string> prompt, Func<string> suffix) =>
+            new(name, () => get() + suffix(), async () =>
+            {
+                string input = Message.InputFloat(prompt(), get(), "0.00");
+                if (float.TryParse(input, out float value) && value >= 0)
                 {
                     set(value);
                     Preferences.SaveSettings();

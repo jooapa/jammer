@@ -292,7 +292,7 @@ namespace Jammer.Components
 
         private static Task EditSpeedAsync()
         {
-            string input = Message.Input("", Locale.SongMetadata.EnterSpeed, _workingCopy.Speed.ToString("0.00"));
+            string input = Message.InputFloat(Locale.SongMetadata.EnterSpeed, _workingCopy.Speed, "0.00");
             if (float.TryParse(input, out float value) && value >= 0.25f && value <= 4.0f)
             {
                 _workingCopy.Speed = value;
@@ -366,7 +366,7 @@ namespace Jammer.Components
         private static SettingDescriptor IntegerSetting(Func<string> name, Func<int> get, Action<int> set) =>
             new(name, () => get().ToString(), async () =>
             {
-                string input = Message.Input("", name(), get().ToString());
+                string input = Message.InputInt(name(), get());
                 if (int.TryParse(input, out int value))
                 {
                     set(value);
@@ -381,7 +381,7 @@ namespace Jammer.Components
         private static SettingDescriptor FloatSetting(Func<string> name, Func<float> get, Action<float> set) =>
             new(name, () => get().ToString(), async () =>
             {
-                string input = Message.Input("", name(), get().ToString());
+                string input = Message.InputFloat(name(), get(), "0.00");
                 if (float.TryParse(input, out float value))
                 {
                     set(value);

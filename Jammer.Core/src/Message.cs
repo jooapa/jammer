@@ -449,6 +449,40 @@ namespace Jammer
             }
         }
 
+        /// <summary>
+        /// Shows an integer input prompt where Up/Down arrows increase/decrease the value by Preferences.intInputStep.
+        /// </summary>
+        public static string InputInt(string title, int currentValue)
+        {
+            var options = new JReadOptions
+            {
+                OnUpArrow = input => int.TryParse(input, out int value)
+                    ? (value + Preferences.intInputStep).ToString()
+                    : null,
+                OnDownArrow = input => int.TryParse(input, out int value)
+                    ? (value - Preferences.intInputStep).ToString()
+                    : null
+            };
+            return Input("", title, currentValue.ToString(), options: options);
+        }
+
+        /// <summary>
+        /// Shows a float input prompt where Up/Down arrows increase/decrease the value by Preferences.floatInputStep.
+        /// </summary>
+        public static string InputFloat(string title, float currentValue, string format = "0.00")
+        {
+            var options = new JReadOptions
+            {
+                OnUpArrow = input => float.TryParse(input, out float value)
+                    ? (value + Preferences.floatInputStep).ToString(format)
+                    : null,
+                OnDownArrow = input => float.TryParse(input, out float value)
+                    ? (value - Preferences.floatInputStep).ToString(format)
+                    : null
+            };
+            return Input("", title, currentValue.ToString(format), options: options);
+        }
+
 
     }
 }
