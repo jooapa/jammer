@@ -19,7 +19,7 @@ import subprocess
 import sys
 import urllib.request
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, List, Optional, Tuple
 
 VALID_TARGETS = ("linux-x64", "win-x64", "osx-x64", "osx-arm64", "all")
 VALID_CONFIGURATIONS = ("Release", "Debug")
@@ -65,6 +65,12 @@ def main(argv: list[str] | None = None) -> int:
         dest="skip_package",
         action="store_true",
         help="Publish only; skip platform-specific packaging.",
+    )
+    parser.add_argument(
+        "--nsis",
+        dest="nsis",
+        action="store_true",
+        help="Build the Windows NSIS installer (requires makensis or WINE_NSIS_DIR).",
     )
     args = parser.parse_args(argv)
 
@@ -124,14 +130,17 @@ def main(argv: list[str] | None = None) -> int:
                 host_platform=host_platform,
             )
         elif rid == "win-x64":
-            package_windows(
-                repository_root=repository_root,
-                output_root=output_root,
-                publish_directory=published,
-                configuration=args.configuration,
-                version=version,
-                host_platform=host_platform,
-            )
+            if not args.nsis:
+                print("Skipping Windows NSIS packaging (pass --nsis to enable).")
+            else:
+                package_windows(
+                    repository_root=repository_root,
+                    output_root=output_root,
+                    publish_directory=published,
+                    configuration=args.configuration,
+                    version=version,
+                    host_platform=host_platform,
+                )
         elif rid in ("osx-x64", "osx-arm64"):
             package_macos(
                 repository_root=repository_root,
@@ -171,6 +180,30 @@ def invoke_external(command: str, arguments: Iterable[str]) -> None:
         raise RuntimeError(
             f"Command failed with exit code {result.returncode}: {command} {' '.join(arguments)}"
         )
+
+
+def _try_invoke_silent(command: str, arguments: Iterable[str]) -> int:
+    return subprocess.run([command, *arguments], check=False).returncode
+
+
+def _resolve_wine_makensis() -> Optional[Tuple[str, List[str]]]:
+    """Return (wine, [wine_args..., makensis.exe]) for a Windows NSIS run under Wine, or None."""
+    nsis_dir = os.environ.get("WINE_NSIS_DIR")
+    if not nsis_dir:
+        return None
+    nsis_path = Path(nsis_dir)
+    makensis_exe = nsis_path / "makensis.exe"
+    if not makensis_exe.is_file():
+        raise RuntimeError(
+            f"WINE_NSIS_DIR is set to '{nsis_dir}' but '{makensis_exe}' was not found."
+        )
+    wine = shutil.which("wine")
+    if wine is None:
+        raise RuntimeError(
+            "WINE_NSIS_DIR is set but 'wine' was not found on PATH. Install Wine to use it."
+        )
+    wine_args = os.environ.get("WINE_ARGS", "").split()
+    return wine, [*wine_args, str(makensis_exe)]
 
 
 def publish_target(
@@ -340,12 +373,15 @@ def package_windows(
     version: str,
     host_platform: str,
 ) -> None:
-    if host_platform != "windows":
+    if host_platform != "windows" and not shutil.which("makensis"):
         raise RuntimeError(
-            "NSIS installer packaging must run on Windows. Use -SkipPackage elsewhere to validate publishing."
+            "NSIS (makensis) is not installed. Install NSIS to package the Windows installer on this platform, "
+            "or use -SkipPackage elsewhere to validate publishing."
         )
 
-    make_nsis = require_command("makensis", "Install NSIS and add makensis.exe to PATH.")
+    make_nsis = "makensis" if shutil.which("makensis") else require_command(
+        "makensis.exe", "Install NSIS and add makensis.exe to PATH."
+    )
     stage = output_root / "staging" / "nsis"
     if stage.exists():
         shutil.rmtree(stage)
@@ -389,7 +425,26 @@ def package_windows(
     original_cwd = os.getcwd()
     os.chdir(stage)
     try:
-        invoke_external(make_nsis, [f"/DVERSION={version}", "setup.nsi"])
+        native_rc = _try_invoke_silent(
+            make_nsis, [f"-DVERSION={version}", "setup.nsi"]
+        )
+        if native_rc != 0:
+            wine_invocation = _resolve_wine_makensis()
+            if wine_invocation is not None:
+                wine_cmd, wine_prefix = wine_invocation
+                print(
+                    f"Native makensis failed (exit {native_rc}); retrying via Wine "
+                    f"({wine_cmd} ... {wine_prefix[-1]})."
+                )
+                invoke_external(
+                    wine_cmd,
+                    [*wine_prefix, f"-DVERSION={version}", "setup.nsi"],
+                )
+            else:
+                raise RuntimeError(
+                    f"Command failed with exit code {native_rc}: "
+                    f"{make_nsis} -DVERSION={version} setup.nsi"
+                )
     finally:
         os.chdir(original_cwd)
 

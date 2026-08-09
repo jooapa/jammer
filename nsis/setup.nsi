@@ -10,7 +10,7 @@ unicode True
 !endif
 
 Outfile "Jammer-Setup_V${VERSION}.exe" ; Use the version number here
-BrandingText /TRIMCENTER "Jammer Setup V${VERSION}"
+BrandingText "Jammer Setup V${VERSION}"
 Name "Jammer Setup V${VERSION}"
 RequestExecutionLevel admin
 
