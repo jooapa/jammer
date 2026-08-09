@@ -335,7 +335,17 @@ namespace Jammer
             // Message.Data(song.URI, "s");
             string[] playlist = System.IO.File.ReadAllLines(path ?? "");
             if (playlist == null || playlist.Length == 0)
+            {
+                // Empty playlist: stop any currently playing music so it doesn't
+                // keep playing in the background with no way to stop it.
+                ResetMusic();
+                Utils.CurrentMusic = 0;
+                Utils.Songs = Array.Empty<string>();
+                Utils.CurrentSongIndex = 0;
+                Start.state = MainStates.idle;
+                Start.drawWhole = true;
                 return;
+            }
 
             // MARK: - Detect if playlist is using the old format
             {
