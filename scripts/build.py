@@ -21,7 +21,16 @@ import urllib.request
 from pathlib import Path
 from typing import Iterable, List, Optional, Tuple
 
-VALID_TARGETS = ("linux-x64", "win-x64", "osx-x64", "osx-arm64", "all")
+VALID_TARGETS = (
+    "linux-x64",
+    "linux-arm64",
+    "linux-musl-x64",
+    "linux-musl-arm64",
+    "win-x64",
+    "osx-x64",
+    "osx-arm64",
+    "all",
+)
 VALID_CONFIGURATIONS = ("Release", "Debug")
 VERSION_PATTERN = re.compile(r"^\d+\.\d+(?:\.\d+)?(?:-[0-9A-Za-z.-]+)?$")
 
@@ -102,7 +111,15 @@ def main(argv: list[str] | None = None) -> int:
     output_root.mkdir(parents=True, exist_ok=True)
 
     targets = (
-        ["linux-x64", "win-x64", "osx-x64", "osx-arm64"]
+        [
+            "linux-x64",
+            "linux-arm64",
+            "linux-musl-x64",
+            "linux-musl-arm64",
+            "win-x64",
+            "osx-x64",
+            "osx-arm64",
+        ]
         if args.target == "all"
         else [args.target]
     )
@@ -120,11 +137,17 @@ def main(argv: list[str] | None = None) -> int:
         )
         if args.skip_package:
             continue
-        if rid == "linux-x64":
+        if rid in (
+            "linux-x64",
+            "linux-arm64",
+            "linux-musl-x64",
+            "linux-musl-arm64",
+        ):
             package_linux(
                 repository_root=repository_root,
                 output_root=output_root,
                 publish_directory=published,
+                rid=rid,
                 configuration=args.configuration,
                 version=version,
                 host_platform=host_platform,
@@ -296,19 +319,65 @@ def get_appimage_tool(output_root: Path) -> Path:
     return tool_path
 
 
+def _linux_rid_to_arch(rid: str) -> Tuple[str, str]:
+    """Map a .NET RID to (apt-style arch folder under libs/linux/, output arch label)."""
+    mapping = {
+        "linux-x64": ("x86_64", "x86_64"),
+        "linux-arm64": ("aarch64", "arm64"),
+        "linux-musl-x64": ("x86_64", "x86_64-musl"),
+        "linux-musl-arm64": ("aarch64", "arm64-musl"),
+    }
+    if rid not in mapping:
+        raise RuntimeError(f"Unsupported Linux RID: {rid}")
+    return mapping[rid]
+
+
+def _copy_bass_libs(repository_root: Path, publish_directory: Path, arch_folder: str) -> None:
+    for bass_lib in (repository_root / "libs" / "linux" / arch_folder).glob("libbass*.so"):
+        shutil.copy2(bass_lib, publish_directory / bass_lib.name)
+
+
 def package_linux(
     repository_root: Path,
     output_root: Path,
     publish_directory: Path,
+    rid: str,
     configuration: str,
     version: str,
     host_platform: str,
 ) -> None:
     if host_platform != "linux":
         raise RuntimeError(
-            "AppImage packaging must run on a Linux x64 host. Use -SkipPackage elsewhere to validate publishing."
+            "Linux packaging must run on a Linux host. Use -SkipPackage elsewhere to validate publishing."
         )
 
+    arch_folder, arch_label = _linux_rid_to_arch(rid)
+    _copy_bass_libs(repository_root, publish_directory, arch_folder)
+
+    if rid == "linux-x64":
+        _package_linux_appimage(
+            repository_root=repository_root,
+            output_root=output_root,
+            publish_directory=publish_directory,
+            configuration=configuration,
+            version=version,
+        )
+    else:
+        _package_linux_tarball(
+            output_root=output_root,
+            publish_directory=publish_directory,
+            version=version,
+            arch_label=arch_label,
+        )
+
+
+def _package_linux_appimage(
+    repository_root: Path,
+    output_root: Path,
+    publish_directory: Path,
+    configuration: str,
+    version: str,
+) -> None:
     appimage_tool = get_appimage_tool(output_root)
     app_dir = output_root / "staging" / "jammer.AppDir"
     if app_dir.exists():
@@ -329,8 +398,8 @@ def package_linux(
         publish_directory / "Jammer.CLI", app_dir / "usr" / "bin" / "Jammer"
     )
 
-    for bass_lib in (repository_root / "libs" / "linux" / "x86_64").glob("libbass*.so"):
-        shutil.copy2(bass_lib, app_dir / "usr" / "lib")
+    for bass_lib in (publish_directory).glob("libbass*.so"):
+        shutil.copy2(bass_lib, app_dir / "usr" / "lib" / bass_lib.name)
 
     copy_required(
         get_native_publish_file(
@@ -363,6 +432,40 @@ def package_linux(
             os.environ.pop("APPIMAGE_EXTRACT_AND_RUN", None)
         else:
             os.environ["APPIMAGE_EXTRACT_AND_RUN"] = previous_extract_and_run
+
+
+def _package_linux_tarball(
+    output_root: Path,
+    publish_directory: Path,
+    version: str,
+    arch_label: str,
+) -> None:
+    stage = output_root / "staging" / f"jammer-linux-{arch_label}"
+    if stage.exists():
+        shutil.rmtree(stage)
+    stage.mkdir(parents=True)
+    for entry in publish_directory.iterdir():
+        if entry.suffix == ".pdb":
+            continue
+        destination = stage / entry.name
+        if entry.is_dir():
+            shutil.copytree(entry, destination)
+        else:
+            shutil.copy2(entry, destination)
+    invoke_external(
+        require_command("chmod", "Install coreutils."),
+        ["+x", str(stage / "Jammer.CLI")],
+    )
+    invoke_external(
+        require_command("tar", "Install tar."),
+        [
+            "-czf",
+            str(output_root / f"jammer-{version}-{arch_label}.tar.gz"),
+            "-C",
+            str(stage.parent),
+            stage.name,
+        ],
+    )
 
 
 def package_windows(
