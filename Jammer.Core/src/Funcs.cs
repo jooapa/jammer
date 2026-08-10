@@ -395,15 +395,7 @@ namespace Jammer
 
         public static string RemoveControlChars(string input)
         {
-            if (string.IsNullOrEmpty(input)) return input;
-            int length = 0;
-            foreach (char c in input) if (!char.IsControl(c)) length++;
-            if (length == input.Length) return input;
-            
-            return string.Create(length, input, (chars, state) => {
-                int pos = 0;
-                foreach (char c in state) if (!char.IsControl(c)) chars[pos++] = c;
-            });
+            return new string(input.Where(c => !char.IsControl(c)).ToArray());
         }
 
         public static string GetPlaylistPositionText(string processedPlaylistName = "")
