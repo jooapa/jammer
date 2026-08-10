@@ -41,8 +41,15 @@ def main(argv: list[str] | None = None) -> int:
         "-t",
         dest="target",
         choices=VALID_TARGETS,
-        default="all",
-        help="Runtime identifier to build for (default: all).",
+        default=None,
+        help="Runtime identifier to build for (default: local machine).",
+    )
+    parser.add_argument(
+        "-all",
+        "--all",
+        dest="build_all",
+        action="store_true",
+        help="Compile all targets.",
     )
     parser.add_argument(
         "-c",
@@ -121,8 +128,8 @@ def main(argv: list[str] | None = None) -> int:
 
     output_root.mkdir(parents=True, exist_ok=True)
 
-    targets = (
-        [
+    if args.build_all or args.target == "all":
+        targets = [
             "linux-x64",
             "linux-arm64",
             "linux-musl-x64",
@@ -131,9 +138,10 @@ def main(argv: list[str] | None = None) -> int:
             "osx-x64",
             "osx-arm64",
         ]
-        if args.target == "all"
-        else [args.target]
-    )
+    elif args.target:
+        targets = [args.target]
+    else:
+        targets = [_get_local_rid()]
     host_platform = _detect_host_platform()
 
     for rid in targets:
@@ -198,6 +206,25 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     return 0
+
+
+def _get_local_rid() -> str:
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+    
+    if system == "windows":
+        os_name = "win"
+    elif system == "darwin":
+        os_name = "osx"
+    else:
+        os_name = "linux"
+        
+    if machine in ("arm64", "aarch64"):
+        arch = "arm64"
+    else:
+        arch = "x64"
+        
+    return f"{os_name}-{arch}"
 
 
 def _detect_host_platform() -> str:
