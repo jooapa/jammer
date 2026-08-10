@@ -4,7 +4,6 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Newtonsoft.Json;
 using SpotifyAPI.Web;
 using YoutubeExplode.Search;
 using static SpotifyAPI.Web.Scopes;
@@ -337,14 +336,14 @@ public sealed class SpotifyIntegrationService
     private static SpotifyAuthState? ReadAuthState()
     {
         if (!File.Exists(Utils.SpotifyAuthFilePath)) return null;
-        return JsonConvert.DeserializeObject<SpotifyAuthState>(File.ReadAllText(Utils.SpotifyAuthFilePath));
+        return JsonSerializer.Deserialize(File.ReadAllText(Utils.SpotifyAuthFilePath), JsonContext.Default.SpotifyAuthState);
     }
 
     private static void SaveToken(string clientId, PKCETokenResponse token)
     {
         Directory.CreateDirectory(Utils.JammerPath);
         var state = new SpotifyAuthState { ClientId = clientId, Token = token };
-        WriteAtomic(Utils.SpotifyAuthFilePath, JsonConvert.SerializeObject(state, Formatting.Indented), privateFile: true);
+        WriteAtomic(Utils.SpotifyAuthFilePath, JsonSerializer.Serialize(state, JsonContext.Default.SpotifyAuthState), privateFile: true);
     }
 
     private static void SaveRegistry(SpotifyImportRegistry registry)

@@ -292,8 +292,7 @@ def publish_target(
         "true",
         "--output",
         str(publish_directory),
-        "-p:PublishSingleFile=true",
-        "-p:IncludeNativeLibrariesForSelfExtract=false",
+
         f"-p:Version={version}",
         f"-p:InformationalVersion={version}",
     ]

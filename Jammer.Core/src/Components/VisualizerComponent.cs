@@ -34,14 +34,16 @@ namespace Jammer.Components
             AnsiConsole.MarkupLine(Visual.GetSongVisual(visualWidth, _isPlaying));
         }
 
+        private static readonly VisualizerComponent _instance = new VisualizerComponent();
+
         /// <summary>
         /// Renders the visualizer directly to console at the calculated position
         /// </summary>
         /// <param name="layout">Layout configuration for positioning</param>
         public static void DrawVisualizerToConsole(LayoutConfig layout)
         {
-            var component = new VisualizerComponent();
-            component.RenderDirect(layout);
+            _instance.UpdateState();
+            _instance.RenderDirect(layout);
         }
 
         /// <summary>

@@ -46,6 +46,8 @@ PausingEffect = true
         public static bool pausingEffect = true; // Pausing effect flag
 
         private static float scaleFactor = 1.0f;
+        private static float[]? _sharedFftBuffer = null;
+        private static readonly StringBuilder _sharedBuilder = new StringBuilder(200);
         public static string GetSongVisual(int length, bool isPlaying)
         {
             // If the song is not playing, gradually decrease the scale factor
@@ -59,7 +61,11 @@ PausingEffect = true
             }
 
             int _bufferSize = bufferSize; // FFT data buffer size
-            var fftData = new float[_bufferSize]; // FFT data buffer
+            if (_sharedFftBuffer == null || _sharedFftBuffer.Length != _bufferSize)
+            {
+                _sharedFftBuffer = new float[_bufferSize];
+            }
+            var fftData = _sharedFftBuffer; // FFT data buffer
 
             // Retrieve FFT data from current music channel
             int bytesRead = Bass.ChannelGetData(Utils.CurrentMusic, fftData, (int)GetFFTDataFlags());
@@ -91,7 +97,8 @@ PausingEffect = true
             // Calculate this value once before the loop
             int maxLength = Math.Max(length - 43, 1);
 
-            StringBuilder frequencyBuilder = new StringBuilder(frequencyCount);
+            _sharedBuilder.Clear();
+            StringBuilder frequencyBuilder = _sharedBuilder;
 
             // Iterate through the FFT data and map values to ASCII characters
             for (int i = 0; i < frequencyCount; i++)

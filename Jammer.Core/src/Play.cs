@@ -131,7 +131,35 @@ namespace Jammer
             else if (URL.IsValidSoundcloudSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                Download.CancelActiveDownload();
+                var cts = new CancellationTokenSource();
+                Download.ActiveDownloadCts = cts;
+
+                var downloadTask = Task.Run(() => Download.DownloadSongAsync(song.URI, cts.Token));
+
+                while (!downloadTask.IsCompleted)
+                {
+                    Start.CheckKeyboardAsync().Wait();
+                    if (Start.state == MainStates.next || Start.state == MainStates.previous || Start.state == MainStates.stop || Start.Action == "NextSong" || Start.Action == "PreviousSong" || Start.Action == "Quit")
+                    {
+                        Download.CancelActiveDownload();
+                        return;
+                    }
+                    Thread.Sleep(50);
+                }
+
+                try 
+                {
+                    (fullPathToFile, song) = downloadTask.GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (AggregateException e) when (e.InnerException is OperationCanceledException)
+                {
+                    return;
+                }
             }
             else if (URL.IsValidYoutubePlaylist(song.URI))
             {
@@ -141,21 +169,105 @@ namespace Jammer
             else if (URL.IsValidYoutubeSong(song.URI))
             {
                 // id related to url, download and convert to absolute path
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                Download.CancelActiveDownload();
+                var cts = new CancellationTokenSource();
+                Download.ActiveDownloadCts = cts;
+
+                var downloadTask = Task.Run(() => Download.DownloadSongAsync(song.URI, cts.Token));
+
+                while (!downloadTask.IsCompleted)
+                {
+                    Start.CheckKeyboardAsync().Wait();
+                    if (Start.state == MainStates.next || Start.state == MainStates.previous || Start.state == MainStates.stop || Start.Action == "NextSong" || Start.Action == "PreviousSong" || Start.Action == "Quit")
+                    {
+                        Download.CancelActiveDownload();
+                        return;
+                    }
+                    Thread.Sleep(50);
+                }
+
+                try 
+                {
+                    (fullPathToFile, song) = downloadTask.GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (AggregateException e) when (e.InnerException is OperationCanceledException)
+                {
+                    return;
+                }
                 // Message.Data(SongExtensions.ToSongString(song), "123");
             }
             else if (URL.IsValidRssFeed(song.URI))
             {
                 if (song.Title == null || song.Author == null)
                 {
-                    (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                    Download.CancelActiveDownload();
+                var cts = new CancellationTokenSource();
+                Download.ActiveDownloadCts = cts;
+
+                var downloadTask = Task.Run(() => Download.DownloadSongAsync(song.URI, cts.Token));
+
+                while (!downloadTask.IsCompleted)
+                {
+                    Start.CheckKeyboardAsync().Wait();
+                    if (Start.state == MainStates.next || Start.state == MainStates.previous || Start.state == MainStates.stop || Start.Action == "NextSong" || Start.Action == "PreviousSong" || Start.Action == "Quit")
+                    {
+                        Download.CancelActiveDownload();
+                        return;
+                    }
+                    Thread.Sleep(50);
+                }
+
+                try 
+                {
+                    (fullPathToFile, song) = downloadTask.GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (AggregateException e) when (e.InnerException is OperationCanceledException)
+                {
+                    return;
+                }
                 }
                 // Message.Data(SongExtensions.ToSongString(song), "33");
 
             }
             else if (URL.IsUrl(song.URI))
             {
-                (fullPathToFile, song) = Download.DownloadSong(song.URI);
+                Download.CancelActiveDownload();
+                var cts = new CancellationTokenSource();
+                Download.ActiveDownloadCts = cts;
+
+                var downloadTask = Task.Run(() => Download.DownloadSongAsync(song.URI, cts.Token));
+
+                while (!downloadTask.IsCompleted)
+                {
+                    Start.CheckKeyboardAsync().Wait();
+                    if (Start.state == MainStates.next || Start.state == MainStates.previous || Start.state == MainStates.stop || Start.Action == "NextSong" || Start.Action == "PreviousSong" || Start.Action == "Quit")
+                    {
+                        Download.CancelActiveDownload();
+                        return;
+                    }
+                    Thread.Sleep(50);
+                }
+
+                try 
+                {
+                    (fullPathToFile, song) = downloadTask.GetAwaiter().GetResult();
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (AggregateException e) when (e.InnerException is OperationCanceledException)
+                {
+                    return;
+                }
                 // Message.Data(SongExtensions.ToSongString(song), fullPathToFile);
                 // Message.Data(path, song);
             }
