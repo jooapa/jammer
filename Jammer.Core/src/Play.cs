@@ -109,6 +109,22 @@ namespace Jammer
             }
             
             // check if file is a local
+            if (song.URI != null && song.URI.StartsWith("spotify-import://", StringComparison.OrdinalIgnoreCase))
+            {
+                string? resolvedUrl = SpotifyIntegrationService.ResolveSpotifyImportSynchronously(song);
+                if (resolvedUrl != null)
+                {
+                    song.URI = resolvedUrl;
+                    songs[Utils.CurrentSongIndex] = SongExtensions.ToSongString(song);
+                    Utils.Songs[Utils.CurrentSongIndex] = songs[Utils.CurrentSongIndex];
+                }
+                else
+                {
+                    Start.state = MainStates.next;
+                    return;
+                }
+            }
+
             if (System.IO.File.Exists(song.URI))
             {
                 // id related to local file path, convert to absolute path

@@ -445,6 +445,22 @@ public sealed class SpotifyIntegrationService
         }
     }
 
+    public static string? ResolveSpotifyImportSynchronously(Song song)
+    {
+        SpotifyResolutionProvider provider = Enum.TryParse(song.Resolver, true, out SpotifyResolutionProvider parsed)
+            ? parsed
+            : Preferences.spotifyResolutionProvider;
+        try
+        {
+            return ResolveFirstAsync(song, provider).GetAwaiter().GetResult();
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Could not resolve Spotify track {song.SpotifyTrackId} synchronously: {ex.Message}");
+            return null;
+        }
+    }
+
     private static async Task<string?> ResolveFirstAsync(Song song, SpotifyResolutionProvider provider)
     {
         string query = $"{song.Title} {song.Author}".Trim();
