@@ -44,8 +44,6 @@ namespace Jammer.Components
             AnsiConsole.MarkupLine(TUI.ProgressBar(_currentTime, _totalTime, layout));
         }
 
-        private static readonly PlayerTimeComponent _instance = new PlayerTimeComponent();
-
         /// <summary>
         /// Creates a table suitable for inclusion in the main UI table
         /// This is the primary method used by the main TUI orchestrator
@@ -54,8 +52,8 @@ namespace Jammer.Components
         /// <returns>Configured table with progress bar</returns>
         public static Table CreateTimeTable(LayoutConfig layout)
         {
-            _instance.UpdateState();
-            return _instance.Render(layout);
+            var component = new PlayerTimeComponent();
+            return component.Render(layout);
         }
 
         /// <summary>
@@ -64,8 +62,8 @@ namespace Jammer.Components
         /// <param name="layout">Layout configuration</param>
         public static void DrawTimeToConsole(LayoutConfig layout)
         {
-            _instance.UpdateState();
-            _instance.RenderDirect(layout);
+            var component = new PlayerTimeComponent();
+            component.RenderDirect(layout);
         }
     }
 }

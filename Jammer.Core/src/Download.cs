@@ -15,29 +15,13 @@ namespace Jammer
 {
     public class Download
     {
-        public static CancellationTokenSource? ActiveDownloadCts { get; set; }
-        public static void CancelActiveDownload()
-        {
-            if (ActiveDownloadCts != null)
-            {
-                try { ActiveDownloadCts.Cancel(); } catch {}
-                ActiveDownloadCts = null;
-            }
-        }
-
         public static string songPath = "";
         public static Song? constructedSong = null;
         static string[] playlistSongs = { "" };
         public static readonly YoutubeClient youtube = new();
         private static readonly YtDlpManager YtDlp = new();
 
-        private static readonly HttpClient SharedClient = new HttpClient
-        {
-            Timeout = TimeSpan.FromMinutes(10),
-            DefaultRequestHeaders = { { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3" } }
-        };
-
-        public static async Task<(string, Song?)> DownloadSongAsync(string url, CancellationToken token = default)
+        public static (string, Song?) DownloadSong(string url)
         {
             songPath = "";
             constructedSong = null;
@@ -45,25 +29,25 @@ namespace Jammer
             Debug.dprint($"{Locale.OutsideItems.Downloading}: " + url.ToString());
             if (URL.IsValidSoundcloudSong(url))
             {
-                await DownloadSoundCloudTrackAsync(url, token);
+                DownloadSoundCloudTrackAsync(url).Wait();
             }
             else if (URL.IsValidYoutubeSong(url))
             {
-                await DownloadYoutubeTrackAsync(url, token);
+                DownloadYoutubeTrackAsync(url).Wait();
             }
             else if (URL.IsValidRssFeed(url))
             {
-                await DownloadRssFeed(url, token);
+                DownloadRssFeed(url).Wait();
             }
             else if (URL.IsUrl(url))
             {
                 if (url.EndsWith(".jammer"))
                 {
-                    await DownloadJammerFile(url, token);
+                    DownloadJammerFile(url).Wait();
                 }
                 else
                 {
-                    await GeneralDownload(url, token);
+                    GeneralDownload(url).Wait();
                 }
             }
             else
@@ -76,7 +60,7 @@ namespace Jammer
             return (songPath, constructedSong);
         }
 
-        private static async Task DownloadRssFeed(string url, CancellationToken token)
+        private static async Task DownloadRssFeed(string url)
         {
             RootRssData rssData = await Rss.GetRssData(url);
 
@@ -93,7 +77,7 @@ namespace Jammer
             return;
         }
 
-        private static async Task GeneralDownload(string url, CancellationToken token)
+        private static async Task GeneralDownload(string url)
         {
             string formattedUrl = FormatUrlForFilename(url, true);
             songPath = Path.Combine(
@@ -113,7 +97,12 @@ namespace Jammer
 
             try
             {
-                var response = await SharedClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token);
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                    httpClient.Timeout = TimeSpan.FromMinutes(10);
+
+                    var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
 
                     using (var stream = await response.Content.ReadAsStreamAsync())
@@ -124,9 +113,9 @@ namespace Jammer
                         long totalBytesRead = 0;
                         long totalBytes = response.Content.Headers.ContentLength ?? -1;
 
-                        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token)) > 0)
+                        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                         {
-                            await fileStream.WriteAsync(buffer, 0, bytesRead, token);
+                            await fileStream.WriteAsync(buffer, 0, bytesRead);
                             totalBytesRead += bytesRead;
 
                             if (totalBytes > 0)
@@ -143,6 +132,7 @@ namespace Jammer
                             URI = url,
                         };
                     }
+                }
             }
             catch (Exception ex)
             {
@@ -156,7 +146,7 @@ namespace Jammer
             return downloadedPath.LastIndexOf("/") > 0 ? downloadedPath.Substring(downloadedPath.LastIndexOf("/") + 1) : downloadedPath;
         }
 
-        private static async Task DownloadJammerFile(string url, CancellationToken token)
+        private static async Task DownloadJammerFile(string url)
         {
             string downloadedPath = Path.Combine(Preferences.GetPlaylistsPath(), GetDownloadedJammerFileName(url));
 
@@ -180,7 +170,11 @@ namespace Jammer
 
             try
             {
-                var response = await SharedClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token);
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                httpClient.Timeout = TimeSpan.FromMinutes(10);
+
+                var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                 response.EnsureSuccessStatusCode();
 
                 using (var stream = await response.Content.ReadAsStreamAsync())
@@ -191,9 +185,9 @@ namespace Jammer
                     long totalBytesRead = 0;
                     long totalBytes = response.Content.Headers.ContentLength ?? -1;
 
-                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token)) > 0)
+                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                     {
-                        await fileStream.WriteAsync(buffer, 0, bytesRead, token);
+                        await fileStream.WriteAsync(buffer, 0, bytesRead);
                         totalBytesRead += bytesRead;
 
                         if (totalBytes > 0)
@@ -219,20 +213,20 @@ namespace Jammer
             };
         }
 
-        private static async Task DownloadYoutubeTrackAsync(string url, CancellationToken token)
+        private static async Task DownloadYoutubeTrackAsync(string url)
         {
             // Route to appropriate backend based on preference
             if (Preferences.backEndType == BackEndTypeYT.YoutubeDL)
             {
-                await DownloadYoutubeTrackWithYtDlpAsync(url, token);
+                await DownloadYoutubeTrackWithYtDlpAsync(url);
             }
             else
             {
-                await DownloadYoutubeTrackWithYoutubeExplodeAsync(url, token);
+                await DownloadYoutubeTrackWithYoutubeExplodeAsync(url);
             }
         }
 
-        private static async Task DownloadYoutubeTrackWithYoutubeExplodeAsync(string url, CancellationToken token)
+        private static async Task DownloadYoutubeTrackWithYoutubeExplodeAsync(string url)
         {
             string formattedUrl = FormatUrlForFilename(url);
 
@@ -257,9 +251,9 @@ namespace Jammer
 
             try
             {
-                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url, token);
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
                 var streamInfo = streamManifest.GetAudioStreams().TryGetWithHighestBitrate();
-                var video = await youtube.Videos.GetAsync(url, token);
+                var video = await youtube.Videos.GetAsync(url);
 
                 if (streamInfo != null)
                 {
@@ -278,7 +272,7 @@ namespace Jammer
                         TUI.PrintToTopOfPlayer(theText + $" {data:P}");
                     });
 
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress, token);
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, songPath, progress);
 
                     // if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     // If using Linux
@@ -289,7 +283,7 @@ namespace Jammer
                     {
                         Title = video.Title,
                         Author = video.Author.ChannelTitle
-                    }, token: token);
+                    });
 
                     TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
                     // TagLib
@@ -336,7 +330,7 @@ namespace Jammer
             }
         }
 
-        private static async Task DownloadYoutubeTrackWithYtDlpAsync(string url, CancellationToken token)
+        private static async Task DownloadYoutubeTrackWithYtDlpAsync(string url)
         {
             string formattedUrl = FormatUrlForFilename(url);
 
@@ -402,8 +396,7 @@ namespace Jammer
                 var result = await ytdl.RunAudioDownload(
                     url,
                     audioFormat,
-                    overrideOptions: ytDlpOptions,
-                    ct: token);
+                    overrideOptions: ytDlpOptions);
 
                 if (result.Success && result.Data != null)
                 {
@@ -416,7 +409,7 @@ namespace Jammer
                     TUI.PrintToTopOfPlayer(Locale.UiMessages.GettingVideoInfo);
                     
                     // Get video info for metadata
-                    var infoResult = await ytdl.RunVideoDataFetch(url, overrideOptions: ytDlpOptions, ct: token);
+                    var infoResult = await ytdl.RunVideoDataFetch(url, overrideOptions: ytDlpOptions);
                     if (infoResult.Success && infoResult.Data != null)
                     {
                         var videoData = infoResult.Data;
@@ -532,80 +525,79 @@ namespace Jammer
             }
         }
 
-        private static async Task FFMPEGConvert(string songPath, Song? metadata = null, CancellationToken token = default)
+        private static Task FFMPEGConvert(string songPath, Song? metadata = null)
         {
-            string tempSongPath = songPath + ".ogg";
+            return Task.Run(() =>
+            {
 
-            string ffmpegPath = ResolveFFmpegPath();
+                string tempSongPath = songPath + ".ogg";
 
-            // detect if ffmpeg is installed on the system in the path
-            if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
-            {
-                Message.Data(Locale.UiMessages.FfmpegMissing, Locale.OutsideItems.Error, true);
-                return;
-            }
+                string ffmpegPath = ResolveFFmpegPath();
 
-            // Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
-
-            string arguments;
-            if (metadata != null)
-            {
-                arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 -metadata title=\"{metadata.Title}\" -metadata artist=\"{metadata.Author}\" -metadata album=\"{metadata.Album}\" -c:a libvorbis \"{tempSongPath}\"";
-                Log.Info("Converting to OGG with metadata" + arguments);
-            }
-            else
-            {
-                Log.Info("Converting to OGG");
-                arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 \"{tempSongPath}\"";
-            }
-            // Message.Data(arguments, "Debug");
-            //Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
-            System.Diagnostics.ProcessStartInfo startInfo = new()
-            {
-                FileName = ffmpegPath,
-                Arguments = arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            System.Diagnostics.Process process = new System.Diagnostics.Process
-            {
-                StartInfo = startInfo
-            };
-
-            try
-            {
-                process.Start();
-                await process.WaitForExitAsync(token);
-                process.Close();
-            }
-            catch (OperationCanceledException)
-            {
-                try { process.Kill(); } catch { }
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error("FFMPEG failed to convert the file");
-
-                if (Funcs.DontShowErrorWhenSongNotFound())
+                // detect if ffmpeg is installed on the system in the path
+                if (!IsFFmpegInstalled() && !System.IO.File.Exists(ffmpegPath))
                 {
-                    Log.Error("Skipping song due to error: " + ex.Message);
+                    Message.Data(Locale.UiMessages.FfmpegMissing, Locale.OutsideItems.Error, true);
                     return;
                 }
 
-                Message.Data(ex.ToString(), "Error id:323");
-            }
+                // Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
 
-            //Message.Data($"Conversion complete: {tempSongPath} to {songPath}", "Debug");
+                string arguments;
+                if (metadata != null)
+                {
+                    arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 -metadata title=\"{metadata.Title}\" -metadata artist=\"{metadata.Author}\" -metadata album=\"{metadata.Album}\" -c:a libvorbis \"{tempSongPath}\"";
+                    Log.Info("Converting to OGG with metadata" + arguments);
+                }
+                else
+                {
+                    Log.Info("Converting to OGG");
+                    arguments = $"-y -i \"{songPath}\" -vn -acodec libvorbis -q:a 4 \"{tempSongPath}\"";
+                }
+                // Message.Data(arguments, "Debug");
+                //Message.Data($"Converting {songPath} to {tempSongPath}", "Debug");
+                System.Diagnostics.ProcessStartInfo startInfo = new()
+                {
+                    FileName = ffmpegPath,
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
-            // Replace the original file with the temporary file
-            System.IO.File.Delete(songPath);
-            System.IO.File.Move(tempSongPath, songPath);
-            //Message.Data($"Conversion complete: {songPath}", "Debug");
+                System.Diagnostics.Process process = new System.Diagnostics.Process
+                {
+                    StartInfo = startInfo
+                };
+
+                try
+                {
+                    process.Start();
+                    process.WaitForExit();
+                    process.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    Log.Error("FFMPEG failed to convert the file");
+
+                    if (Funcs.DontShowErrorWhenSongNotFound())
+                    {
+                        Log.Error("Skipping song due to error: " + ex.Message);
+                        return;
+                    }
+
+                    Message.Data(ex.ToString(), "Error id:323");
+                }
+
+                //Message.Data($"Conversion complete: {tempSongPath} to {songPath}", "Debug");
+
+                // Replace the original file with the temporary file
+                System.IO.File.Delete(songPath);
+                System.IO.File.Move(tempSongPath, songPath);
+                //Message.Data($"Conversion complete: {songPath}", "Debug");
+            });
         }
 
         public static SoundCloudClient ReturnSoundCloudClient()
@@ -617,7 +609,7 @@ namespace Jammer
             return new SoundCloudClient(Preferences.clientID);
         }
 
-        public static async Task DownloadSoundCloudTrackAsync(string url, CancellationToken token)
+        public static async Task DownloadSoundCloudTrackAsync(string url)
         {
             // if already downloaded, don't download again
             string formattedUrl = FormatUrlForFilename(url);
@@ -641,7 +633,7 @@ namespace Jammer
 
             try
             {
-                await DownloadSoundCloudTrackWithRetryAsync(url, theText, token);
+                await DownloadSoundCloudTrackWithRetryAsync(url, theText);
                 Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
             }
             catch (Exception ex)
@@ -674,15 +666,11 @@ namespace Jammer
             }
         }
 
-        private static async Task DownloadSoundCloudTrackWithRetryAsync(string url, string statusText, CancellationToken token)
+        private static async Task DownloadSoundCloudTrackWithRetryAsync(string url, string statusText)
         {
             try
             {
-                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText, token);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
+                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText);
             }
             catch (Exception firstFailure)
             {
@@ -705,7 +693,7 @@ namespace Jammer
                 }
 
                 TUI.PrintToTopOfPlayer(statusText);
-                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText, token);
+                await DownloadSoundCloudTrackOnceAsync(ReturnSoundCloudClient(), url, statusText);
             }
         }
 
@@ -727,10 +715,9 @@ namespace Jammer
         private static async Task DownloadSoundCloudTrackOnceAsync(
             SoundCloudClient soundcloud,
             string url,
-            string statusText,
-            CancellationToken token)
+            string statusText)
         {
-            var track = await soundcloud.Tracks.GetAsync(url, token);
+            var track = await soundcloud.Tracks.GetAsync(url);
             if (track?.Title == null)
             {
                 throw new InvalidOperationException("SoundCloud did not return a valid track.");
@@ -741,7 +728,7 @@ namespace Jammer
                 TUI.PrintToTopOfPlayer(statusText + $" {data:P}");
             });
 
-            await soundcloud.DownloadAsync(track, songPath, progress, cancellationToken: token);
+            await soundcloud.DownloadAsync(track, songPath, progress);
             TUI.PrintToTopOfPlayer(Locale.UiMessages.TaggingSong);
 
             try
@@ -915,7 +902,7 @@ namespace Jammer
             // Console.ReadLine();
 
 
-            return DownloadSongAsync(Utils.Songs[Utils.CurrentSongIndex]).GetAwaiter().GetResult().Item1;
+            return DownloadSong(Utils.Songs[Utils.CurrentSongIndex]).Item1;
         }
         public static string FormatUrlForFilename(string url, bool isCheck = false)
         {

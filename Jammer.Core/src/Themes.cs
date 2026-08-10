@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using Spectre.Console;
 using System.Globalization;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace Jammer
@@ -218,7 +219,7 @@ namespace Jammer
             Preferences.theme = "Jammer Default";
             // read fileContent
             string jsonWithoutComments = Regex.Replace(fileContent, @"//.*$", "", RegexOptions.Multiline);
-            var theme = JsonSerializer.Deserialize(jsonWithoutComments, JsonContext.Default.Theme);
+            var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
             CurrentTheme = theme;
         }
 
@@ -228,9 +229,9 @@ namespace Jammer
             // if missing, add the property with the value from the default theme
             string json = File.ReadAllText(pathToTheme);
             string jsonWithoutComments = Regex.Replace(json, @"//.*$", "", RegexOptions.Multiline);
-            var theme = JsonSerializer.Deserialize(jsonWithoutComments, JsonContext.Default.Theme);
+            var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
             var defaultThemeWithoutComments = Regex.Replace(fileContent, @"//.*$", "", RegexOptions.Multiline);
-            var defaultThemeJson = JsonSerializer.Deserialize(defaultThemeWithoutComments, JsonContext.Default.Theme);
+            var defaultThemeJson = System.Text.Json.JsonSerializer.Deserialize<Theme>(defaultThemeWithoutComments);
 
             // loop through all properties in default theme
             foreach (var property in defaultThemeJson.GetType().GetProperties())
@@ -255,7 +256,7 @@ namespace Jammer
             }
 
             // write the theme back to the file
-            string newJson = JsonSerializer.Serialize(theme, JsonContext.Default.Theme);
+            string newJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
             File.WriteAllText(pathToTheme, comments + newJson, System.Text.Encoding.UTF8);
 
             // set the theme
@@ -282,7 +283,7 @@ namespace Jammer
             AddAllMissingPropertiesInJsonFileIfMissing(path);
             string json = File.ReadAllText(path);
             string jsonWithoutComments = Regex.Replace(json, @"//.*$", "", RegexOptions.Multiline);
-            var theme = JsonSerializer.Deserialize(jsonWithoutComments, JsonContext.Default.Theme);
+            var theme = System.Text.Json.JsonSerializer.Deserialize<Theme>(jsonWithoutComments);
 
             if (theme == null)
             {
