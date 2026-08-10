@@ -27,6 +27,7 @@ build/
 
 [Dd]ebug/
 [Rr]elease/
+!.github/release/
 # x64/
 [Bb]in/
 [Oo]bj/

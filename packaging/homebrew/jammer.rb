@@ -1,7 +1,7 @@
 class Jammer < Formula
   desc "Lightweight, cross-platform terminal music player"
   homepage "https://github.com/jooapa/jammer"
-  version "3.52"
+  version "3.53"
   license "MIT"
 
   on_macos do
