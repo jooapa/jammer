@@ -81,6 +81,12 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Build the Windows NSIS installer (requires makensis or WINE_NSIS_DIR).",
     )
+    parser.add_argument(
+        "--upload",
+        dest="upload",
+        action="store_true",
+        help="Upload built artifacts to the GitHub release (requires gh CLI).",
+    )
     args = parser.parse_args(argv)
 
     script_dir = Path(__file__).resolve().parent
@@ -96,7 +102,10 @@ def main(argv: list[str] | None = None) -> int:
             f"Invalid version '{version}'. Expected a semantic version such as 1.2 or 1.2.3."
         )
 
-    dotnet = require_command("dotnet", "Install the .NET 8 SDK: https://dotnet.microsoft.com/download/dotnet/8.0")
+    dotnet = require_command(
+        "dotnet",
+        "Install the .NET 8 SDK: https://dotnet.microsoft.com/download/dotnet/8.0",
+    )
 
     if os.path.isabs(args.output_directory):
         output_root = Path(args.output_directory).resolve()
@@ -105,7 +114,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.clean and output_root.exists():
         if output_root == Path(output_root.anchor) or output_root == repository_root:
-            raise RuntimeError(f"Refusing to clean unsafe output directory: {output_root}")
+            raise RuntimeError(
+                f"Refusing to clean unsafe output directory: {output_root}"
+            )
         shutil.rmtree(output_root)
 
     output_root.mkdir(parents=True, exist_ok=True)
@@ -175,7 +186,17 @@ def main(argv: list[str] | None = None) -> int:
                 host_platform=host_platform,
             )
 
+    artifacts = _collect_artifacts(output_root, version, targets, args.nsis)
     print(f"Artifacts are in {output_root}")
+
+    if args.upload:
+        gh = require_command("gh", "Install the GitHub CLI: https://cli.github.com/")
+        for artifact in artifacts:
+            print(f"Uploading {artifact.name} to release {version}...")
+            invoke_external(
+                gh, ["release", "upload", version, str(artifact), "--clobber"]
+            )
+
     return 0
 
 
@@ -188,6 +209,27 @@ def _detect_host_platform() -> str:
     if system == "Darwin":
         return "macos"
     return "unknown"
+
+
+def _collect_artifacts(
+    output_root: Path, version: str, targets: List[str], nsis: bool
+) -> List[Path]:
+    artifacts: List[Path] = []
+    for rid in targets:
+        if rid == "linux-x64":
+            artifacts.append(output_root / f"jammer-{version}-x86_64.AppImage")
+            artifacts.append(output_root / f"jammer-{version}-x86_64.tar.gz")
+        elif rid in ("linux-arm64",):
+            artifacts.append(output_root / f"jammer-{version}-arm64.tar.gz")
+        elif rid in ("linux-musl-x64",):
+            artifacts.append(output_root / f"jammer-{version}-x86_64-musl.tar.gz")
+        elif rid in ("linux-musl-arm64",):
+            artifacts.append(output_root / f"jammer-{version}-arm64-musl.tar.gz")
+        elif rid == "win-x64" and nsis:
+            artifacts.append(output_root / f"Jammer-Setup_V{version}.exe")
+        elif rid in ("osx-x64", "osx-arm64"):
+            artifacts.append(output_root / f"jammer-{version}-{rid}.tar.gz")
+    return [a for a in artifacts if a.exists()]
 
 
 def require_command(name: str, guidance: str) -> str:
@@ -271,7 +313,11 @@ def copy_required(source: Path, destination: Path) -> None:
 
 
 def get_native_publish_file(
-    repository_root: Path, publish_directory: Path, rid: str, configuration: str, name: str
+    repository_root: Path,
+    publish_directory: Path,
+    rid: str,
+    configuration: str,
+    name: str,
 ) -> Path:
     published_path = publish_directory / name
     if published_path.exists():
@@ -279,7 +325,9 @@ def get_native_publish_file(
 
     # Some NuGet build targets copy native assets beside the intermediate apphost but
     # do not include them in a single-file publish directory.
-    return repository_root / "Jammer.CLI" / "bin" / configuration / "net8.0" / rid / name
+    return (
+        repository_root / "Jammer.CLI" / "bin" / configuration / "net8.0" / rid / name
+    )
 
 
 def get_appimage_tool(output_root: Path) -> Path:
@@ -299,7 +347,9 @@ def get_appimage_tool(output_root: Path) -> Path:
     temporary_path = Path(f"{tool_path}.download")
     tool_directory.mkdir(parents=True, exist_ok=True)
     temporary_path.unlink(missing_ok=True)
-    print("appimagetool was not found on PATH; downloading the official x86_64 build...")
+    print(
+        "appimagetool was not found on PATH; downloading the official x86_64 build..."
+    )
     try:
         urllib.request.urlretrieve(download_url, temporary_path)
 
@@ -309,7 +359,9 @@ def get_appimage_tool(output_root: Path) -> Path:
             raise RuntimeError("The downloaded file is not a type-2 AppImage.")
 
         temporary_path.rename(tool_path)
-        invoke_external(require_command("chmod", "Install coreutils."), ["+x", str(tool_path)])
+        invoke_external(
+            require_command("chmod", "Install coreutils."), ["+x", str(tool_path)]
+        )
     except Exception as exc:
         temporary_path.unlink(missing_ok=True)
         raise RuntimeError(
@@ -332,8 +384,12 @@ def _linux_rid_to_arch(rid: str) -> Tuple[str, str]:
     return mapping[rid]
 
 
-def _copy_bass_libs(repository_root: Path, publish_directory: Path, arch_folder: str) -> None:
-    for bass_lib in (repository_root / "libs" / "linux" / arch_folder).glob("libbass*.so"):
+def _copy_bass_libs(
+    repository_root: Path, publish_directory: Path, arch_folder: str
+) -> None:
+    for bass_lib in (repository_root / "libs" / "linux" / arch_folder).glob(
+        "libbass*.so"
+    ):
         shutil.copy2(bass_lib, publish_directory / bass_lib.name)
 
 
@@ -361,6 +417,12 @@ def package_linux(
             publish_directory=publish_directory,
             configuration=configuration,
             version=version,
+        )
+        _package_linux_tarball(
+            output_root=output_root,
+            publish_directory=publish_directory,
+            version=version,
+            arch_label="x86_64",
         )
     else:
         _package_linux_tarball(
@@ -392,18 +454,21 @@ def _package_linux_appimage(
         repository_root / "jammer.AppDir" / "jammer.desktop", app_dir / "jammer.desktop"
     )
     copy_required(
-        repository_root / "jammer.AppDir" / "Jammer-icon.png", app_dir / "Jammer-icon.png"
+        repository_root / "jammer.AppDir" / "Jammer-icon.png",
+        app_dir / "Jammer-icon.png",
     )
-    copy_required(
-        publish_directory / "Jammer.CLI", app_dir / "usr" / "bin" / "Jammer"
-    )
+    copy_required(publish_directory / "Jammer.CLI", app_dir / "usr" / "bin" / "Jammer")
 
     for bass_lib in (publish_directory).glob("libbass*.so"):
         shutil.copy2(bass_lib, app_dir / "usr" / "lib" / bass_lib.name)
 
     copy_required(
         get_native_publish_file(
-            repository_root, publish_directory, "linux-x64", configuration, "libuiohook.so"
+            repository_root,
+            publish_directory,
+            "linux-x64",
+            configuration,
+            "libuiohook.so",
         ),
         app_dir / "usr" / "lib" / "libuiohook.so",
     )
@@ -482,8 +547,12 @@ def package_windows(
             "or use -SkipPackage elsewhere to validate publishing."
         )
 
-    make_nsis = "makensis" if shutil.which("makensis") else require_command(
-        "makensis.exe", "Install NSIS and add makensis.exe to PATH."
+    make_nsis = (
+        "makensis"
+        if shutil.which("makensis")
+        else require_command(
+            "makensis.exe", "Install NSIS and add makensis.exe to PATH."
+        )
     )
     stage = output_root / "staging" / "nsis"
     if stage.exists():
@@ -492,9 +561,7 @@ def package_windows(
     (stage / "locales").mkdir(parents=True)
     (stage / "docs").mkdir(parents=True)
 
-    copy_required(
-        publish_directory / "Jammer.CLI.exe", stage / "Jammer.exe"
-    )
+    copy_required(publish_directory / "Jammer.CLI.exe", stage / "Jammer.exe")
     copy_required(
         get_native_publish_file(
             repository_root, publish_directory, "win-x64", configuration, "uiohook.dll"
@@ -505,7 +572,13 @@ def package_windows(
         repository_root / "icons" / "trans_icon512x512.ico", stage / "Jammer.ico"
     )
 
-    for name in ("bass.dll", "bass_aac.dll", "bassmidi.dll", "bassopus.dll", "ffmpeg.exe"):
+    for name in (
+        "bass.dll",
+        "bass_aac.dll",
+        "bassmidi.dll",
+        "bassopus.dll",
+        "ffmpeg.exe",
+    ):
         copy_required(repository_root / "libs" / "win" / "x64" / name, stage / name)
 
     for name in (
@@ -528,9 +601,7 @@ def package_windows(
     original_cwd = os.getcwd()
     os.chdir(stage)
     try:
-        native_rc = _try_invoke_silent(
-            make_nsis, [f"-DVERSION={version}", "setup.nsi"]
-        )
+        native_rc = _try_invoke_silent(make_nsis, [f"-DVERSION={version}", "setup.nsi"])
         if native_rc != 0:
             wine_invocation = _resolve_wine_makensis()
             if wine_invocation is not None:
@@ -560,7 +631,9 @@ def package_windows(
 def assert_universal_macos_library(path: Path) -> None:
     data = path.read_bytes()
     if len(data) < 28:
-        raise RuntimeError(f"macOS native library is too small to be a universal binary: {path}")
+        raise RuntimeError(
+            f"macOS native library is too small to be a universal binary: {path}"
+        )
 
     magic = struct.unpack(">I", data[:4])[0]
     if magic == 0xCAFEBABE:
@@ -568,21 +641,29 @@ def assert_universal_macos_library(path: Path) -> None:
     elif magic == 0xCAFEBABF:
         entry_size = 32
     else:
-        raise RuntimeError(f"macOS native library is not a universal Mach-O binary: {path}")
+        raise RuntimeError(
+            f"macOS native library is not a universal Mach-O binary: {path}"
+        )
 
     architecture_count = struct.unpack(">I", data[4:8])[0]
     if architecture_count > (len(data) - 8) // entry_size:
-        raise RuntimeError(f"macOS native library has an invalid universal Mach-O header: {path}")
+        raise RuntimeError(
+            f"macOS native library has an invalid universal Mach-O header: {path}"
+        )
 
     architectures: set[int] = set()
     for index in range(architecture_count):
-        cputype = struct.unpack(">I", data[8 + index * entry_size : 12 + index * entry_size])[0]
+        cputype = struct.unpack(
+            ">I", data[8 + index * entry_size : 12 + index * entry_size]
+        )[0]
         architectures.add(cputype)
 
     x64_cpu_type = 0x01000007
     arm64_cpu_type = 0x0100000C
     if x64_cpu_type not in architectures or arm64_cpu_type not in architectures:
-        raise RuntimeError(f"macOS native library must contain both x86_64 and arm64 slices: {path}")
+        raise RuntimeError(
+            f"macOS native library must contain both x86_64 and arm64 slices: {path}"
+        )
 
 
 def package_macos(
@@ -628,21 +709,25 @@ def package_macos(
     copy_required(repository_root / "LICENSE", stage / "LICENSE")
 
     launcher = (
-        '#!/bin/sh\n'
+        "#!/bin/sh\n"
         'SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"\n'
         'export DYLD_LIBRARY_PATH="$SCRIPT_DIR${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"\n'
         'exec "$SCRIPT_DIR/Jammer.bin" "$@"\n'
     )
     launcher_path = stage / "Jammer"
     launcher_path.write_text(launcher, encoding="utf-8")
-    launcher_path.chmod(launcher_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    launcher_path.chmod(
+        launcher_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    )
 
     invoke_external(
         require_command("chmod", "chmod is required on macOS."),
         ["+x", str(stage / "Jammer"), str(stage / "Jammer.bin")],
     )
 
-    tar = require_command("tar", "The system tar command is required to create the macOS archive.")
+    tar = require_command(
+        "tar", "The system tar command is required to create the macOS archive."
+    )
     artifact = output_root / f"{bundle_name}.tar.gz"
     invoke_external(
         tar,
