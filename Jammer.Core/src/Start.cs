@@ -34,7 +34,6 @@ namespace Jammer
         // ! Translations needed to locales
         public static MainStates state = MainStates.playing;
         private static Thread loopThread = new(() => { });
-        private static Thread visualizerThread = new(() => { });
         public static int consoleWidth = Console.WindowWidth;
         public static int consoleHeight = Console.WindowHeight;
         public static bool CLI = false;
@@ -128,9 +127,7 @@ namespace Jammer
 
             Debug.dprint("Start Loop");
             loopThread = new Thread(Loop);
-            visualizerThread = new Thread(EqualizerLoop);
             loopThread.Start();
-            visualizerThread.Start();
         }
 
         //
@@ -153,6 +150,9 @@ namespace Jammer
             TUI.RefreshCurrentView();
             AnsiConsole.Cursor.Hide();
 
+            var resizeStopwatch = Stopwatch.StartNew();
+            var visualizerStopwatch = Stopwatch.StartNew();
+
             while (LoopRunning)
             {
                 AnsiConsole.Cursor.Hide();
@@ -167,12 +167,16 @@ namespace Jammer
                     }
                 }
 
-                if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
+                if (resizeStopwatch.ElapsedMilliseconds > 500)
                 {
-                    consoleHeight = Console.WindowHeight;
-                    consoleWidth = Console.WindowWidth;
-                    AnsiConsole.Clear();
-                    drawWhole = true;
+                    if (consoleWidth != Console.WindowWidth || consoleHeight != Console.WindowHeight)
+                    {
+                        consoleHeight = Console.WindowHeight;
+                        consoleWidth = Console.WindowWidth;
+                        AnsiConsole.Clear();
+                        drawWhole = true;
+                    }
+                    resizeStopwatch.Restart();
                 }
 
                 switch (state)
@@ -284,6 +288,16 @@ namespace Jammer
                     if (debug)
                         Message.Data(drawWhole.ToString(), "22");
 
+                    // Evaluate visualizer timing based on stopwatch
+                    if (Preferences.isVisualizer && (playerView == "default" || playerView == "all"))
+                    {
+                        if (visualizerStopwatch.ElapsedMilliseconds >= Visual.refreshTime)
+                        {
+                            drawVisualizer = true;
+                            visualizerStopwatch.Restart();
+                        }
+                    }
+
                     if (drawVisualizer && Preferences.isVisualizer)
                     {
                         if (state == MainStates.playing || state == MainStates.pause || state == MainStates.stop || state == MainStates.idle)
@@ -313,39 +327,11 @@ namespace Jammer
                 drawTime = false;
                 drawWhole = false;
 
-                if (playerView == "default" || playerView == "all" || playerView == "rss")
-                {
-                    Thread.Sleep(1);
-                }
-                else
-                    Thread.Sleep(5);
+                Thread.Sleep(16); // Target ~60FPS loop instead of 1000FPS busy wait
             }
         }
 
-        static bool canVisualize = false;
-        private static void EqualizerLoop()
-        {
-            while (true)
-            {
-                if (Preferences.isVisualizer)
-                {
-                    if (playerView == "default" || playerView == "all")
-                    {
-                        canVisualize = true;
-                    }
-                    else
-                    {
-                        canVisualize = false;
-                    }
-
-                    if (canVisualize)
-                    {
-                        drawVisualizer = true;
-                    }
-                }
-                Thread.Sleep(Visual.refreshTime);
-            }
-        }
+        // EqualizerLoop removed as its timing is now merged into the main Loop()
 
 
         /// <summary>
