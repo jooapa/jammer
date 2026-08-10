@@ -5,4 +5,14 @@
     <Version>$(JammerVersion)</Version>
     <InformationalVersion>$(JammerVersion)</InformationalVersion>
   </PropertyGroup>
+
+
+  <PropertyGroup>
+      <PublishReadyToRun>true</PublishReadyToRun>
+      <PublishTrimmed>false</PublishTrimmed>
+      <OptimizationPreference>Speed</OptimizationPreference>
+      <ServerGarbageCollection>true</ServerGarbageCollection> 
+      <RetainVMGarbageCollection>true</RetainVMGarbageCollection>
+      <PublishAot>false</PublishAot>
+  </PropertyGroup>
 </Project>
