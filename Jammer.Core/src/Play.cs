@@ -51,7 +51,7 @@ namespace Jammer
             // delete all empty songs
             if (songs[Currentindex] == "")
             {
-                Utils.Songs = Utils.Songs.Where((source, i) => i != Currentindex).ToArray();
+                Utils.Songs = Utils.UtilFuncs.RemoveAt(Utils.Songs, Currentindex);
                 if (Utils.Songs.Length == 0)
                 {
                     Start.state = MainStates.pause;
@@ -416,7 +416,7 @@ namespace Jammer
             }
             
             // remove playlist from Utils.songs
-            Utils.Songs = Utils.Songs.Where((source, i) => i != Utils.CurrentSongIndex).ToArray();
+            Utils.Songs = Utils.UtilFuncs.RemoveAt(Utils.Songs, Utils.CurrentSongIndex);
             if (Utils.CurrentSongIndex == Utils.Songs.Length)
             {
                 Utils.CurrentSongIndex = Utils.Songs.Length - 1;
@@ -754,7 +754,7 @@ namespace Jammer
             }
 
             // remove song from current Utils.songs
-            Utils.Songs = Utils.Songs.Where((source, i) => i != index).ToArray();
+            Utils.Songs = Utils.UtilFuncs.RemoveAt(Utils.Songs, index);
 
             if (goForward)
             {

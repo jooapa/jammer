@@ -78,8 +78,18 @@ namespace Jammer
 
 
         // Class to hold Util related Functions
+        // Helper to check if a char is fullwidth
         public static class UtilFuncs
         {
+            public static string[] RemoveAt(string[] source, int index)
+            {
+                if (source == null || index < 0 || index >= source.Length) return source;
+                string[] dest = new string[source.Length - 1];
+                if (index > 0) Array.Copy(source, 0, dest, 0, index);
+                if (index < source.Length - 1) Array.Copy(source, index + 1, dest, index, source.Length - index - 1);
+                return dest;
+            }
+
             // Return user preferred path for JammerPath
             public static string GetJammerPath()
             {
