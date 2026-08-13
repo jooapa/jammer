@@ -464,6 +464,8 @@ public sealed class SpotifyIntegrationService
     private static async Task<string?> ResolveFirstAsync(Song song, SpotifyResolutionProvider provider)
     {
         string query = $"{song.Title} {song.Author}".Trim();
+        if (string.IsNullOrWhiteSpace(query)) return null;
+
         if (provider == SpotifyResolutionProvider.SoundCloud)
         {
             await foreach (var result in Download.ReturnSoundCloudClient().Search.GetTracksAsync(query))

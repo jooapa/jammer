@@ -115,11 +115,18 @@ namespace Jammer
                 if (resolvedUrl != null)
                 {
                     song.URI = resolvedUrl;
+                    song.ResolutionStatus = "Resolved";
                     songs[Utils.CurrentSongIndex] = SongExtensions.ToSongString(song);
                     Utils.Songs[Utils.CurrentSongIndex] = songs[Utils.CurrentSongIndex];
+
+                    if (!string.IsNullOrEmpty(Utils.CurrentPlaylist))
+                    {
+                        Playlists.Save(Utils.CurrentPlaylist, true);
+                    }
                 }
                 else
                 {
+                    Log.Error($"Could not resolve Spotify track {song.SpotifyTrackId} ({song.Title} - {song.Author})");
                     Start.state = MainStates.next;
                     return;
                 }
@@ -174,6 +181,24 @@ namespace Jammer
                 (fullPathToFile, song) = Download.DownloadSong(song.URI);
                 // Message.Data(SongExtensions.ToSongString(song), fullPathToFile);
                 // Message.Data(path, song);
+            }
+
+            if (song.URI != null && URL.IsValidRssFeed(song.URI))
+            {
+                fullPathToFile = song.URI;
+            }
+
+            if (string.IsNullOrEmpty(fullPathToFile) || (!URL.IsValidRssFeed(song.URI ?? "") && !System.IO.File.Exists(fullPathToFile)))
+            {
+                Utils.CurSongError = true;
+                if (string.IsNullOrEmpty(Utils.CustomTopErrorMessage))
+                {
+                    Utils.CustomTopErrorMessage = $"Warning: Failed to load track ({song?.Title ?? "Unknown track"}). Skipping...";
+                }
+                TUI.PrintToTopOfPlayer(Utils.CustomTopErrorMessage);
+                Log.Warning($"Cannot play track at index {Utils.CurrentSongIndex}: file does not exist or failed to download ({song?.URI ?? songs[Utils.CurrentSongIndex]})");
+                Start.state = MainStates.next;
+                return;
             }
 
             song ??= new Song()

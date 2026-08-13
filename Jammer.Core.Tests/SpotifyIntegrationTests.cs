@@ -68,4 +68,18 @@ public sealed class SpotifyIntegrationTests
 
         Assert.Collection(result, song => Assert.Equal("two", song.SpotifyTrackId));
     }
+
+    [Fact]
+    public void ResolveSpotifyImportSynchronouslyReturnsNullWhenMetadataEmpty()
+    {
+        var song = new Song
+        {
+            URI = "spotify-import://track/empty",
+            Title = "",
+            Author = ""
+        };
+
+        string? resolved = SpotifyIntegrationService.ResolveSpotifyImportSynchronously(song);
+        Assert.Null(resolved);
+    }
 }

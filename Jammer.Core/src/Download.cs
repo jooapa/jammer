@@ -441,8 +441,21 @@ namespace Jammer
                     return;
                 }
 
-                Utils.CustomTopErrorMessage = "Error: yt-dlp download failed. (check log)";
-                Log.Error("yt-dlp download failed: " + ex);
+                Utils.CurSongError = true;
+                if (ex.Message.Contains("Sign in to confirm your age", StringComparison.OrdinalIgnoreCase) ||
+                    ex.Message.Contains("inappropriate for some users", StringComparison.OrdinalIgnoreCase) ||
+                    ex.Message.Contains("cookies", StringComparison.OrdinalIgnoreCase))
+                {
+                    Utils.CustomTopErrorMessage = "Warning: Age-restricted track (sign-in/cookies required). Skipping...";
+                    TUI.PrintToTopOfPlayer(Utils.CustomTopErrorMessage);
+                    Log.Warning("yt-dlp download failed due to age restriction: " + ex.Message);
+                }
+                else
+                {
+                    Utils.CustomTopErrorMessage = "Warning: yt-dlp download failed. Skipping track...";
+                    TUI.PrintToTopOfPlayer(Utils.CustomTopErrorMessage);
+                    Log.Error("yt-dlp download failed: " + ex.Message);
+                }
                 songPath = "";
                 constructedSong = null;
             }

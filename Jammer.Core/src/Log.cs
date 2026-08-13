@@ -31,6 +31,17 @@ namespace Jammer
             New(txt, true);
         }
 
+        public static void Warning(string txt)
+        {
+            var time = DateTime.Now.ToString("HH:mm:ss");
+            var curPlaylist = Playlists.GetJammerPlaylistVisualPath(Utils.CurrentPlaylist);
+            if (curPlaylist == "")
+            {
+                curPlaylist = "No playlist";
+            }
+            log = log.Append("[yellow]" + time + "[/]" + ";WARN;[cyan]" + Start.Sanitize(curPlaylist) + "[/]: " + Start.Sanitize(txt)).ToArray();
+        }
+
         public static string GetLog()
         {
             return string.Join("\n", log);
