@@ -175,22 +175,40 @@ def main() -> int:
         else:
             print("No changes to commit before tagging.")
         run(["git", "tag", "-f", version])
-        run(["git", "push", "origin", "main", "--tags"])
+        run(["git", "push", "origin", "main"])
+        run(["git", "push", "origin", f"refs/tags/{version}", "-f"])
 
-    # Create GitHub release
+    # Create or edit GitHub release
     gh = require_command("gh", "Install GitHub CLI: https://cli.github.com/")
-    run(
-        [
-            gh,
-            "release",
-            "create",
-            version,
-            "--title",
-            f"v{version}",
-            "--notes-file",
-            str(notes_file),
-        ]
-    )
+    
+    release_check = subprocess.run([gh, "release", "view", version], capture_output=True)
+    if release_check.returncode == 0:
+        print(f"\nRelease {version} already exists. Editing notes and re-uploading artifacts.")
+        run(
+            [
+                gh,
+                "release",
+                "edit",
+                version,
+                "--title",
+                f"v{version}",
+                "--notes-file",
+                str(notes_file),
+            ]
+        )
+    else:
+        run(
+            [
+                gh,
+                "release",
+                "create",
+                version,
+                "--title",
+                f"v{version}",
+                "--notes-file",
+                str(notes_file),
+            ]
+        )
 
     # Build and upload artifacts
     if not args.skip_build:
