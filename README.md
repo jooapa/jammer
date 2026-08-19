@@ -15,7 +15,6 @@ Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 
 ## Table of Contents
 
-- [Recent changes](#recent-changes)
 - [Install/Update](#installupdate)
 - [Usage](#usage)
 - [Supported formats](#supported-formats)
@@ -35,23 +34,6 @@ Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 - [Developing](#developing)
 - [Build / Run yourself](#build--run-yourself)
 - [Known Issues](#known-issues)
-
-## Recent changes
-
-These are the user-facing changes from the 12 newest commits, from newest to oldest:
-
-- [`5e44c49`](https://github.com/jooapa/jammer/commit/5e44c49) — Settings categories and values now use an arrow cursor, Up/Down navigation, and Enter to select instead of letter shortcuts.
-- [`ae6e964`](https://github.com/jooapa/jammer/commit/ae6e964) — The settings view is fully redrawn after navigation, prompts, asynchronous work, cancellation, and errors.
-- [`dfc6786`](https://github.com/jooapa/jammer/commit/dfc6786) — Jammer paths are centralized under the Jammer folder; path overrides remain supported, and the complete managed macOS yt-dlp bundle stays under `tools/`.
-- [`f1ccf43`](https://github.com/jooapa/jammer/commit/f1ccf43) — A failed SoundCloud track download now refreshes the client ID and retries once before reporting the final error.
-- [`9c78b1c`](https://github.com/jooapa/jammer/commit/9c78b1c) — Completed asynchronous settings actions trigger an immediate redraw instead of leaving an empty terminal.
-- [`679054f`](https://github.com/jooapa/jammer/commit/679054f) — Terminal escape-sequence handling now recognizes navigation keys such as Page Up and Page Down consistently across platforms.
-- [`3dd9803`](https://github.com/jooapa/jammer/commit/3dd9803) — Missing bundled locale files are restored to the user locale directory, and an empty locale directory no longer crashes language selection.
-- [`afd9ad7`](https://github.com/jooapa/jammer/commit/afd9ad7) — Added macOS and Linux development run instructions.
-- [`e69c528`](https://github.com/jooapa/jammer/commit/e69c528) — Tab now opens a quick playlist switcher with the current playlist selected initially.
-- [`fc5ee5a`](https://github.com/jooapa/jammer/commit/fc5ee5a) — `scripts/build.ps1` can be executed directly on systems with PowerShell 7.
-- [`3d004e6`](https://github.com/jooapa/jammer/commit/3d004e6) — Completed and synchronized the English, Finnish, and Brazilian Portuguese interface translations.
-- [`4b4319f`](https://github.com/jooapa/jammer/commit/4b4319f) — Reorganized settings into categories and added cross-platform integrations for managed yt-dlp and SoundCloud client-ID management.
 
 ## Install/Update
 
