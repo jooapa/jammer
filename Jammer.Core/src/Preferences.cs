@@ -525,7 +525,7 @@ namespace Jammer
             {
                 string jsonString = File.ReadAllText(JammerPath);
                 Settings? settings = JsonSerializer.Deserialize<Settings>(jsonString);
-                return settings?.localeLanguage;
+                return settings?.localeLanguage ?? "en";
             }
             else
             {

@@ -634,7 +634,8 @@ ExitRssFeed = Ctrl + E
         {
             try
             {
-                LocaleData = parser.ReadFile(Path.Combine(Utils.LocalesPath, $"{Preferences.localeLanguage}.ini"), System.Text.Encoding.UTF8);
+                string lang = string.IsNullOrEmpty(Preferences.localeLanguage) ? "en" : Preferences.localeLanguage;
+                LocaleData = parser.ReadFile(Path.Combine(Utils.LocalesPath, $"{lang}.ini"), System.Text.Encoding.UTF8);
             }
             catch (Exception)
             {
