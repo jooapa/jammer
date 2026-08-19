@@ -2,7 +2,7 @@ class Jammer < Formula
   desc "Lightweight, cross-platform terminal music player"
   homepage "https://github.com/jooapa/jammer"
   version "3.53"
-  license "MIT"
+  license "Proprietary"
 
   on_macos do
     if Hardware::CPU.arm?
