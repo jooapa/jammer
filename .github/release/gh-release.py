@@ -109,10 +109,15 @@ def update_homebrew_formula(version: str) -> None:
             sha256 = hashlib.sha256(filepath.read_bytes()).hexdigest()
             return f'{url_line}\n      sha256 "{sha256}"'
         else:
-            return f'{url_line}\n      sha256 "{existing_sha}"'
+            die(f"Missing artifact for Homebrew update: {filepath}")
+            return match.group(0)
 
-    text = re.sub(r'(url\s+"(.*?)")\n\s+sha256\s+"(.*?)"', repl_sha256, text)
-    formula_path.write_text(text, encoding="utf-8")
+    new_text = re.sub(r'(url\s+"(.*?)")\n\s+sha256\s+"(.*?)"', repl_sha256, text)
+    if new_text == text:
+        print("Homebrew formula is already up-to-date.")
+        return
+        
+    formula_path.write_text(new_text, encoding="utf-8")
     
     run(["git", "add", str(formula_path)])
     run(["git", "commit", "-m", f"chore: update Homebrew formula for v{version}"])
@@ -164,13 +169,16 @@ def main() -> int:
     if not args.skip_push:
         require_command("git", "Install git.")
         run(["git", "add", "-A"])
-        run(["git", "commit", "-m", version])
+        status = capture(["git", "status", "--porcelain"])
+        if status:
+            run(["git", "commit", "-m", version])
+        else:
+            print("No changes to commit before tagging.")
         run(["git", "tag", "-f", version])
         run(["git", "push", "origin", "main", "--tags"])
 
     # Create GitHub release
     gh = require_command("gh", "Install GitHub CLI: https://cli.github.com/")
-    notes_content = notes_file.read_text(encoding="utf-8")
     run(
         [
             gh,
@@ -179,8 +187,8 @@ def main() -> int:
             version,
             "--title",
             f"v{version}",
-            "--notes",
-            notes_content,
+            "--notes-file",
+            str(notes_file),
         ]
     )
 
