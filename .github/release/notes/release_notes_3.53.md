@@ -37,6 +37,8 @@
 - SoundCloud downloads are more reliable with automatic retry logic
 - Full Finnish (fi) and Brazilian Portuguese (pt-BR) translations
 - Build system now uses Python instead of PowerShell for better cross-platform support
-- Homebrew support: `brew tap jooapa/jammer https://github.com/jooapa/jammer && brew install jammer`
-
+- Homebrew support: 
+```sh
+brew tap jooapa/jammer https://github.com/jooapa/jammer && brew trust --formula jooapa/jammer/jammer && brew install jammer
+```
 **Full Changelog**: https://github.com/jooapa/jammer/compare/3.52...3.53
