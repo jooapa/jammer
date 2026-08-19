@@ -7,20 +7,20 @@ class Jammer < Formula
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/jooapa/jammer/releases/download/#{version}/jammer-#{version}-osx-arm64.tar.gz"
-      sha256 "db9040a6200b45cbeedf627af7c2314a5a7893ca2d7ea928787a37a597b18e24"
+      sha256 "557b76e07945299abb777d54a149f93e036856402d1298ee76844cd099f874ac"
     else
       url "https://github.com/jooapa/jammer/releases/download/#{version}/jammer-#{version}-osx-x64.tar.gz"
-      sha256 "5c61ae3d1832339063496e78dec65d54161aa2da4ff5fa948a7a93522f4718be"
+      sha256 "8b5ee86c2812eada4a1ae806a97f39fbe8062b3d56a6e936ba3cef5d12f0b9ff"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/jooapa/jammer/releases/download/#{version}/jammer-#{version}-arm64.tar.gz"
-      sha256 "a486865927d59d5a8ef3714263a1ccb02b207e7396ceb319e1206a184b554daf"
+      sha256 "359771da713cf6ab399874e6476e073415d5501c7560b61beeb0d67d1a71d9a0"
     else
       url "https://github.com/jooapa/jammer/releases/download/#{version}/jammer-#{version}-x86_64.tar.gz"
-      sha256 "9dd8e71cfda8024696ca28e231e907fdbd8c24fb2d15cb2373cb1144f49733cc"
+      sha256 "882797cc492a66e8d6b2e0fadfd06850144361f86766ba28dc67eddac2e570a1"
     end
   end
 
