@@ -82,6 +82,42 @@ def generate_release_notes(version: str, prev_version: str) -> Path:
     return notes_file
 
 
+
+def update_homebrew_formula(version: str) -> None:
+    import hashlib
+    import re
+    
+    formula_path = REPO_ROOT / "Formula" / "jammer.rb"
+    if not formula_path.exists():
+        return
+        
+    print(f"\nUpdating Homebrew formula for version {version}...")
+    text = formula_path.read_text(encoding="utf-8")
+    text = re.sub(r'version\s+".*?"', f'version "{version}"', text)
+    
+    artifacts_dir = REPO_ROOT / "artifacts"
+    
+    def repl_sha256(match):
+        url_line = match.group(1)
+        url_val = match.group(2)
+        existing_sha = match.group(3)
+        
+        filename = url_val.split("/")[-1].replace("#{version}", version)
+        filepath = artifacts_dir / filename
+        
+        if filepath.exists():
+            sha256 = hashlib.sha256(filepath.read_bytes()).hexdigest()
+            return f'{url_line}\n      sha256 "{sha256}"'
+        else:
+            return f'{url_line}\n      sha256 "{existing_sha}"'
+
+    text = re.sub(r'(url\s+"(.*?)")\n\s+sha256\s+"(.*?)"', repl_sha256, text)
+    formula_path.write_text(text, encoding="utf-8")
+    
+    run(["git", "add", str(formula_path)])
+    run(["git", "commit", "-m", f"chore: update Homebrew formula for v{version}"])
+    run(["git", "push", "origin", "main"])
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Create a GitHub release for Jammer.")
     parser.add_argument("version", help="Version to release (must match VERSION file).")
@@ -150,15 +186,10 @@ def main() -> int:
 
     # Build and upload artifacts
     if not args.skip_build:
-        build_targets = [
-            "osx-arm64",
-            "osx-x64",
-            "linux-x64",
-            "linux-arm64",
-        ]
-        for target in build_targets:
-            print(f"\nBuilding and uploading {target}...")
-            run([sys.executable, str(BUILD_SCRIPT), "-t", target, "--upload"])
+        print("\nBuilding and uploading all targets (including Windows NSIS)...")
+        run([sys.executable, str(BUILD_SCRIPT), "-t", "all", "--nsis", "--upload"])
+        
+        update_homebrew_formula(version)
 
     print(
         f"\nRelease v{version} created: https://github.com/jooapa/jammer/releases/tag/{version}"
