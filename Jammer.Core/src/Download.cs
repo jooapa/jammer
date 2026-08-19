@@ -788,50 +788,73 @@ namespace Jammer
 
         public static async Task GetPlaylist(string plurl)
         {
-
-            var soundcloud = ReturnSoundCloudClient();
-
             // Get all playlist tracks
             AnsiConsole.Clear();
             AnsiConsole.MarkupLine(Locale.UiMessages.GettingPlaylistTracks);
+            
+            SoundCloudExplode.Playlists.Playlist playlist = null;
             try
             {
-                var playlist = await soundcloud.Playlists.GetAsync(plurl, true);
+                var soundcloud = ReturnSoundCloudClient();
+                playlist = await soundcloud.Playlists.GetAsync(plurl, true);
+            }
+            catch (Exception firstFailure)
+            {
+                Log.Error("Initial SoundCloud playlist fetch failed: " + firstFailure.Message);
+                TUI.PrintToTopOfPlayer(Locale.Settings.FetchingSoundCloudId);
 
-                if (playlist == null)
+                try
                 {
-                    Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
-                    Message.Data(Locale.UiMessages.ClientIdInvalidOrPlaylistPrivate, Locale.OutsideItems.Error);
-                    return;
+                    string clientId = await SCClientIdFetcher.GetClientId();
+                    Preferences.clientID = clientId;
+                    Utils.SCClientIdAlreadyLookedAndItsIncorrect = false;
+                    Preferences.SaveSettings();
+                }
+                catch (Exception refreshFailure)
+                {
+                    Log.Error("Failed to refresh the SoundCloud client ID: " + refreshFailure.Message);
                 }
 
-                if (playlist.Tracks.Count() == 0 || playlist.Tracks == null)
+                try
                 {
-                    Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
-                    Console.ReadLine();
-                    return;
+                    var soundcloud = ReturnSoundCloudClient();
+                    playlist = await soundcloud.Playlists.GetAsync(plurl, true);
                 }
-
-                // add all tracks permalinkUrl to songs array
-                playlistSongs = new string[playlist.Tracks.Count()];
-                int i = 0;
-                foreach (var track in playlist.Tracks)
+                catch (Exception ex)
                 {
-                    playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
-                    i++;
-                }
-
-                // debug
-                foreach (var song in playlistSongs)
-                {
-                    Console.WriteLine(song);
+                    AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error id:3");
+                    Console.WriteLine(ex.Message);
+                    Environment.Exit(1);
                 }
             }
-            catch (Exception ex)
+
+            if (playlist == null)
             {
-                AnsiConsole.MarkupLine($"{Locale.OutsideItems.Error}: ", "Error id:3");
-                Console.WriteLine(ex.Message);
-                Environment.Exit(1);
+                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                Message.Data(Locale.UiMessages.ClientIdInvalidOrPlaylistPrivate, Locale.OutsideItems.Error);
+                return;
+            }
+
+            if (playlist.Tracks.Count() == 0 || playlist.Tracks == null)
+            {
+                Console.WriteLine(Locale.OutsideItems.NoTrackPlaylist);
+                Console.ReadLine();
+                return;
+            }
+
+            // add all tracks permalinkUrl to songs array
+            playlistSongs = new string[playlist.Tracks.Count()];
+            int i = 0;
+            foreach (var track in playlist.Tracks)
+            {
+                playlistSongs[i] = track.PermalinkUrl?.ToString() ?? string.Empty;
+                i++;
+            }
+
+            // debug
+            foreach (var song in playlistSongs)
+            {
+                Console.WriteLine(song);
             }
         }
         public static async Task GetPlaylistYoutube(string plurl)
