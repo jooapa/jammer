@@ -41,7 +41,7 @@ Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 
 #### macOS / Linux (Homebrew)
 ```bash
-brew tap jooapa/jammer && brew install jammer
+brew tap jooapa/jammer && brew trust jooapa/jammer && brew install jammer
 ```
 
 #### Manual Download

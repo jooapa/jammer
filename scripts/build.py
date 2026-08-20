@@ -752,6 +752,11 @@ def package_macos(
         ["+x", str(stage / "Jammer"), str(stage / "Jammer.bin")],
     )
 
+    invoke_external(
+        require_command("codesign", "codesign is required on macOS."),
+        ["--force", "--sign", "-", str(stage / "Jammer.bin")],
+    )
+
     tar = require_command(
         "tar", "The system tar command is required to create the macOS archive."
     )

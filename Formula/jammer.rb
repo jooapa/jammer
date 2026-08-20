@@ -25,7 +25,10 @@ class Jammer < Formula
   end
 
   def install
-    system "xattr", "-cr", "." if OS.mac?
+    if OS.mac?
+      system "xattr", "-cr", "."
+      system "codesign", "--force", "--sign", "-", "Jammer.bin"
+    end
 
     libexec.install Dir["*"]
     executable = OS.mac? ? "Jammer.bin" : "Jammer.CLI"
