@@ -39,8 +39,14 @@ Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 
 ### Install
 
-Github latest [Release](https://github.com/jooapa/signal-Jammer/releases/latest)
-Linux version of Jammer requires fuse2. Ubuntu 22.02 or newer install `apt install libfuse2 ffmpeg`
+#### macOS / Linux (Homebrew)
+```bash
+brew tap jooapa/jammer && brew install jammer
+```
+
+#### Manual Download
+GitHub latest [Release](https://github.com/jooapa/jammer/releases/latest)  
+*Linux version of Jammer requires fuse2. Ubuntu 22.04 or newer install `apt install libfuse2 ffmpeg`*
 
 ### Update existing
 

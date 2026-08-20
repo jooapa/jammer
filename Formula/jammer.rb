@@ -25,18 +25,14 @@ class Jammer < Formula
   end
 
   def install
-    if OS.mac?
-      lib.install "libbass.dylib", "libbassmidi.dylib", "libbassopus.dylib"
-      bin.install "Jammer.bin"
-      (bin/"jammer").write_env_script bin/"Jammer.bin",
-        DYLD_LIBRARY_PATH: "#{lib}${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
-    else
-      lib.install "libbass.so", "libbassmidi.so", "libbassopus.so"
-      bin.install "Jammer.CLI"
-      (bin/"jammer").write_env_script bin/"Jammer.CLI",
-        LD_LIBRARY_PATH: "#{lib}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-    end
-    (share/"jammer").install Dir["locales/*"]
+    system "xattr", "-cr", "." if OS.mac?
+
+    libexec.install Dir["*"]
+    executable = OS.mac? ? "Jammer.bin" : "Jammer.CLI"
+
+    (bin/"jammer").write_env_script libexec/executable,
+      DYLD_LIBRARY_PATH: "#{libexec}${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}",
+      LD_LIBRARY_PATH: "#{libexec}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
   end
 
   def caveats
