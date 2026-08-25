@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Jammer is a simple CLI music player that supports playing songs from your **local files**, **Youtube** and **Soundcloud**.
+Jammer is a simple CLI music player that supports playing songs from your **local files**, **Youtube**, **Soundcloud** & **Spotify**
 
 Compatible with **Windows**, **Linux**, and **macOS** (Intel and Apple silicon).
 
