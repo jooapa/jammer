@@ -235,8 +235,11 @@ namespace Jammer
             messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
             messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
 
-            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
-            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
+            string escapedTitle = Spectre.Console.Markup.Escape(title ?? "");
+            string escapedInputSaying = Spectre.Console.Markup.Escape(inputSaying ?? "");
+
+            mainTable.AddColumn(new TableColumn(Themes.sColor(escapedTitle, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
+            messageTable.AddColumn(new TableColumn(Themes.sColor(escapedInputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Show();
@@ -264,8 +267,17 @@ namespace Jammer
 
             if (oneChar)
             {
-                ConsoleKeyInfo keyInfo = TerminalInput.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
-                return Start.Sanitize(keyInfo.KeyChar.ToString());
+                ConsoleKeyInfo keyInfo;
+                do
+                {
+                    keyInfo = TerminalInput.ReadKey(intercept: true); // 'intercept: true' prevents the key from being displayed
+                    if (keyInfo.Key == ConsoleKey.Escape)
+                    {
+                        return "";
+                    }
+                } while (char.IsControl(keyInfo.KeyChar));
+                
+                return Start.Sanitize(keyInfo.KeyChar.ToString()) ?? "";
             }
             else if (setText != null && setText.Length > 0)
             {
@@ -305,8 +317,11 @@ namespace Jammer
             messageTable.Border = Themes.bStyle(Themes.CurrentTheme.InputBox.InputBorderStyle);
             messageTable.BorderColor(Themes.bColor(Themes.CurrentTheme.InputBox.InputBorderColor));
 
-            mainTable.AddColumn(new TableColumn(Themes.sColor(title, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
-            messageTable.AddColumn(new TableColumn(Themes.sColor(inputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
+            string escapedTitle = Spectre.Console.Markup.Escape(title ?? "");
+            string escapedInputSaying = Spectre.Console.Markup.Escape(inputSaying ?? "");
+
+            mainTable.AddColumn(new TableColumn(Themes.sColor(escapedTitle, Themes.CurrentTheme.InputBox.TitleColor))).Centered().Width(Start.consoleWidth);
+            messageTable.AddColumn(new TableColumn(Themes.sColor(escapedInputSaying, Themes.CurrentTheme.InputBox.InputTextColor))).Centered().Width(Start.consoleWidth);
             mainTable.AddRow(messageTable);
             AnsiConsole.Cursor.SetPosition(0, 0);
             AnsiConsole.Cursor.Show();
@@ -330,8 +345,17 @@ namespace Jammer
             
             if (oneChar)
             {
-                ConsoleKeyInfo keyInfo = TerminalInput.ReadKey(intercept: true);
-                return Start.Sanitize(keyInfo.KeyChar.ToString());
+                ConsoleKeyInfo keyInfo;
+                do
+                {
+                    keyInfo = TerminalInput.ReadKey(intercept: true);
+                    if (keyInfo.Key == ConsoleKey.Escape)
+                    {
+                        return "";
+                    }
+                } while (char.IsControl(keyInfo.KeyChar));
+                
+                return Start.Sanitize(keyInfo.KeyChar.ToString()) ?? "";
             }
             else if (setText != null && setText.Length > 0)
             {

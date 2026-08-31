@@ -456,10 +456,12 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "SearchInPlaylist": // playlist options
+                            ClearKeyboardBuffer();
                             Search.SearchForSongInPlaylistAsync();
                             drawWhole = true;
                             break;
                         case "SearchByAuthor": // search by author
+                            ClearKeyboardBuffer();
                             Search.SearchByAuthorAsync();
                             drawWhole = true;
                             break;
@@ -675,6 +677,7 @@ namespace Jammer
                             drawWhole = true;
                             break;
                         case "Search":
+                            ClearKeyboardBuffer();
                             Search.SearchSongOnMediaPlatform();
                             drawWhole = true;
                             break;
